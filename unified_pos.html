@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro POS Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --text-dark: #111827;
+            --text-grey: #6B7280;
+            --bg-body: #F3F4F6;
+            --card-bg: #FFFFFF;
+
+            /* Action Colors */
+            --color-sale-bg: #EFF6FF;
+            --color-sale-text: #0A5BFF;
+            --color-warn-bg: #FFF7ED;
+            --color-warn-text: #F59E0B;
+            --color-danger-bg: #FEF2F2;
+            --color-danger-text: #EF4444;
+            --color-success-bg: #ECFDF5;
+            --color-success-text: #10B981;
+            --color-purple-bg: #F5F3FF;
+            --color-purple-text: #7C3AED;
+            --color-teal-bg: #F0FDFA;
+            --color-teal-text: #0D9488;
+
+            --radius-md: 16px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+            /* Tab active theme (per tab) */
+            --tab-active-color: #0A5BFF;
+            --tab-active-shadow: rgba(10, 91, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background: #222;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--bg-body);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 50px 24px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .merchant-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        /* --- Amount Hero --- */
+        .amount-section {
+            text-align: center;
+            padding: 24px 0 32px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .amount-section:active {
+            transform: scale(0.98);
+        }
+
+        .currency {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            vertical-align: top;
+            position: relative;
+            top: 8px;
+        }
+
+        .amount-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -1.5px;
+        }
+
+        .amount-hint {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--primary-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* --- White Sheet Content --- */
+        .content-sheet {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 32px 32px 0 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Tabs --- */
+        .tabs {
+            display: flex;
+            background: #F3F4F6;
+            padding: 4px;
+            border-radius: 999px;
+            margin-bottom: 24px;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 8px 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-grey);
+            z-index: 2;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .tab-item.active {
+            color: var(--tab-active-color);
+            transform: translateY(-0.5px);
+        }
+
+        .tab-bg {
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            bottom: 4px;
+            width: calc(33.33% - 4px);
+            background: #fff;
+            border-radius: 999px;
+            box-shadow: 0 4px 14px var(--tab-active-shadow);
+            transition: transform 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .tab-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* --- Grids --- */
+        .grid-container {
+            display: none;
+            gap: 12px;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .grid-container.active {
+            display: grid;
+        }
+
+        /* 3 Columns for Card & Loyalty */
+        #grid-card,
+        #grid-loyalty {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* 2 Columns for Scan (larger buttons) */
+        #grid-scan {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Action Cards --- */
+        .action-card {
+            background: #fff;
+            border: 1px solid #F3F4F6;
+            border-radius: var(--radius-md);
+            padding: 18px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            cursor: pointer;
+            transition: all 0.15s;
+            height: 120px;
+        }
+
+        .action-card:active {
+            transform: scale(0.96);
+            background: #FAFAFA;
+            border-color: var(--primary-light);
+        }
+
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2px;
+        }
+
+        .icon-box svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        .card-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 0.2px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Color Variants */
+        .v-blue {
+            background: var(--color-sale-bg);
+            color: var(--color-sale-text);
+        }
+
+        .v-warn {
+            background: var(--color-warn-bg);
+            color: var(--color-warn-text);
+        }
+
+        .v-danger {
+            background: var(--color-danger-bg);
+            color: var(--color-danger-text);
+        }
+
+        .v-success {
+            background: var(--color-success-bg);
+            color: var(--color-success-text);
+        }
+
+        .v-purple {
+            background: var(--color-purple-bg);
+            color: var(--color-purple-text);
+        }
+
+        .v-teal {
+            background: var(--color-teal-bg);
+            color: var(--color-teal-text);
+        }
+
+        /* --- Keypad --- */
+        .keypad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .keypad-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .keypad-panel {
+            background: #fff;
+            border-radius: 32px 32px 0 0;
+            padding: 20px 20px 34px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .keypad-overlay.open .keypad-panel {
+            transform: translateY(0);
+        }
+
+        .keypad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 8px;
+        }
+
+        .keypad-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-grey);
+        }
+
+        .close-btn {
+            background: #F3F4F6;
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .key {
+            height: 56px;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid #f3f4f6;
+        }
+
+        .key:active {
+            background: #F3F4F6;
+        }
+
+        .key-func {
+            background: #F9FAFB;
+            font-size: 18px;
+        }
+
+        .key-delete {
+            color: var(--color-danger-text);
+        }
+
+        .key-done {
+            grid-column: span 3;
+            background: var(--primary);
+            color: #fff;
+            margin-top: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(10, 91, 255, 0.3);
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+        <header class="header">
+            <div class="merchant-name">Jose's Store</div>
+            <div class="icon-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                    </path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </div>
+        </header>
+
+        <div class="amount-section" onclick="openKeypad()">
+            <div><span class="currency">$</span><span class="amount-value" id="main-amount">0.00</span></div>
+            <div class="amount-hint">Enter Amount</div>
+        </div>
+
+        <div class="content-sheet">
+            <div class="tabs">
+                <div class="tab-bg" id="tab-pill"></div>
+                <div class="tab-item active" onclick="switchTab(0)">
+                    <svg class="tab-icon" viewBox="0 0 1225 1024">
+                        <path d="M1090.265844 738.389458c-37.481698-2.998536-67.467057-18.740849-88.456809-47.976574-8.245974-11.994143-17.241581-12.743777-29.985358-12.743777-26.237189 0.749634-43.47877 14.243045-62.21962 30.734993-70.465593 62.969253-155.174231 100.450952-247.379209 119.1918-143.180088 29.985359-283.36164 20.240117-419.045388-37.481698-78.711567-33.733529-146.928258-82.459736-194.904832-155.174231-76.462665-115.443631-60.720351-255.625183 37.481699-357.575403 77.212299-80.210835 173.165447-125.188873 280.363104-146.928258 147.677892-29.985359 291.607613-17.991215 429.540263 46.477306 88.456808 41.229868 161.171303 101.200586 203.90044 191.906296 2.248902 4.497804 8.995608 8.995608 14.243045 10.494876 28.486091 6.746706 49.475842 23.238653 65.218155 47.22694 47.976574 72.714495 95.953148 146.178624 143.180088 219.642752 3.74817 5.997072 1.499268 14.992679 2.248902 22.489019m-314.096633 2.248902c-21.739385-9.745242-39.7306-17.241581-58.471449-25.487555-20.989751-9.745242-27.736457-29.235725-17.241581-48.726208 2.998536-5.247438 6.746706-10.494876 11.244509-17.241581-28.486091-14.992679-44.978038-41.229868-26.986823-74.963397-28.486091-5.997072-53.973646-10.494876-79.4612-15.742313-14.243045-2.248902-21.739385-10.494876-18.740849-26.237189 6.746706-40.480234 14.992679-80.210835 23.238653-119.941435 4.497804-17.241581 8.245974-29.985359 26.986822-26.986823 37.481698 5.997072 96.702782 17.991215 133.434847 24.737921 28.486091 5.247438 28.486091 17.991215 25.487555 38.231333h41.229868c-2.998536-6.746706-3.74817-8.245974-5.997072-12.743778-47.22694-88.456808-123.689605-142.430454-213.645681-179.162518-111.695461-44.978038-227.888726-56.972182-345.581259-37.481698-111.695461 17.991215-213.645681 59.970717-294.606149 142.430453C11.542564 390.559297 1.797322 527.742313 85.756327 640.187408c49.475842 65.967789 116.193265 108.696925 191.906296 137.183017 137.183016 51.724744 276.614934 56.972182 417.54612 16.491947 80.960469-22.489019 152.925329-60.720351 215.144948-122.939971z m-5.997071-251.127379c2.998536-15.742313 5.247438-27.736457 8.995607-39.7306 4.497804-15.742313-0.749634-22.489019-17.241581-25.487555-38.980966-6.746706-77.961933-13.493411-116.193265-21.739385-11.994143-2.248902-17.241581 0.749634-19.490483 11.994143-6.746706 37.481698-14.243045 74.963397-20.240117 112.445095-0.749634 5.247438 1.499268 14.992679 7.496339 17.241582 20.989751 5.247438 42.729136 8.995608 63.718888 12.743777-3.74817-8.245974-8.995608-12.743777-14.243046-17.991215-22.489019-20.240117-26.237189-46.477306-10.494875-68.216691 14.992679-20.240117 41.979502-24.737921 67.467057-10.494876 15.742313 8.995608 31.484627 17.991215 50.225476 29.235725z" fill="currentColor"></path>
+                        <path d="M668.971554 485.013177c-1.499268 77.961933-19.490483 151.426061-56.222548 219.642753-10.494876 18.740849-23.988287 23.988287-38.980966 15.742313-14.243045-7.49634-17.241581-20.240117-6.746706-39.7306 67.467057-130.43631 68.216691-260.872621 0-391.308931-8.995608-17.991215-5.997072-32.983895 7.49634-40.480235 14.243045-7.49634 28.486091-1.499268 38.231332 15.742314 37.481698 68.966325 54.72328 143.180088 56.222548 220.392386z" fill="currentColor"></path>
+                        <path d="M564.772432 483.513909c0.749634 64.468521-14.243045 120.691069-43.47877 173.915081-9.745242 17.991215-23.238653 23.988287-37.481698 16.491947-14.243045-6.746706-17.991215-22.489019-8.245974-40.480234 52.474378-99.701318 52.474378-198.653001-0.749634-298.354319-8.995608-16.491947-5.247438-31.484627 8.245974-38.980967 14.243045-7.49634 28.486091-2.248902 37.481698 13.493412 29.985359 56.222548 45.727672 114.693997 44.228404 173.91508zM462.822213 484.263543c0.749634 44.228404-11.24451 85.458272-31.484627 124.439239-11.24451 20.989751-25.487555 26.237189-40.480234 17.241581-14.243045-8.995608-15.742313-22.489019-5.247438-41.979502 33.733529-63.718887 34.483163-128.187408 2.248902-192.65593-2.248902-4.497804-5.247438-8.995608-6.746706-13.493411-5.247438-13.493411-2.248902-26.237189 10.494876-30.734993 8.995608-2.998536 23.238653-1.499268 30.734992 4.497804 8.245974 5.247438 12.743777 17.241581 17.241582 26.986823 14.992679 32.983895 23.988287 68.216691 23.238653 105.698389zM366.119431 488.761347c-1.499268 28.486091-8.995608 56.222548-26.986823 81.710102-9.745242 13.493411-21.739385 17.991215-36.732065 9.745242-13.493411-7.49634-16.491947-22.489019-7.496339-36.732064 25.487555-38.980966 25.487555-77.212299 0.749634-116.193265-9.745242-14.992679-6.746706-29.985359 5.997072-36.732065 14.992679-8.995608 26.986823-4.497804 36.732064 8.995608 19.490483 26.237189 27.736457 55.472914 27.736457 89.206442z" fill="currentColor"></path>
+                    </svg> CARD
+                </div>
+                <div class="tab-item" onclick="switchTab(1)">
+                    <svg class="tab-icon" viewBox="0 0 1024 1024">
+                     <path d="M419.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM899.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM419.2 608v256h-256v-256h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64v-256c0-35.2-28.8-64-64-64zM611.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM768 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM931.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32z" fill="currentColor"></path>
+                    </svg>  QR
+                </div>
+                <div class="tab-item" onclick="switchTab(2)">
+                    <svg class="tab-icon" viewBox="0 0 1024 1024">
+                     <path d="M938.666667 853.333333h-853.333334C37.546667 853.333333 0 815.786667 0 768v-512C0 208.213333 37.546667 170.666667 85.333333 170.666667h853.333334C986.453333 170.666667 1024 208.213333 1024 256v512c0 47.786667-37.546667 85.333333-85.333333 85.333333zM85.333333 204.8C58.026667 204.8 34.133333 228.693333 34.133333 256v512c0 27.306667 23.893333 51.2 51.2 51.2h853.333334c27.306667 0 51.2-23.893333 51.2-51.2v-512c0-27.306667-23.893333-51.2-51.2-51.2h-853.333334z" fill="" p-id="15372"></path><path d="M324.266667 648.533333h-170.666667c-10.24 0-17.066667-6.826667-17.066667-17.066666s6.826667-17.066667 17.066667-17.066667h170.666667c10.24 0 17.066667 6.826667 17.066666 17.066667s-6.826667 17.066667-17.066666 17.066666zM460.8 716.8h-307.2c-10.24 0-17.066667-6.826667-17.066667-17.066667s6.826667-17.066667 17.066667-17.066666h307.2c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667zM631.466667 512c-102.4 0-191.146667-64.853333-218.453334-163.84-6.826667-20.48 0-44.373333 13.653334-58.026667 17.066667-17.066667 37.546667-20.48 58.026666-13.653333 98.986667 27.306667 163.84 116.053333 163.84 218.453333 0 10.24-6.826667 17.066667-17.066666 17.066667zM443.733333 337.92c23.893333 78.506667 88.746667 129.706667 167.253334 136.533333-6.826667-81.92-58.026667-146.773333-136.533334-167.253333-10.24-3.413333-17.066667 0-23.893333 6.826667-6.826667 6.826667-6.826667 17.066667-6.826667 23.893333z" fill="" p-id="15373"></path><path d="M631.466667 512c-10.24 0-17.066667-6.826667-17.066667-17.066667 0-102.4 64.853333-191.146667 163.84-218.453333 20.48-6.826667 44.373333 0 58.026667 13.653333 17.066667 17.066667 20.48 37.546667 13.653333 58.026667-27.306667 98.986667-116.053333 163.84-218.453333 163.84z m163.84-204.8h-6.826667c-78.506667 23.893333-129.706667 88.746667-136.533333 167.253333 81.92-6.826667 146.773333-58.026667 167.253333-136.533333 3.413333-10.24 0-17.066667-6.826667-23.893333-6.826667-3.413333-13.653333-6.826667-17.066666-6.826667z" fill="" p-id="15374"></path><path d="M631.466667 853.333333c-10.24 0-17.066667-6.826667-17.066667-17.066666v-648.533334c0-10.24 6.826667-17.066667 17.066667-17.066666s17.066667 6.826667 17.066666 17.066666v648.533334c0 10.24-6.826667 17.066667-17.066666 17.066666z" fill="" p-id="15375"></path><path d="M494.933333 648.533333c-3.413333 0-10.24 0-13.653333-3.413333-6.826667-6.826667-6.826667-17.066667 0-23.893333l136.533333-136.533334c6.826667-6.826667 17.066667-6.826667 23.893334 0s6.826667 17.066667 0 23.893334l-136.533334 136.533333c0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="" p-id="15376"></path><path d="M768 648.533333c-3.413333 0-10.24 0-13.653333-3.413333l-136.533334-136.533333c-6.826667-6.826667-6.826667-17.066667 0-23.893334s17.066667-6.826667 23.893334 0l136.533333 136.533334c6.826667 6.826667 6.826667 17.066667 0 23.893333 0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="" p-id="15377"></path><path d="M1006.933333 512H34.133333c-10.24 0-17.066667-6.826667-17.066666-17.066667s6.826667-17.066667 17.066666-17.066666h972.8c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667z" fill="currentColor"></path>
+                    </svg> GIFT
+                </div>
+            </div>
+
+            <div class="grid-container active" id="grid-card">
+                <div class="action-card" onclick="doAction('Sale')">
+                    <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
+                    <div class="card-label">Sale</div>
+                </div>
+                <div class="action-card" onclick="doAction('Auth')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                        </svg></div>
+                    <div class="card-label">Auth</div>
+                </div>
+                <div class="action-card" onclick="doAction('Capture')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg></div>
+                    <div class="card-label">Capture</div>
+                </div>
+                <div class="action-card" onclick="doAction('Void')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                        </svg></div>
+                    <div class="card-label">Void</div>
+                </div>
+                <div class="action-card" onclick="doAction('Refund')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                        </svg></div>
+                    <div class="card-label">Refund</div>
+                </div>
+            </div>
+
+            <div class="grid-container" id="grid-scan">
+                <div class="action-card" onclick="doAction('Scan QR')">
+                    <div class="icon-box v-success">
+                        <svg class="pay-option-icon opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4 5a1 1 0 011-1h3m8 0h3a1 1 0 011 1v3M5 20a1 1 0 01-1-1v-3m16 3a1 1 0 01-1 1h-3M9 9h6v6H9V9z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="card-label" style="font-size: 15px; margin-top: 4px;">Scan</div>
+                </div>
+                <div class="action-card" onclick="doAction('Show Code')">
+                    <div class="icon-box v-success">
+                        <svg class="pay-option-icon opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="card-label" style="font-size: 15px; margin-top: 4px;">Show Code</div>
+                </div>
+                <div class="action-card" onclick="doAction('Scan Refund')">
+                    <div class="icon-box v-success"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+                        </svg></div>
+                    <div class="card-label">Refund</div>
+                </div>
+                <div class="action-card" onclick="doAction('Query')">
+                    <div class="icon-box v-success"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg></div>
+                    <div class="card-label">Query</div>
+                </div>
+            </div>
+
+            <div class="grid-container" id="grid-loyalty">
+                <div class="action-card" onclick="doAction('Activate')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
+                        </svg></div>
+                    <div class="card-label">Activate</div>
+                </div>
+                <div class="action-card" onclick="doAction('Query')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg></div>
+                    <div class="card-label">Query</div>
+                </div>
+                <div class="action-card" onclick="doAction('Top-up')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 5h-2v4H9l3 4 3-4h-2z" />
+                        </svg></div>
+                    <div class="card-label">Top-up</div>
+                </div>
+                <div class="action-card" onclick="doAction('Pay')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1.5 6.5l-7.15 7.15a.5.5 0 0 1-.7 0L6.5 13.5l1.4-1.4 2.1 2.09 6.45-6.44 1.05 1.25z" />
+                        </svg></div>
+                    <div class="card-label">Pay</div>
+                </div>
+                <div class="action-card" onclick="doAction('Void')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                        </svg></div>
+                    <div class="card-label">Void</div>
+                </div>
+                <div class="action-card" onclick="doAction('Issue Points')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
+                        </svg></div>
+                    <div class="card-label">Issue Points</div>
+                </div>
+                <div class="action-card" onclick="doAction('Redeem Points')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z" />
+                        </svg></div>
+                    <div class="card-label">Redeem Points</div>
+                </div>
+                <div class="action-card" onclick="doAction('Add Tip')">
+                    <div class="icon-box v-purple"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 3.25 2.44 5.94 5.58 6.43L11 20h2l0.42-4.57C16.56 14.94 19 12.25 19 9c0-3.87-3.13-7-7-7zm1 10h-2V9H8V7h3V4h2v3h3v2h-3v3z" />
+                        </svg></div>
+                    <div class="card-label">Add Tip</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)">
+            <div class="keypad-panel" onclick="event.stopPropagation()">
+                <div class="keypad-header">
+                    <span class="keypad-title">Keypad</span>
+                    <div class="close-btn" onclick="closeKeypad(event)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="key-grid">
+                    <div class="key" onclick="press('1')">1</div>
+                    <div class="key" onclick="press('2')">2</div>
+                    <div class="key" onclick="press('3')">3</div>
+                    <div class="key" onclick="press('4')">4</div>
+                    <div class="key" onclick="press('5')">5</div>
+                    <div class="key" onclick="press('6')">6</div>
+                    <div class="key" onclick="press('7')">7</div>
+                    <div class="key" onclick="press('8')">8</div>
+                    <div class="key" onclick="press('9')">9</div>
+                    <div class="key key-func" onclick="press('00')">00</div>
+                    <div class="key" onclick="press('0')">0</div>
+                    <div class="key key-func key-delete" onclick="press('BS')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                            <line x1="18" y1="9" x2="12" y2="15" />
+                            <line x1="12" y1="9" x2="18" y2="15" />
+                        </svg>
+                    </div>
+                    <button class="key key-done" onclick="closeKeypad(event)">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let rawAmount = "0";
+        let activeTab = 0;
+
+        // References
+        const displayEl = document.getElementById('main-amount');
+        const keypadOverlay = document.getElementById('keypad-overlay');
+        const tabPill = document.getElementById('tab-pill');
+        const tabs = document.querySelectorAll('.tab-item');
+        const grids = [
+            document.getElementById('grid-card'),
+            document.getElementById('grid-scan'),
+            document.getElementById('grid-loyalty')
+        ];
+        const tabColors = [
+            'var(--color-sale-text)',    // CARD: blue
+            'var(--color-success-text)', // QR: green
+            'var(--color-purple-text)'   // GIFT: purple
+        ];
+        const tabShadows = [
+            'rgba(10, 91, 255, 0.30)',
+            'rgba(16, 185, 129, 0.30)',
+            'rgba(124, 58, 237, 0.28)'
+        ];
+
+        function applyTabTheme(index) {
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty('--tab-active-color', tabColors[index] || 'var(--primary)');
+            rootStyle.setProperty('--tab-active-shadow', tabShadows[index] || 'rgba(10, 91, 255, 0.3)');
+        }
+
+        // Init
+        applyTabTheme(activeTab);
+        setTimeout(() => { openKeypad(); }, 300); // Auto open keypad for demo feel
+
+        // Logic
+        function formatMoney(cents) {
+            return (parseInt(cents) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function press(key) {
+            if (key === 'BS') {
+                rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+            } else if (key === '00') {
+                if (rawAmount !== "0" && rawAmount.length < 8) rawAmount += "00";
+            } else {
+                if (rawAmount === "0") rawAmount = key;
+                else if (rawAmount.length < 10) rawAmount += key;
+            }
+            displayEl.innerText = formatMoney(rawAmount);
+        }
+
+        function openKeypad() { keypadOverlay.classList.add('open'); }
+        function closeKeypad(e) { if (e) e.stopPropagation(); keypadOverlay.classList.remove('open'); }
+
+        function switchTab(index) {
+            activeTab = index;
+            tabPill.style.transform = `translateX(${index * 100}%)`;
+            applyTabTheme(index);
+            tabs.forEach((t, i) => { i === index ? t.classList.add('active') : t.classList.remove('active'); });
+            grids.forEach((g, i) => { i === index ? g.classList.add('active') : g.classList.remove('active'); });
+        }
+
+        function doAction(actionName) {
+            // Demo logic
+            if (rawAmount === "0" && ['Sale', 'Refund', 'Auth', 'Capture', 'Scan QR', 'Show Code'].includes(actionName)) {
+                // If amount is 0, shake amount or open keypad
+                openKeypad();
+                return;
+            }
+            alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
+        }
+    </script>
+</body>
+
+</html>
