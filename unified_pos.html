@@ -409,9 +409,9 @@
         }
 
         .keypad-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-grey);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--amount-color);
         }
 
         .close-btn {
@@ -1004,6 +1004,7 @@
             document.getElementById('grid-loyalty')
         ];
         const phoneFrame = document.querySelector('.phone-frame');
+        const keypadTitle = document.querySelector('.keypad-title');
         const tabColors = [
             'var(--color-sale-text)',    // CARD: blue
             'var(--color-success-text)', // QR: green
@@ -1014,6 +1015,8 @@
             'rgba(0, 168, 107, 0.36)',
             'rgba(124, 58, 237, 0.28)'
         ];
+        const actionsRequireAmount = ['Sale', 'Auth', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
+        let pendingAction = null;
 
         function applyTabTheme(index) {
             const rootStyle = document.documentElement.style;
@@ -1054,6 +1057,9 @@
         }
 
         function openKeypad() {
+            if (keypadTitle) {
+                keypadTitle.textContent = pendingAction ? getActionLabel(pendingAction) : 'Keypad';
+            }
             keypadOverlay.classList.add('open');
             if (phoneFrame) phoneFrame.classList.add('with-keypad');
         }
@@ -1061,11 +1067,18 @@
             if (e) e.stopPropagation();
             keypadOverlay.classList.remove('open');
             if (phoneFrame) phoneFrame.classList.remove('with-keypad');
+            pendingAction = null;
+            if (keypadTitle) keypadTitle.textContent = 'Keypad';
         }
 
         function confirmAmount(e) {
             if (e) e.stopPropagation();
-            closeKeypad(e);
+            const actionToRun = pendingAction;
+            pendingAction = null;
+            closeKeypad(null);
+            if (actionToRun) {
+                startAction(actionToRun);
+            }
         }
 
         function openSettings() { settingsOverlay.classList.add('open'); }
@@ -1079,14 +1092,22 @@
             grids.forEach((g, i) => { i === index ? g.classList.add('active') : g.classList.remove('active'); });
         }
 
+        function getActionLabel(actionName) {
+            if (actionName === 'Scan QR') return 'Scan';
+            return actionName;
+        }
+
+        function startAction(actionName) {
+            alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
+        }
+
         function doAction(actionName) {
-            // Demo logic
-            if (rawAmount === "0" && ['Sale', 'Refund', 'Auth', 'Capture', 'Scan QR', 'Show Code'].includes(actionName)) {
-                // If amount is 0, shake amount or open keypad
+            if (rawAmount === "0" && actionsRequireAmount.includes(actionName)) {
+                pendingAction = actionName;
                 openKeypad();
                 return;
             }
-            alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
+            startAction(actionName);
         }
     </script>
 </body>
