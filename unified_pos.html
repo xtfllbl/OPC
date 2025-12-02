@@ -369,7 +369,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.2);
+            background: transparent;
             z-index: 100;
             opacity: 0;
             pointer-events: none;
@@ -391,6 +391,9 @@
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            height: calc(100% - 260px);
+            display: flex;
+            flex-direction: column;
         }
 
         .keypad-overlay.open .keypad-panel {
@@ -425,23 +428,30 @@
 
         .key-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 56px);
+            grid-template-areas:
+                "k7   k8   k9   del"
+                "k4   k5   k6   clr"
+                "k1   k2   k3   ok"
+                "k0   k00  k00  ok";
+            gap: 8px;
         }
 
         .key {
-            height: 56px;
-            border-radius: 14px;
+            height: 100%;
+            min-height: 56px;
+            border-radius: 16px;
             font-size: 22px;
             font-weight: 600;
             color: var(--text-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff;
+            background: #F9FAFB;
             cursor: pointer;
             user-select: none;
-            border: 1px solid #f3f4f6;
+            border: 1px solid #E5E7EB;
         }
 
         .key:active {
@@ -449,7 +459,7 @@
         }
 
         .key-func {
-            background: #F9FAFB;
+            background: #EEF2FF;
             font-size: 18px;
         }
 
@@ -458,13 +468,36 @@
         }
 
         .key-done {
-            grid-column: span 3;
-            background: var(--primary);
+            background: var(--amount-color);
             color: #fff;
-            margin-top: 8px;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(10, 91, 255, 0.3);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
             border: none;
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-del { grid-area: del; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-clear { grid-area: clr; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+        .key-00 { grid-area: k00; }
+        .key-ok { grid-area: ok; }
+
+        .phone-frame.with-keypad .content-sheet {
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+        }
+
+        .phone-frame.with-keypad .keypad-overlay {
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0) 40%);
         }
 
         /* --- Settings Page --- */
@@ -926,18 +959,10 @@
                     </div>
                 </div>
                 <div class="key-grid">
-                    <div class="key" onclick="press('1')">1</div>
-                    <div class="key" onclick="press('2')">2</div>
-                    <div class="key" onclick="press('3')">3</div>
-                    <div class="key" onclick="press('4')">4</div>
-                    <div class="key" onclick="press('5')">5</div>
-                    <div class="key" onclick="press('6')">6</div>
-                    <div class="key" onclick="press('7')">7</div>
-                    <div class="key" onclick="press('8')">8</div>
-                    <div class="key" onclick="press('9')">9</div>
-                    <div class="key key-func" onclick="press('00')">00</div>
-                    <div class="key" onclick="press('0')">0</div>
-                    <div class="key key-func key-delete" onclick="press('BS')">
+                    <div class="key key-7" onclick="press('7')">7</div>
+                    <div class="key key-8" onclick="press('8')">8</div>
+                    <div class="key key-9" onclick="press('9')">9</div>
+                    <div class="key key-func key-delete key-del" onclick="press('BS')">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round">
                             <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
@@ -945,7 +970,16 @@
                             <line x1="12" y1="9" x2="18" y2="15" />
                         </svg>
                     </div>
-                    <button class="key key-done" onclick="closeKeypad(event)">Confirm</button>
+                    <div class="key key-4" onclick="press('4')">4</div>
+                    <div class="key key-5" onclick="press('5')">5</div>
+                    <div class="key key-6" onclick="press('6')">6</div>
+                    <div class="key key-func key-clear" onclick="clearAmount(event)">C</div>
+                    <div class="key key-1" onclick="press('1')">1</div>
+                    <div class="key key-2" onclick="press('2')">2</div>
+                    <div class="key key-3" onclick="press('3')">3</div>
+                    <button class="key key-done key-ok" onclick="confirmAmount(event)">OK</button>
+                    <div class="key key-0" onclick="press('0')">0</div>
+                    <div class="key key-func key-00" onclick="press('00')">00</div>
                 </div>
             </div>
         </div>
@@ -967,6 +1001,7 @@
             document.getElementById('grid-scan'),
             document.getElementById('grid-loyalty')
         ];
+        const phoneFrame = document.querySelector('.phone-frame');
         const tabColors = [
             'var(--color-sale-text)',    // CARD: blue
             'var(--color-success-text)', // QR: green
@@ -1016,8 +1051,20 @@
             element.classList.toggle('on');
         }
 
-        function openKeypad() { keypadOverlay.classList.add('open'); }
-        function closeKeypad(e) { if (e) e.stopPropagation(); keypadOverlay.classList.remove('open'); }
+        function openKeypad() {
+            keypadOverlay.classList.add('open');
+            if (phoneFrame) phoneFrame.classList.add('with-keypad');
+        }
+        function closeKeypad(e) {
+            if (e) e.stopPropagation();
+            keypadOverlay.classList.remove('open');
+            if (phoneFrame) phoneFrame.classList.remove('with-keypad');
+        }
+
+        function confirmAmount(e) {
+            if (e) e.stopPropagation();
+            closeKeypad(e);
+        }
 
         function openSettings() { settingsOverlay.classList.add('open'); }
         function closeSettings(e) { if (e) e.stopPropagation(); settingsOverlay.classList.remove('open'); }
