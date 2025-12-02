@@ -22,8 +22,8 @@
             --color-warn-text: #F59E0B;
             --color-danger-bg: #FEF2F2;
             --color-danger-text: #EF4444;
-            --color-success-bg: #ECFDF5;
-            --color-success-text: #10B981;
+            --color-success-bg: #D4F7E5;
+            --color-success-text: #00A86B;
             --color-purple-bg: #F5F3FF;
             --color-purple-text: #7C3AED;
             --color-teal-bg: #F0FDFA;
@@ -35,6 +35,9 @@
             /* Tab active theme (per tab) */
             --tab-active-color: #0A5BFF;
             --tab-active-shadow: rgba(10, 91, 255, 0.3);
+
+            /* Amount theme (sync with tab) */
+            --amount-color: var(--color-sale-text);
         }
 
         * {
@@ -68,7 +71,7 @@
 
         /* --- Header --- */
         .header {
-            padding: 50px 24px 10px;
+            padding: 20px 24px 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -105,19 +108,26 @@
             transform: scale(0.98);
         }
 
-        .currency {
-            font-size: 24px;
+        .amount-label {
+            font-size: 11px;
             font-weight: 600;
-            color: var(--text-dark);
-            vertical-align: top;
-            position: relative;
-            top: 8px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--amount-color);
+            margin-bottom: 4px;
+        }
+
+        .currency {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--amount-color);
+            margin-right: 4px;
         }
 
         .amount-value {
             font-size: 56px;
             font-weight: 800;
-            color: var(--text-dark);
+            color: var(--amount-color);
             letter-spacing: -1.5px;
         }
 
@@ -132,6 +142,43 @@
             margin-top: 4px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+        }
+
+        .amount-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .amount-btn {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            background: var(--amount-color);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .amount-btn.secondary {
+            background: #fff;
+            color: var(--amount-color);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            box-shadow: none;
+        }
+
+        .amount-btn svg {
+            width: 10px;
+            height: 10px;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            fill: none;
         }
 
         /* --- White Sheet Content --- */
@@ -419,6 +466,162 @@
             box-shadow: 0 4px 12px rgba(10, 91, 255, 0.3);
             border: none;
         }
+
+        /* --- Settings Page --- */
+        .settings-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 120;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-panel {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-header-bar {
+            padding: 14px 18px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border-bottom: 1px solid #E5E7EB;
+            color: var(--text-dark);
+        }
+
+        .settings-header-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .settings-back-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .settings-back-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .settings-list {
+            flex: 1;
+            padding: 10px 16px 16px;
+            overflow-y: auto;
+        }
+
+        .settings-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-grey);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 10px 2px 4px;
+        }
+
+        .settings-group {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+            margin-bottom: 14px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+        }
+
+        .settings-row + .settings-row {
+            border-top: 1px solid #F3F4F6;
+        }
+
+        .settings-row-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .settings-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1.5px solid #2563EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563EB;
+        }
+
+        .settings-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.6;
+        }
+
+        .settings-toggle {
+            width: 42px;
+            height: 24px;
+            border-radius: 999px;
+            background: #E5E7EB;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .settings-toggle-knob {
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+        }
+
+        .settings-toggle.on {
+            background: #22C55E;
+            justify-content: flex-end;
+        }
+
+        .settings-chevron {
+            font-size: 16px;
+            color: #9CA3AF;
+        }
     </style>
 </head>
 
@@ -427,7 +630,7 @@
     <div class="phone-frame">
         <header class="header">
             <div class="merchant-name">Jose's Store</div>
-            <div class="icon-btn">
+            <div class="icon-btn" onclick="openSettings()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path
@@ -439,8 +642,22 @@
         </header>
 
         <div class="amount-section" onclick="openKeypad()">
+            <div class="amount-label">TRANSACTION AMOUNT</div>
             <div><span class="currency">$</span><span class="amount-value" id="main-amount">0.00</span></div>
-            <div class="amount-hint">Enter Amount</div>
+            <div class="amount-actions" onclick="event.stopPropagation()">
+                <button class="amount-btn secondary" onclick="clearAmount(event)">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 6l12 12M6 18L18 6" stroke-linecap="round" />
+                    </svg>
+                    <span>Clear</span>
+                </button>
+                <button class="amount-btn" onclick="openKeypad()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 8h14M5 12h14M5 16h8" stroke-linecap="round" />
+                    </svg>
+                    <span>Keypad</span>
+                </button>
+            </div>
         </div>
 
         <div class="content-sheet">
@@ -598,6 +815,105 @@
             </div>
         </div>
 
+        <div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)">
+            <div class="settings-panel" onclick="event.stopPropagation()">
+                <div class="settings-header-bar">
+                    <button class="settings-back-btn" onclick="closeSettings(event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="settings-header-title">Settings</div>
+                    <div style="width:28px;height:28px;"></div>
+                </div>
+                <div class="settings-list">
+                    <div class="settings-section-title">Payments</div>
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="3" y="7" width="18" height="10" rx="2" />
+                                        <path d="M3 11h18" />
+                                    </svg>
+                                </div>
+                                <span>Credit Cards</span>
+                            </div>
+                            <div class="settings-toggle on" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="4" y="6" width="16" height="12" rx="2" />
+                                        <path d="M4 10h16" />
+                                    </svg>
+                                </div>
+                                <span>Digital Wallets</span>
+                            </div>
+                            <div class="settings-toggle on" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 3l6 6-6 12-6-12z" />
+                                    </svg>
+                                </div>
+                                <span>Loyalty</span>
+                            </div>
+                            <div class="settings-toggle on" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section-title">General</div>
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4 5h16v14H4z" />
+                                    </svg>
+                                </div>
+                                <span>Language</span>
+                            </div>
+                            <div class="settings-chevron">›</div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4 8h16v10H4z" />
+                                        <path d="M8 6h8" />
+                                    </svg>
+                                </div>
+                                <span>Wifi Setting</span>
+                            </div>
+                            <div class="settings-chevron">›</div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="7" />
+                                        <path d="M12 8v4l2 2" />
+                                    </svg>
+                                </div>
+                                <span>Timezone</span>
+                            </div>
+                            <div class="settings-chevron">›</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)">
             <div class="keypad-panel" onclick="event.stopPropagation()">
                 <div class="keypad-header">
@@ -643,6 +959,7 @@
         // References
         const displayEl = document.getElementById('main-amount');
         const keypadOverlay = document.getElementById('keypad-overlay');
+        const settingsOverlay = document.getElementById('settings-overlay');
         const tabPill = document.getElementById('tab-pill');
         const tabs = document.querySelectorAll('.tab-item');
         const grids = [
@@ -657,7 +974,7 @@
         ];
         const tabShadows = [
             'rgba(10, 91, 255, 0.30)',
-            'rgba(16, 185, 129, 0.30)',
+            'rgba(0, 168, 107, 0.36)',
             'rgba(124, 58, 237, 0.28)'
         ];
 
@@ -665,6 +982,7 @@
             const rootStyle = document.documentElement.style;
             rootStyle.setProperty('--tab-active-color', tabColors[index] || 'var(--primary)');
             rootStyle.setProperty('--tab-active-shadow', tabShadows[index] || 'rgba(10, 91, 255, 0.3)');
+            rootStyle.setProperty('--amount-color', tabColors[index] || 'var(--primary)');
         }
 
         // Init
@@ -688,8 +1006,21 @@
             displayEl.innerText = formatMoney(rawAmount);
         }
 
+        function clearAmount(e) {
+            if (e) e.stopPropagation();
+            rawAmount = "0";
+            displayEl.innerText = formatMoney(rawAmount);
+        }
+
+        function toggleSetting(element) {
+            element.classList.toggle('on');
+        }
+
         function openKeypad() { keypadOverlay.classList.add('open'); }
         function closeKeypad(e) { if (e) e.stopPropagation(); keypadOverlay.classList.remove('open'); }
+
+        function openSettings() { settingsOverlay.classList.add('open'); }
+        function closeSettings(e) { if (e) e.stopPropagation(); settingsOverlay.classList.remove('open'); }
 
         function switchTab(index) {
             activeTab = index;
