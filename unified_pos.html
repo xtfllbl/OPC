@@ -205,6 +205,33 @@
             box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
         }
 
+        .tabs.single-payment {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .tabs.single-payment .tab-bg {
+            display: none;
+        }
+
+        .tabs.single-payment .tab-item {
+            flex: 0;
+            padding: 12px 18px;
+            min-width: 160px;
+            border-radius: 18px;
+            background: #fff;
+            color: var(--tab-active-color);
+            box-shadow: 0 10px 30px var(--tab-active-shadow);
+            border: 1px solid #E5E7EB;
+        }
+
+        .tabs.single-payment .tab-item:not(.active) {
+            display: none !important;
+        }
+
         .tab-item {
             flex: 1;
             padding: 8px 0;
@@ -983,6 +1010,7 @@
         const keypadOverlay = document.getElementById('keypad-overlay');
         const settingsOverlay = document.getElementById('settings-overlay');
         const tabPill = document.getElementById('tab-pill');
+        const tabsContainer = document.querySelector('.tabs');
         const tabs = Array.from(document.querySelectorAll('.tab-item'));
         const grids = [
             document.getElementById('grid-card'),
@@ -1036,10 +1064,20 @@
             const visibleCount = enabledGroups.length || 1;
             const activeVisibleIndex = enabledGroups.findIndex(group => paymentGroups.indexOf(group) === activeTab);
             const pillIndex = activeVisibleIndex >= 0 ? activeVisibleIndex : 0;
+            const isSingle = visibleCount === 1;
+
+            if (tabsContainer) {
+                tabsContainer.classList.toggle('single-payment', isSingle);
+            }
 
             if (tabPill) {
-                tabPill.style.width = `calc(${100 / visibleCount}% - 4px)`;
-                tabPill.style.transform = `translateX(${pillIndex * 100}%)`;
+                if (isSingle) {
+                    tabPill.style.display = 'none';
+                } else {
+                    tabPill.style.display = 'block';
+                    tabPill.style.width = `calc(${100 / visibleCount}% - 4px)`;
+                    tabPill.style.transform = `translateX(${pillIndex * 100}%)`;
+                }
             }
 
             paymentGroups.forEach((group, idx) => {
