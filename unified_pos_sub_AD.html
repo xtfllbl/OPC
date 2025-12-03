@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Display - Carousel Demo</title>
+    <style>
+        /* -----------------------------------------
+           全局样式 & 布局
+           ----------------------------------------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        
+        body {
+            background-color: #eef2f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* 模拟 800x480 屏幕硬件边框 */
+        .device-screen {
+            width: 800px;
+            height: 480px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border-radius: 12px; 
+            border: 4px solid #333; /* 模拟边框 */
+        }
+
+        /* -----------------------------------------
+           模块 1: 广告轮播 (Carousel)
+           ----------------------------------------- */
+        .ad-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: #000;
+            transition: opacity 0.5s ease;
+        }
+
+        /* 轮播图片层 */
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out; /* 淡入淡出时长 */
+        }
+
+        /* 激活状态的图片 */
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        /* 广告上的文字遮罩 (固定不动) */
+        .ad-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+            color: white;
+            z-index: 2;
+        }
+        .ad-overlay h1 { font-size: 36px; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .ad-overlay p { font-size: 20px; opacity: 0.9; font-weight: 300; }
+
+        /* -----------------------------------------
+           模块 2: 交易显示 (Transaction)
+           ----------------------------------------- */
+        .transaction-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #F8F9FA;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 5; /* 低于广告层，通过隐藏广告层来显示这个 */
+        }
+
+        /* 显示交易层时的覆盖样式 */
+        .show-txn-layer .ad-container {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .show-txn-layer .transaction-container {
+            opacity: 1;
+            z-index: 20;
+        }
+
+        /* 左侧信息区 */
+        .info-panel {
+            flex: 1.4; /* 占比 60% */
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .store-name { font-size: 22px; color: #888; margin-bottom: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* 交易类型标签 */
+        .txn-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            background-color: #E3F2FD;
+            color: #1976D2;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            width: fit-content;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        .txn-badge.show { opacity: 1; transform: translateX(0); }
+
+        /* 金额显示 */
+        .amount-display {
+            font-size: 90px;
+            font-weight: 800;
+            color: #212121;
+            line-height: 1.1;
+        }
+
+        /* 右侧引导区 */
+        .visual-panel {
+            flex: 1; /* 占比 40% */
+            background: linear-gradient(135deg, #0066FF 0%, #0044AA 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .pay-icon { font-size: 70px; margin-bottom: 20px; }
+        .pay-text { font-size: 22px; line-height: 1.4; font-weight: 500; }
+
+        /* -----------------------------------------
+           控制台 (开发调试用)
+           ----------------------------------------- */
+        .controls {
+            margin-top: 20px;
+            background: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-idle { background: #eee; color: #333; }
+        .btn-input { background: #fff3cd; color: #856404; }
+        .btn-sale { background: #cce5ff; color: #004085; }
+        .btn-refund { background: #f8d7da; color: #721c24; }
+
+    </style>
+</head>
+<body id="mainBody">
+
+    <div class="device-screen">
+        
+        <div class="ad-container">
+            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+
+            <div class="ad-overlay">
+                <h1>Jose's Store</h1>
+                <p>Special Offer: 50% OFF on all Espresso today!</p>
+            </div>
+        </div>
+
+        <div class="transaction-container">
+            <div class="info-panel">
+                <div class="store-name">Jose's Store</div>
+                <div id="txnBadge" class="txn-badge">SALE</div>
+                <div id="amountDisplay" class="amount-display">$0.00</div>
+            </div>
+            <div class="visual-panel">
+                <div class="pay-icon">💳 📱</div>
+                <div class="pay-text">Please tap or<br>insert card</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="btn-idle" onclick="setMode('idle')">Show Ads (轮播)</button>
+        </div>
+
+    <script>
+        // --- 轮播逻辑 ---
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentSlide = 0;
+        
+        function nextSlide() {
+            // 当前图片移除 active
+            slides[currentSlide].classList.remove('active');
+            // 计算下一张图片的索引 (0 -> 1 -> 2 -> 0)
+            currentSlide = (currentSlide + 1) % slides.length;
+            // 下一张图片添加 active
+            slides[currentSlide].classList.add('active');
+        }
+
+        // 启动定时器，每 4000 毫秒 (4秒) 切换一次
+        setInterval(nextSlide, 4000);
+
+
+      
+    </script>
+</body>
+</html>
