@@ -74,7 +74,14 @@
             padding: 20px 24px 6px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
         }
 
         .merchant-name {
@@ -179,6 +186,56 @@
             stroke: currentColor;
             stroke-width: 1.7;
             fill: none;
+        }
+
+        /* --- Payment Brand Strip --- */
+        .brand-strip {
+            margin: 6px 0 0;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            min-height: 0;
+            width: auto;
+            flex-wrap: wrap;
+        }
+
+        .brand-strip.hidden {
+            display: none;
+        }
+
+        .brand-set {
+            display: none;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-set.active {
+            display: flex;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .brand-badge img {
+            height: 24px;
+            width: auto;
+            display: block;
         }
 
         /* --- White Sheet Content --- */
@@ -733,7 +790,29 @@
 
     <div class="phone-frame">
         <header class="header">
-            <div class="merchant-name">Jose's Store</div>
+            <div class="header-left">
+                <div class="merchant-name">Jose's Store</div>
+                <div class="brand-strip" id="brand-strip">
+                    <div class="brand-set active" data-brand="card">
+                        <div class="brand-badge">
+                            <img src="Fiserv_logo.svg" alt="Fiserv">
+                        </div>
+                    </div>
+                    <div class="brand-set" data-brand="qr">
+                        <div class="brand-badge">
+                            <img src="alipay.svg" alt="Alipay">
+                        </div>
+                        <div class="brand-badge">
+                            <img src="wechat-pay.svg" alt="WeChat Pay">
+                        </div>
+                    </div>
+                    <div class="brand-set" data-brand="loyalty">
+                        <div class="brand-badge">
+                            <img src="f4.png" alt="Gift Card">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="icon-btn" onclick="openSettings()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -1083,6 +1162,12 @@
             { key: 'qr', tab: tabs[1], grid: grids[1], toggle: document.querySelector('.settings-toggle[data-group="qr"]') },
             { key: 'loyalty', tab: tabs[2], grid: grids[2], toggle: document.querySelector('.settings-toggle[data-group="loyalty"]') }
         ];
+        const brandStrip = document.getElementById('brand-strip');
+        const brandSets = {
+            card: document.querySelector('[data-brand="card"]'),
+            qr: document.querySelector('[data-brand="qr"]'),
+            loyalty: document.querySelector('[data-brand="loyalty"]')
+        };
         let pendingAction = null;
 
         function applyTabTheme(index) {
@@ -1104,6 +1189,23 @@
             if (!activeVisible) {
                 const fallbackIndex = paymentGroups.findIndex(group => group.toggle && group.toggle.classList.contains('on'));
                 activeTab = fallbackIndex === -1 ? 0 : fallbackIndex;
+            }
+        }
+
+        function updateBrandStrip() {
+            const activeGroup = paymentGroups[activeTab];
+            const activeKey = activeGroup ? activeGroup.key : null;
+            let hasVisible = false;
+
+            Object.entries(brandSets).forEach(([key, el]) => {
+                if (!el) return;
+                const enabled = activeKey === key && activeGroup && activeGroup.toggle && activeGroup.toggle.classList.contains('on');
+                el.classList.toggle('active', !!enabled);
+                if (enabled) hasVisible = true;
+            });
+
+            if (brandStrip) {
+                brandStrip.classList.toggle('hidden', !hasVisible);
             }
         }
 
@@ -1140,6 +1242,7 @@
             });
 
             applyTabTheme(activeTab);
+            updateBrandStrip();
         }
 
         function syncPaymentAvailability() {
