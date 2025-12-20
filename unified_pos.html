@@ -71,7 +71,7 @@
 
         /* --- Header --- */
         .header {
-            padding: 20px 24px 6px;
+            padding: 18px 22px 6px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -80,7 +80,7 @@
         .header-left {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             align-items: flex-start;
         }
 
@@ -190,7 +190,7 @@
 
         /* --- Payment Brand Strip --- */
         .brand-strip {
-            margin: 6px 0 0;
+            margin: 2px 0 6px;
             padding: 0;
             background: transparent;
             border-radius: 0;
@@ -198,7 +198,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            gap: 10px;
+            gap: 8px;
             min-height: 0;
             width: auto;
             flex-wrap: wrap;
@@ -233,9 +233,17 @@
         }
 
         .brand-badge img {
-            height: 24px;
+            height: 20px;
             width: auto;
             display: block;
+            opacity: 0.75;
+            filter: grayscale(35%);
+            transition: opacity 0.2s ease, filter 0.2s ease;
+        }
+
+        .brand-badge.primary img {
+            opacity: 1;
+            filter: none;
         }
 
         /* --- White Sheet Content --- */
@@ -794,12 +802,12 @@
                 <div class="merchant-name">Jose's Store</div>
                 <div class="brand-strip" id="brand-strip">
                     <div class="brand-set active" data-brand="card">
-                        <div class="brand-badge">
+                        <div class="brand-badge primary">
                             <img src="Fiserv_logo.svg" alt="Fiserv">
                         </div>
                     </div>
                     <div class="brand-set" data-brand="qr">
-                        <div class="brand-badge">
+                        <div class="brand-badge primary">
                             <img src="alipay.svg" alt="Alipay">
                         </div>
                         <div class="brand-badge">
@@ -807,7 +815,7 @@
                         </div>
                     </div>
                     <div class="brand-set" data-brand="loyalty">
-                        <div class="brand-badge">
+                        <div class="brand-badge primary">
                             <img src="f4.png" alt="Gift Card">
                         </div>
                     </div>
