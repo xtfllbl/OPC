@@ -16,6 +16,9 @@
             --text-sub: #A0A0A0;
             --accent-warning: #FFD700; /* 金色 */
             --accent-glow: rgba(255, 215, 0, 0.15);
+            --tap-color: #F5A623;
+            --grab-color: #E64B5B;
+            --go-color: #26C6A4;
         }
 
         * {
@@ -129,34 +132,33 @@
             font-family: 'remixicon';
             position: absolute;
             right: -10px;
-            top: 28%;
+            top: 40%;
+            transform: translateY(-50%);
             color: var(--text-sub);
-            font-size: 20px;
-            opacity: 0.3;
+            font-size: 18px;
+            opacity: 0.18;
         }
-
-        .icon-circle {
-            width: 76px;
-            height: 76px;
-            background: rgba(0, 122, 255, 0.08);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 12px;
-            border: 1px solid rgba(0, 122, 255, 0.2);
-        }
-        .icon-circle i { font-size: 36px; color: var(--primary-color); }
 
         .step-text h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
+            font-size: 44px;
+            font-weight: 900;
+            margin-bottom: 8px;
             color: var(--text-main);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            line-height: 1.02;
         }
-        .step-text p { font-size: 12px; color: var(--text-sub); }
+        .step-text p { font-size: 14px; color: var(--text-sub); }
+
+        .step-item--tap .step-text h3 {
+            color: var(--tap-color);
+        }
+        .step-item--grab .step-text h3 {
+            color: var(--grab-color);
+        }
+        .step-item--go .step-text h3 {
+            color: var(--go-color);
+        }
 
         /* 连接箭头 (Visual Flow) */
         .flow-arrow {
@@ -189,7 +191,7 @@
             width: 100%;
             padding: 15px 20px;
             border-radius: 16px;
-            margin-top: 18px;
+            margin: 0 0 14px 0;
             
             /* 关键修改：金色边框和辉光 */
             border: 2px solid rgba(255, 215, 0, 0.4); 
@@ -362,9 +364,7 @@
             .process-section { padding: 5px 15px; justify-content: flex-start; }
             
             .step-container { margin-top: 5px; margin-bottom: 5px; }
-            .icon-circle { width: 48px; height: 48px; margin-bottom: 4px; }
-            .icon-circle i { font-size: 22px; }
-            .step-text h3 { font-size: 14px; }
+            .step-text h3 { font-size: 26px; }
             .step-text p { display: none; }
             .step-item:not(:last-child)::after { display: none; } /* 空间太小，隐藏步骤间箭头 */
 
@@ -375,8 +375,7 @@
                 padding: 10px 15px;
                 gap: 10px;
                 border-width: 1px;
-                margin-top: 10px;
-                margin-bottom: 5px;
+                margin: 0 0 8px 0;
             }
             .lock-circle { width: 36px; height: 36px; }
             .lock-icon { font-size: 18px; }
@@ -418,20 +417,20 @@
         <div class="process-section">
             
             <div class="step-container">
-                <div class="step-item">
-                    <div class="icon-circle"><i class="ri-bank-card-2-line"></i></div>
+                <div class="step-item step-item--tap">
                     <div class="step-text"><h3>TAP</h3><p>Card / Phone</p></div>
                 </div>
-                <div class="step-item">
-                    <div class="icon-circle"><i class="ri-door-open-line"></i></div>
+                <div class="step-item step-item--grab">
                     <div class="step-text"><h3>GRAB</h3><p>Products</p></div>
                 </div>
-                <div class="step-item">
-                    <div class="icon-circle"><i class="ri-shopping-bag-3-line"></i></div>
+                <div class="step-item step-item--go">
                     <div class="step-text"><h3>GO</h3><p>Auto-Pay</p></div>
                 </div>
             </div>
 
+        </div>
+
+        <div class="action-section">
             <div class="auth-card">
                 <div class="auth-left">
                     <div class="lock-circle">
@@ -446,10 +445,6 @@
                     <span class="auth-badge">Pay What You Take</span>
                 </div>
             </div>
-
-        </div>
-
-        <div class="action-section">
             <p class="helper-text">Press <span class="helper-text__strong">START</span> &amp; <span class="helper-text__strong">Tap Card</span> to unlock</p>
             <button class="start-btn">START</button>
             <div class="payment-methods">
