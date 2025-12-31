@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPC Mini - Square POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --success: #00A86B;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg-body: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-dark: #111827;
+            --text-muted: #6B7280;
+            --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.16);
+            --shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.08);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --accent: var(--primary);
+            --accent-soft: #E6EEFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background: #1B1B1B;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .mini-frame {
+            width: 480px;
+            height: 480px;
+            background: var(--bg-body);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 0 10px #101010, var(--shadow-lg);
+        }
+
+        .mini-frame::before,
+        .mini-frame::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.9;
+            filter: blur(0.5px);
+        }
+
+        .mini-frame::before {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle at 30% 30%, rgba(10, 91, 255, 0.2), transparent 65%);
+            top: -110px;
+            right: -100px;
+        }
+
+        .mini-frame::after {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle at 70% 70%, rgba(17, 24, 39, 0.08), transparent 60%);
+            bottom: -130px;
+            left: -110px;
+        }
+
+        .mini-frame.mode-qr {
+            --accent: var(--success);
+            --accent-soft: #E7FAF1;
+        }
+
+        .mini-frame.mode-qr::before {
+            background: radial-gradient(circle at 30% 30%, rgba(0, 168, 107, 0.2), transparent 65%);
+        }
+
+        .mini-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 14px 16px 16px;
+            display: grid;
+            grid-template-rows: auto auto auto 1fr auto;
+            gap: 10px;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-muted);
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .battery {
+            width: 22px;
+            height: 10px;
+            border-radius: 3px;
+            border: 1.5px solid #9CA3AF;
+            position: relative;
+        }
+
+        .battery::after {
+            content: "";
+            position: absolute;
+            right: -3px;
+            top: 2px;
+            width: 2px;
+            height: 6px;
+            border-radius: 1px;
+            background: #9CA3AF;
+        }
+
+        .battery-level {
+            height: 100%;
+            border-radius: 2px;
+            background: #111827;
+        }
+
+        .pull-tab {
+            width: 40px;
+            height: 16px;
+            margin: 0 auto;
+            border: none;
+            background: transparent;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .pull-tab svg {
+            width: 22px;
+            height: 12px;
+            stroke: var(--text-dark);
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.7;
+        }
+
+        .amount-section {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px 10px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(15, 23, 42, 0.05);
+        }
+
+        .amount-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .currency {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .amount-value {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1.4px;
+            color: var(--text-dark);
+        }
+
+        .amount-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #374151;
+            background: #F3F4F6;
+        }
+
+        .type-pill {
+            border: none;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .type-pill svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            height: 100%;
+        }
+
+        .key {
+            background: #FFFFFF;
+            border-radius: var(--radius-md);
+            border: 1px solid #E5E7EB;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: background 0.12s ease, transform 0.12s ease;
+            min-height: 52px;
+        }
+
+        .key:active {
+            background: #F3F4F6;
+            transform: scale(0.98);
+        }
+
+        .key-back svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .cta {
+            height: 52px;
+            border-radius: 16px;
+            border: none;
+            background: var(--accent);
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: transform 0.12s ease;
+        }
+
+        .cta:active {
+            transform: scale(0.985);
+        }
+
+        .type-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .type-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .type-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #F9FAFB;
+            border-radius: 0 0 20px 20px;
+            padding: 10px 16px 16px;
+            transform: translateY(-100%);
+            transition: transform 0.25s ease;
+            max-height: 72%;
+            overflow-y: auto;
+        }
+
+        .type-overlay.open .type-panel {
+            transform: translateY(0);
+        }
+
+        .panel-handle {
+            width: 100%;
+            border: none;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            padding: 4px 0 6px;
+            cursor: pointer;
+        }
+
+        .panel-handle svg {
+            width: 22px;
+            height: 12px;
+            stroke: var(--text-dark);
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.7;
+            transform: rotate(180deg);
+        }
+
+        .panel-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .type-option {
+            border: 1px solid #E5E7EB;
+            border-radius: 14px;
+            background: #FFFFFF;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: border 0.15s ease, background 0.15s ease, color 0.15s ease;
+            touch-action: manipulation;
+            min-height: 54px;
+            color: var(--text-dark);
+        }
+
+        .type-option:active {
+            background: #F3F4F6;
+        }
+
+        .type-option.selected {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .type-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            background: #EEF2F7;
+            display: grid;
+            place-items: center;
+            color: currentColor;
+        }
+
+        .type-option.selected .type-icon {
+            background: #FFFFFF;
+        }
+
+        .type-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .type-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: currentColor;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .mini-frame {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mini-frame" id="mini-frame">
+        <div class="mini-content">
+            <div class="status-bar">
+                <span id="time-display">09:41</span>
+                <div class="status-right">
+                    <span>85%</span>
+                    <div class="battery">
+                        <div class="battery-level" style="width: 85%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="pull-tab" type="button" onclick="openTypePanel()" aria-label="Open transaction types">
+                <svg viewBox="0 0 24 12">
+                    <path d="M2 2l10 8 10-8"></path>
+                </svg>
+            </button>
+
+            <div class="amount-section">
+                <div class="amount-row">
+                    <span class="currency">$</span>
+                    <span class="amount-value" id="amount-display">0.00</span>
+                </div>
+                <div class="amount-meta">
+                    <span class="tag">No VAT</span>
+                    <button class="type-pill" type="button" onclick="openTypePanel()">
+                        <span id="type-label">Sale</span>
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="keypad">
+                <button class="key" type="button" onclick="press('1')">1</button>
+                <button class="key" type="button" onclick="press('2')">2</button>
+                <button class="key" type="button" onclick="press('3')">3</button>
+                <button class="key" type="button" onclick="press('4')">4</button>
+                <button class="key" type="button" onclick="press('5')">5</button>
+                <button class="key" type="button" onclick="press('6')">6</button>
+                <button class="key" type="button" onclick="press('7')">7</button>
+                <button class="key" type="button" onclick="press('8')">8</button>
+                <button class="key" type="button" onclick="press('9')">9</button>
+                <button class="key" type="button" onclick="press('00')">00</button>
+                <button class="key" type="button" onclick="press('0')">0</button>
+                <button class="key key-back" type="button" onclick="press('BS')" aria-label="Backspace">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 12H8"></path>
+                        <path d="M12 8l-4 4 4 4"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <button class="cta" id="action-btn" type="button" onclick="doAction()">Next</button>
+        </div>
+
+        <div class="type-overlay" id="type-overlay" onclick="closeTypePanel(event)">
+            <div class="type-panel" onclick="event.stopPropagation()">
+                <button class="panel-handle" type="button" onclick="closeTypePanel(event)" aria-label="Close transaction types">
+                    <svg viewBox="0 0 24 12">
+                        <path d="M2 2l10 8 10-8"></path>
+                    </svg>
+                </button>
+                <div class="panel-title">Transaction Type</div>
+                <div class="type-grid">
+                    <button class="type-option selected" type="button" data-type="Sale" data-mode="card">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                                <path d="M3 10h18"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Sale</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Refund" data-mode="card">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20 12H7"></path>
+                                <path d="M11 8l-4 4 4 4"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Refund</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Auth" data-mode="card">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="6" y="10" width="12" height="9" rx="2"></rect>
+                                <path d="M8 10V8a4 4 0 0 1 8 0v2"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Auth</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Void" data-mode="card">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="8"></circle>
+                                <path d="M8 8l8 8"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Void</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Scan QR" data-mode="qr">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="6" height="6"></rect>
+                                <rect x="15" y="3" width="6" height="6"></rect>
+                                <rect x="3" y="15" width="6" height="6"></rect>
+                                <path d="M15 15h6v6h-6z"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Scan QR</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Show Code" data-mode="qr">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 7h16"></path>
+                                <path d="M4 12h10"></path>
+                                <path d="M4 17h16"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Show Code</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Pay" data-mode="qr">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3v18"></path>
+                                <path d="M7 8h7a3 3 0 0 1 0 6H8"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Pay</span>
+                    </button>
+                    <button class="type-option" type="button" data-type="Top-up" data-mode="qr">
+                        <span class="type-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 5v14"></path>
+                                <path d="M7 10l5-5 5 5"></path>
+                            </svg>
+                        </span>
+                        <span class="type-text">Top-up</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rawAmount = "0";
+        let selectedType = "Sale";
+        let selectedMode = "card";
+
+        const amountDisplay = document.getElementById('amount-display');
+        const typeLabel = document.getElementById('type-label');
+        const typeOverlay = document.getElementById('type-overlay');
+        const typeOptions = Array.from(document.querySelectorAll('.type-option'));
+        const frame = document.getElementById('mini-frame');
+        const actionButton = document.getElementById('action-btn');
+        const actionsRequireAmount = ['Sale', 'Refund', 'Auth', 'Void', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
+        const actionLabels = {
+            Sale: 'Charge',
+            Refund: 'Refund',
+            Auth: 'Authorize',
+            Void: 'Void',
+            'Scan QR': 'Scan',
+            'Show Code': 'Show Code',
+            Pay: 'Pay',
+            'Top-up': 'Top-up'
+        };
+
+        function formatMoney(cents) {
+            return (parseInt(cents, 10) / 100).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function press(key) {
+            if (key === 'BS') {
+                rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+            } else if (key === '00') {
+                if (rawAmount !== "0" && rawAmount.length < 8) rawAmount += "00";
+            } else {
+                if (rawAmount === "0") rawAmount = key;
+                else if (rawAmount.length < 10) rawAmount += key;
+            }
+            amountDisplay.textContent = formatMoney(rawAmount);
+        }
+
+        function openTypePanel() {
+            typeOverlay.classList.add('open');
+        }
+
+        function closeTypePanel(event) {
+            if (event) event.stopPropagation();
+            typeOverlay.classList.remove('open');
+        }
+
+        function updateMode() {
+            frame.classList.toggle('mode-qr', selectedMode === 'qr');
+        }
+
+        function updateActionLabel() {
+            actionButton.textContent = actionLabels[selectedType] || 'Next';
+        }
+
+        function selectType(option) {
+            selectedType = option.dataset.type;
+            selectedMode = option.dataset.mode;
+            typeLabel.textContent = selectedType;
+            typeOptions.forEach(item => item.classList.toggle('selected', item === option));
+            updateMode();
+            updateActionLabel();
+            closeTypePanel();
+        }
+
+        function startAction(actionName) {
+            alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
+        }
+
+        function doAction() {
+            if (rawAmount === "0" && actionsRequireAmount.includes(selectedType)) {
+                alert('Please enter amount.');
+                return;
+            }
+            startAction(selectedType);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('time-display').textContent = `${hours}:${minutes}`;
+        }
+
+        typeOptions.forEach(option => {
+            option.addEventListener('click', () => selectType(option));
+        });
+
+        updateMode();
+        updateActionLabel();
+        updateTime();
+        setInterval(updateTime, 60000);
+    </script>
+</body>
+</html>
