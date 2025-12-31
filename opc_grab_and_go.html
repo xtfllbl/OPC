@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Fridge UI - High Vis</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --primary-gradient: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            --bg-color: #121212;
+            --card-bg: #1E1E1E;
+            --text-main: #FFFFFF;
+            --text-sub: #A0A0A0;
+            --accent-warning: #FFD700; /* 金色 */
+            --accent-glow: rgba(255, 215, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        .device-container {
+            width: 480px;
+            height: 100vh;
+            max-height: 800px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-sub);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+            height: 60px;
+        }
+
+        .lang-dropdown { position: relative; display: inline-block; }
+        .lang-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background-color: #2C2C2C;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .lang-dropdown:hover .dropdown-content { display: block; }
+
+        /* --- Main Content --- */
+        .process-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* 垂直居中 */
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 步骤条 */
+        .step-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px; /* 减少间距，让位于箭头 */
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-item:not(:last-child)::after {
+            content: "\ea6e";
+            font-family: 'remixicon';
+            position: absolute;
+            right: -10px;
+            top: 28%;
+            color: var(--text-sub);
+            font-size: 20px;
+            opacity: 0.3;
+        }
+
+        .icon-circle {
+            width: 76px;
+            height: 76px;
+            background: rgba(0, 122, 255, 0.08);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 122, 255, 0.2);
+        }
+        .icon-circle i { font-size: 36px; color: var(--primary-color); }
+
+        .step-text h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .step-text p { font-size: 12px; color: var(--text-sub); }
+
+        /* 连接箭头 (Visual Flow) */
+        .flow-arrow {
+            margin: 15px 0;
+            color: var(--text-sub);
+            font-size: 24px;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-5px);}
+            60% {transform: translateY(-3px);}
+        }
+
+        /* --- 强化的预授权卡片 --- */
+        .auth-card {
+            background: linear-gradient(180deg, rgba(30,30,30,1) 0%, rgba(20,20,20,1) 100%);
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 16px;
+            
+            /* 关键修改：金色边框和辉光 */
+            border: 2px solid rgba(255, 215, 0, 0.4); 
+            box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(255,215,0,0.05);
+            
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /*以此分开图标和文字*/
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .auth-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lock-circle {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .lock-icon {
+            font-size: 24px;
+            color: var(--accent-warning);
+        }
+
+        .auth-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-label {
+            font-size: 12px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .auth-amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-warning);
+            letter-spacing: 0.5px;
+        }
+        
+        .auth-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            text-align: right;
+            max-width: 120px;
+            line-height: 1.2;
+        }
+
+        /* --- Footer --- */
+        .action-section {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px 25px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .helper-text {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        .start-btn {
+            width: 100%;
+            height: 60px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .start-btn:active { transform: scale(0.98); }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            opacity: 0.6;
+        }
+        .pay-icon { font-size: 22px; }
+
+        /* =========================================
+           480x480 Compact Mode (Square Screen)
+           ========================================= */
+        @media screen and (max-height: 500px) {
+            .header { padding: 8px 15px; height: 50px; }
+            .process-section { padding: 5px 15px; justify-content: flex-start; }
+            
+            .step-container { margin-top: 5px; margin-bottom: 5px; }
+            .icon-circle { width: 48px; height: 48px; margin-bottom: 4px; }
+            .icon-circle i { font-size: 22px; }
+            .step-text h3 { font-size: 14px; }
+            .step-text p { display: none; }
+            .step-item:not(:last-child)::after { display: none; } /* 空间太小，隐藏步骤间箭头 */
+
+            .flow-arrow { margin: 5px 0; font-size: 18px; }
+
+            /* 压缩模式下的预授权卡片 */
+            .auth-card {
+                padding: 10px 15px;
+                gap: 10px;
+                border-width: 1px;
+                margin-bottom: 5px;
+            }
+            .lock-circle { width: 36px; height: 36px; }
+            .lock-icon { font-size: 18px; }
+            .auth-label { font-size: 10px; }
+            .auth-amount { font-size: 20px; }
+            .auth-desc { display: none; } /* 空间不足时隐藏右侧说明，保持核心金额可见 */
+
+            .action-section { padding: 12px 20px; }
+            .helper-text { font-size: 12px; margin-bottom: 8px; }
+            .start-btn { height: 48px; font-size: 20px; }
+            .payment-methods { margin-top: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="device-container">
+        
+        <div class="header">
+            <span>ID: WP5120-001</span>
+            <div class="lang-dropdown">
+                <div class="lang-btn">
+                    <i class="ri-global-line"></i>
+                    <span>English</span>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+                <div class="dropdown-content">
+                    <a href="#">English</a>
+                    <a href="#">Français</a>
+                    <a href="#">中文</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="process-section">
+            
+            <div class="step-container">
+                <div class="step-item">
+                    <div class="icon-circle"><i class="ri-bank-card-2-line"></i></div>
+                    <div class="step-text"><h3>TAP</h3><p>Card / Phone</p></div>
+                </div>
+                <div class="step-item">
+                    <div class="icon-circle"><i class="ri-door-open-line"></i></div>
+                    <div class="step-text"><h3>GRAB</h3><p>Products</p></div>
+                </div>
+                <div class="step-item">
+                    <div class="icon-circle"><i class="ri-shopping-bag-3-line"></i></div>
+                    <div class="step-text"><h3>GO</h3><p>Auto-Pay</p></div>
+                </div>
+            </div>
+
+            <i class="ri-arrow-down-line flow-arrow"></i>
+
+            <div class="auth-card">
+                <div class="auth-left">
+                    <div class="lock-circle">
+                        <i class="ri-secure-payment-fill lock-icon"></i>
+                    </div>
+                    <div class="auth-info">
+                        <span class="auth-label">Pre-Authorization</span>
+                        <span class="auth-amount">$30.00</span>
+                    </div>
+                </div>
+                <div class="auth-desc">
+                    Refunds instant after purchase.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="action-section">
+            <p class="helper-text">Ready? Press Start & Tap Card</p>
+            <button class="start-btn">START</button>
+            <div class="payment-methods">
+                <i class="ri-visa-line pay-icon" style="color:#fff"></i>
+                <i class="ri-mastercard-fill pay-icon" style="color:#eb001b"></i>
+                <i class="ri-apple-fill pay-icon" style="color:#fff"></i>
+                <i class="ri-google-fill pay-icon" style="color:#fff"></i>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
