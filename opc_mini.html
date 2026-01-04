@@ -253,9 +253,10 @@
         }
 
         .key {
-            background: #FFFFFF;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F7F8FA 100%);
             border-radius: var(--radius-md);
-            border: 1px solid #E5E7EB;
+            border: none;
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06), 0 8px 16px rgba(15, 23, 42, 0.06);
             font-size: 20px;
             font-weight: 700;
             color: var(--text-dark);
@@ -276,7 +277,7 @@
         }
 
         .key-func {
-            background: #F8FAFC;
+            background: #EFF2F6;
             font-size: 12px;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -284,9 +285,18 @@
         }
 
         .key-back {
-            background: #F8FAFC;
+            background: #EEF2F6;
             color: #111827;
-            border-color: rgba(203, 213, 225, 0.9);
+        }
+
+        .key-back svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .cta {
@@ -585,7 +595,13 @@
                     <button class="key key-9" type="button" onclick="press('9')">9</button>
                     <button class="key key-00" type="button" onclick="press('00')">00</button>
                     <button class="key key-0" type="button" onclick="press('0')">0</button>
-                    <button class="key key-func key-back" type="button" onclick="press('BS')" aria-label="Delete">DEL</button>
+                    <button class="key key-func key-back" type="button" onclick="press('BS')" aria-label="Delete">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                            <line x1="18" y1="9" x2="12" y2="15" />
+                            <line x1="12" y1="9" x2="18" y2="15" />
+                        </svg>
+                    </button>
                 </div>
                 <button class="cta" id="action-btn" type="button" onclick="doAction()">Next</button>
             </div>
