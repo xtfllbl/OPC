@@ -98,7 +98,7 @@
             height: 100%;
             padding: 14px 16px 16px;
             display: grid;
-            grid-template-rows: auto auto auto 1fr auto;
+            grid-template-rows: auto auto 1fr;
             gap: 10px;
         }
 
@@ -170,60 +170,49 @@
         }
 
         .amount-section {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 12px 14px 10px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(15, 23, 42, 0.05);
+            padding: 0 6px;
+            text-align: center;
         }
 
         .amount-row {
             display: flex;
             align-items: baseline;
-            gap: 6px;
+            justify-content: center;
+            gap: 8px;
         }
 
         .currency {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 600;
+            color: rgba(15, 23, 42, 0.6);
         }
 
         .amount-value {
-            font-size: 42px;
+            font-size: 52px;
             font-weight: 800;
-            letter-spacing: -1.4px;
+            letter-spacing: -1.6px;
             color: var(--text-dark);
+            line-height: 1.05;
+            text-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
         }
 
         .amount-meta {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-top: 8px;
-            gap: 8px;
-        }
-
-        .tag {
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #374151;
-            background: #F3F4F6;
+            justify-content: center;
+            margin-top: 6px;
+            gap: 6px;
         }
 
         .type-pill {
-            border: none;
-            background: var(--accent-soft);
-            color: var(--accent);
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            background: rgba(15, 23, 42, 0.03);
+            color: var(--text-dark);
             border-radius: 999px;
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 4px 10px;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             display: inline-flex;
             align-items: center;
@@ -242,12 +231,25 @@
             stroke-linejoin: round;
         }
 
-        .keypad {
+        .action-panel {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(4, 1fr);
+            grid-template-rows: auto 1fr auto;
             gap: 10px;
             height: 100%;
+            padding: 0 2px 4px;
+        }
+
+        .keypad {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            justify-items: stretch;
+            align-items: stretch;
         }
 
         .key {
@@ -263,7 +265,9 @@
             cursor: pointer;
             touch-action: manipulation;
             transition: background 0.12s ease, transform 0.12s ease;
-            min-height: 52px;
+            width: 100%;
+            height: 100%;
+            min-height: 58px;
         }
 
         .key:active {
@@ -271,14 +275,18 @@
             transform: scale(0.98);
         }
 
-        .key-back svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 2.2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .key-func {
+            background: #F8FAFC;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #374151;
+        }
+
+        .key-back {
+            background: #F8FAFC;
+            color: #111827;
+            border-color: rgba(203, 213, 225, 0.9);
         }
 
         .cta {
@@ -550,43 +558,37 @@
                 </svg>
             </button>
 
-            <div class="amount-section">
-                <div class="amount-row">
-                    <span class="currency">$</span>
-                    <span class="amount-value" id="amount-display">0.00</span>
+            <div class="action-panel">
+                <div class="amount-section">
+                    <div class="amount-row">
+                        <span class="currency">$</span>
+                        <span class="amount-value" id="amount-display">0.00</span>
+                    </div>
+                    <div class="amount-meta">
+                        <button class="type-pill" type="button" onclick="openTypePanel()">
+                            <span id="type-label">Sale</span>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="amount-meta">
-                    <span class="tag">No VAT</span>
-                    <button class="type-pill" type="button" onclick="openTypePanel()">
-                        <span id="type-label">Sale</span>
-                        <svg viewBox="0 0 24 24">
-                            <path d="M6 9l6 6 6-6"></path>
-                        </svg>
-                    </button>
+                <div class="keypad">
+                    <button class="key key-1" type="button" onclick="press('1')">1</button>
+                    <button class="key key-2" type="button" onclick="press('2')">2</button>
+                    <button class="key key-3" type="button" onclick="press('3')">3</button>
+                    <button class="key key-4" type="button" onclick="press('4')">4</button>
+                    <button class="key key-5" type="button" onclick="press('5')">5</button>
+                    <button class="key key-6" type="button" onclick="press('6')">6</button>
+                    <button class="key key-7" type="button" onclick="press('7')">7</button>
+                    <button class="key key-8" type="button" onclick="press('8')">8</button>
+                    <button class="key key-9" type="button" onclick="press('9')">9</button>
+                    <button class="key key-00" type="button" onclick="press('00')">00</button>
+                    <button class="key key-0" type="button" onclick="press('0')">0</button>
+                    <button class="key key-func key-back" type="button" onclick="press('BS')" aria-label="Delete">DEL</button>
                 </div>
+                <button class="cta" id="action-btn" type="button" onclick="doAction()">Next</button>
             </div>
-
-            <div class="keypad">
-                <button class="key" type="button" onclick="press('1')">1</button>
-                <button class="key" type="button" onclick="press('2')">2</button>
-                <button class="key" type="button" onclick="press('3')">3</button>
-                <button class="key" type="button" onclick="press('4')">4</button>
-                <button class="key" type="button" onclick="press('5')">5</button>
-                <button class="key" type="button" onclick="press('6')">6</button>
-                <button class="key" type="button" onclick="press('7')">7</button>
-                <button class="key" type="button" onclick="press('8')">8</button>
-                <button class="key" type="button" onclick="press('9')">9</button>
-                <button class="key" type="button" onclick="press('00')">00</button>
-                <button class="key" type="button" onclick="press('0')">0</button>
-                <button class="key key-back" type="button" onclick="press('BS')" aria-label="Backspace">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20 12H8"></path>
-                        <path d="M12 8l-4 4 4 4"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <button class="cta" id="action-btn" type="button" onclick="doAction()">Next</button>
         </div>
 
         <div class="type-overlay" id="type-overlay" onclick="closeTypePanel(event)">
@@ -738,6 +740,11 @@
                 if (rawAmount === "0") rawAmount = key;
                 else if (rawAmount.length < 10) rawAmount += key;
             }
+            amountDisplay.textContent = formatMoney(rawAmount);
+        }
+
+        function clearAmount() {
+            rawAmount = "0";
             amountDisplay.textContent = formatMoney(rawAmount);
         }
 
