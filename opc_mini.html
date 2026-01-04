@@ -319,6 +319,7 @@
             border-radius: 18px;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+            background: var(--accent);
         }
 
         .cta {
@@ -342,10 +343,10 @@
 
         .cta-select {
             border: none;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.18);
             color: #FFFFFF;
-            height: auto;
-            padding: 0;
+            height: 100%;
+            padding: 0 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -356,14 +357,15 @@
             font-weight: 700;
             font-size: 11px;
             transition: filter 0.12s ease;
-            border-radius: 0;
+            border-radius: 0 18px 18px 0;
             position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 0;
+            top: 0;
+            transform: none;
             box-shadow: none;
-            opacity: 0.88;
-            max-width: calc(var(--cta-type-space) - 20px);
+            opacity: 1;
+            width: var(--cta-type-space);
+            border-left: 1px solid rgba(255, 255, 255, 0.35);
         }
 
         .cta-type-label {
