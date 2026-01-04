@@ -352,9 +352,17 @@
            ========================================= */
         @media screen and (max-height: 500px) {
             .header { padding: 8px 15px; height: 50px; }
-            .process-section { padding: 5px 15px; justify-content: flex-start; }
+            .process-section {
+                padding: 5px 15px 10px;
+                justify-content: flex-end;
+            }
             
-            .step-container { margin-top: 5px; margin-bottom: 5px; }
+            .step-container {
+                margin-top: 0;
+                margin-bottom: 4px;
+                justify-content: space-between;
+            }
+            .step-item { flex: 0 0 auto; }
             .step-text h3 { font-size: 26px; }
             .step-text p { display: none; }
             .step-item:not(:last-child)::after { display: none; } /* 空间太小，隐藏步骤间箭头 */
