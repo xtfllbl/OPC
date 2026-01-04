@@ -187,22 +187,34 @@
 
         /* --- 强化的预授权卡片 --- */
         .auth-card {
-            background: rgba(255, 255, 255, 0.04);
+            background: transparent;
             width: 100%;
-            padding: 14px 16px;
-            border-radius: 14px;
+            padding: 4px 0 12px;
+            border-radius: 0;
             margin: 0 0 12px 0;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: none;
             box-shadow: none;
             display: flex;
             align-items: center;
-            justify-content: space-between; /*以此分开图标和文字*/
-            gap: 16px;
+            justify-content: space-between;
+            gap: 14px;
+            position: relative;
+        }
+        .auth-card::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.45), rgba(255, 255, 255, 0.06));
         }
 
         .auth-info {
             display: flex;
             flex-direction: column;
+            gap: 4px;
+            min-width: 0;
         }
 
         .auth-label {
@@ -211,35 +223,44 @@
             color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 4px;
+            margin-bottom: 0;
         }
 
         .auth-amount {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--accent-warning);
             letter-spacing: 0.3px;
         }
-        .auth-desc {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--accent-warning);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+        .auth-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0;
             text-align: right;
+        }
+        .auth-tag {
+            display: inline-flex;
+            align-items: center;
+            color: var(--accent-warning);
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            white-space: nowrap;
         }
 
         /* --- Footer --- */
         .action-section {
-            background: rgba(30, 30, 30, 0.8);
+            background: transparent;
             padding: 20px 25px;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            backdrop-filter: blur(10px);
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            backdrop-filter: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: none;
         }
 
         .helper-text {
@@ -328,14 +349,14 @@
 
             /* 压缩模式下的预授权卡片 */
             .auth-card {
-                padding: 10px 12px;
+                padding: 4px 0 8px;
                 gap: 10px;
                 border-width: 1px;
                 margin: 0 0 8px 0;
             }
             .auth-label { font-size: 10px; }
-            .auth-amount { font-size: 18px; }
-            .auth-desc { font-size: 10px; }
+            .auth-amount { font-size: 20px; }
+            .auth-tag { font-size: 12px; }
 
             .action-section { padding: 12px 20px; }
             .helper-text { font-size: 13px; margin-bottom: 8px; padding: 8px 10px; border-radius: 10px; }
@@ -385,10 +406,12 @@
         <div class="action-section">
             <div class="auth-card">
                 <div class="auth-info">
-                    <span class="auth-label">Pre-Authorization</span>
+                    <span class="auth-label">Pre-Authorization Hold</span>
                     <span class="auth-amount">$30.00</span>
                 </div>
-                <div class="auth-desc">Pay what you take</div>
+                <div class="auth-right">
+                    <span class="auth-tag">Pay what you take</span>
+                </div>
             </div>
             <p class="helper-text">Press <span class="helper-text__strong">START</span> &amp; <span class="helper-text__strong">Tap Card</span> to unlock</p>
             <button class="start-btn">START</button>
