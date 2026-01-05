@@ -348,5 +348,14 @@
             </div>
         </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const statusTitle = document.querySelector('.status-title');
+            if (!statusTitle) return;
+            setTimeout(() => {
+                statusTitle.textContent = 'Close when done';
+            }, 10000);
+        });
+    </script>
 </body>
 </html>
