@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="2600"
+    android:repeatCount="infinite"
+    android:repeatMode="restart"
+    android:interpolator="@android:interpolator/accelerate_decelerate">
+    <propertyValuesHolder
+        android:propertyName="alpha"
+        android:valueType="floatType">
+        <keyframe android:fraction="0" android:value="0.3" />
+        <keyframe android:fraction="0.5" android:value="0.7" />
+        <keyframe android:fraction="1" android:value="0.3" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="scaleX"
+        android:valueType="floatType">
+        <keyframe android:fraction="0" android:value="0.98" />
+        <keyframe android:fraction="0.5" android:value="1.02" />
+        <keyframe android:fraction="1" android:value="0.98" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="scaleY"
+        android:valueType="floatType">
+        <keyframe android:fraction="0" android:value="0.98" />
+        <keyframe android:fraction="0.5" android:value="1.02" />
+        <keyframe android:fraction="1" android:value="0.98" />
+    </propertyValuesHolder>
+</objectAnimator>
