@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Help - QR Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --ink: #0f172a;
+      --muted: #475569;
+      --card: rgba(255, 255, 255, 0.78);
+      --stroke: rgba(15, 23, 42, 0.12);
+      --accent: #0ea5a4;
+      --accent-2: #f59e0b;
+      --shadow: 0 30px 60px rgba(15, 23, 42, 0.15);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, #ffffff 0%, #e6eef3 35%, #dfe8ef 65%, #f8fafc 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .page {
+      width: 480px;
+      height: 800px;
+      max-width: 100vw;
+      max-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      border-radius: 999px;
+      filter: blur(0px);
+      opacity: 0.65;
+      z-index: 0;
+    }
+
+    .page::before {
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(14, 165, 164, 0.24), rgba(14, 165, 164, 0));
+      top: -60px;
+      right: -30px;
+    }
+
+    .page::after {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.24), rgba(245, 158, 11, 0));
+      bottom: -80px;
+      left: -40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .lang-dropdown {
+      position: relative;
+    }
+
+    .lang-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.92);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
+    }
+
+    .lang-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(15, 23, 42, 0.28);
+    }
+
+    .lang-dropdown.open .lang-toggle {
+      border-color: var(--ink);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.14);
+    }
+
+    .lang-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--muted);
+    }
+
+    .lang-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      min-width: 140px;
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: white;
+      box-shadow: var(--shadow);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .lang-dropdown.open .lang-menu {
+      display: flex;
+      animation: menu-in 0.18s ease-out;
+    }
+
+    @keyframes menu-in {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .lang-option {
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--ink);
+      transition: background 0.2s ease;
+    }
+
+    .lang-option:hover {
+      background: rgba(14, 165, 164, 0.12);
+    }
+
+    .lang-option.active {
+      background: rgba(15, 23, 42, 0.1);
+      font-weight: 600;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding: 32px 28px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(16px);
+      position: relative;
+      z-index: 1;
+      animation: float-in 0.6s ease-out;
+      flex: 1;
+    }
+
+    @keyframes float-in {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .content h1 {
+      margin: 0 0 16px;
+      font-size: clamp(24px, 4.5vw, 32px);
+      line-height: 1.1;
+    }
+
+    .content p {
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .note {
+      font-size: 14px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .note span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .qr-panel {
+      width: min(420px, 100%);
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(243, 246, 248, 0.8));
+      border-radius: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 26px 22px;
+    }
+
+    .qr-frame {
+      width: min(220px, 60vw);
+      aspect-ratio: 1;
+      background: white;
+      border-radius: 18px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+
+    .qr-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .qr-caption {
+      font-size: 15px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .sn-panel {
+      width: min(360px, 100%);
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .sn-value {
+      color: var(--ink);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(71, 85, 105, 0.75);
+      text-align: right;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 860px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .page {
+        width: 100%;
+        height: min(840px, 100vh);
+        padding: 12px 0;
+      }
+
+      .brand {
+        font-size: 16px;
+      }
+
+      .card {
+        padding: 26px 20px;
+        gap: 22px;
+      }
+
+      .qr-panel {
+        padding: 22px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand" data-i18n="brand">Service Help</div>
+      <div class="lang-dropdown" aria-label="Language switch">
+        <button type="button" class="lang-toggle" aria-haspopup="true" aria-expanded="false" aria-label="Select language">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M3 12h18"></path>
+            <path d="M12 3c2.5 2.6 4 5.7 4 9s-1.5 6.4-4 9c-2.5-2.6-4-5.7-4-9s1.5-6.4 4-9z"></path>
+          </svg>
+        </button>
+        <div class="lang-menu" role="menu">
+          <button type="button" class="lang-option" data-lang="en" role="menuitem">English</button>
+          <button type="button" class="lang-option" data-lang="zh" role="menuitem">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="card">
+      <section class="content">
+        <h1 data-i18n="title">Ready to get started?</h1>
+        <p data-i18n="message">
+          Scan the QR code to submit your business details. Our team will contact you shortly to help you go live.
+        </p>
+
+      </section>
+
+      <section class="qr-panel" aria-label="QR code panel">
+        <div class="qr-frame">
+          <img src="qr.svg" alt="QR code" />
+        </div>
+        <div class="qr-caption" data-i18n="scan">Scan with your phone browser</div>
+      </section>
+
+      <div class="sn-panel" aria-label="Terminal serial number">
+        <span class="sn-label" data-i18n="snLabel">Terminal SN</span>
+        <span class="sn-value" id="terminal-sn">WP4420PQ29000020</span>
+      </div>
+    </main>
+  </div>
+  </div>
+
+  <div class="footer" data-i18n="footer">
+    <script>
+      const translations = {
+        en: {
+          brand: "Service Help",
+          title: "Ready to get started?",
+          message:
+            "Scan the QR code to submit your business details. Our team will contact you shortly to help you go live.",
+          snLabel: "Terminal SN",
+        },
+        zh: {
+          brand: "开通指引",
+          title: "需要帮助开通服务吗？",
+          message:
+            "如果没有人联系你如何开通，请使用手机扫描二维码，填写相关商户信息，会有专人联系你开通服务。",
+          snLabel: "终端SN",
+        }
+      };
+
+      const dropdown = document.querySelector(".lang-dropdown");
+      const toggle = document.querySelector(".lang-toggle");
+      const buttons = document.querySelectorAll(".lang-option");
+      const elements = document.querySelectorAll("[data-i18n]");
+
+      const languageLabels = {};
+      buttons.forEach((btn) => {
+        languageLabels[btn.dataset.lang] = btn.textContent.trim();
+      });
+
+      function setLanguage(lang) {
+        const dictionary = translations[lang] || translations.en;
+        elements.forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (dictionary[key]) {
+            el.textContent = dictionary[key];
+          }
+        });
+        buttons.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.lang === lang);
+        });
+        const label = languageLabels[lang] || languageLabels.en || "English";
+        toggle.setAttribute("aria-label", `Language: ${label}`);
+        toggle.setAttribute("title", `Language: ${label}`);
+        document.documentElement.lang = lang;
+        localStorage.setItem("help_lang", lang);
+      }
+
+      const savedLang = localStorage.getItem("help_lang");
+      setLanguage(savedLang || "en");
+
+      function closeMenu() {
+        dropdown.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleMenu() {
+        const isOpen = dropdown.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+      }
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setLanguage(btn.dataset.lang);
+          closeMenu();
+        });
+      });
+
+      toggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleMenu();
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+    </script>
+</body>
+
+</html>
