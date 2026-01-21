@@ -188,6 +188,11 @@
       margin-top: 28px;
     }
 
+    .action.action-split {
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .btn-primary {
       border: none;
       background: linear-gradient(135deg, #1f4bb8, #3f74ff);
@@ -202,9 +207,65 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
+    .btn-secondary {
+      border: 1.5px solid #c9d6ff;
+      background: #f4f6ff;
+      color: #1d2e7a;
+      padding: 11px 28px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(31, 75, 184, 0.12);
+    }
+
     .btn-primary:hover {
       transform: translateY(-1px);
       box-shadow: 0 16px 32px rgba(31, 75, 184, 0.28);
+    }
+
+    .label-note {
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .inline-error {
+      color: var(--danger);
+      display: none;
+    }
+
+    .inline-error.is-visible {
+      display: block;
+    }
+
+    .input-error {
+      border-color: rgba(228, 72, 61, 0.7);
+      box-shadow: 0 0 0 3px rgba(228, 72, 61, 0.12);
+    }
+
+    .step[hidden] {
+      display: none;
+    }
+
+    .success-card {
+      text-align: center;
+    }
+
+    .success-card h2 {
+      margin-bottom: 12px;
+    }
+
+    .success-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     .fade-up {
@@ -241,7 +302,7 @@
 </head>
 <body>
   <main class="page">
-    <section class="hero fade-up" style="--delay: 50ms;">
+    <section class="hero fade-up" style="--delay: 50ms;" id="hero-panel">
       <div class="hero-panel">
         <div class="hero-text">
           <h1>Hi There!</h1>
@@ -259,93 +320,166 @@
       </div>
     </section>
 
-    <section class="card fade-up" style="--delay: 120ms;">
-      <h2 class="section-title">1. Basic Information</h2>
-      <div class="form-grid">
-        <div>
-          <label for="country"><span class="required">*</span>Country</label>
-          <select id="country" name="country" required>
-            <option value="" selected>Please Select</option>
-            <option value="us">United States</option>
-            <option value="ca">Canada</option>
-            <option value="gb">United Kingdom</option>
-            <option value="my">Malaysia</option>
-          </select>
-          <p class="hint">Enter the English letters of the shipping country, or select from the dropdown.</p>
-        </div>
+    <form id="lead-form" novalidate>
+      <div class="step" data-step="1">
+        <section class="card fade-up" style="--delay: 120ms;">
+          <h2 class="section-title">1. Basic Information</h2>
+          <div class="form-grid">
+            <div>
+              <label for="device-sn"><span class="required">*</span>Activate Device SN</label>
+              <input id="device-sn" name="device-sn" type="text" value="WP4420PQ29000020" readonly />
+              <p class="hint">Auto-detected from the current device.</p>
+            </div>
 
-        <div>
-          <label for="region">State/Province/Region</label>
-          <select id="region" name="region">
-            <option value="" selected>State/Province/Region</option>
-            <option value="region-1">Region 1</option>
-            <option value="region-2">Region 2</option>
-            <option value="region-3">Region 3</option>
-          </select>
-          <p class="hint">(Optional) Select the province where the merchant is located.</p>
-        </div>
+            <div>
+              <label for="contact"><span class="required">*</span>Contact Name</label>
+              <input id="contact" name="contact" type="text" placeholder="Contact Name" required />
+              <p class="hint">Fill in the merchant's contact name.</p>
+            </div>
 
-        <div>
-          <label for="merchant"><span class="required">*</span>Merchant Name</label>
-          <input id="merchant" name="merchant" type="text" placeholder="Merchant Name" required />
-          <p class="hint">Fill in the merchant name.</p>
-        </div>
+            <div>
+              <label for="email">Email<span class="label-note">either email or phone</span></label>
+              <input id="email" name="email" type="email" placeholder="name@company.com" aria-describedby="contact-error" />
+              <p class="hint">Enter the contact's email address. Make sure there are no spaces before or after the address.</p>
+            </div>
 
-        <div>
-          <label for="contact"><span class="required">*</span>Contact Name</label>
-          <input id="contact" name="contact" type="text" placeholder="Contact Name" required />
-          <p class="hint">Fill in the merchant's contact name.</p>
-        </div>
+            <div>
+              <label for="phone">Phone<span class="label-note">either email or phone</span></label>
+              <input id="phone" name="phone" type="tel" placeholder="+11234567890" aria-describedby="contact-error" />
+              <p class="hint">Enter the contact's mobile number, e.g., +11234567890. Do not include spaces.</p>
+              <p class="hint inline-error" id="contact-error" role="alert" aria-live="polite">
+                Please provide either an email or a phone number.
+              </p>
+            </div>
+          </div>
+        </section>
 
-        <div>
-          <label for="email"><span class="required">*</span>Email</label>
-          <input id="email" name="email" type="email" placeholder="name@company.com" required />
-          <p class="hint">Enter the contact's email address. Make sure there are no spaces before or after the address.</p>
-        </div>
-
-        <div>
-          <label for="phone"><span class="required">*</span>Phone</label>
-          <input id="phone" name="phone" type="tel" placeholder="+11234567890" required />
-          <p class="hint">Enter the contact's mobile number, e.g., +11234567890. Do not include spaces.</p>
+        <div class="action fade-up" style="--delay: 200ms;">
+          <button class="btn-primary" type="button" id="next-btn">Get Started</button>
         </div>
       </div>
-    </section>
 
-    <section class="card fade-up" style="--delay: 200ms;">
-      <h2 class="section-title">2. Detailed Information</h2>
-      <div class="form-grid">
-        <div>
-          <label for="device-sn"><span class="required">*</span>Activate Device SN</label>
-          <input id="device-sn" name="device-sn" type="text" value="WP4420PQ29000020" readonly />
-          <p class="hint">Auto-detected from the current device.</p>
-        </div>
-        <div>
-          <label for="vending-received"><span class="required">*</span>Vending machine received time</label>
-          <input id="vending-received" name="vending-received" type="datetime-local" required />
-          <p class="hint">Enter the time the vending machine was received.</p>
-        </div>
-        <div>
-          <label for="self-service-type"><span class="required">*</span>Self-service machine type</label>
-          <select id="self-service-type" name="self-service-type" required>
-            <option value="" selected>Please Select</option>
-            <option value="other">Other (Please Specify)</option>
-            <option value="vending-snacks">Vending Machine (Snacks, Popcorn, Coffee, Cotton Candy, etc.)</option>
-            <option value="ev-charging">Electric Vehicle Charging</option>
-            <option value="vending-pharma">Vending Machine (Pharmaceuticals)</option>
-            <option value="vending-cannabis">Vending Machine (Cannabis)</option>
-            <option value="self-laundromat">Self-Service Laundromat</option>
-            <option value="self-lockers">Self-Service Lockers</option>
-            <option value="self-car-wash">Self-Serve Car Washes</option>
-            <option value="claw-machine">Claw Machine</option>
-          </select>
-          <p class="hint">Select the type of self-service machine.</p>
+      <div class="step" data-step="2" hidden>
+        <section class="card fade-up" style="--delay: 120ms;">
+          <h2 class="section-title">2. Detailed Information</h2>
+          <div class="form-grid">
+            <div>
+              <label for="country">Country</label>
+              <select id="country" name="country">
+                <option value="" selected>Please Select</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="gb">United Kingdom</option>
+                <option value="my">Malaysia</option>
+              </select>
+              <p class="hint">(Optional) Enter the English letters of the shipping country, or select from the dropdown.</p>
+            </div>
+
+            <div>
+              <label for="region">State/Province/Region</label>
+              <select id="region" name="region">
+                <option value="" selected>State/Province/Region</option>
+                <option value="region-1">Region 1</option>
+                <option value="region-2">Region 2</option>
+                <option value="region-3">Region 3</option>
+              </select>
+              <p class="hint">(Optional) Select the province where the merchant is located.</p>
+            </div>
+
+            <div>
+              <label for="merchant">Merchant Name</label>
+              <input id="merchant" name="merchant" type="text" placeholder="Merchant Name" />
+              <p class="hint">(Optional) Fill in the merchant name.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="action action-split fade-up" style="--delay: 200ms;">
+          <button class="btn-secondary" type="button" id="skip-btn">Skip</button>
+          <button class="btn-primary" type="button" id="submit-btn">Submit</button>
         </div>
       </div>
-    </section>
 
-    <div class="action fade-up" style="--delay: 280ms;">
-      <button class="btn-primary" type="button">Get Started</button>
-    </div>
+      <div class="step" data-step="3" hidden>
+        <section class="card fade-up success-card" style="--delay: 120ms;">
+          <h2 class="section-title">Submission Successful</h2>
+          <p>Thanks for sharing your information. Our team will contact you soon to help with account opening.</p>
+        </section>
+      </div>
+    </form>
   </main>
+  <script>
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const stepById = new Map(steps.map((step) => [step.dataset.step, step]));
+    const heroPanel = document.querySelector("#hero-panel");
+    const contactField = document.querySelector("#contact");
+    const emailField = document.querySelector("#email");
+    const phoneField = document.querySelector("#phone");
+    const contactError = document.querySelector("#contact-error");
+
+    const setContactError = (message) => {
+      if (!message) {
+        contactError.classList.remove("is-visible");
+        contactError.textContent = "Please provide either an email or a phone number.";
+        emailField.classList.remove("input-error");
+        phoneField.classList.remove("input-error");
+        return;
+      }
+
+      contactError.textContent = message;
+      contactError.classList.add("is-visible");
+      emailField.classList.add("input-error");
+      phoneField.classList.add("input-error");
+    };
+
+    const showStep = (stepId) => {
+      steps.forEach((step) => {
+        step.hidden = step.dataset.step !== stepId;
+      });
+      heroPanel.hidden = stepId !== "1";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    document.querySelector("#next-btn").addEventListener("click", () => {
+      setContactError("");
+
+      if (!contactField.checkValidity()) {
+        contactField.reportValidity();
+        return;
+      }
+
+      const emailValue = emailField.value.trim();
+      const phoneValue = phoneField.value.trim();
+
+      if (!emailValue && !phoneValue) {
+        setContactError("Please provide either an email or a phone number.");
+        return;
+      }
+
+      if (emailValue && !emailField.checkValidity()) {
+        emailField.reportValidity();
+        return;
+      }
+
+      showStep("2");
+    });
+
+    document.querySelector("#skip-btn").addEventListener("click", () => {
+      showStep("3");
+    });
+
+    document.querySelector("#submit-btn").addEventListener("click", () => {
+      showStep("3");
+    });
+
+    const clearContactError = () => {
+      if (emailField.value.trim() || phoneField.value.trim()) {
+        setContactError("");
+      }
+    };
+
+    emailField.addEventListener("input", clearContactError);
+    phoneField.addEventListener("input", clearContactError);
+  </script>
 </body>
 </html>

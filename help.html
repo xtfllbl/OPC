@@ -300,6 +300,22 @@
       letter-spacing: 0.08em;
     }
 
+    .logo-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+      padding-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-footer img {
+      width: min(200px, 60vw);
+      height: auto;
+      object-fit: contain;
+    }
+
     .footer {
       margin-top: 12px;
       font-size: 12px;
@@ -383,6 +399,10 @@
         <span class="sn-value" id="terminal-sn">WP4420PQ29000020</span>
       </div>
     </main>
+
+    <div class="logo-footer" aria-label="WizarPOS logo">
+      <img src="wizarPOS_logo.png" alt="WizarPOS logo" />
+    </div>
   </div>
   </div>
 
@@ -391,7 +411,7 @@
       const translations = {
         en: {
           brand: "Service Help",
-          title: "Ready to get started?",
+          title: "Need to GO LIVE?",
           message:
             "Scan the QR code to submit your business details. Our team will contact you shortly to help you go live.",
           snLabel: "Terminal SN",
