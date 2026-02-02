@@ -1,0 +1,634 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Change</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --design-w: 720;
+            --design-h: 1280;
+            --fit-scale: 1;
+            --bg: #ffffff;
+            --text-main: #0a2459;
+            --text-sub: #4c6079;
+            --amount-color: #16a34a;
+            --text-dark: #111827;
+            --color-danger-text: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111827;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .viewport {
+            width: calc(var(--design-w) * 1px);
+            height: calc(var(--design-h) * 1px);
+            background: #ffffff;
+            border-radius: 34px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transform: scale(var(--fit-scale));
+            transform-origin: center center;
+            box-shadow: 0 18px 60px rgba(15, 23, 42, 0.34);
+            position: relative;
+        }
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .canvas::-webkit-scrollbar {
+            display: none;
+        }
+
+        .panel {
+            width: 100%;
+            min-height: 100%;
+            background: var(--bg);
+            padding: 46px 36px 34px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 50px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            margin-bottom: 42px;
+            color: #001845;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            line-height: 1.35;
+            color: var(--text-sub);
+        }
+
+        .summary-card {
+            border-radius: 24px;
+            border: 1.5px solid #d7e2f5;
+            background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            border: 1.5px solid #d8e2f0;
+            border-radius: 18px;
+            background: #f3f6fb;
+            padding: 18px 20px;
+            text-align: left;
+        }
+
+        .summary-row.paid {
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .summary-row.paid:active {
+            transform: scale(0.995);
+        }
+
+        .summary-row.paid:focus-visible {
+            outline: 3px solid #93c5fd;
+            outline-offset: 2px;
+        }
+
+        .summary-label {
+            font-size: 26px;
+            font-weight: 700;
+            color: #5f6f86;
+        }
+
+        .summary-value {
+            font-size: 68px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #2f4b73;
+        }
+
+        .summary-row.due .summary-value {
+            color: #2f4b73;
+        }
+
+        .summary-row.change {
+            background: #e3f8ef;
+            border: 1.5px solid #9fddcb;
+        }
+
+        .summary-row.change .summary-value {
+            color: #0f7d67;
+            font-size: 76px;
+        }
+
+        .summary-row.change .summary-label {
+            color: #0f7d67;
+        }
+
+        .status {
+            margin-top: 6px;
+            font-size: 28px;
+            line-height: 1.35;
+            color: #4d5e74;
+            min-height: 66px;
+        }
+
+        .status:empty {
+            display: none;
+            min-height: 0;
+            margin-top: 0;
+        }
+
+        .status.warn {
+            color: #b45309;
+            font-weight: 700;
+        }
+
+        .action-row {
+            margin-top: auto;
+            display: flex;
+            gap: 18px;
+            padding-top: 10px;
+        }
+
+        .btn {
+            height: 92px;
+            border-radius: 30px;
+            border: 1.5px solid #bcc5d3;
+            background: #f3f4f6;
+            color: #233e63;
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            width: 220px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            border: none;
+            color: #fff;
+            background: linear-gradient(135deg, #21a85c 0%, #16763f 100%);
+        }
+
+        /* --- Keypad (copied from 1.unified_pos.html) --- */
+        .keypad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .keypad-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .keypad-panel {
+            background: #f7f8fb;
+            border-radius: 32px 32px 0 0;
+            padding: 20px 22px 22px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            height: calc(100% - 430px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .keypad-overlay.open .keypad-panel {
+            transform: translateY(0);
+        }
+
+        .keypad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 0 8px;
+        }
+
+        .keypad-title {
+            font-size: 38px;
+            font-weight: 700;
+            color: #001845;
+        }
+
+        .close-btn {
+            background: #F3F4F6;
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .keypad-preview {
+            margin: 2px 8px 14px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid #dbe4f4;
+            background: #eef2f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .keypad-preview-value {
+            font-size: 58px;
+            line-height: 1.1;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .key-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, minmax(96px, 1fr));
+            grid-template-areas:
+                "k7   k8   k9   del"
+                "k4   k5   k6   clr"
+                "k1   k2   k3   ok"
+                "k0   k00  k00  ok";
+            gap: 12px;
+        }
+
+        .key {
+            height: 100%;
+            min-height: 92px;
+            border-radius: 20px;
+            font-size: 44px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F9FAFB;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid #E5E7EB;
+        }
+
+        .key:active {
+            background: #F3F4F6;
+        }
+
+        .key-func {
+            background: #EEF2FF;
+            font-size: 34px;
+        }
+
+        .key-delete {
+            color: var(--color-danger-text);
+        }
+
+        .key-delete svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .key-done {
+            background: var(--amount-color);
+            color: #fff;
+            font-size: 40px;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+            border: none;
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-del { grid-area: del; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-clear { grid-area: clr; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+        .key-00 { grid-area: k00; }
+        .key-ok { grid-area: ok; }
+
+        .cash-change-page.with-keypad .keypad-overlay {
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0) 40%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="viewport cash-change-page" id="cash-change-page">
+        <div class="canvas">
+            <main class="panel">
+                <h1 class="title">Cash & Change</h1>
+                <section class="summary-card">
+                    <div class="summary-row due">
+                        <span class="summary-label">Amount Due</span>
+                        <strong class="summary-value" id="due-amount">$96.00</strong>
+                    </div>
+                    <button class="summary-row paid" type="button" onclick="openKeypad()" aria-label="Edit amount paid">
+                        <span class="summary-label">Amount Paid</span>
+                        <strong class="summary-value" id="paid-amount">$0.00</strong>
+                    </button>
+                    <div class="summary-row change">
+                        <span class="summary-label">Change</span>
+                        <strong class="summary-value" id="change-amount">$0.00</strong>
+                    </div>
+                    <p class="status" id="status-text">Tap Amount Paid to enter cash received.</p>
+                </section>
+
+                <div class="action-row">
+                    <button class="btn btn-back" type="button" onclick="handleBack()">Back</button>
+                    <button class="btn btn-primary" type="button" onclick="handleComplete()">Finish</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)">
+            <div class="keypad-panel" onclick="event.stopPropagation()">
+                <div class="keypad-header">
+                    <span class="keypad-title">Cash Received</span>
+                    <div class="close-btn" onclick="closeKeypad(event)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="keypad-preview">
+                    <span class="keypad-preview-value" id="keypad-preview-amount">$0.00</span>
+                </div>
+                <div class="key-grid">
+                    <div class="key key-7" onclick="press('7')">7</div>
+                    <div class="key key-8" onclick="press('8')">8</div>
+                    <div class="key key-9" onclick="press('9')">9</div>
+                    <div class="key key-func key-delete key-del" onclick="press('BS')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                            <line x1="18" y1="9" x2="12" y2="15" />
+                            <line x1="12" y1="9" x2="18" y2="15" />
+                        </svg>
+                    </div>
+                    <div class="key key-4" onclick="press('4')">4</div>
+                    <div class="key key-5" onclick="press('5')">5</div>
+                    <div class="key key-6" onclick="press('6')">6</div>
+                    <div class="key key-func key-clear" onclick="clearAmount(event)">C</div>
+                    <div class="key key-1" onclick="press('1')">1</div>
+                    <div class="key key-2" onclick="press('2')">2</div>
+                    <div class="key key-3" onclick="press('3')">3</div>
+                    <button class="key key-done key-ok" onclick="confirmAmount(event)">OK</button>
+                    <div class="key key-0" onclick="press('0')">0</div>
+                    <div class="key key-func key-00" onclick="press('00')">00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const keypadOverlay = document.getElementById("keypad-overlay");
+        const pageRoot = document.getElementById("cash-change-page");
+        const dueAmountEl = document.getElementById("due-amount");
+        const paidAmountEl = document.getElementById("paid-amount");
+        const changeAmountEl = document.getElementById("change-amount");
+        const statusTextEl = document.getElementById("status-text");
+        const displayEl = document.getElementById("keypad-preview-amount");
+
+        let rawAmount = "0";
+        let paidCents = 0;
+        let dueCents = resolveDueCents();
+
+        function fitDesign() {
+            const scale = Math.min(window.innerWidth / 720, window.innerHeight / 1280);
+            document.documentElement.style.setProperty("--fit-scale", String(Math.max(0.25, scale)));
+        }
+
+        function formatMoney(cents) {
+            return (parseInt(cents, 10) / 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") {
+                return null;
+            }
+            const n = Number(value);
+            if (!Number.isFinite(n) || n < 0) {
+                return null;
+            }
+            return Math.round(n * 100);
+        }
+
+        function resolveDueCents() {
+            const params = new URLSearchParams(window.location.search);
+            const dueFromCents = Number(params.get("dueCents"));
+            if (Number.isFinite(dueFromCents) && dueFromCents >= 0) {
+                return Math.round(dueFromCents);
+            }
+
+            const dueFromAmount = parseMoneyToCents(params.get("due"));
+            if (dueFromAmount !== null && dueFromAmount >= 0) {
+                return dueFromAmount;
+            }
+
+            const fallbackFromAmount = parseMoneyToCents(params.get("amount"));
+            if (fallbackFromAmount !== null && fallbackFromAmount >= 0) {
+                return fallbackFromAmount;
+            }
+
+            if (Number.isFinite(window.cashDueCents) && window.cashDueCents >= 0) {
+                return Math.round(window.cashDueCents);
+            }
+
+            const fallbackGlobal = parseMoneyToCents(window.cashDueAmount);
+            if (fallbackGlobal !== null && fallbackGlobal >= 0) {
+                return fallbackGlobal;
+            }
+
+            return 9600;
+        }
+
+        function syncSummary() {
+            const changeCents = Math.max(0, paidCents - dueCents);
+            const shortfallCents = Math.max(0, dueCents - paidCents);
+            const dueText = "$" + formatMoney(dueCents);
+
+            dueAmountEl.textContent = dueText;
+            paidAmountEl.textContent = "$" + formatMoney(paidCents);
+            changeAmountEl.textContent = "$" + formatMoney(changeCents);
+
+            if (paidCents === 0) {
+                statusTextEl.textContent = "Tap Amount Paid to enter cash received.";
+                statusTextEl.classList.remove("warn");
+                return;
+            }
+
+            if (shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(shortfallCents) + ". Please collect more cash.";
+                statusTextEl.classList.add("warn");
+                return;
+            }
+
+            statusTextEl.textContent = "";
+            statusTextEl.classList.remove("warn");
+        }
+
+        // Keypad input logic follows 1.unified_pos.html behavior.
+        function press(key) {
+            if (key === "BS") {
+                rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+            } else if (key === "00") {
+                if (rawAmount !== "0" && rawAmount.length < 8) rawAmount += "00";
+            } else {
+                if (rawAmount === "0") rawAmount = key;
+                else if (rawAmount.length < 10) rawAmount += key;
+            }
+            displayEl.innerText = "$" + formatMoney(rawAmount);
+        }
+
+        function clearAmount(e) {
+            if (e) e.stopPropagation();
+            rawAmount = "0";
+            displayEl.innerText = "$" + formatMoney(rawAmount);
+        }
+
+        function openKeypad() {
+            rawAmount = String(Math.max(0, paidCents));
+            displayEl.innerText = "$" + formatMoney(rawAmount);
+            keypadOverlay.classList.add("open");
+            pageRoot.classList.add("with-keypad");
+        }
+
+        function closeKeypad(e) {
+            if (e) e.stopPropagation();
+            keypadOverlay.classList.remove("open");
+            pageRoot.classList.remove("with-keypad");
+        }
+
+        function confirmAmount(e) {
+            if (e) e.stopPropagation();
+            paidCents = Math.max(0, parseInt(rawAmount, 10) || 0);
+            syncSummary();
+            closeKeypad(null);
+
+            const payload = {
+                dueCents: dueCents,
+                paidCents: paidCents,
+                changeCents: Math.max(0, paidCents - dueCents),
+                shortfallCents: Math.max(0, dueCents - paidCents)
+            };
+
+            if (typeof window.onCashChangeConfirm === "function") {
+                window.onCashChangeConfirm(payload);
+            }
+            window.dispatchEvent(new CustomEvent("cash-change-confirm", { detail: payload }));
+        }
+
+        function handleComplete() {
+            const shortfallCents = Math.max(0, dueCents - paidCents);
+            if (shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(shortfallCents) + ". Please collect more cash.";
+                statusTextEl.classList.add("warn");
+                openKeypad();
+                return;
+            }
+
+            const payload = {
+                dueCents: dueCents,
+                paidCents: paidCents,
+                changeCents: Math.max(0, paidCents - dueCents),
+                shortfallCents: shortfallCents
+            };
+
+            if (typeof window.onCashChangeComplete === "function") {
+                window.onCashChangeComplete(payload);
+                return;
+            }
+
+            window.dispatchEvent(new CustomEvent("cash-change-complete", { detail: payload }));
+        }
+
+        function handleBack() {
+            if (typeof window.onCashChangeBack === "function") {
+                window.onCashChangeBack();
+                return;
+            }
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+        }
+
+        window.setCashDueCents = function (cents) {
+            if (!Number.isFinite(cents) || cents < 0) {
+                return;
+            }
+            dueCents = Math.round(cents);
+            syncSummary();
+        };
+
+        window.setCashDueAmount = function (amount) {
+            const cents = parseMoneyToCents(amount);
+            if (cents === null || cents < 0) {
+                return;
+            }
+            dueCents = cents;
+            syncSummary();
+        };
+
+        syncSummary();
+        fitDesign();
+        window.addEventListener("resize", fitDesign);
+        window.setTimeout(() => { openKeypad(); }, 300);
+    </script>
+</body>
+
+</html>

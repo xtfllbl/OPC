@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --design-w: 720;
+            --design-h: 1280;
+            --fit-scale: 1;
             --bg: #ffffff;
             --text-main: #0a2459;
             --text-sub: #4c6079;
@@ -35,24 +38,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #ffffff;
+            background: #111827;
             color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .viewport {
+            width: calc(var(--design-w) * 1px);
+            height: calc(var(--design-h) * 1px);
+            background: #ffffff;
+            border-radius: 34px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transform: scale(var(--fit-scale));
+            transform-origin: center center;
+            box-shadow: 0 18px 60px rgba(15, 23, 42, 0.34);
+        }
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .canvas::-webkit-scrollbar {
+            display: none;
         }
 
         .panel {
-            width: 375px;
+            width: 100%;
+            min-height: 100%;
             background: var(--bg);
-            border-radius: 28px;
-            padding: 24px 18px 20px;
-            border: 1px solid #e5e7eb;
+            padding: 46px 36px 34px;
+            display: flex;
+            flex-direction: column;
         }
 
         .title {
-            font-size: 26px;
+            font-size: 50px;
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.05;
-            margin-bottom: 18px;
+            margin-bottom: 42px;
             color: #001845;
         }
 
@@ -61,14 +90,22 @@
             border-radius: var(--radius);
             border: 2px solid var(--neutral-border);
             background: var(--neutral-bg);
-            padding: 15px 20px 12px;
+            padding: 28px 30px 24px;
             display: flex;
             flex-direction: column;
             text-align: left;
             position: relative;
             cursor: pointer;
             transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-            margin-bottom: 10px;
+            margin-bottom: 0;
+        }
+
+        .cards-block {
+            margin-top: 18px;
+        }
+
+        .cash-card {
+            margin-bottom: 28px;
         }
 
         .option-card:active {
@@ -91,23 +128,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 14px;
             padding-right: 0;
         }
 
         .option-name {
-            font-size: 20px;
+            font-size: 44px;
             font-weight: 700;
         }
 
         .badge {
-            font-size: 11px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             border-radius: 999px;
-            padding: 7px 12px;
-            min-width: 122px;
+            padding: 12px 22px;
+            min-width: 250px;
             text-align: center;
         }
 
@@ -122,11 +159,11 @@
         }
 
         .amount {
-            font-size: 56px;
+            font-size: 90px;
             line-height: 1;
             font-weight: 800;
             letter-spacing: -0.03em;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             color: #1d3557;
         }
 
@@ -139,50 +176,52 @@
         }
 
         .note {
-            font-size: 14px;
+            font-size: 33px;
             line-height: 1.28;
             color: #4d5e74;
             margin-top: 0;
         }
 
         .saving {
-            margin-top: 6px;
-            font-size: 14px;
+            margin-top: 10px;
+            font-size: 33px;
             font-weight: 700;
             color: #1d6c40;
         }
 
         .logo-row {
-            margin-top: 6px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .logo-row img {
-            height: 18px;
+            height: 30px;
             width: auto;
         }
 
         .action-row {
             display: flex;
-            gap: 12px;
+            gap: 18px;
+            margin-top: auto;
+            padding-top: 28px;
         }
 
         .btn {
-            height: 52px;
-            border-radius: 20px;
+            height: 92px;
+            border-radius: 30px;
             border: 1.5px solid #bcc5d3;
             background: #f3f4f6;
             color: #233e63;
-            font-size: 15px;
+            font-size: 40px;
             font-weight: 700;
             line-height: 1;
             cursor: pointer;
         }
 
         .btn-back {
-            width: 110px;
+            width: 220px;
         }
 
         .btn-primary {
@@ -199,58 +238,56 @@
             background: linear-gradient(135deg, #21a85c 0%, #16763f 100%);
         }
 
-        @media (max-width: 420px) {
-            body {
-                background: var(--bg);
-                align-items: stretch;
-            }
-
-            .panel {
-                width: 100vw;
-                min-height: 100vh;
-                border-radius: 0;
-                padding: 22px 18px 24px;
-            }
-        }
     </style>
 </head>
 
 <body>
-    <main class="panel">
-        <h1 class="title">How will customer pay?</h1>
+    <div class="viewport">
+        <div class="canvas">
+            <main class="panel">
+                <h1 class="title">How will customer pay?</h1>
 
-        <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')">
-            <div class="option-head">
-                <div class="option-name">Cash</div>
-                <div class="badge badge-save">Save 4%</div>
-            </div>
-            <div class="amount" id="cash-amount">$96.00</div>
-            <div class="note">Customer pays this discounted amount in cash.</div>
-            <div class="saving" id="save-amount">You save $4.00</div>
-        </button>
+                <div class="cards-block">
+                    <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')">
+                        <div class="option-head">
+                            <div class="option-name">Cash</div>
+                            <div class="badge badge-save">Save 4%</div>
+                        </div>
+                        <div class="amount" id="cash-amount">$96.00</div>
+                        <div class="note">Customer pays this discounted amount in cash.</div>
+                        <div class="saving" id="save-amount">You save $4.00</div>
+                    </button>
 
-        <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')">
-            <div class="option-head">
-                <div class="option-name">Card</div>
-                <div class="badge badge-standard">Standard</div>
-            </div>
-            <div class="amount" id="card-amount">$100.00</div>
-            <div class="note">Tap, dip, swipe, or mobile wallet.</div>
-            <div class="logo-row" aria-label="Card brands">
-                <img src="visa.svg" alt="Visa">
-                <img src="mastercard.svg" alt="Mastercard">
-                <img src="amex.svg" alt="American Express">
-                <img src="discover.svg" alt="Discover">
-            </div>
-        </button>
+                    <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')">
+                        <div class="option-head">
+                            <div class="option-name">Card</div>
+                            <div class="badge badge-standard">Standard</div>
+                        </div>
+                        <div class="amount" id="card-amount">$100.00</div>
+                        <div class="note">Tap, dip, swipe, or mobile wallet.</div>
+                        <div class="logo-row" aria-label="Card brands">
+                            <img src="visa.svg" alt="Visa">
+                            <img src="mastercard.svg" alt="Mastercard">
+                            <img src="amex.svg" alt="American Express">
+                            <img src="discover.svg" alt="Discover">
+                        </div>
+                    </button>
+                </div>
 
-        <div class="action-row">
-            <button class="btn btn-back" type="button" onclick="handleBack()">Back</button>
-            <button class="btn btn-primary is-card" id="continue-btn" type="button" onclick="handleContinue()">Card Payment</button>
+                <div class="action-row">
+                    <button class="btn btn-back" type="button" onclick="handleBack()">Back</button>
+                    <button class="btn btn-primary is-card" id="continue-btn" type="button" onclick="handleContinue()">Card Payment</button>
+                </div>
+            </main>
         </div>
-    </main>
+    </div>
 
     <script>
+        function fitDesign() {
+            const scale = Math.min(window.innerWidth / 720, window.innerHeight / 1280);
+            document.documentElement.style.setProperty("--fit-scale", String(Math.max(0.25, scale)));
+        }
+
         const DISCOUNT_RATE = 0.04;
         const cashCard = document.getElementById("cash-card");
         const cardCard = document.getElementById("card-card");
@@ -364,6 +401,11 @@
                 return;
             }
 
+            if (selectedMethod === "cash") {
+                window.location.href = "11.cash_change.html?dueCents=" + cashAmountCents;
+                return;
+            }
+
             window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
         }
 
@@ -385,6 +427,8 @@
         };
 
         syncView();
+        fitDesign();
+        window.addEventListener("resize", fitDesign);
         window.addEventListener("resize", equalizeCardHeights);
     </script>
 </body>
