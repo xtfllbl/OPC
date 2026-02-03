@@ -249,6 +249,7 @@
         /* --- White Sheet Content --- */
         .content-sheet {
             flex: 1;
+            min-height: 0;
             background: var(--card-bg);
             border-radius: 32px 32px 0 0;
             padding: 24px;
@@ -341,9 +342,12 @@
         /* --- Grids --- */
         .grid-container {
             display: none;
+            flex: 1;
+            min-height: 0;
             gap: 12px;
             animation: fadeIn 0.3s ease;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding-bottom: 20px;
         }
 
@@ -641,6 +645,7 @@
             background: transparent;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .settings-header-bar {
@@ -722,6 +727,10 @@
             font-weight: 500;
         }
 
+        .settings-row-left.no-icon {
+            gap: 0;
+        }
+
         .settings-icon {
             width: 22px;
             height: 22px;
@@ -746,6 +755,11 @@
         .settings-icon.gift {
             color: var(--color-purple-text);
             border-color: var(--color-purple-text);
+        }
+
+        .settings-icon.cash {
+            color: #16A34A;
+            border-color: #16A34A;
         }
 
         .settings-icon svg {
@@ -790,6 +804,114 @@
         .settings-chevron {
             font-size: 16px;
             color: #9CA3AF;
+        }
+
+        .settings-row-link {
+            cursor: pointer;
+        }
+
+        .settings-row-link:active {
+            background: #F8FAFC;
+        }
+
+        .settings-row-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-meta {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #64748B;
+        }
+
+        .settings-subpage {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(14px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-subpage.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        .settings-subpage-list {
+            flex: 1;
+            padding: 10px 16px 16px;
+            overflow-y: auto;
+        }
+
+        .settings-row-stack {
+            display: block;
+        }
+
+        .settings-note {
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #64748B;
+        }
+
+        .settings-input-wrap {
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .settings-percent-input {
+            width: 100%;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #CBD5E1;
+            padding: 0 36px 0 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            background: #fff;
+            outline: none;
+        }
+
+        .settings-percent-input:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+        }
+
+        .settings-percent-suffix {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748B;
+            font-size: 14px;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .settings-input-error {
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #DC2626;
+            display: none;
+        }
+
+        .settings-input-error.show {
+            display: block;
+        }
+
+        .cash-discount-rate-group.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -876,7 +998,11 @@
             <div class="grid-container active" id="grid-card">
                 <div class="action-card" onclick="doAction('Sale')">
                     <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
-                    <div class="card-label">Sale</div>
+                    <div class="card-label">Credit Sale</div>
+                </div>
+                    <div class="action-card" onclick="doAction('Sale')">
+                    <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
+                    <div class="card-label">Debit Sale</div>
                 </div>
                 <div class="action-card" onclick="doAction('Auth')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
@@ -904,7 +1030,47 @@
                             <path
                                 d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
                         </svg></div>
-                    <div class="card-label">Refund</div>
+                    <div class="card-label">Credit Refund</div>
+                </div>
+                    <div class="action-card" onclick="doAction('Refund')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                        </svg></div>
+                    <div class="card-label">Debit Refund</div>
+                </div>
+                <div class="action-card" onclick="doAction('Auth-Incremental')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 0H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                            <path d="M12 12v2H10v2h2v2h2v-2h2v-2h-2v-2z" />
+                        </svg></div>
+                    <div class="card-label">Auth-Incremental</div>
+                </div>
+                <div class="action-card" onclick="doAction('Close Batch')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M20 3H4c-1.1 0-2 .9-2 2v4h20V5c0-1.1-.9-2-2-2zm0 16H4c-1.1 0-2-.9-2-2v-6h20v6c0 1.1-.9 2-2 2z" />
+                            <path
+                                d="M7 13h5v2H7zm7.59-1L13 13.59 14.41 15 13 16.41 14.59 18 16 16.59 17.41 18 19 16.41 17.59 15 19 13.59 17.41 12 16 13.41z" />
+                        </svg></div>
+                    <div class="card-label">Close Batch</div>
+                </div>
+                <div class="action-card" onclick="doAction('Print')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8V3H6v5H4c-1.1 0-2 .9-2 2v5h4v4h12v-4h4v-5c0-1.1-.9-2-2-2h-2zm-10-3h8v3H8V5zm8 12H8v-5h8v5zm2-4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg></div>
+                    <div class="card-label">Print</div>
+                </div>
+                <div class="action-card" onclick="doAction('Transaction')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                            <path d="M7 8h10v2H7zm0 4h6v2H7zm0 4h4v2H7z" />
+                            <path d="M15.5 12l-1.41 1.41L15.67 15H13v2h2.67l-1.58 1.59L15.5 20 20 15.5z" />
+                        </svg></div>
+                    <div class="card-label">Transaction</div>
                 </div>
             </div>
 
@@ -1094,6 +1260,68 @@
                             <div class="settings-chevron">></div>
                         </div>
                     </div>
+
+                    <div class="settings-section-title">Features</div>
+                    <div class="settings-group">
+                        <div class="settings-row settings-row-link" onclick="openCashDiscountPage()">
+                            <div class="settings-row-left">
+                                <div class="settings-icon cash">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M7 7h.01" stroke-linecap="round" />
+                                        <path d="M17 17h.01" stroke-linecap="round" />
+                                        <path d="M8 16l8-8" />
+                                        <circle cx="7" cy="7" r="3" />
+                                        <circle cx="17" cy="17" r="3" />
+                                    </svg>
+                                </div>
+                                <span>Cash Discount</span>
+                            </div>
+                            <div class="settings-row-right">
+                                <span class="settings-meta" id="cash-discount-summary">OFF</span>
+                                <div class="settings-chevron">></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-subpage" id="cash-discount-page">
+                    <div class="settings-header-bar">
+                        <button class="settings-back-btn" onclick="closeCashDiscountPage(event)">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <div class="settings-header-title">Cash Discount</div>
+                        <div style="width:28px;height:28px;"></div>
+                    </div>
+                    <div class="settings-subpage-list">
+                        <div class="settings-group">
+                            <div class="settings-row">
+                                <div class="settings-row-left no-icon">
+                                    <span>Enable Cash Discount</span>
+                                </div>
+                                <div class="settings-toggle" id="cash-discount-toggle" onclick="toggleCashDiscountSwitch(event)">
+                                    <div class="settings-toggle-knob"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group cash-discount-rate-group hidden" id="cash-discount-rate-group">
+                            <div class="settings-row settings-row-stack">
+                                <div class="settings-row-left no-icon">
+                                    <span>Discount Percentage</span>
+                                </div>
+                                <div class="settings-note">Required when cash discount is enabled.</div>
+                                <div class="settings-input-wrap">
+                                    <input class="settings-percent-input" id="cash-discount-input" type="number"
+                                        inputmode="decimal" min="0.01" max="100" step="0.01" placeholder="e.g. 4"
+                                        oninput="handleCashDiscountInput(event)" onblur="normalizeCashDiscountInput()">
+                                    <span class="settings-percent-suffix">%</span>
+                                </div>
+                                <div class="settings-input-error" id="cash-discount-error"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1144,6 +1372,12 @@
         const displayEl = document.getElementById('main-amount');
         const keypadOverlay = document.getElementById('keypad-overlay');
         const settingsOverlay = document.getElementById('settings-overlay');
+        const cashDiscountPage = document.getElementById('cash-discount-page');
+        const cashDiscountToggle = document.getElementById('cash-discount-toggle');
+        const cashDiscountRateGroup = document.getElementById('cash-discount-rate-group');
+        const cashDiscountInput = document.getElementById('cash-discount-input');
+        const cashDiscountError = document.getElementById('cash-discount-error');
+        const cashDiscountSummary = document.getElementById('cash-discount-summary');
         const tabPill = document.getElementById('tab-pill');
         const tabsContainer = document.querySelector('.tabs');
         const tabs = Array.from(document.querySelectorAll('.tab-item'));
@@ -1164,7 +1398,7 @@
             'rgba(0, 168, 107, 0.36)',
             'rgba(124, 58, 237, 0.28)'
         ];
-        const actionsRequireAmount = ['Sale', 'Auth', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
+        const actionsRequireAmount = ['Sale', 'Auth', 'Auth-Incremental', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
         const paymentGroups = [
             { key: 'card', tab: tabs[0], grid: grids[0], toggle: document.querySelector('.settings-toggle[data-group="card"]') },
             { key: 'qr', tab: tabs[1], grid: grids[1], toggle: document.querySelector('.settings-toggle[data-group="qr"]') },
@@ -1177,6 +1411,8 @@
             loyalty: document.querySelector('[data-brand="loyalty"]')
         };
         let pendingAction = null;
+        let cashDiscountEnabled = false;
+        let cashDiscountPercentText = '';
 
         function applyTabTheme(index) {
             const rootStyle = document.documentElement.style;
@@ -1258,8 +1494,113 @@
             renderTabsFromSettings();
         }
 
+        function parseCashDiscountPercent(value) {
+            if (value === null || value === undefined) return null;
+            const text = String(value).trim();
+            if (!text) return null;
+            const parsed = Number(text);
+            if (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100) return null;
+            return Math.round(parsed * 100) / 100;
+        }
+
+        function formatCashDiscountPercent(value) {
+            if (!Number.isFinite(value)) return '';
+            if (Number.isInteger(value)) return String(value);
+            return value.toFixed(2).replace(/\.?0+$/, '');
+        }
+
+        function updateCashDiscountUI(options = {}) {
+            const preserveInput = !!options.preserveInput;
+            const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
+
+            if (cashDiscountToggle) {
+                cashDiscountToggle.classList.toggle('on', cashDiscountEnabled);
+            }
+            if (cashDiscountRateGroup) {
+                cashDiscountRateGroup.classList.toggle('hidden', !cashDiscountEnabled);
+            }
+            if (!preserveInput && cashDiscountInput && parsedPercent !== null) {
+                cashDiscountInput.value = formatCashDiscountPercent(parsedPercent);
+            }
+
+            if (cashDiscountSummary) {
+                if (!cashDiscountEnabled) {
+                    cashDiscountSummary.textContent = 'OFF';
+                } else if (parsedPercent === null) {
+                    cashDiscountSummary.textContent = 'SET %';
+                } else {
+                    cashDiscountSummary.textContent = `${formatCashDiscountPercent(parsedPercent)}%`;
+                }
+            }
+
+            if (cashDiscountError) {
+                if (cashDiscountEnabled && parsedPercent === null) {
+                    cashDiscountError.textContent = 'Enter discount percentage (0.01 - 100).';
+                    cashDiscountError.classList.add('show');
+                } else {
+                    cashDiscountError.classList.remove('show');
+                }
+            }
+
+            window.cashDiscountConfig = {
+                enabled: cashDiscountEnabled && parsedPercent !== null,
+                percent: parsedPercent
+            };
+        }
+
+        function openCashDiscountPage() {
+            if (!cashDiscountPage) return;
+            cashDiscountPage.classList.add('open');
+            updateCashDiscountUI();
+
+            const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
+            if (cashDiscountEnabled && parsedPercent === null && cashDiscountInput) {
+                setTimeout(() => cashDiscountInput.focus(), 0);
+            }
+        }
+
+        function closeCashDiscountPage(e, forceClose = false) {
+            if (e) e.stopPropagation();
+            if (!cashDiscountPage) return;
+
+            const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
+            if (!forceClose && cashDiscountEnabled && parsedPercent === null) {
+                if (cashDiscountInput) cashDiscountInput.focus();
+                updateCashDiscountUI({ preserveInput: true });
+                return;
+            }
+
+            cashDiscountPage.classList.remove('open');
+            updateCashDiscountUI({ preserveInput: true });
+        }
+
+        function toggleCashDiscountSwitch(event) {
+            if (event) event.stopPropagation();
+            cashDiscountEnabled = !cashDiscountEnabled;
+            updateCashDiscountUI({ preserveInput: true });
+
+            if (cashDiscountEnabled && parseCashDiscountPercent(cashDiscountPercentText) === null && cashDiscountInput) {
+                setTimeout(() => cashDiscountInput.focus(), 0);
+            }
+        }
+
+        function handleCashDiscountInput(event) {
+            cashDiscountPercentText = event.target.value.trim();
+            updateCashDiscountUI({ preserveInput: true });
+        }
+
+        function normalizeCashDiscountInput() {
+            const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
+            if (parsedPercent !== null) {
+                cashDiscountPercentText = formatCashDiscountPercent(parsedPercent);
+                if (cashDiscountInput) cashDiscountInput.value = cashDiscountPercentText;
+            }
+            updateCashDiscountUI({ preserveInput: true });
+        }
+
         // Init
         syncPaymentAvailability();
+        updateCashDiscountUI();
         setTimeout(() => { openKeypad(); }, 300); // Auto open keypad for demo feel
 
         // Logic
@@ -1327,8 +1668,21 @@
             }
         }
 
-        function openSettings() { settingsOverlay.classList.add('open'); }
-        function closeSettings(e) { if (e) e.stopPropagation(); settingsOverlay.classList.remove('open'); }
+        function openSettings() {
+            closeCashDiscountPage(null, true);
+            settingsOverlay.classList.add('open');
+        }
+        function closeSettings(e) {
+            if (e) e.stopPropagation();
+            const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
+            if (cashDiscountEnabled && parsedPercent === null) {
+                openCashDiscountPage();
+                updateCashDiscountUI({ preserveInput: true });
+                return;
+            }
+            closeCashDiscountPage(null, true);
+            settingsOverlay.classList.remove('open');
+        }
 
         function switchTab(index) {
             const targetGroup = paymentGroups[index];
