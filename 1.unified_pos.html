@@ -271,6 +271,11 @@
             box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
         }
 
+        .tabs.card-only-hidden {
+            display: none;
+            margin-bottom: 0;
+        }
+
         .tabs.single-payment {
             background: transparent;
             box-shadow: none;
@@ -1011,6 +1016,14 @@
                         </svg></div>
                     <div class="card-label">Auth</div>
                 </div>
+                     <div class="action-card" onclick="doAction('Auth-Incremental')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 0H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                            <path d="M12 12v2H10v2h2v2h2v-2h2v-2h-2v-2z" />
+                        </svg></div>
+                    <div class="card-label">Auth-Incremental</div>
+                </div>
                 <div class="action-card" onclick="doAction('Capture')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
@@ -1039,14 +1052,7 @@
                         </svg></div>
                     <div class="card-label">Debit Refund</div>
                 </div>
-                <div class="action-card" onclick="doAction('Auth-Incremental')">
-                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
-                            <path
-                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 0H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-                            <path d="M12 12v2H10v2h2v2h2v-2h2v-2h-2v-2z" />
-                        </svg></div>
-                    <div class="card-label">Auth-Incremental</div>
-                </div>
+           
                 <div class="action-card" onclick="doAction('Close Batch')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
@@ -1458,14 +1464,16 @@
             const visibleCount = enabledGroups.length || 1;
             const activeVisibleIndex = enabledGroups.findIndex(group => paymentGroups.indexOf(group) === activeTab);
             const pillIndex = activeVisibleIndex >= 0 ? activeVisibleIndex : 0;
-            const isSingle = visibleCount === 1;
+            const cardOnlyEnabled = visibleCount === 1 && enabledGroups[0]?.key === 'card';
+            const isSingle = visibleCount === 1 && !cardOnlyEnabled;
 
             if (tabsContainer) {
+                tabsContainer.classList.toggle('card-only-hidden', cardOnlyEnabled);
                 tabsContainer.classList.toggle('single-payment', isSingle);
             }
 
             if (tabPill) {
-                if (isSingle) {
+                if (isSingle || cardOnlyEnabled) {
                     tabPill.style.display = 'none';
                 } else {
                     tabPill.style.display = 'block';
