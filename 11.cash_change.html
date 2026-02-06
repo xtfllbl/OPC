@@ -11,6 +11,7 @@
             --design-w: 720;
             --design-h: 1280;
             --fit-scale: 1;
+            --viewport-h: 100vh;
             --bg: #ffffff;
             --text-main: #0a2459;
             --text-sub: #4c6079;
@@ -29,7 +30,8 @@
         }
 
         body {
-            min-height: 100vh;
+            min-height: var(--viewport-h);
+            height: var(--viewport-h);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -446,8 +448,12 @@
         let dueCents = resolveDueCents();
 
         function fitDesign() {
-            const scale = Math.min(window.innerWidth / 720, window.innerHeight / 1280);
+            const viewport = window.visualViewport;
+            const viewportWidth = viewport ? viewport.width : window.innerWidth;
+            const viewportHeight = viewport ? viewport.height : window.innerHeight;
+            const scale = Math.min(viewportWidth / 720, viewportHeight / 1280);
             document.documentElement.style.setProperty("--fit-scale", String(Math.max(0.25, scale)));
+            document.documentElement.style.setProperty("--viewport-h", viewportHeight + "px");
         }
 
         function formatMoney(cents) {
@@ -627,6 +633,9 @@
         syncSummary();
         fitDesign();
         window.addEventListener("resize", fitDesign);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", fitDesign);
+        }
         window.setTimeout(() => { openKeypad(); }, 300);
     </script>
 </body>
