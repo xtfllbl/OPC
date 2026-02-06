@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Payment Success</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap");
+
+        :root {
+            --bg-main: #ffffff;
+            --text-main: #0b0f16;
+            --text-sub: #5f6670;
+            --border-soft: rgba(15, 23, 42, 0.12);
+            --accent-main: #1ea86c;
+            --accent-deep: #0e7d50;
+            --accent-soft: #e9f8ef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "DM Sans", "Space Grotesk", sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: #eef3f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        .device-container {
+            width: 480px;
+            height: 100vh;
+            max-height: 800px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 36px rgba(15, 23, 42, 0.12);
+        }
+
+        .header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-sub);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            height: 60px;
+        }
+
+        .device-id {
+            font-weight: 600;
+            letter-spacing: 0.6px;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 26px 24px 18px;
+            gap: 18px;
+        }
+
+        .status-shell {
+            width: 100%;
+            border: 1px solid #e4ece7;
+            border-radius: 24px;
+            background: #fbfdfc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            padding: 22px 18px 20px;
+        }
+
+        .status-orb {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: var(--accent-main);
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .status-orb svg {
+            width: 78px;
+            height: 58px;
+        }
+
+        .status-orb path {
+            fill: none;
+            stroke: #0d3323;
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 120;
+            stroke-dashoffset: 120;
+            animation: draw 0.95s ease-out forwards;
+        }
+
+        .status-title {
+            font-family: "Space Grotesk", "DM Sans", sans-serif;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .amount-chip {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #c5ead5;
+            background: var(--accent-soft);
+            font-family: "Space Grotesk", "DM Sans", sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--accent-deep);
+            letter-spacing: 0.01em;
+            margin-top: 2px;
+        }
+
+        .meta-card {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-soft);
+            border-radius: 18px;
+            box-shadow: none;
+            padding: 6px 16px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            font-size: 14px;
+            color: var(--text-sub);
+            letter-spacing: 0.02em;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .footer {
+            padding: 14px 24px 22px;
+            border-top: 1px solid rgba(15, 23, 42, 0.06);
+            display: flex;
+            justify-content: center;
+        }
+
+        .done-btn {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            color: #ffffff;
+            background: var(--accent-main);
+            box-shadow: none;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .done-btn:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes draw {
+            from { stroke-dashoffset: 120; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        @media screen and (max-height: 580px) {
+            .header { padding: 10px 16px; height: 52px; }
+            .content { padding: 14px 16px 10px; gap: 12px; }
+            .status-shell { padding: 16px 14px 14px; border-radius: 20px; gap: 8px; }
+            .status-orb { width: 98px; height: 98px; }
+            .status-orb svg { width: 58px; height: 42px; }
+            .status-title { font-size: 28px; }
+            .amount-chip { font-size: 24px; padding: 8px 14px; }
+            .meta-row { padding: 10px 0; }
+            .meta-label { font-size: 13px; }
+            .meta-value { font-size: 14px; }
+            .footer { padding: 10px 16px 14px; }
+            .done-btn { height: 48px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="device-container">
+        <div class="header">
+            <span class="device-id">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </div>
+
+        <div class="content">
+            <section class="status-shell" aria-label="Payment success">
+                <div class="status-orb" aria-hidden="true">
+                    <svg viewBox="0 0 90 64">
+                        <path d="M6 34 L33 58 L84 8"></path>
+                    </svg>
+                </div>
+                <h1 class="status-title">Payment Successful</h1>
+                <div class="amount-chip" id="paid-amount">RM 128.00</div>
+            </section>
+
+            <section class="meta-card" aria-label="Transaction details">
+                <div class="meta-row">
+                    <span class="meta-label">Method</span>
+                    <span class="meta-value" id="pay-method">DuitNow QR</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Reference</span>
+                    <span class="meta-value" id="reference-id">QRP-20260206-102400</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Paid Time</span>
+                    <span class="meta-value" id="paid-time">2026-02-06 10:24:00</span>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <button class="done-btn" id="done-btn" type="button">Done (10s)</button>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var clock = document.getElementById("clock");
+            var paidAmountEl = document.getElementById("paid-amount");
+            var methodEl = document.getElementById("pay-method");
+            var referenceEl = document.getElementById("reference-id");
+            var paidTimeEl = document.getElementById("paid-time");
+            var doneBtn = document.getElementById("done-btn");
+
+            var params = new URLSearchParams(window.location.search);
+            var countdown = parseInt(params.get("countdown"), 10);
+            countdown = Number.isFinite(countdown) && countdown >= 0 ? countdown : 10;
+
+            function two(n) {
+                return String(n).padStart(2, "0");
+            }
+
+            function nowText(date) {
+                return date.getFullYear() + "-" + two(date.getMonth() + 1) + "-" + two(date.getDate()) + " " +
+                    two(date.getHours()) + ":" + two(date.getMinutes()) + ":" + two(date.getSeconds());
+            }
+
+            function parseMoneyToCents(value) {
+                if (value === null || value === undefined || value === "") {
+                    return null;
+                }
+                var n = Number(value);
+                if (!Number.isFinite(n) || n < 0) {
+                    return null;
+                }
+                return Math.round(n * 100);
+            }
+
+            function resolveAmountCents() {
+                var amountCents = Number(params.get("amountCents"));
+                if (Number.isFinite(amountCents) && amountCents >= 0) {
+                    return Math.round(amountCents);
+                }
+                var amount = parseMoneyToCents(params.get("amount"));
+                if (amount !== null) {
+                    return amount;
+                }
+                if (Number.isFinite(window.transactionAmountCents) && window.transactionAmountCents >= 0) {
+                    return Math.round(window.transactionAmountCents);
+                }
+                var globalAmount = parseMoneyToCents(window.transactionAmount);
+                if (globalAmount !== null) {
+                    return globalAmount;
+                }
+                return 12800;
+            }
+
+            function formatAmount(cents, currency) {
+                return currency + " " + (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function defaultReference(date) {
+                return "QRP-" + date.getFullYear() + two(date.getMonth() + 1) + two(date.getDate()) + "-" +
+                    two(date.getHours()) + two(date.getMinutes()) + two(date.getSeconds());
+            }
+
+            function exitSuccess(payload) {
+                if (typeof window.onQrPaymentSuccessDone === "function") {
+                    window.onQrPaymentSuccessDone(payload);
+                    return;
+                }
+                window.dispatchEvent(new CustomEvent("qr-payment-success-done", { detail: payload }));
+                if (window.history.length > 1) {
+                    window.history.back();
+                    return;
+                }
+            }
+
+            var now = new Date();
+            var currency = params.get("currency") || "RM";
+            var method = params.get("method") || "DuitNow QR";
+            var reference = params.get("reference") || defaultReference(now);
+            var amountCents = resolveAmountCents();
+            var paidTime = params.get("paidTime") || nowText(now);
+
+            if (clock) {
+                clock.textContent = two(now.getHours()) + ":" + two(now.getMinutes());
+            }
+            paidAmountEl.textContent = formatAmount(amountCents, currency);
+            methodEl.textContent = method;
+            referenceEl.textContent = reference;
+            paidTimeEl.textContent = paidTime;
+
+            var hasExited = false;
+            var payload = {
+                amountCents: amountCents,
+                currency: currency,
+                method: method,
+                reference: reference,
+                paidTime: paidTime
+            };
+
+            function triggerExit() {
+                if (hasExited) {
+                    return;
+                }
+                hasExited = true;
+                exitSuccess(payload);
+            }
+
+            function renderButton() {
+                doneBtn.textContent = countdown > 0 ? "Done (" + countdown + "s)" : "Done";
+            }
+
+            doneBtn.addEventListener("click", triggerExit);
+            renderButton();
+
+            if (countdown > 0) {
+                var timer = setInterval(function () {
+                    countdown -= 1;
+                    renderButton();
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        triggerExit();
+                    }
+                }, 1000);
+            }
+        })();
+    </script>
+</body>
+</html>
