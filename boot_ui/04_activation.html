@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+    <div class="device-container">
+        <div class="main-content">
+            <div class="glass-panel">
+                <div class="icon-container" style="color: var(--accent-main); margin-bottom: 40px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 140px; height: 140px; filter: drop-shadow(0 0 30px var(--accent-glow));">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7z" />
+                    </svg>
+                </div>
+                <h1 class="title">Terminal Activation</h1>
+                <p class="subtitle">Please enter your 8-digit activation code to pair with the Paywizard platform.</p>
+
+                <div class="input-container" style="width: 100%; margin-bottom: 60px;">
+                    <input type="text" placeholder="e.g. 1A2B3C4D"
+                        style="width: 100%; height: 120px; background: rgba(0,0,0,0.3); border: 2px solid var(--panel-border); border-radius: 32px; font-size: 56px; color: #fff; text-align: center; letter-spacing: 12px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; transition: all 0.3s;"
+                        onfocus="this.style.borderColor='var(--accent-main)'; this.style.boxShadow='0 0 40px var(--accent-glow)';"
+                        onblur="this.style.borderColor='var(--panel-border)'; this.style.boxShadow='none';">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary"
+                        onclick="window.location.href='05_app_download.html'">Activate</button>
+                    <button class="btn btn-secondary"
+                        style="border: none; background: transparent; color: var(--text-sub); margin-top: 20px;"
+                        onclick="window.location.href='06_desktop_mock.html'">Skip to Desktop</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

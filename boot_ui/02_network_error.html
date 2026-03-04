@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Error</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+    <div class="device-container">
+        <div class="main-content">
+            <div class="glass-panel">
+                <div class="icon-container" style="color: var(--danger-main); margin-bottom: 60px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 160px; height: 160px; opacity: 0.9; filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.4));">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M18.36 5.64a9 9 0 00-12.73 0M21.12 8.88a13 13 0 00-18.24 0M4.93 19.07l14.14-14.14M9.88 14.12a3 3 0 014.24 0M12 18h.01" />
+                    </svg>
+                </div>
+                <h1 class="title">Network Error</h1>
+                <p class="subtitle">Internet connection is required to fetch terminal configuration. Please connect to a
+                    network.</p>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="window.location.href='01_network_check.html'">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="40" height="40">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Retry Connection
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('Mock: Opening Android WIFI Settings...')">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="40" height="40">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                        </svg>
+                        WIFI Settings
+                    </button>
+                    <button class="btn btn-secondary"
+                        style="border: none; background: transparent; color: var(--text-sub); margin-top: 20px;"
+                        onclick="window.location.href='06_desktop_mock.html'">
+                        Skip to Desktop
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

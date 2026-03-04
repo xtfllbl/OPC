@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boot - Network Check</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+    <div class="device-container">
+        <div class="main-content">
+            <div class="glass-panel">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <div class="spinner-inner"></div>
+                    <div class="icon-center">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="title">Checking Network...</h1>
+                <p class="subtitle">Verifying internet connectivity to sync system settings.</p>
+            </div>
+        </div>
+        <div class="dev-tools">
+            <button onclick="window.location.href='02_network_error.html'">[Test] Simulate Error</button>
+            <button onclick="window.location.href='03_config_check.html'">[Test] Simulate Success</button>
+        </div>
+    </div>
+    <script>setTimeout(() => window.location.href = '03_config_check.html', 3000);</script>
+</body>
+
+</html>

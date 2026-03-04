@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config Check</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+    <div class="device-container">
+        <div class="main-content">
+            <div class="glass-panel">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <div class="spinner-inner"></div>
+                    <div class="icon-center">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="title">Checking Configuration</h1>
+                <p class="subtitle">Fetching payment apps and OPC parameters from Paywizard...</p>
+            </div>
+        </div>
+        <div class="dev-tools">
+            <button onclick="window.location.href='04_activation.html'">[Test] Config Missing (Go to
+                Activation)</button>
+            <button onclick="window.location.href='05_app_download.html'">[Test] Config Found (Go to Download)</button>
+        </div>
+    </div>
+    <script>setTimeout(() => window.location.href = '04_activation.html', 3000);</script>
+</body>
+
+</html>

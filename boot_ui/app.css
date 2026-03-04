@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap");
+
+:root {
+    --bg-main: #0f1319;
+    --panel-main: rgba(21, 27, 36, 0.7);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text-main: #f4f7ff;
+    --text-sub: #9aa7ba;
+    --accent-main: #2872ff;
+    --accent-glow: rgba(40, 114, 255, 0.4);
+    --danger-main: #ef4444;
+    --success-main: #10b981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: "DM Sans", sans-serif; user-select: none; }
+
+body {
+    background: #080a0e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-main);
+}
+
+.device-container {
+    width: 800px;
+    height: 1280px;
+    background: radial-gradient(circle at 50% 0%, #1d2430 0%, #0b1016 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 72px rgba(0,0,0,0.8);
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+}
+
+.glass-panel {
+    background: var(--panel-main);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--panel-border);
+    border-radius: 48px;
+    padding: 80px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+}
+
+h1.title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #A5B4CB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+p.subtitle {
+    font-size: 28px;
+    color: var(--text-sub);
+    margin-bottom: 60px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Spinners */
+.spinner-container {
+    position: relative;
+    margin-bottom: 80px;
+    width: 200px;
+    height: 200px;
+}
+.spinner {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 8px solid rgba(255, 255, 255, 0.05);
+    border-top-color: var(--accent-main);
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    box-shadow: 0 0 60px var(--accent-glow);
+}
+.spinner-inner {
+    position: absolute; top: 20px; left: 20px; width: 160px; height: 160px;
+    border-radius: 50%; border: 6px solid rgba(255, 255, 255, 0.03); border-bottom-color: #60a5fa;
+    animation: spin-reverse 1.5s linear infinite;
+}
+.icon-center {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center; color: var(--accent-main);
+}
+.icon-center svg { width: 80px; height: 80px; }
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    flex-direction: column;
+}
+.btn {
+    height: 100px;
+    border-radius: 32px;
+    font-size: 32px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent-main); color: #fff; box-shadow: 0 0 40px var(--accent-glow); }
+.btn-primary:hover { background: #3a7fff; box-shadow: 0 0 60px var(--accent-glow); }
+.btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 2px solid var(--panel-border); }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+
+/* Dev tools */
+.dev-tools {
+    position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 12px; z-index: 100; display: flex; flex-direction: column; gap: 8px;
+}
+.dev-tools button {
+    background: transparent; color: #fff; border: 1px solid #555; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px;
+}
+.dev-tools button:hover { background: rgba(255,255,255,0.1); }
