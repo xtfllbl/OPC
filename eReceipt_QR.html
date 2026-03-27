@@ -1,301 +1,818 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Transaction Receipt - MayFood</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f3f6f8">
+    <title>E-Receipt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Modern, minimal, mobile-first styles */
+        :root {
+            color-scheme: light;
+            --bg-main: #f3f6f8;
+            --bg-accent: #fbfcff;
+            --card: rgba(255, 255, 255, 0.84);
+            --ink: #101828;
+            --muted: #667085;
+            --line: rgba(16, 24, 40, 0.08);
+            --brand: #1b7b58;
+            --brand-deep: #0f5b3f;
+            --brand-soft: #e9f7f0;
+            --action: #173a8f;
+            --danger: #cf4336;
+            --danger-soft: #fef1ef;
+            --shadow: 0 20px 48px rgba(21, 39, 72, 0.12);
+            --radius-xl: 28px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            background: var(--bg-main);
         }
 
         body {
-            background-color: #f6f6f6;
-            color: #333;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* Mobile Container to simulate phone view */
-        .app-container {
-            width: 100%;
-            max-width: 414px; /* Simulating standard phone width */
-            background-color: #fff;
+            margin: 0;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid #e0e0e0;
-            border-right: 1px solid #e0e0e0;
+            font-family: "Sora", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 12%, rgba(39, 111, 255, 0.12), transparent 38%),
+                radial-gradient(circle at 92% 10%, rgba(27, 123, 88, 0.12), transparent 36%),
+                linear-gradient(180deg, var(--bg-main) 0%, var(--bg-accent) 100%);
         }
 
-        /* Standard Mobile Header */
-        .header {
-            padding: 15px 20px;
-            text-align: center;
-            border-bottom: 1px solid #e0e0e0;
+        button,
+        input {
+            font: inherit;
         }
 
-        .header h1 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        /* Key Transaction Info Area */
-        .summary-section {
-            padding: 30px 20px 20px;
-            text-align: center;
-        }
-
-        .amount {
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .trans-type {
-            font-size: 16px;
-            font-weight: 500;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Receipt Image Section */
-        .receipt-card {
-            padding: 0 20px 20px;
-            flex-grow: 1;
-        }
-
-        .receipt-image-container {
-            background: #fff;
-            border: 1px solid #eaeaea;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            min-height: 300px; /* Placeholder while image loads */
+        button {
+            border: 0;
             cursor: pointer;
         }
 
-        .receipt-image-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
+        .page {
+            width: min(100%, 460px);
+            margin: 0 auto;
+            padding:
+                calc(18px + env(safe-area-inset-top))
+                16px
+                calc(28px + env(safe-area-inset-bottom));
         }
 
-        /* Modern Action Buttons */
-        .action-area {
-            padding: 20px;
+        .stack {
+            display: grid;
+            gap: 16px;
+        }
+
+        .hero-card,
+        .panel {
+            position: relative;
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .hero-card::before,
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+            opacity: 0.88;
+        }
+
+        .hero-card::before {
+            width: 180px;
+            height: 180px;
+            right: -48px;
+            top: -70px;
+            background: radial-gradient(circle, rgba(27, 123, 88, 0.22), transparent 70%);
+        }
+
+        .hero-card::after {
+            width: 170px;
+            height: 170px;
+            left: -60px;
+            bottom: -70px;
+            background: radial-gradient(circle, rgba(23, 58, 143, 0.18), transparent 70%);
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            padding: 22px 20px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero-top {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border-top: 1px solid #e0e0e0;
-            margin-top: auto; /* Push to the bottom */
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
         }
 
-        .btn {
+        .merchant-block {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .merchant-name {
+            margin: 0;
+            font-size: 26px;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            word-break: break-word;
+        }
+
+        .type-chip {
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(16, 24, 40, 0.08);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1b2b4b;
+            white-space: nowrap;
+        }
+
+        .amount-block {
+            display: grid;
+            gap: 0;
+        }
+
+        .amount-value {
+            font-size: clamp(38px, 11vw, 56px);
+            line-height: 0.96;
+            letter-spacing: -0.05em;
+            font-weight: 800;
+            word-break: break-word;
+        }
+
+        .hero-tools {
+            display: grid;
+            gap: 16px;
+            margin-top: 4px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(16, 24, 40, 0.08);
+        }
+
+        .hero-subcard {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(16, 24, 40, 0.06);
+        }
+
+        .hero-subtitle {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .panel {
+            padding: 18px;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 17px;
+            letter-spacing: -0.02em;
+        }
+
+        .panel-caption {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .receipt-stage {
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            background:
+                radial-gradient(circle at 100% 0%, rgba(27, 123, 88, 0.08), transparent 38%),
+                linear-gradient(180deg, #f7fbf8 0%, #f4f7fb 100%);
+            border: 1px solid var(--line);
+        }
+
+        .receipt-preview {
             width: 100%;
-            padding: 16px;
+            display: block;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+        }
+
+        .action-panel {
+            display: grid;
+            gap: 12px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            min-height: 56px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--action), #315dc6);
+            color: #ffffff;
+            font-weight: 700;
             font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            transition: opacity 0.2s;
+            letter-spacing: 0.01em;
+            box-shadow: 0 14px 30px rgba(23, 58, 143, 0.22);
+            transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        .btn:active {
-            opacity: 0.8;
+        .primary-btn:active {
+            transform: scale(0.985);
+            box-shadow: 0 10px 24px rgba(23, 58, 143, 0.2);
         }
 
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
+        .primary-btn:disabled,
+        .secondary-btn:disabled {
+            opacity: 0.68;
+            cursor: default;
         }
 
-        /* Email Input Section */
-        .email-section {
-            border-top: 1px solid #e0e0e0;
-            padding: 20px;
-            background-color: #f9f9f9;
+        .primary-btn svg {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 auto;
         }
 
-        .email-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-            display: block;
+        .panel-note {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
         }
 
         .email-form {
-            display: flex;
+            display: grid;
+            gap: 12px;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #344054;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
             gap: 10px;
         }
 
-        .email-input {
-            flex-grow: 1;
-            padding: 12px 15px;
-            font-size: 15px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+        .text-input {
+            width: 100%;
+            min-height: 54px;
+            padding: 0 16px;
+            border-radius: 16px;
+            border: 1.5px solid rgba(16, 24, 40, 0.1);
+            background: #ffffff;
+            color: var(--ink);
+            font-size: 16px;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
             outline: none;
         }
 
-        .email-input:focus {
-            border-color: #007bff;
+        .text-input:focus {
+            border-color: rgba(23, 58, 143, 0.42);
+            box-shadow: 0 0 0 4px rgba(23, 58, 143, 0.12);
         }
 
-        .btn-send {
-            padding: 12px 20px;
+        .secondary-btn {
+            min-width: 116px;
+            min-height: 54px;
+            padding: 0 18px;
+            border-radius: 16px;
+            background: var(--brand-soft);
+            color: var(--brand-deep);
+            font-weight: 700;
             font-size: 15px;
+            transition: transform 0.16s ease, opacity 0.16s ease;
+            touch-action: manipulation;
+        }
+
+        .secondary-btn:active {
+            transform: scale(0.985);
+        }
+
+        .status-note {
+            margin: 0;
+            padding: 12px 14px;
+            border-radius: 15px;
+            font-size: 13px;
+            line-height: 1.5;
             font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            color: #007bff;
-            background-color: transparent;
-            border: 1px solid #007bff;
-            transition: all 0.2s;
         }
 
-        .btn-send:hover {
-            background-color: #f0f7ff;
-        }
-
-        .email-note {
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-        }
-        
-        /* Message/Toast styling */
-        .toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            font-size: 14px;
-        }
-
-        .toast.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        /* Modal styling for viewing receipt */
-        .modal {
+        .status-note[hidden] {
             display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            overflow: auto;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
         }
 
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 4px;
+        .status-note.success {
+            color: var(--brand-deep);
+            background: var(--brand-soft);
+            border: 1px solid rgba(27, 123, 88, 0.18);
         }
 
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-    </style>
-</head>
-<body>
-
-    <div class="app-container">
-        <header class="header">
-            <h1>Transaction E-Receipt</h1>
-        </header>
-
-        <section class="summary-section">
-            <div class="amount">€10.00 EUR</div>
-            <div class="trans-type">SALE</div>
-        </section>
-
-        <section class="receipt-card">
-            <div class="receipt-image-container" onclick="openReceipt()">
-                <img id="receiptImage" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAACMCAYAAAC1M/+..." alt="Digital Receipt Copy">
-            </div>
-        </section>
-
-        <div class="action-area">
-            <a href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAACMCAYAAAC1M/+..." download="MayFood_Receipt_260327.png" class="btn btn-primary" onclick="showDownloadMessage()">
-                Download E-Receipt / Save to Phone
-            </a>
-        </div>
-
-        <section class="email-section">
-            <label for="emailInput" class="email-label">Send copy to email</label>
-            <div class="email-form">
-                <input type="email" id="emailInput" class="email-input" placeholder="Enter your email address">
-                <button type="button" class="btn-send" onclick="sendEmail()">Send</button>
-            </div>
-            <p class="email-note">A copy of this electronic receipt will be sent to the provided email address.</p>
-        </section>
-    </div>
-
-    <div id="toast" class="toast">A copy has been sent to your email.</div>
-
-    <div id="receiptModal" class="modal" onclick="closeReceipt()">
-        <img class="modal-content" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAACMCAYAAAC1M/+..." alt="Full-screen Receipt">
-    </div>
-
-    <script>
-        function showToast(message) {
-            const toast = document.getElementById("toast");
-            toast.innerText = message;
-            toast.className = "toast show";
-            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        .status-note.error {
+            color: var(--danger);
+            background: var(--danger-soft);
+            border: 1px solid rgba(207, 67, 54, 0.18);
         }
 
-        function showDownloadMessage() {
-            // Note: Mobile 'download' support varies. This is the cleanest HTML-only approach.
-            // On some iOS versions, it might open the image in a new tab for saving manually.
-            showToast("Receipt downloading or opened for saving.");
+        .fade-up {
+            animation: fadeUp 0.56s ease both;
+            animation-delay: var(--delay, 0ms);
         }
 
-        function sendEmail() {
-            const email = document.getElementById('emailInput').value;
-            if(email && /^\S+@\S+\.\S+$/.test(email)) {
-                showToast("E-receipt is being sent to " + email);
-                document.getElementById('emailInput').value = ''; // Clear input
-            } else {
-                showToast("Please enter a valid email address.");
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        function openReceipt() {
-            document.getElementById('receiptModal').style.display = "flex";
+        @media (max-width: 390px) {
+            .hero-inner {
+                padding: 20px 18px;
+            }
+
+            .merchant-name {
+                font-size: 23px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+
+            .hero-subcard {
+                padding: 12px;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .secondary-btn {
+                width: 100%;
+            }
         }
 
-        function closeReceipt() {
-            document.getElementById('receiptModal').style.display = "none";
+        @media (prefers-reduced-motion: reduce) {
+            .fade-up {
+                animation: none;
+            }
+
+            .primary-btn,
+            .secondary-btn,
+            .text-input {
+                transition: none;
+            }
         }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <div class="stack">
+            <section class="hero-card fade-up" style="--delay: 20ms;" aria-label="Transaction summary">
+                <div class="hero-inner">
+                    <div class="hero-top">
+                        <div class="merchant-block">
+                            <h1 class="merchant-name" id="merchant-name">MayFood</h1>
+                        </div>
+                        <div class="type-chip" id="type-chip">Sale</div>
+                    </div>
+
+                    <div class="amount-block">
+                        <div class="amount-value" id="amount-value">EUR 10.00</div>
+                    </div>
+                    <div class="hero-tools">
+                        <div class="action-panel">
+                            <button class="primary-btn" id="download-btn" type="button">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 3v11m0 0l4-4m-4 4L8 10M5 17.5h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <span id="download-btn-label">Download Receipt</span>
+                            </button>
+                            <p class="status-note success" id="download-note" hidden></p>
+                        </div>
+
+                        <div class="hero-subcard">
+                            <h2 class="hero-subtitle">Email a copy</h2>
+                            <form class="email-form" id="email-form" novalidate>
+                                <div>
+                                    <label class="field-label" for="email-input">Email address</label>
+                                    <div class="field-row">
+                                        <input class="text-input" id="email-input" name="email" type="email" inputmode="email" autocomplete="email" enterkeyhint="send" placeholder="name@example.com" required>
+                                        <button class="secondary-btn" id="email-btn" type="submit">Send</button>
+                                    </div>
+                                </div>
+                                <p class="status-note success" id="email-note" hidden aria-live="polite"></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel fade-up" style="--delay: 120ms;" aria-label="Receipt preview">
+                <div class="panel-head">
+                    <h2 class="panel-title">Electronic receipt</h2>
+                </div>
+                <div class="receipt-stage">
+                    <img class="receipt-preview" id="receipt-preview" src="" alt="Electronic receipt preview">
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var receiptPreview = document.getElementById("receipt-preview");
+            var amountValue = document.getElementById("amount-value");
+            var typeChip = document.getElementById("type-chip");
+            var merchantName = document.getElementById("merchant-name");
+            var downloadButton = document.getElementById("download-btn");
+            var downloadButtonLabel = document.getElementById("download-btn-label");
+            var downloadNote = document.getElementById("download-note");
+            var emailForm = document.getElementById("email-form");
+            var emailInput = document.getElementById("email-input");
+            var emailButton = document.getElementById("email-btn");
+            var emailNote = document.getElementById("email-note");
+            var previewUrl = "";
+            var receiptWidth = 720;
+            var receiptHeight = 1360;
+            var isIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent)
+                || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+
+            function readValue(keys, fallback) {
+                for (var i = 0; i < keys.length; i += 1) {
+                    var key = keys[i];
+                    var queryValue = params.get(key);
+
+                    if (queryValue !== null && queryValue !== "") {
+                        return queryValue;
+                    }
+
+                    if (window[key] !== undefined && window[key] !== null && window[key] !== "") {
+                        return String(window[key]);
+                    }
+                }
+
+                return fallback;
+            }
+
+            function parseAmount() {
+                var centsValue = Number(readValue(["amountCents", "transactionAmountCents"], ""));
+                if (Number.isFinite(centsValue) && centsValue >= 0) {
+                    return Math.round(centsValue) / 100;
+                }
+
+                var rawAmount = readValue(["amount", "transactionAmount"], "10.00");
+                var normalized = String(rawAmount).replace(/,/g, "");
+                var parsed = Number(normalized);
+
+                if (Number.isFinite(parsed) && parsed >= 0) {
+                    return parsed;
+                }
+
+                return 10;
+            }
+
+            function padTwo(value) {
+                return String(value).padStart(2, "0");
+            }
+
+            function formatCompactAmount(amount) {
+                return amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function escapeXml(value) {
+                return String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&apos;");
+            }
+
+            function sanitizeFilename(value) {
+                return String(value || "receipt")
+                    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "-")
+                    .replace(/\s+/g, "-")
+                    .replace(/-+/g, "-")
+                    .replace(/^-|-$/g, "")
+                    .toLowerCase();
+            }
+
+            function showNote(element, message, isError) {
+                element.hidden = false;
+                element.textContent = message;
+                element.className = "status-note " + (isError ? "error" : "success");
+            }
+
+            function hideNote(element) {
+                element.hidden = true;
+                element.textContent = "";
+            }
+
+            function lineText(x, y, text, options) {
+                var settings = options || {};
+                var anchor = settings.anchor ? ' text-anchor="' + settings.anchor + '"' : "";
+                var size = settings.size || 24;
+                var weight = settings.weight || 500;
+                var fill = settings.fill || "#111827";
+
+                return '<text x="' + x + '" y="' + y + '"' + anchor
+                    + ' font-family="Arial, Helvetica, sans-serif" font-size="' + size + '" font-weight="'
+                    + weight + '" fill="' + fill + '">' + escapeXml(text) + "</text>";
+            }
+
+            function buildReceiptSvg(data) {
+                return [
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="' + receiptWidth + '" height="' + receiptHeight + '" viewBox="0 0 ' + receiptWidth + " " + receiptHeight + '">',
+                    '<rect width="100%" height="100%" fill="#ffffff"/>',
+                    lineText(receiptWidth / 2, 92, data.merchant, { anchor: "middle", size: 38, weight: 500 }),
+                    lineText(52, 156, "DATE:" + data.date, { size: 28, weight: 400 }),
+                    lineText(458, 156, "TIME:" + data.time, { size: 28, weight: 400 }),
+                    lineText(52, 206, "MID:" + data.mid, { size: 28, weight: 400 }),
+                    lineText(508, 206, "TID:" + data.tid, { size: 28, weight: 400 }),
+                    lineText(52, 256, "BATCH NO:" + data.batch, { size: 28, weight: 400 }),
+                    lineText(388, 256, "INVOICE NO:" + data.invoice, { size: 28, weight: 400 }),
+                    lineText(52, 306, "STAN:", { size: 28, weight: 400 }),
+                    lineText(648, 306, data.stan, { anchor: "end", size: 28, weight: 400 }),
+                    lineText(receiptWidth / 2, 402, data.type, { anchor: "middle", size: 46, weight: 400 }),
+                    lineText(52, 494, "CARD " + data.card, { size: 30, weight: 400 }),
+                    lineText(468, 544, "EXP DATE:" + data.expDate, { size: 28, weight: 400 }),
+                    lineText(52, 612, "APPR CODE:" + data.approvalCode, { size: 28, weight: 400 }),
+                    lineText(448, 612, "RRN:" + data.rrn, { size: 28, weight: 400 }),
+                    lineText(52, 662, "TSI:" + data.tsi, { size: 28, weight: 400 }),
+                    lineText(620, 662, "ATC:", { anchor: "end", size: 28, weight: 400 }),
+                    lineText(52, 712, "TVR:" + data.tvr, { size: 28, weight: 400 }),
+                    lineText(52, 762, "APSN:" + data.apsn, { size: 28, weight: 400 }),
+                    lineText(52, 812, "App Name:" + data.appName, { size: 28, weight: 400 }),
+                    lineText(52, 862, "Aid:" + data.aid, { size: 28, weight: 400 }),
+                    lineText(58, 1042, "TOTAL", { size: 48, weight: 400 }),
+                    lineText(receiptWidth / 2, 1042, data.currency, { anchor: "middle", size: 40, weight: 400 }),
+                    lineText(654, 1042, formatCompactAmount(data.amount), { anchor: "end", size: 40, weight: 400 }),
+                    lineText(receiptWidth / 2, 1128, "SIGNATURE NOT REQUIRED", { anchor: "middle", size: 38, weight: 400 }),
+                    '<line x1="156" y1="1168" x2="564" y2="1168" stroke="#111827" stroke-width="4" stroke-dasharray="12 10"/>',
+                    lineText(receiptWidth / 2, 1230, "I AGREE TO PAY AS PER CARD ISSUER AGREEMENT", { anchor: "middle", size: 26, weight: 400 }),
+                    lineText(receiptWidth / 2, 1280, "IMPORTANT-retain this copy for records", { anchor: "middle", size: 24, weight: 400 }),
+                    lineText(receiptWidth / 2, 1322, data.copyLabel.toUpperCase(), { anchor: "middle", size: 44, weight: 400 }),
+                    lineText(receiptWidth / 2, 1352, data.brand, { anchor: "middle", size: 36, weight: 400 }),
+                    "</svg>"
+                ].join("");
+            }
+
+            function svgToObjectUrl(svgMarkup) {
+                return URL.createObjectURL(new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" }));
+            }
+
+            function svgToPngBlob(svgMarkup, width, height, scale) {
+                return new Promise(function (resolve, reject) {
+                    var svgUrl = svgToObjectUrl(svgMarkup);
+                    var image = new Image();
+
+                    image.onload = function () {
+                        var canvas = document.createElement("canvas");
+                        var ratio = scale || 2;
+                        var context = canvas.getContext("2d");
+
+                        canvas.width = width * ratio;
+                        canvas.height = height * ratio;
+                        context.fillStyle = "#ffffff";
+                        context.fillRect(0, 0, canvas.width, canvas.height);
+                        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                        canvas.toBlob(function (blob) {
+                            URL.revokeObjectURL(svgUrl);
+
+                            if (blob) {
+                                resolve(blob);
+                                return;
+                            }
+
+                            reject(new Error("Receipt image export failed."));
+                        }, "image/png");
+                    };
+
+                    image.onerror = function () {
+                        URL.revokeObjectURL(svgUrl);
+                        reject(new Error("Receipt image render failed."));
+                    };
+
+                    image.src = svgUrl;
+                });
+            }
+
+            function triggerDownload(blobOrFile, filename) {
+                var objectUrl = URL.createObjectURL(blobOrFile);
+                var link = document.createElement("a");
+
+                link.href = objectUrl;
+                link.download = filename;
+                link.rel = "noopener";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                window.setTimeout(function () {
+                    URL.revokeObjectURL(objectUrl);
+                }, 4000);
+            }
+
+            function wait(duration) {
+                return new Promise(function (resolve) {
+                    window.setTimeout(resolve, duration);
+                });
+            }
+
+            var now = new Date();
+            var receiptData = {
+                merchant: readValue(["merchant", "merchantName"], "MayFood"),
+                amount: parseAmount(),
+                currency: readValue(["currency"], "EUR").toUpperCase(),
+                type: readValue(["type", "transactionType"], "Sale"),
+                date: readValue(["date"], padTwo(now.getFullYear() % 100) + "/" + padTwo(now.getMonth() + 1) + "/" + padTwo(now.getDate())),
+                time: readValue(["time"], padTwo(now.getHours()) + ":" + padTwo(now.getMinutes()) + ":" + padTwo(now.getSeconds())),
+                invoice: readValue(["invoice", "invoiceNo"], "260327073251"),
+                mid: readValue(["mid"], "21021814"),
+                tid: readValue(["tid"], "00000002"),
+                batch: readValue(["batch", "batchNo"], ""),
+                stan: readValue(["stan"], "020208"),
+                card: readValue(["card", "maskedCard"], "537218******4480"),
+                expDate: readValue(["exp", "expDate"], "2807"),
+                approvalCode: readValue(["approval", "approvalCode"], ""),
+                rrn: readValue(["rrn"], "398073251625"),
+                tsi: readValue(["tsi"], ""),
+                tvr: readValue(["tvr"], ""),
+                apsn: readValue(["apsn"], ""),
+                appName: readValue(["appName"], ""),
+                aid: readValue(["aid"], ""),
+                copyLabel: readValue(["copyLabel"], "Merchant Copy"),
+                brand: readValue(["brand"], "WizarPOS"),
+                email: readValue(["email"], ""),
+                emailEndpoint: readValue(["emailEndpoint"], "")
+            };
+
+            function syncSummary() {
+                merchantName.textContent = receiptData.merchant;
+                typeChip.textContent = receiptData.type;
+                amountValue.textContent = receiptData.currency + " " + formatCompactAmount(receiptData.amount);
+                emailInput.value = receiptData.email;
+            }
+
+            function syncPreview() {
+                var svgMarkup = buildReceiptSvg(receiptData);
+
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                }
+
+                previewUrl = svgToObjectUrl(svgMarkup);
+                receiptPreview.src = previewUrl;
+                receiptPreview.dataset.svgMarkup = svgMarkup;
+            }
+
+            async function handleDownload() {
+                downloadButton.disabled = true;
+                hideNote(downloadNote);
+                downloadButtonLabel.textContent = "Preparing...";
+
+                try {
+                    var svgMarkup = receiptPreview.dataset.svgMarkup || buildReceiptSvg(receiptData);
+                    var pngBlob = await svgToPngBlob(svgMarkup, receiptWidth, receiptHeight, 2);
+                    var filename = sanitizeFilename(readValue(["downloadName"], receiptData.merchant + "-" + receiptData.invoice)) || "receipt";
+                    var file = new File([pngBlob], filename + ".png", { type: "image/png" });
+
+                    if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: receiptData.merchant + " receipt",
+                            text: "E-receipt",
+                            files: [file]
+                        });
+                        showNote(downloadNote, "Share sheet opened. Choose Save to Files or Save Image to keep the receipt on the phone.", false);
+                    } else {
+                        triggerDownload(file, file.name);
+                        showNote(downloadNote, "Receipt download started.", false);
+                    }
+                } catch (error) {
+                    if (error && error.name === "AbortError") {
+                        showNote(downloadNote, "Save canceled.", true);
+                    } else {
+                        showNote(downloadNote, "Could not export the receipt image. Please try again.", true);
+                    }
+                } finally {
+                    downloadButton.disabled = false;
+                    downloadButtonLabel.textContent = "Download Receipt";
+                }
+            }
+
+            async function handleEmailSubmit(event) {
+                event.preventDefault();
+                hideNote(emailNote);
+
+                if (!emailInput.checkValidity()) {
+                    emailInput.reportValidity();
+                    return;
+                }
+
+                emailButton.disabled = true;
+                emailButton.textContent = "Sending...";
+
+                try {
+                    var endpoint = receiptData.emailEndpoint || window.receiptEmailEndpoint || "";
+                    var payload = {
+                        email: emailInput.value.trim(),
+                        merchant: receiptData.merchant,
+                        type: receiptData.type,
+                        currency: receiptData.currency,
+                        amount: receiptData.amount,
+                        invoice: receiptData.invoice,
+                        rrn: receiptData.rrn,
+                        receiptSvg: receiptPreview.dataset.svgMarkup || buildReceiptSvg(receiptData)
+                    };
+
+                    if (endpoint) {
+                        var response = await fetch(endpoint, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Request failed");
+                        }
+                    } else {
+                        await wait(900);
+                    }
+
+                    showNote(emailNote, "Receipt queued for " + payload.email + ".", false);
+                } catch (error) {
+                    showNote(emailNote, "Email could not be sent right now. Please try again.", true);
+                } finally {
+                    emailButton.disabled = false;
+                    emailButton.textContent = "Send";
+                }
+            }
+
+            syncSummary();
+            syncPreview();
+            downloadButton.addEventListener("click", handleDownload);
+            emailForm.addEventListener("submit", handleEmailSubmit);
+            window.addEventListener("beforeunload", function () {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                }
+            });
+        })();
     </script>
 </body>
 </html>
