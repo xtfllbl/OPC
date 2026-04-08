@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPC Standby</title>
+    <title>OPC Ready</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -79,30 +79,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             text-align: center;
-            padding-top: 136px;
-        }
-
-        .hero-icon {
-            width: 324px;
-            height: 324px;
-            display: block;
+            padding: 32px 0 58px;
         }
 
         .title {
-            margin-top: 76px;
-            font-size: 74px;
-            line-height: 1.03;
+            width: 680px;
+            max-width: 100%;
+            font-size: 92px;
+            line-height: 0.98;
             font-weight: 800;
-            letter-spacing: -0.035em;
+            letter-spacing: -0.055em;
         }
 
         .message {
-            margin-top: 52px;
-            width: 640px;
+            margin-top: 34px;
+            width: 560px;
             max-width: 100%;
-            font-size: 36px;
-            line-height: 1.23;
+            font-size: 34px;
+            line-height: 1.28;
             font-weight: 400;
             color: var(--text-sub);
             letter-spacing: -0.02em;
@@ -110,12 +106,12 @@
 
         .footer-stack {
             width: 100%;
-            min-height: 292px;
+            min-height: 316px;
             margin-top: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 28px;
             padding-bottom: 0;
         }
 
@@ -218,20 +214,9 @@
                 <div id="time-display">06:53</div>
             </header>
 
-            <section class="main" aria-label="Standby message">
-                <svg class="hero-icon" viewBox="0 0 324 324" aria-hidden="true">
-                    <circle cx="162" cy="162" r="162" fill="#39A8D8"></circle>
-                    <path d="M121 97H203" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round"></path>
-                    <path d="M139 97V125C139 139.911 151.089 152 166 152C180.911 152 193 139.911 193 125V97" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M166 152C145.566 152 129 168.566 129 189V233" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M166 152C186.434 152 203 168.566 203 189V233" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M121 233H211" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round"></path>
-                    <path d="M148 232V194C148 184.059 156.059 176 166 176C175.941 176 184 184.059 184 194V232" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M169 38C236 41 282 89 282 157" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round"></path>
-                </svg>
-
-                <h1 class="title">Welcome</h1>
-                <p class="message">Follow the instructions on the main screen to continue.</p>
+            <section class="main" aria-label="Ready message">
+                <h1 class="title">Ready for Payment</h1>
+                <p class="message">Start payment on the cashier or kiosk screen.</p>
             </section>
 
             <footer class="footer-stack" aria-label="Payment brands and wizarPOS">
