@@ -21,6 +21,8 @@
             --accent: #39a8d8;
             --status-bg: rgba(57, 168, 216, 0.14);
             --status-line: rgba(57, 168, 216, 0.42);
+            --meta-main: rgba(255, 255, 255, 0.78);
+            --meta-sub: rgba(255, 255, 255, 0.46);
         }
 
         * {
@@ -134,12 +136,12 @@
 
         .footer-stack {
             width: 100%;
-            min-height: 320px;
+            min-height: 352px;
             margin-top: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 28px;
+            gap: 20px;
             padding-bottom: 0;
         }
 
@@ -207,11 +209,44 @@
             object-fit: contain;
         }
 
+        .merchant-block {
+            position: absolute;
+            left: 44px;
+            bottom: 40px;
+            z-index: 2;
+            width: 150px;
+            max-width: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .merchant-name {
+            width: 100%;
+            font-size: 16px;
+            line-height: 1.12;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--meta-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .terminal-meta {
+            font-size: 13px;
+            line-height: 1.1;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: var(--meta-sub);
+        }
+
         .brand {
             width: 420px;
             max-width: 100%;
             min-height: 92px;
-            margin-top: auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -223,6 +258,7 @@
             height: auto;
             display: block;
         }
+
     </style>
 </head>
 
@@ -272,16 +308,52 @@
                     <img src="wizarpos_white_logo.png" alt="wizarPOS logo">
                 </div>
             </footer>
+
+            <div class="merchant-block" aria-label="Merchant details">
+                <div class="merchant-name" id="merchant-name-display">Meat The Bun Ltd</div>
+                <div class="terminal-meta" id="tid-display">43230039</div>
+            </div>
         </main>
     </div>
 
     <script>
         (function () {
             const root = document.documentElement;
+            const params = new URLSearchParams(window.location.search);
             const updateScale = () => {
                 const scale = Math.min(window.innerWidth / 800, window.innerHeight / 1280);
                 root.style.setProperty("--fit-scale", scale.toFixed(4));
                 root.style.setProperty("--viewport-h", `${window.innerHeight}px`);
+            };
+
+            const readParam = (names, fallback) => {
+                for (const name of names) {
+                    const value = params.get(name);
+                    if (value && value.trim()) {
+                        return value.trim();
+                    }
+                }
+                return fallback;
+            };
+
+            const syncMerchantDetails = () => {
+                const merchantDisplay = document.getElementById("merchant-name-display");
+                const tidDisplay = document.getElementById("tid-display");
+                const formatTid = (value) => {
+                    const digits = String(value || "").replace(/\D/g, "");
+                    if (!digits) {
+                        return "43230039";
+                    }
+                    return digits.length <= 8 ? digits : digits.slice(-8);
+                };
+
+                if (merchantDisplay) {
+                    merchantDisplay.textContent = readParam(["merchant", "merchantName", "store", "shop"], "Meat The Bun Ltd");
+                }
+
+                if (tidDisplay) {
+                    tidDisplay.textContent = formatTid(readParam(["tid", "terminalId", "terminalID"], "43230039"));
+                }
             };
 
             const updateTime = () => {
@@ -325,6 +397,7 @@
 
             window.addEventListener("resize", updateScale);
             updateScale();
+            syncMerchantDetails();
             syncPaymentLogos();
             updateTime();
             setInterval(updateTime, 1000);
