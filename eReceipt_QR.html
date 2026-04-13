@@ -72,6 +72,54 @@
             gap: 16px;
         }
 
+        .locale-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.76);
+            box-shadow: 0 12px 28px rgba(21, 39, 72, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .locale-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #344054;
+        }
+
+        .locale-actions {
+            display: inline-flex;
+            gap: 8px;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(16, 24, 40, 0.06);
+        }
+
+        .locale-btn {
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: transparent;
+            color: #475467;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+        }
+
+        .locale-btn.is-active {
+            background: #ffffff;
+            color: var(--action);
+            box-shadow: 0 8px 18px rgba(23, 58, 143, 0.12);
+        }
+
+        .locale-btn:active {
+            transform: scale(0.985);
+        }
+
         .hero-card,
         .panel {
             position: relative;
@@ -374,6 +422,19 @@
         }
 
         @media (max-width: 390px) {
+            .locale-bar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .locale-actions {
+                width: 100%;
+            }
+
+            .locale-btn {
+                flex: 1 1 0;
+            }
+
             .hero-inner {
                 padding: 20px 18px;
             }
@@ -415,7 +476,15 @@
 <body>
     <main class="page">
         <div class="stack">
-            <section class="hero-card fade-up" style="--delay: 20ms;" aria-label="Transaction summary">
+            <div class="locale-bar fade-up" style="--delay: 0ms;" role="group" aria-labelledby="language-label">
+                <span class="locale-label" id="language-label">Language</span>
+                <div class="locale-actions">
+                    <button class="locale-btn is-active" id="lang-en-btn" type="button" data-lang="en" aria-pressed="true">English</button>
+                    <button class="locale-btn" id="lang-fr-btn" type="button" data-lang="fr" aria-pressed="false">Français</button>
+                </div>
+            </div>
+
+            <section class="hero-card fade-up" id="summary-panel" style="--delay: 20ms;" aria-label="Transaction summary">
                 <div class="hero-inner">
                     <div class="hero-top">
                         <div class="merchant-block">
@@ -439,10 +508,10 @@
                         </div>
 
                         <div class="hero-subcard">
-                            <h2 class="hero-subtitle">Email a copy</h2>
+                            <h2 class="hero-subtitle" id="email-title">Email a copy</h2>
                             <form class="email-form" id="email-form" novalidate>
                                 <div>
-                                    <label class="field-label" for="email-input">Email address</label>
+                                    <label class="field-label" id="email-label" for="email-input">Email address</label>
                                     <div class="field-row">
                                         <input class="text-input" id="email-input" name="email" type="email" inputmode="email" autocomplete="email" enterkeyhint="send" placeholder="name@example.com" required>
                                         <button class="secondary-btn" id="email-btn" type="submit">Send</button>
@@ -455,9 +524,9 @@
                 </div>
             </section>
 
-            <section class="panel fade-up" style="--delay: 120ms;" aria-label="Receipt preview">
+            <section class="panel fade-up" id="receipt-panel" style="--delay: 120ms;" aria-label="Receipt preview">
                 <div class="panel-head">
-                    <h2 class="panel-title">Electronic receipt</h2>
+                    <h2 class="panel-title" id="panel-title">Electronic receipt</h2>
                 </div>
                 <div class="receipt-stage">
                     <img class="receipt-preview" id="receipt-preview" src="" alt="Electronic receipt preview">
@@ -473,6 +542,11 @@
             var amountValue = document.getElementById("amount-value");
             var typeChip = document.getElementById("type-chip");
             var merchantName = document.getElementById("merchant-name");
+            var languageLabel = document.getElementById("language-label");
+            var languageButtons = Array.prototype.slice.call(document.querySelectorAll(".locale-btn"));
+            var summaryPanel = document.getElementById("summary-panel");
+            var emailTitle = document.getElementById("email-title");
+            var emailLabel = document.getElementById("email-label");
             var downloadButton = document.getElementById("download-btn");
             var downloadButtonLabel = document.getElementById("download-btn-label");
             var downloadNote = document.getElementById("download-note");
@@ -480,11 +554,131 @@
             var emailInput = document.getElementById("email-input");
             var emailButton = document.getElementById("email-btn");
             var emailNote = document.getElementById("email-note");
+            var receiptPanel = document.getElementById("receipt-panel");
+            var panelTitle = document.getElementById("panel-title");
             var previewUrl = "";
             var receiptWidth = 720;
             var receiptHeight = 1360;
+            var languageStorageKey = "ereceipt_qr_language";
             var isIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent)
                 || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+            var translations = {
+                en: {
+                    locale: "en-US",
+                    pageTitle: "E-Receipt",
+                    languageLabel: "Language",
+                    languageName: {
+                        en: "English",
+                        fr: "French"
+                    },
+                    transactionSummary: "Transaction summary",
+                    emailCopy: "Email a copy",
+                    emailAddress: "Email address",
+                    downloadReceipt: "Download Receipt",
+                    preparing: "Preparing...",
+                    send: "Send",
+                    sending: "Sending...",
+                    electronicReceipt: "Electronic receipt",
+                    receiptPreviewAlt: "Electronic receipt preview",
+                    shareTitle: "{merchant} receipt",
+                    shareText: "E-receipt",
+                    shareOpened: "Share sheet opened. Choose Save to Files or Save Image to keep the receipt on the phone.",
+                    downloadStarted: "Receipt download started.",
+                    saveCanceled: "Save canceled.",
+                    exportFailed: "Could not export the receipt image. Please try again.",
+                    emailQueued: "Receipt queued for {email}.",
+                    emailFailed: "Email could not be sent right now. Please try again.",
+                    receipt: {
+                        date: "DATE",
+                        time: "TIME",
+                        mid: "MID",
+                        tid: "TID",
+                        batchNo: "BATCH NO",
+                        invoiceNo: "INVOICE NO",
+                        stan: "STAN",
+                        card: "CARD",
+                        expDate: "EXP DATE",
+                        apprCode: "APPR CODE",
+                        rrn: "RRN",
+                        tsi: "TSI",
+                        atc: "ATC",
+                        tvr: "TVR",
+                        apsn: "APSN",
+                        appName: "App Name",
+                        aid: "Aid",
+                        total: "TOTAL",
+                        signatureNotRequired: "SIGNATURE NOT REQUIRED",
+                        agreement: "I AGREE TO PAY AS PER CARD ISSUER AGREEMENT",
+                        important: "IMPORTANT-retain this copy for records",
+                        merchantCopy: "MERCHANT COPY",
+                        customerCopy: "CUSTOMER COPY",
+                        sale: "SALE",
+                        refund: "REFUND",
+                        "void": "VOID",
+                        preauth: "PREAUTH",
+                        completion: "COMPLETION",
+                        offline: "OFFLINE"
+                    }
+                },
+                fr: {
+                    locale: "fr-FR",
+                    pageTitle: "Reçu électronique",
+                    languageLabel: "Langue",
+                    languageName: {
+                        en: "Anglais",
+                        fr: "Français"
+                    },
+                    transactionSummary: "Résumé de la transaction",
+                    emailCopy: "Envoyer une copie par e-mail",
+                    emailAddress: "Adresse e-mail",
+                    downloadReceipt: "Télécharger le reçu",
+                    preparing: "Préparation...",
+                    send: "Envoyer",
+                    sending: "Envoi...",
+                    electronicReceipt: "Reçu électronique",
+                    receiptPreviewAlt: "Aperçu du reçu électronique",
+                    shareTitle: "Reçu {merchant}",
+                    shareText: "Reçu électronique",
+                    shareOpened: "La feuille de partage est ouverte. Choisissez Enregistrer dans Fichiers ou Enregistrer l’image pour conserver le reçu sur le téléphone.",
+                    downloadStarted: "Le téléchargement du reçu a commencé.",
+                    saveCanceled: "Enregistrement annulé.",
+                    exportFailed: "Impossible d’exporter l’image du reçu. Veuillez réessayer.",
+                    emailQueued: "Le reçu a été mis en file d’attente pour {email}.",
+                    emailFailed: "L’e-mail ne peut pas être envoyé pour le moment. Veuillez réessayer.",
+                    receipt: {
+                        date: "DATE",
+                        time: "HEURE",
+                        mid: "MID",
+                        tid: "TID",
+                        batchNo: "LOT N°",
+                        invoiceNo: "FACTURE N°",
+                        stan: "STAN",
+                        card: "CARTE",
+                        expDate: "DATE EXP.",
+                        apprCode: "CODE AUTO.",
+                        rrn: "RRN",
+                        tsi: "TSI",
+                        atc: "ATC",
+                        tvr: "TVR",
+                        apsn: "APSN",
+                        appName: "Nom appli",
+                        aid: "AID",
+                        total: "TOTAL",
+                        signatureNotRequired: "SIGNATURE NON REQUISE",
+                        agreement: "J’ACCEPTE DE PAYER SELON L’ACCORD DE L’ÉMETTEUR",
+                        important: "IMPORTANT - conservez cette copie",
+                        merchantCopy: "COPIE MARCHAND",
+                        customerCopy: "COPIE CLIENT",
+                        sale: "VENTE",
+                        refund: "REMBOURSEMENT",
+                        "void": "ANNULATION",
+                        preauth: "PRÉAUTORISATION",
+                        completion: "FINALISATION",
+                        offline: "HORS LIGNE"
+                    }
+                }
+            };
+            var currentLanguage = detectLanguage();
 
             function readValue(keys, fallback) {
                 for (var i = 0; i < keys.length; i += 1) {
@@ -525,10 +719,44 @@
             }
 
             function formatCompactAmount(amount) {
-                return amount.toLocaleString("en-US", {
+                return amount.toLocaleString(translations[currentLanguage].locale, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
+            }
+
+            function normalizeLanguage(value) {
+                var normalized = String(value || "").toLowerCase();
+
+                if (normalized.indexOf("fr") === 0) {
+                    return "fr";
+                }
+
+                if (normalized.indexOf("en") === 0) {
+                    return "en";
+                }
+
+                return "";
+            }
+
+            function detectLanguage() {
+                var queryLanguage = normalizeLanguage(readValue(["lang", "language"], ""));
+
+                if (queryLanguage) {
+                    return queryLanguage;
+                }
+
+                try {
+                    var savedLanguage = normalizeLanguage(window.localStorage.getItem(languageStorageKey));
+
+                    if (savedLanguage) {
+                        return savedLanguage;
+                    }
+                } catch (error) {
+                    // Ignore storage access failures.
+                }
+
+                return normalizeLanguage(window.navigator.language) || "en";
             }
 
             function escapeXml(value) {
@@ -560,6 +788,72 @@
                 element.textContent = "";
             }
 
+            function translate(key, replacements) {
+                var path = key.split(".");
+                var value = translations[currentLanguage];
+                var i;
+
+                for (i = 0; i < path.length; i += 1) {
+                    if (!value || value[path[i]] === undefined) {
+                        value = null;
+                        break;
+                    }
+
+                    value = value[path[i]];
+                }
+
+                if (typeof value !== "string") {
+                    return key;
+                }
+
+                if (!replacements) {
+                    return value;
+                }
+
+                return value.replace(/\{(\w+)\}/g, function (match, token) {
+                    return replacements[token] !== undefined ? replacements[token] : match;
+                });
+            }
+
+            function normalizeLookupValue(value) {
+                return String(value || "")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s+/g, " ")
+                    .replace(/[_-]+/g, " ");
+            }
+
+            function localizeTransactionType(type) {
+                var normalized = normalizeLookupValue(type);
+                var dictionary = {
+                    sale: "receipt.sale",
+                    refund: "receipt.refund",
+                    "void": "receipt.void",
+                    "voided": "receipt.void",
+                    preauth: "receipt.preauth",
+                    "pre auth": "receipt.preauth",
+                    preauthorization: "receipt.preauth",
+                    preauthorisation: "receipt.preauth",
+                    completion: "receipt.completion",
+                    "offline sale": "receipt.offline",
+                    offline: "receipt.offline"
+                };
+
+                return dictionary[normalized] ? translate(dictionary[normalized]) : String(type || "");
+            }
+
+            function localizeCopyLabel(label) {
+                var normalized = normalizeLookupValue(label);
+                var dictionary = {
+                    "merchant copy": "receipt.merchantCopy",
+                    merchant: "receipt.merchantCopy",
+                    "customer copy": "receipt.customerCopy",
+                    customer: "receipt.customerCopy"
+                };
+
+                return dictionary[normalized] ? translate(dictionary[normalized]) : String(label || "");
+            }
+
             function lineText(x, y, text, options) {
                 var settings = options || {};
                 var anchor = settings.anchor ? ' text-anchor="' + settings.anchor + '"' : "";
@@ -573,37 +867,40 @@
             }
 
             function buildReceiptSvg(data) {
+                var agreementSize = currentLanguage === "fr" ? 24 : 26;
+                var importantSize = currentLanguage === "fr" ? 22 : 24;
+
                 return [
                     '<svg xmlns="http://www.w3.org/2000/svg" width="' + receiptWidth + '" height="' + receiptHeight + '" viewBox="0 0 ' + receiptWidth + " " + receiptHeight + '">',
                     '<rect width="100%" height="100%" fill="#ffffff"/>',
                     lineText(receiptWidth / 2, 92, data.merchant, { anchor: "middle", size: 38, weight: 500 }),
-                    lineText(52, 156, "DATE:" + data.date, { size: 28, weight: 400 }),
-                    lineText(458, 156, "TIME:" + data.time, { size: 28, weight: 400 }),
-                    lineText(52, 206, "MID:" + data.mid, { size: 28, weight: 400 }),
-                    lineText(508, 206, "TID:" + data.tid, { size: 28, weight: 400 }),
-                    lineText(52, 256, "BATCH NO:" + data.batch, { size: 28, weight: 400 }),
-                    lineText(388, 256, "INVOICE NO:" + data.invoice, { size: 28, weight: 400 }),
-                    lineText(52, 306, "STAN:", { size: 28, weight: 400 }),
+                    lineText(52, 156, translate("receipt.date") + ":" + data.date, { size: 28, weight: 400 }),
+                    lineText(458, 156, translate("receipt.time") + ":" + data.time, { size: 28, weight: 400 }),
+                    lineText(52, 206, translate("receipt.mid") + ":" + data.mid, { size: 28, weight: 400 }),
+                    lineText(508, 206, translate("receipt.tid") + ":" + data.tid, { size: 28, weight: 400 }),
+                    lineText(52, 256, translate("receipt.batchNo") + ":" + data.batch, { size: 28, weight: 400 }),
+                    lineText(388, 256, translate("receipt.invoiceNo") + ":" + data.invoice, { size: 28, weight: 400 }),
+                    lineText(52, 306, translate("receipt.stan") + ":", { size: 28, weight: 400 }),
                     lineText(648, 306, data.stan, { anchor: "end", size: 28, weight: 400 }),
-                    lineText(receiptWidth / 2, 402, data.type, { anchor: "middle", size: 46, weight: 400 }),
-                    lineText(52, 494, "CARD " + data.card, { size: 30, weight: 400 }),
-                    lineText(468, 544, "EXP DATE:" + data.expDate, { size: 28, weight: 400 }),
-                    lineText(52, 612, "APPR CODE:" + data.approvalCode, { size: 28, weight: 400 }),
-                    lineText(448, 612, "RRN:" + data.rrn, { size: 28, weight: 400 }),
-                    lineText(52, 662, "TSI:" + data.tsi, { size: 28, weight: 400 }),
-                    lineText(620, 662, "ATC:", { anchor: "end", size: 28, weight: 400 }),
-                    lineText(52, 712, "TVR:" + data.tvr, { size: 28, weight: 400 }),
-                    lineText(52, 762, "APSN:" + data.apsn, { size: 28, weight: 400 }),
-                    lineText(52, 812, "App Name:" + data.appName, { size: 28, weight: 400 }),
-                    lineText(52, 862, "Aid:" + data.aid, { size: 28, weight: 400 }),
-                    lineText(58, 1042, "TOTAL", { size: 48, weight: 400 }),
+                    lineText(receiptWidth / 2, 402, localizeTransactionType(data.type), { anchor: "middle", size: 46, weight: 400 }),
+                    lineText(52, 494, translate("receipt.card") + " " + data.card, { size: 30, weight: 400 }),
+                    lineText(468, 544, translate("receipt.expDate") + ":" + data.expDate, { size: 28, weight: 400 }),
+                    lineText(52, 612, translate("receipt.apprCode") + ":" + data.approvalCode, { size: 28, weight: 400 }),
+                    lineText(448, 612, translate("receipt.rrn") + ":" + data.rrn, { size: 28, weight: 400 }),
+                    lineText(52, 662, translate("receipt.tsi") + ":" + data.tsi, { size: 28, weight: 400 }),
+                    lineText(620, 662, translate("receipt.atc") + ":", { anchor: "end", size: 28, weight: 400 }),
+                    lineText(52, 712, translate("receipt.tvr") + ":" + data.tvr, { size: 28, weight: 400 }),
+                    lineText(52, 762, translate("receipt.apsn") + ":" + data.apsn, { size: 28, weight: 400 }),
+                    lineText(52, 812, translate("receipt.appName") + ":" + data.appName, { size: 28, weight: 400 }),
+                    lineText(52, 862, translate("receipt.aid") + ":" + data.aid, { size: 28, weight: 400 }),
+                    lineText(58, 1042, translate("receipt.total"), { size: 48, weight: 400 }),
                     lineText(receiptWidth / 2, 1042, data.currency, { anchor: "middle", size: 40, weight: 400 }),
                     lineText(654, 1042, formatCompactAmount(data.amount), { anchor: "end", size: 40, weight: 400 }),
-                    lineText(receiptWidth / 2, 1128, "SIGNATURE NOT REQUIRED", { anchor: "middle", size: 38, weight: 400 }),
+                    lineText(receiptWidth / 2, 1128, translate("receipt.signatureNotRequired"), { anchor: "middle", size: 38, weight: 400 }),
                     '<line x1="156" y1="1168" x2="564" y2="1168" stroke="#111827" stroke-width="4" stroke-dasharray="12 10"/>',
-                    lineText(receiptWidth / 2, 1230, "I AGREE TO PAY AS PER CARD ISSUER AGREEMENT", { anchor: "middle", size: 26, weight: 400 }),
-                    lineText(receiptWidth / 2, 1280, "IMPORTANT-retain this copy for records", { anchor: "middle", size: 24, weight: 400 }),
-                    lineText(receiptWidth / 2, 1322, data.copyLabel.toUpperCase(), { anchor: "middle", size: 44, weight: 400 }),
+                    lineText(receiptWidth / 2, 1230, translate("receipt.agreement"), { anchor: "middle", size: agreementSize, weight: 400 }),
+                    lineText(receiptWidth / 2, 1280, translate("receipt.important"), { anchor: "middle", size: importantSize, weight: 400 }),
+                    lineText(receiptWidth / 2, 1322, localizeCopyLabel(data.copyLabel), { anchor: "middle", size: 44, weight: 400 }),
                     lineText(receiptWidth / 2, 1352, data.brand, { anchor: "middle", size: 36, weight: 400 }),
                     "</svg>"
                 ].join("");
@@ -700,9 +997,37 @@
                 emailEndpoint: readValue(["emailEndpoint"], "")
             };
 
+            function updateLanguageButtons() {
+                var i;
+
+                for (i = 0; i < languageButtons.length; i += 1) {
+                    var button = languageButtons[i];
+                    var isActive = button.getAttribute("data-lang") === currentLanguage;
+
+                    button.classList.toggle("is-active", isActive);
+                    button.setAttribute("aria-pressed", String(isActive));
+                    button.textContent = translations[currentLanguage].languageName[button.getAttribute("data-lang")];
+                }
+            }
+
+            function applyLanguage() {
+                document.documentElement.lang = currentLanguage;
+                document.title = translate("pageTitle");
+                languageLabel.textContent = translate("languageLabel");
+                summaryPanel.setAttribute("aria-label", translate("transactionSummary"));
+                receiptPanel.setAttribute("aria-label", translate("electronicReceipt"));
+                emailTitle.textContent = translate("emailCopy");
+                emailLabel.textContent = translate("emailAddress");
+                downloadButtonLabel.textContent = translate("downloadReceipt");
+                emailButton.textContent = translate("send");
+                panelTitle.textContent = translate("electronicReceipt");
+                receiptPreview.alt = translate("receiptPreviewAlt");
+                updateLanguageButtons();
+            }
+
             function syncSummary() {
                 merchantName.textContent = receiptData.merchant;
-                typeChip.textContent = receiptData.type;
+                typeChip.textContent = localizeTransactionType(receiptData.type);
                 amountValue.textContent = receiptData.currency + " " + formatCompactAmount(receiptData.amount);
                 emailInput.value = receiptData.email;
             }
@@ -722,7 +1047,7 @@
             async function handleDownload() {
                 downloadButton.disabled = true;
                 hideNote(downloadNote);
-                downloadButtonLabel.textContent = "Preparing...";
+                downloadButtonLabel.textContent = translate("preparing");
 
                 try {
                     var svgMarkup = receiptPreview.dataset.svgMarkup || buildReceiptSvg(receiptData);
@@ -732,24 +1057,24 @@
 
                     if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
                         await navigator.share({
-                            title: receiptData.merchant + " receipt",
-                            text: "E-receipt",
+                            title: translate("shareTitle", { merchant: receiptData.merchant }),
+                            text: translate("shareText"),
                             files: [file]
                         });
-                        showNote(downloadNote, "Share sheet opened. Choose Save to Files or Save Image to keep the receipt on the phone.", false);
+                        showNote(downloadNote, translate("shareOpened"), false);
                     } else {
                         triggerDownload(file, file.name);
-                        showNote(downloadNote, "Receipt download started.", false);
+                        showNote(downloadNote, translate("downloadStarted"), false);
                     }
                 } catch (error) {
                     if (error && error.name === "AbortError") {
-                        showNote(downloadNote, "Save canceled.", true);
+                        showNote(downloadNote, translate("saveCanceled"), true);
                     } else {
-                        showNote(downloadNote, "Could not export the receipt image. Please try again.", true);
+                        showNote(downloadNote, translate("exportFailed"), true);
                     }
                 } finally {
                     downloadButton.disabled = false;
-                    downloadButtonLabel.textContent = "Download Receipt";
+                    downloadButtonLabel.textContent = translate("downloadReceipt");
                 }
             }
 
@@ -763,7 +1088,7 @@
                 }
 
                 emailButton.disabled = true;
-                emailButton.textContent = "Sending...";
+                emailButton.textContent = translate("sending");
 
                 try {
                     var endpoint = receiptData.emailEndpoint || window.receiptEmailEndpoint || "";
@@ -794,19 +1119,43 @@
                         await wait(900);
                     }
 
-                    showNote(emailNote, "Receipt queued for " + payload.email + ".", false);
+                    showNote(emailNote, translate("emailQueued", { email: payload.email }), false);
                 } catch (error) {
-                    showNote(emailNote, "Email could not be sent right now. Please try again.", true);
+                    showNote(emailNote, translate("emailFailed"), true);
                 } finally {
                     emailButton.disabled = false;
-                    emailButton.textContent = "Send";
+                    emailButton.textContent = translate("send");
                 }
             }
 
+            function setLanguage(nextLanguage) {
+                if (!translations[nextLanguage] || nextLanguage === currentLanguage) {
+                    return;
+                }
+
+                currentLanguage = nextLanguage;
+
+                try {
+                    window.localStorage.setItem(languageStorageKey, currentLanguage);
+                } catch (error) {
+                    // Ignore storage access failures.
+                }
+
+                applyLanguage();
+                syncSummary();
+                syncPreview();
+            }
+
+            applyLanguage();
             syncSummary();
             syncPreview();
             downloadButton.addEventListener("click", handleDownload);
             emailForm.addEventListener("submit", handleEmailSubmit);
+            languageButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    setLanguage(button.getAttribute("data-lang"));
+                });
+            });
             window.addEventListener("beforeunload", function () {
                 if (previewUrl) {
                     URL.revokeObjectURL(previewUrl);
