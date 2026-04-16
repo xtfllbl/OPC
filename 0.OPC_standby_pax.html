@@ -86,23 +86,17 @@
             padding: 12px 0 78px;
         }
 
-        .eyebrow {
-            font-size: 24px;
-            line-height: 1;
-            font-weight: 600;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--text-label);
+        .vending-illustration {
+            width: 680px;
+            max-width: 100%;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.08));
         }
 
-        .title {
-            width: 712px;
-            max-width: 100%;
-            margin-top: 28px;
-            font-size: 110px;
-            line-height: 0.93;
-            font-weight: 800;
-            letter-spacing: -0.075em;
+        .vending-illustration img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .footer-stack {
@@ -248,9 +242,10 @@
                 <div id="time-display">06:53</div>
             </header>
 
-            <section class="main" aria-label="Ready message">
-                <p class="eyebrow">Payment Terminal</p>
-                <h1 class="title">Ready to Pay</h1>
+            <section class="main" aria-label="Vending machine illustration">
+                <div class="vending-illustration" role="img" aria-label="Select product illustration">
+                    <img src="ic_select_product.gif" alt="Select product">
+                </div>
             </section>
 
             <footer class="footer-stack" aria-label="Payment brands and wizarPOS">

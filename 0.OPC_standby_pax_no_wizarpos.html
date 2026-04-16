@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPC Ready - PAX Variant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --design-w: 800;
+            --design-h: 1280;
+            --fit-scale: 1;
+            --viewport-h: 100vh;
+            --bg: #000000;
+            --text-main: #ffffff;
+            --text-sub: rgba(255, 255, 255, 0.76);
+            --text-label: rgba(255, 255, 255, 0.48);
+            --meta-main: rgba(255, 255, 255, 0.78);
+            --meta-sub: rgba(255, 255, 255, 0.46);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: "Inter", sans-serif;
+            user-select: none;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: var(--viewport-h);
+            background: #0d0d0d;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viewport {
+            width: calc(var(--design-w) * 1px);
+            height: calc(var(--design-h) * 1px);
+            background: var(--bg);
+            color: var(--text-main);
+            overflow: hidden;
+            position: relative;
+            transform: scale(var(--fit-scale));
+            transform-origin: center center;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            padding: 54px 44px 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 12px 0 78px;
+        }
+
+        .vending-illustration {
+            width: 680px;
+            max-width: 100%;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.08));
+        }
+
+        .vending-illustration img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .footer-stack {
+            width: 100%;
+            min-height: 288px;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 0;
+        }
+
+        .payment-logos {
+            --payment-size: 108px;
+            --payment-gap-x: 18px;
+            --payment-gap-y: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start;
+            gap: var(--payment-gap-y) var(--payment-gap-x);
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .payment-logo {
+            width: var(--payment-size);
+            height: var(--payment-size);
+            flex: 0 0 var(--payment-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .payment-logos.count-1 {
+            --payment-size: 136px;
+            max-width: 136px;
+        }
+
+        .payment-logos.count-2 {
+            --payment-size: 124px;
+            --payment-gap-x: 24px;
+            max-width: 272px;
+        }
+
+        .payment-logos.count-3 {
+            --payment-size: 116px;
+            --payment-gap-x: 20px;
+            max-width: 388px;
+        }
+
+        .payment-logos.count-4 {
+            --payment-size: 112px;
+            --payment-gap-x: 16px;
+            max-width: 496px;
+        }
+
+        .payment-logos.count-5,
+        .payment-logos.count-6,
+        .payment-logos.count-7,
+        .payment-logos.count-8 {
+            --payment-size: 108px;
+            max-width: 500px;
+        }
+
+        .payment-mark {
+            display: block;
+            filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.06));
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .footer-meta {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 0 8px 2px;
+        }
+
+        .merchant-block {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .merchant-name {
+            width: 100%;
+            font-size: 16px;
+            line-height: 1.12;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--meta-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .terminal-meta {
+            flex: 0 0 auto;
+            font-size: 13px;
+            line-height: 1.1;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: var(--meta-sub);
+            text-align: right;
+        }
+
+        .brand {
+            width: 420px;
+            max-width: 100%;
+            min-height: 92px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .brand img {
+            width: 388px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="viewport">
+        <main class="screen">
+            <header class="status-bar" aria-label="Device status">
+                <div>WP53307Q39000001</div>
+                <div id="time-display">06:53</div>
+            </header>
+
+            <section class="main" aria-label="Vending machine illustration">
+                <div class="vending-illustration" role="img" aria-label="Select product illustration">
+                    <img src="ic_select_product.gif" alt="Select product">
+                </div>
+            </section>
+
+            <footer class="footer-stack" aria-label="Payment brands">
+                <div class="payment-logos" id="payment-logos" data-accepted-brands="visa,mastercard,amex,discover,unionpay,applepay,googlepay" aria-label="Accepted cards">
+                    <div class="payment-logo" data-brand="visa">
+                        <img class="payment-mark" src="icon_visa.svg" alt="Visa">
+                    </div>
+                    <div class="payment-logo" data-brand="mastercard">
+                        <img class="payment-mark" src="icon_mastercard.svg" alt="Mastercard">
+                    </div>
+                    <div class="payment-logo" data-brand="amex">
+                        <img class="payment-mark" src="icon_amex.svg" alt="American Express">
+                    </div>
+                    <div class="payment-logo" data-brand="discover">
+                        <img class="payment-mark" src="icon_discover.svg" alt="Discover">
+                    </div>
+                    <div class="payment-logo" data-brand="unionpay">
+                        <img class="payment-mark" src="icon_union pay.svg" alt="UnionPay">
+                    </div>
+                    <div class="payment-logo" data-brand="applepay">
+                        <img class="payment-mark" src="icon_apple pay.svg" alt="Apple Pay">
+                    </div>
+                    <div class="payment-logo" data-brand="googlepay">
+                        <img class="payment-mark" src="icon_google pay.svg" alt="Google Pay">
+                    </div>
+                </div>
+
+                <div class="footer-meta" aria-label="Merchant details">
+                    <div class="merchant-block">
+                        <div class="merchant-name" id="merchant-name-display">Meat The Bun Ltd</div>
+                    </div>
+                    <div class="terminal-meta" id="tid-display">43230039</div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const params = new URLSearchParams(window.location.search);
+            const updateScale = () => {
+                const scale = Math.min(window.innerWidth / 800, window.innerHeight / 1280);
+                root.style.setProperty("--fit-scale", scale.toFixed(4));
+                root.style.setProperty("--viewport-h", `${window.innerHeight}px`);
+            };
+
+            const readParam = (names, fallback) => {
+                for (const name of names) {
+                    const value = params.get(name);
+                    if (value && value.trim()) {
+                        return value.trim();
+                    }
+                }
+                return fallback;
+            };
+
+            const syncMerchantDetails = () => {
+                const merchantDisplay = document.getElementById("merchant-name-display");
+                const tidDisplay = document.getElementById("tid-display");
+                const formatTid = (value) => {
+                    const digits = String(value || "").replace(/\D/g, "");
+                    if (!digits) {
+                        return "43230039";
+                    }
+                    return digits.length <= 8 ? digits : digits.slice(-8);
+                };
+
+                if (merchantDisplay) {
+                    merchantDisplay.textContent = readParam(["merchant", "merchantName", "store", "shop"], "Meat The Bun Ltd");
+                }
+
+                if (tidDisplay) {
+                    tidDisplay.textContent = formatTid(readParam(["tid", "terminalId", "terminalID"], "43230039"));
+                }
+            };
+
+            const updateTime = () => {
+                const now = new Date();
+                const timeDisplay = document.getElementById("time-display");
+                if (!timeDisplay) {
+                    return;
+                }
+                const hours = String(now.getHours()).padStart(2, "0");
+                const minutes = String(now.getMinutes()).padStart(2, "0");
+                timeDisplay.textContent = `${hours}:${minutes}`;
+            };
+
+            const syncPaymentLogos = () => {
+                const container = document.getElementById("payment-logos");
+                if (!container) {
+                    return;
+                }
+
+                const acceptedBrands = (container.dataset.acceptedBrands || "")
+                    .split(",")
+                    .map((brand) => brand.trim().toLowerCase())
+                    .filter(Boolean);
+
+                const logos = Array.from(container.querySelectorAll(".payment-logo"));
+                let visibleCount = 0;
+
+                logos.forEach((logo) => {
+                    const isVisible = acceptedBrands.length === 0 || acceptedBrands.includes(logo.dataset.brand);
+                    logo.style.display = isVisible ? "flex" : "none";
+                    if (isVisible) {
+                        visibleCount += 1;
+                    }
+                });
+
+                container.className = "payment-logos";
+                if (visibleCount > 0) {
+                    container.classList.add(`count-${Math.min(visibleCount, 8)}`);
+                }
+            };
+
+            window.addEventListener("resize", updateScale);
+            updateScale();
+            syncMerchantDetails();
+            syncPaymentLogos();
+            updateTime();
+            setInterval(updateTime, 1000);
+        })();
+    </script>
+</body>
+
+</html>
