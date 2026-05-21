@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Start Charging</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="main-center" aria-label="Starting charge">
+                <div class="loading-orb" aria-hidden="true"></div>
+                <div>
+                    <div class="kicker">Authorized</div>
+                    <h1 class="hero-title">Starting</h1>
+                </div>
+
+                <section class="summary-card panel" aria-label="Session target">
+                    <div class="summary-row">
+                        <span class="meta-label">Connector</span>
+                        <span class="meta-value" id="connector-display">A1 CCS2</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="meta-label">Paid</span>
+                        <span class="meta-value" id="amount-display">EUR 20.00</span>
+                    </div>
+                </section>
+            </section>
+
+            <footer class="footer-actions">
+                <a class="primary-action" data-next-page="24.EV_charging_progress.html" href="24.EV_charging_progress.html">Charging Started</a>
+            </footer>
+        </main>
+    </div>
+    <script src="EV_common.js"></script>
+</body>
+</html>

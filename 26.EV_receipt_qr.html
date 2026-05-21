@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Receipt QR</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="section-head">
+                <div class="kicker">E-Receipt</div>
+                <h1 class="page-title">Scan QR</h1>
+            </section>
+
+            <section class="qr-panel panel" aria-label="E receipt QR">
+                <div class="qr-frame">
+                    <img src="qr.svg" alt="Receipt QR code">
+                </div>
+                <div class="receipt-tags">
+                    <span class="status-pill">
+                        <span class="status-dot"></span>
+                        Sale
+                    </span>
+                    <span class="status-pill warning">
+                        <span class="status-dot"></span>
+                        Refund
+                    </span>
+                </div>
+            </section>
+
+            <section class="summary-card panel" aria-label="Receipt summary">
+                <div class="summary-row">
+                    <span class="meta-label">Paid</span>
+                    <span class="meta-value" id="paid-display">EUR 20.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Used</span>
+                    <span class="meta-value" id="consumed-display">EUR 11.60</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Refund</span>
+                    <span class="meta-value" id="refund-display">EUR 8.40</span>
+                </div>
+            </section>
+
+            <footer class="footer-actions">
+                <a class="secondary-action" href="19.EV_standby.html">Done</a>
+            </footer>
+        </main>
+    </div>
+    <script src="EV_common.js"></script>
+</body>
+</html>

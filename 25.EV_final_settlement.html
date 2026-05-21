@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Final Settlement</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="section-head">
+                <div class="kicker">Finished</div>
+                <h1 class="page-title">Final Settlement</h1>
+            </section>
+
+            <section class="settlement-total panel" aria-label="Refund amount">
+                <span class="short-note">Refund</span>
+                <span class="settlement-amount" id="refund-display">EUR 8.40</span>
+            </section>
+
+            <section class="summary-card panel" aria-label="Settlement details">
+                <div class="settlement-row">
+                    <span class="meta-label">Paid</span>
+                    <span class="meta-value" id="paid-display">EUR 20.00</span>
+                </div>
+                <div class="settlement-row">
+                    <span class="meta-label">Used</span>
+                    <span class="meta-value" id="consumed-display">EUR 11.60</span>
+                </div>
+                <div class="settlement-row">
+                    <span class="meta-label">Energy</span>
+                    <span class="meta-value" id="kwh-display">16.8 kWh</span>
+                </div>
+                <div class="settlement-row">
+                    <span class="meta-label">Session</span>
+                    <span class="meta-value" id="session-display">EV-260521-1042</span>
+                </div>
+            </section>
+
+            <footer class="footer-actions">
+                <span class="status-pill">
+                    <span class="status-dot"></span>
+                    Refund Ready
+                </span>
+                <a class="primary-action" data-next-page="26.EV_receipt_qr.html" href="26.EV_receipt_qr.html">Receipt</a>
+            </footer>
+        </main>
+    </div>
+    <script src="EV_common.js"></script>
+</body>
+</html>

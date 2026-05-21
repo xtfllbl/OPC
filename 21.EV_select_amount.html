@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Select Amount</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="section-head">
+                <div class="kicker">Step 2</div>
+                <h1 class="page-title">Select Amount</h1>
+            </section>
+
+            <section class="summary-card panel">
+                <div class="summary-row">
+                    <span class="meta-label">Connector</span>
+                    <span class="meta-value" id="connector-display">A1 CCS2</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Power</span>
+                    <span class="meta-value" id="power-display">150 kW</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Price</span>
+                    <span class="meta-value" id="rate-display">EUR 0.69 / kWh</span>
+                </div>
+            </section>
+
+            <section class="amount-grid" aria-label="Amount options">
+                <button class="amount-card" type="button" data-amount="10.00">
+                    <span class="amount-value">EUR 10</span>
+                    <span class="amount-caption">Short charge</span>
+                </button>
+                <button class="amount-card is-selected" type="button" data-amount="20.00">
+                    <span class="amount-value">EUR 20</span>
+                    <span class="amount-caption">Recommended</span>
+                </button>
+                <button class="amount-card" type="button" data-amount="30.00">
+                    <span class="amount-value">EUR 30</span>
+                    <span class="amount-caption">More range</span>
+                </button>
+                <button class="amount-card" type="button" data-amount="50.00">
+                    <span class="amount-value">EUR 50</span>
+                    <span class="amount-caption">Long trip</span>
+                </button>
+            </section>
+
+            <footer class="footer-actions">
+                <a class="primary-action" id="continue-link" href="22.EV_confirm_payment.html">Continue</a>
+            </footer>
+        </main>
+    </div>
+
+    <script src="EV_common.js"></script>
+    <script>
+        EV.ready(function () {
+            const cards = Array.from(document.querySelectorAll("[data-amount]"));
+            const continueLink = document.getElementById("continue-link");
+            let selectedAmount = EV.value("amount", "20.00");
+
+            function sync() {
+                cards.forEach(function (card) {
+                    card.classList.toggle("is-selected", card.dataset.amount === selectedAmount);
+                });
+                continueLink.href = EV.href("22.EV_confirm_payment.html", { amount: selectedAmount, paid: selectedAmount });
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener("click", function () {
+                    selectedAmount = card.dataset.amount;
+                    sync();
+                });
+            });
+
+            sync();
+        });
+    </script>
+</body>
+</html>

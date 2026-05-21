@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/19.EV_standby.html"
+    }
+  ]
+}

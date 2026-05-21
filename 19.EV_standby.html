@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Standby</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="main-center" aria-label="EV charging standby">
+                <div class="kicker">EV Charge</div>
+                <h1 class="hero-title">Start Charging</h1>
+
+                <div class="charger-visual" aria-hidden="true">
+                    <div class="charger-body"></div>
+                    <div class="charger-cable"></div>
+                </div>
+
+                <div class="hero-price soft-panel" aria-label="Price">
+                    <span>Price</span>
+                    <strong id="rate-display">EUR 0.69 / kWh</strong>
+                </div>
+            </section>
+
+            <footer class="footer-actions">
+                <div class="status-row">
+                    <span class="status-pill">
+                        <span class="status-dot"></span>
+                        2 Available
+                    </span>
+                    <span class="short-note">Card or mobile pay</span>
+                </div>
+                <a class="primary-action" href="20.EV_select_connector.html">Start</a>
+            </footer>
+        </main>
+    </div>
+    <script src="EV_common.js"></script>
+</body>
+</html>

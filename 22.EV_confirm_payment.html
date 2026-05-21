@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Confirm Payment</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="section-head">
+                <div class="kicker">Step 3</div>
+                <h1 class="page-title">Confirm Payment</h1>
+            </section>
+
+            <section class="summary-card panel" aria-label="Order summary">
+                <div class="summary-row">
+                    <span class="meta-label">Charger</span>
+                    <span class="meta-value" id="charger-display">Charger A</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Connector</span>
+                    <span class="meta-value" id="connector-display">A1 CCS2</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Sale</span>
+                    <span class="meta-value" id="amount-display">EUR 20.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="meta-label">Price</span>
+                    <span class="meta-value" id="rate-display">EUR 0.69 / kWh</span>
+                </div>
+            </section>
+
+            <section class="tap-zone panel" aria-label="Tap card">
+                <div class="tap-icon" aria-hidden="true">
+                    <img src="tap.svg" alt="">
+                </div>
+                <h2 class="page-title">Tap Card</h2>
+                <div class="brand-row" aria-label="Accepted payment brands">
+                    <img src="visa.svg" alt="Visa">
+                    <img src="mastercard.svg" alt="Mastercard">
+                    <img src="applepay.svg" alt="Apple Pay">
+                    <img src="googlepay.svg" alt="Google Pay">
+                </div>
+            </section>
+
+            <footer class="footer-actions">
+                <a class="primary-action" data-next-page="23.EV_start_charging.html" href="23.EV_start_charging.html">Payment Approved</a>
+            </footer>
+        </main>
+    </div>
+    <script src="EV_common.js"></script>
+</body>
+</html>

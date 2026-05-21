@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Charging Progress</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="status-row">
+                <div>
+                    <div class="kicker">Live Session</div>
+                    <h1 class="page-title">Charging</h1>
+                </div>
+                <span class="status-pill">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+            </section>
+
+            <section class="progress-card panel" aria-label="Charging progress">
+                <div class="progress-ring">
+                    <div class="progress-inner">
+                        <span class="progress-value" id="kwh-display">16.8 kWh</span>
+                        <span class="progress-label">Delivered</span>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric">
+                        <span class="metric-label">Used</span>
+                        <span class="metric-value" id="consumed-display">EUR 11.60</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Paid</span>
+                        <span class="metric-value" id="paid-display">EUR 20.00</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Time</span>
+                        <span class="metric-value" id="duration-display">00:18</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Power</span>
+                        <span class="metric-value" id="power-display">150 kW</span>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer-actions">
+                <div class="hero-price soft-panel">
+                    <span>Finish</span>
+                    <strong>Stop from vehicle</strong>
+                </div>
+                <a class="secondary-action" id="stop-link" href="25.EV_final_settlement.html">Vehicle Stop Detected</a>
+            </footer>
+        </main>
+    </div>
+
+    <script src="EV_common.js"></script>
+    <script>
+        EV.ready(function () {
+            const amount = Number(EV.value("amount", "20.00"));
+            const consumed = Number.isFinite(amount) ? Math.max(0, amount * 0.58) : 11.6;
+            const refund = Number.isFinite(amount) ? Math.max(0, amount - consumed) : 8.4;
+            document.getElementById("stop-link").href = EV.href("25.EV_final_settlement.html", {
+                paid: Number.isFinite(amount) ? amount.toFixed(2) : "20.00",
+                consumed: consumed.toFixed(2),
+                refund: refund.toFixed(2),
+                kwh: "16.8",
+                duration: "00:18"
+            });
+        });
+    </script>
+</body>
+</html>

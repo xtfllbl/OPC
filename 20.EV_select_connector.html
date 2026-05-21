@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Select Connector</title>
+    <link rel="stylesheet" href="EV_common.css">
+</head>
+<body>
+    <div class="device-container">
+        <header class="header">
+            <span class="device-id" id="serial-display">WP5120Q3000001</span>
+            <span id="clock">10:24</span>
+        </header>
+
+        <main class="content">
+            <section class="section-head">
+                <div class="kicker">Step 1</div>
+                <h1 class="page-title">Select Connector</h1>
+            </section>
+
+            <section class="select-list" aria-label="Connector list">
+                <button class="select-card is-selected" type="button" data-connector-card data-charger="A" data-connector="A1" data-type="CCS2" data-power="150 kW">
+                    <span class="select-main">
+                        <span>
+                            <span class="connector-id">A1</span>
+                            <span class="connector-meta">Charger A / CCS2</span>
+                        </span>
+                        <span class="status-pill">
+                            <span class="status-dot"></span>
+                            Ready
+                        </span>
+                    </span>
+                    <span class="connector-meta">150 kW fast charging</span>
+                </button>
+
+                <button class="select-card is-disabled" type="button" disabled>
+                    <span class="select-main">
+                        <span>
+                            <span class="connector-id">A2</span>
+                            <span class="connector-meta">Charger A / CCS2</span>
+                        </span>
+                        <span class="status-pill warning">
+                            <span class="status-dot"></span>
+                            Busy
+                        </span>
+                    </span>
+                    <span class="connector-meta">Unavailable</span>
+                </button>
+
+                <button class="select-card" type="button" data-connector-card data-charger="B" data-connector="B1" data-type="Type 2" data-power="22 kW">
+                    <span class="select-main">
+                        <span>
+                            <span class="connector-id">B1</span>
+                            <span class="connector-meta">Charger B / Type 2</span>
+                        </span>
+                        <span class="status-pill">
+                            <span class="status-dot"></span>
+                            Ready
+                        </span>
+                    </span>
+                    <span class="connector-meta">22 kW AC charging</span>
+                </button>
+            </section>
+
+            <footer class="footer-actions">
+                <div class="hero-price soft-panel">
+                    <span>Price</span>
+                    <strong id="rate-display">EUR 0.69 / kWh</strong>
+                </div>
+                <a class="primary-action" id="continue-link" href="21.EV_select_amount.html">Continue</a>
+            </footer>
+        </main>
+    </div>
+
+    <script src="EV_common.js"></script>
+    <script>
+        EV.ready(function () {
+            const cards = Array.from(document.querySelectorAll("[data-connector-card]"));
+            const continueLink = document.getElementById("continue-link");
+            let selected = {
+                charger: EV.value("charger", "A"),
+                connector: EV.value("connector", "A1"),
+                connectorType: EV.value("connectorType", "CCS2"),
+                power: EV.value("power", "150 kW")
+            };
+
+            function sync() {
+                cards.forEach(function (card) {
+                    card.classList.toggle("is-selected", card.dataset.connector === selected.connector);
+                });
+                continueLink.href = EV.href("21.EV_select_amount.html", selected);
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener("click", function () {
+                    selected = {
+                        charger: card.dataset.charger,
+                        connector: card.dataset.connector,
+                        connectorType: card.dataset.type,
+                        power: card.dataset.power
+                    };
+                    sync();
+                });
+            });
+
+            sync();
+        });
+    </script>
+</body>
+</html>
