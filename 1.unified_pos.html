@@ -69,9 +69,106 @@
             flex-direction: column;
         }
 
+        /* --- App-owned Android Status Bar --- */
+        .android-status-bar {
+            height: 28px;
+            flex: 0 0 28px;
+            padding: 0 14px 0 16px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            color: var(--text-dark);
+            background: var(--bg-body);
+            position: relative;
+            z-index: 200;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.01em;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .status-icon {
+            width: 15px;
+            height: 15px;
+            display: block;
+            fill: currentColor;
+        }
+
+        .status-wifi.offline,
+        .status-network-label.offline {
+            color: #EF4444;
+            opacity: 0.8;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            text-align: right;
+            font-size: 9px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-battery-icon {
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+            position: relative;
+        }
+
+        .status-battery-icon::after {
+            content: "";
+            position: absolute;
+            right: -3.5px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .status-battery.low {
+            color: #EF4444;
+        }
+
         /* --- Header --- */
         .header {
-            padding: 18px 22px 6px;
+            padding: 8px 22px 6px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -106,7 +203,7 @@
         /* --- Amount Hero --- */
         .amount-section {
             text-align: center;
-            padding: 24px 0 32px;
+            padding: 20px 0 28px;
             cursor: pointer;
             transition: transform 0.1s;
         }
@@ -536,7 +633,7 @@
         /* --- Keypad --- */
         .keypad-overlay {
             position: absolute;
-            top: 0;
+            top: 28px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -674,7 +771,7 @@
         /* --- Settings Page --- */
         .settings-overlay {
             position: absolute;
-            inset: 0;
+            inset: 28px 0 0;
             background: var(--bg-body);
             z-index: 120;
             opacity: 0;
@@ -739,6 +836,43 @@
             flex: 1;
             padding: 10px 16px 16px;
             overflow-y: auto;
+        }
+
+        .settings-footer {
+            padding: 10px 16px 18px;
+            background: var(--bg-body);
+        }
+
+        .settings-exit-btn {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #FCA5A5;
+            border-radius: 16px;
+            background: #FEF2F2;
+            color: #DC2626;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.08);
+        }
+
+        .settings-exit-btn:active {
+            background: #FEE2E2;
+            transform: scale(0.99);
+        }
+
+        .settings-exit-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .settings-section-title {
@@ -964,12 +1098,131 @@
         .cash-discount-rate-group.hidden {
             display: none;
         }
+
+        .settings-password-modal {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.42);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .settings-password-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-password-card {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 18px;
+            background: #fff;
+            padding: 18px;
+            box-shadow: 0 20px 44px rgba(15, 23, 42, 0.22);
+        }
+
+        .settings-password-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 14px;
+        }
+
+        .settings-password-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #64748B;
+            margin-bottom: 8px;
+        }
+
+        .settings-password-input {
+            width: 100%;
+            height: 46px;
+            border-radius: 12px;
+            border: 1px solid #CBD5E1;
+            padding: 0 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            background: #fff;
+            outline: none;
+            user-select: text;
+        }
+
+        .settings-password-input:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+        }
+
+        .settings-password-error {
+            min-height: 18px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #DC2626;
+            visibility: hidden;
+        }
+
+        .settings-password-error.show {
+            visibility: visible;
+        }
+
+        .settings-password-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .settings-password-btn {
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            background: #fff;
+            color: #111827;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .settings-password-btn.confirm {
+            border-color: #DC2626;
+            background: #DC2626;
+            color: #fff;
+        }
+
+        .settings-password-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 
 <body>
 
     <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label" id="status-network-label">4G</span>
+                <svg class="status-icon status-wifi" id="status-wifi" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22h-6l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Zm0-6c5.82 0 11.13 2.12 15.22 5.64l-2.09 2.43A19.97 19.97 0 0 0 12 4.2c-5.01 0-9.59 1.83-13.13 4.87l-2.09-2.43A23.18 23.18 0 0 1 12 1Z" transform="scale(.72) translate(4.65 2.2)"></path>
+                </svg>
+                <span class="status-battery" id="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value" id="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level" id="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
         <header class="header">
             <div class="header-left">
                 <div class="merchant-name">Jose's Store</div>
@@ -1374,6 +1627,17 @@
                     </div>
                 </div>
 
+                <div class="settings-footer">
+                    <button class="settings-exit-btn" onclick="requestSettingsExit(event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 17l5-5-5-5" />
+                            <path d="M15 12H3" />
+                            <path d="M14 4h4c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2h-4" />
+                        </svg>
+                        <span>Exit</span>
+                    </button>
+                </div>
+
                 <div class="settings-subpage" id="cash-discount-page">
                     <div class="settings-header-bar">
                         <button class="settings-back-btn" onclick="closeCashDiscountPage(event)">
@@ -1410,6 +1674,21 @@
                                 </div>
                                 <div class="settings-input-error" id="cash-discount-error"></div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-password-modal" id="settings-exit-modal" onclick="closeExitPasswordModal(event)">
+                    <div class="settings-password-card" onclick="event.stopPropagation()">
+                        <div class="settings-password-title">Exit</div>
+                        <label class="settings-password-label" for="settings-exit-password">Password</label>
+                        <input class="settings-password-input" id="settings-exit-password" type="password"
+                            inputmode="numeric" maxlength="8" autocomplete="off" oninput="clearExitPasswordError()"
+                            onkeydown="handleExitPasswordKey(event)">
+                        <div class="settings-password-error" id="settings-exit-password-error">Incorrect password.</div>
+                        <div class="settings-password-actions">
+                            <button class="settings-password-btn" onclick="closeExitPasswordModal(event)">Cancel</button>
+                            <button class="settings-password-btn confirm" onclick="confirmSettingsExit(event)">Exit</button>
                         </div>
                     </div>
                 </div>
@@ -1459,9 +1738,18 @@
         let activeTab = 0;
 
         // References
+        const statusTime = document.getElementById('status-time');
+        const statusWifi = document.getElementById('status-wifi');
+        const statusNetworkLabel = document.getElementById('status-network-label');
+        const statusBattery = document.getElementById('status-battery');
+        const statusBatteryValue = document.getElementById('status-battery-value');
+        const statusBatteryLevel = document.getElementById('status-battery-level');
         const displayEl = document.getElementById('main-amount');
         const keypadOverlay = document.getElementById('keypad-overlay');
         const settingsOverlay = document.getElementById('settings-overlay');
+        const settingsExitModal = document.getElementById('settings-exit-modal');
+        const settingsExitPasswordInput = document.getElementById('settings-exit-password');
+        const settingsExitPasswordError = document.getElementById('settings-exit-password-error');
         const printSubmenuSheet = document.getElementById('print-submenu-sheet');
         const cashDiscountPage = document.getElementById('cash-discount-page');
         const cashDiscountToggle = document.getElementById('cash-discount-toggle');
@@ -1490,6 +1778,7 @@
             'rgba(124, 58, 237, 0.28)'
         ];
         const actionsRequireAmount = ['Sale', 'Auth', 'Auth-Incremental', 'Tip Adjust', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
+        const SETTINGS_EXIT_PASSWORD = '99999999';
         const paymentGroups = [
             { key: 'card', tab: tabs[0], grid: grids[0], toggle: document.querySelector('.settings-toggle[data-group="card"]') },
             { key: 'qr', tab: tabs[1], grid: grids[1], toggle: document.querySelector('.settings-toggle[data-group="qr"]') },
@@ -1504,6 +1793,63 @@
         let pendingAction = null;
         let cashDiscountEnabled = false;
         let cashDiscountPercentText = '';
+
+        function updateStatusTime() {
+            if (!statusTime) return;
+            statusTime.textContent = new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).format(new Date());
+        }
+
+        function updateConnectionStatus() {
+            const isOnline = navigator.onLine;
+            if (statusWifi) {
+                statusWifi.classList.toggle('offline', !isOnline);
+                statusWifi.setAttribute('aria-label', isOnline ? 'Wi-Fi connected' : 'Network offline');
+            }
+            if (statusNetworkLabel) {
+                statusNetworkLabel.textContent = isOnline ? '4G' : 'OFF';
+                statusNetworkLabel.classList.toggle('offline', !isOnline);
+            }
+        }
+
+        function renderBatteryStatus(level, charging = false) {
+            const percentage = Math.max(0, Math.min(100, Math.round(level * 100)));
+            if (statusBatteryValue) statusBatteryValue.textContent = String(percentage);
+            if (statusBatteryLevel) statusBatteryLevel.style.width = `${percentage}%`;
+            if (statusBattery) {
+                statusBattery.classList.toggle('low', percentage <= 15 && !charging);
+                statusBattery.setAttribute(
+                    'aria-label',
+                    `Battery ${percentage} percent${charging ? ', charging' : ''}`
+                );
+            }
+        }
+
+        async function initializeAppStatusBar() {
+            updateStatusTime();
+            setInterval(updateStatusTime, 1000);
+
+            updateConnectionStatus();
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const updateBattery = () => renderBatteryStatus(battery.level, battery.charging);
+                    updateBattery();
+                    battery.addEventListener('levelchange', updateBattery);
+                    battery.addEventListener('chargingchange', updateBattery);
+                } catch (error) {
+                    renderBatteryStatus(0.87);
+                }
+            } else {
+                renderBatteryStatus(0.87);
+            }
+        }
 
         function applyTabTheme(index) {
             const rootStyle = document.documentElement.style;
@@ -1693,6 +2039,7 @@
         }
 
         // Init
+        initializeAppStatusBar();
         syncPaymentAvailability();
         updateCashDiscountUI();
         setTimeout(() => { openKeypad(); }, 300); // Auto open keypad for demo feel
@@ -1765,16 +2112,85 @@
         function openSettings() {
             closePrintMenu(null, true);
             closeCashDiscountPage(null, true);
+            closeExitPasswordModal(null);
             settingsOverlay.classList.add('open');
         }
-        function closeSettings(e) {
-            if (e) e.stopPropagation();
+
+        function settingsCanRequestExit() {
             const parsedPercent = parseCashDiscountPercent(cashDiscountPercentText);
             if (cashDiscountEnabled && parsedPercent === null) {
                 openCashDiscountPage();
                 updateCashDiscountUI({ preserveInput: true });
+                return false;
+            }
+            return true;
+        }
+
+        function requestSettingsExit(e) {
+            if (e) e.stopPropagation();
+            if (!settingsCanRequestExit()) return;
+            openExitPasswordModal();
+        }
+
+        function openExitPasswordModal() {
+            if (!settingsExitModal) {
+                closeSettings(null);
                 return;
             }
+            clearExitPasswordError();
+            if (settingsExitPasswordInput) settingsExitPasswordInput.value = '';
+            settingsExitModal.classList.add('open');
+            setTimeout(() => {
+                if (settingsExitPasswordInput) settingsExitPasswordInput.focus();
+            }, 0);
+        }
+
+        function closeExitPasswordModal(e) {
+            if (e) e.stopPropagation();
+            if (!settingsExitModal) return;
+            settingsExitModal.classList.remove('open');
+            if (settingsExitPasswordInput) settingsExitPasswordInput.value = '';
+            clearExitPasswordError();
+        }
+
+        function clearExitPasswordError() {
+            if (settingsExitPasswordError) {
+                settingsExitPasswordError.classList.remove('show');
+            }
+        }
+
+        function handleExitPasswordKey(event) {
+            if (event.key === 'Enter') {
+                confirmSettingsExit(event);
+            } else if (event.key === 'Escape') {
+                closeExitPasswordModal(event);
+            }
+        }
+
+        function confirmSettingsExit(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            const enteredPassword = settingsExitPasswordInput ? settingsExitPasswordInput.value : '';
+            if (enteredPassword === SETTINGS_EXIT_PASSWORD) {
+                closeSettings(null);
+                return;
+            }
+
+            if (settingsExitPasswordError) {
+                settingsExitPasswordError.classList.add('show');
+            }
+            if (settingsExitPasswordInput) {
+                settingsExitPasswordInput.focus();
+                settingsExitPasswordInput.select();
+            }
+        }
+
+        function closeSettings(e) {
+            if (e) e.stopPropagation();
+            closeExitPasswordModal(null);
             closeCashDiscountPage(null, true);
             settingsOverlay.classList.remove('open');
         }
