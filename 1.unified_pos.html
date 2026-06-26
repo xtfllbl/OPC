@@ -1202,6 +1202,449 @@
         .settings-password-btn:active {
             transform: scale(0.98);
         }
+
+        /* --- Batch Info Page --- */
+        .batch-overlay {
+            position: absolute;
+            inset: 28px 0 0;
+            background: #F2F4F7;
+            z-index: 115;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .batch-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .batch-panel {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+        }
+
+        .batch-header-bar {
+            height: 56px;
+            flex: 0 0 56px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E6EAF0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+        }
+
+        .batch-header-title {
+            color: #0F172A;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .batch-icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            border: 1px solid #E6EAF0;
+            background: #FFFFFF;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .batch-icon-btn.hidden {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .batch-icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .batch-home,
+        .batch-detail {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 12px 16px 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .batch-home.hidden,
+        .batch-detail.hidden,
+        .batch-state.hidden,
+        .batch-detail-content.hidden {
+            display: none;
+        }
+
+        .batch-option-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .batch-option-card {
+            width: 100%;
+            min-height: 96px;
+            border: 1px solid #E6EAF0;
+            border-radius: 12px;
+            background: #FFFFFF;
+            color: #0F172A;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 46px minmax(0, 1fr) 22px;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: none;
+        }
+
+        .batch-option-card:active {
+            transform: scale(0.99);
+            background: #F8FAFE;
+        }
+
+        .batch-option-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            border: 1px solid #DCE6FF;
+            background: #F8FAFE;
+            color: #0A5BFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .batch-option-icon.last {
+            border-color: #CCFBF1;
+            background: #F8FFFC;
+            color: #0D9488;
+        }
+
+        .batch-option-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .batch-option-title {
+            display: block;
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .batch-option-meta {
+            display: block;
+            margin-top: 4px;
+            color: #64748B;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .batch-option-arrow {
+            color: #94A3B8;
+            font-size: 24px;
+            line-height: 1;
+            justify-self: end;
+        }
+
+        .batch-state {
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            color: #64748B;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .batch-spinner {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 3px solid #DCE6FF;
+            border-top-color: #0A5BFF;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .batch-error {
+            color: #DC2626;
+            padding: 24px;
+        }
+
+        .batch-retry-btn {
+            height: 38px;
+            border-radius: 12px;
+            border: 0;
+            background: #0A5BFF;
+            color: #FFFFFF;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .batch-summary-card,
+        .batch-section {
+            background: #FFFFFF;
+            border: 1px solid #E6EAF0;
+            border-radius: 14px;
+            box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02), 0 1px 3px rgba(16, 24, 40, 0.03);
+        }
+
+        .batch-summary-card {
+            padding: 16px 14px;
+            margin-bottom: 14px;
+        }
+
+        .batch-summary-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .batch-summary-title {
+            color: #0F172A;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .batch-status-pill {
+            min-height: 26px;
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .batch-status-pill {
+            color: #047857;
+            background: #D4F7E5;
+            flex-shrink: 0;
+        }
+
+        .batch-status-pill.closed {
+            color: #475569;
+            background: #F1F5F9;
+        }
+
+        .batch-summary-stats {
+            display: block;
+            border: 1px solid #EDF2F7;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #F8FAFE;
+            margin-bottom: 14px;
+        }
+
+        .batch-summary-stat {
+            min-height: 78px;
+            padding: 13px 14px;
+            display: grid;
+            grid-template-columns: 104px minmax(0, 1fr);
+            gap: 14px;
+            align-items: center;
+        }
+
+        .batch-summary-stat + .batch-summary-stat {
+            border-top: 1px solid #E6EAF0;
+        }
+
+        .batch-summary-stat-label {
+            color: #75839B;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .batch-summary-stat-head {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .batch-summary-stat-count {
+            color: #94A3B8;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0;
+            text-transform: none;
+            white-space: nowrap;
+        }
+
+        .batch-summary-stat-value {
+            color: #0F172A;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1.08;
+            text-align: right;
+            overflow-wrap: anywhere;
+            word-break: normal;
+            white-space: normal;
+        }
+
+        .batch-summary-meta {
+            border-top: 1px solid #EDF2F7;
+        }
+
+        .batch-summary-meta .batch-field-row {
+            padding: 12px 0;
+        }
+
+        .batch-section {
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .batch-section-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #90A0B7;
+            background: #F8FAFE;
+            padding: 10px 12px;
+            border-bottom: 1px solid #E6EAF0;
+        }
+
+        .batch-section-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .batch-section-count {
+            color: #64748B;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .batch-field-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 12px;
+            border-bottom: 1px solid #EDF2F7;
+        }
+
+        .batch-field-row:last-child {
+            border-bottom: none;
+        }
+
+        .batch-field-key {
+            color: #75839B;
+            font-size: 13px;
+            font-weight: 700;
+            flex: 0 0 42%;
+        }
+
+        .batch-field-value {
+            color: #0F172A;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: right;
+            word-break: break-word;
+            min-width: 0;
+        }
+
+        .batch-tx-list {
+            background: #FFFFFF;
+        }
+
+        .batch-tx-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #EDF2F7;
+        }
+
+        .batch-tx-row:last-child {
+            border-bottom: none;
+        }
+
+        .batch-tx-main {
+            min-width: 0;
+        }
+
+        .batch-tx-title {
+            color: #0F172A;
+            font-size: 15px;
+            font-weight: 900;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .batch-tx-meta,
+        .batch-tx-id {
+            color: #75839B;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .batch-tx-amount {
+            color: #0F172A;
+            font-size: 17px;
+            font-weight: 900;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .batch-empty {
+            padding: 18px 12px;
+            text-align: center;
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -1368,6 +1811,15 @@
                                 font-size="4" font-weight="700" letter-spacing="0.2">CLOSE</text>
                         </svg></div>
                     <div class="card-label">Close Batch</div>
+                </div>
+                <div class="action-card" onclick="doAction('Batch Info')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="3" width="16" height="18" rx="2.5" fill="var(--color-sale-bg)" stroke-width="1.5"></rect>
+                            <path d="M8 8h8M8 12h8M8 16h4"></path>
+                            <path d="M15.5 15.5 17 17l2.8-3.2"></path>
+                        </svg></div>
+                    <div class="card-label">Batch Info</div>
                 </div>
                 <div class="action-card" onclick="doAction('Print')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
@@ -1694,6 +2146,115 @@
                 </div>
             </div>
         </div>
+        <div class="batch-overlay" id="batch-overlay" onclick="closeBatchInfoPage(event)">
+            <div class="batch-panel" onclick="event.stopPropagation()">
+                <div class="batch-header-bar">
+                    <button class="batch-icon-btn" type="button" onclick="handleBatchBack(event)" aria-label="Back">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15 18l-6-6 6-6"></path>
+                        </svg>
+                    </button>
+                    <div class="batch-header-title" id="batch-header-title">Batch Info</div>
+                    <div style="width:32px;height:32px;"></div>
+                </div>
+
+                <div class="batch-home" id="batch-home">
+                    <div class="batch-option-list">
+                        <button class="batch-option-card" type="button" onclick="openBatchDetail('current')">
+                            <span class="batch-option-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v13A2.5 2.5 0 0 1 17.5 21h-11A2.5 2.5 0 0 1 4 18.5z"></path>
+                                    <path d="M8 8h8M8 12h8M8 16h5"></path>
+                                </svg>
+                            </span>
+                            <span>
+                                <span class="batch-option-title">Current Batch Info</span>
+                                <span class="batch-option-meta">OPEN BATCH</span>
+                            </span>
+                            <span class="batch-option-arrow" aria-hidden="true">></span>
+                        </button>
+
+                        <button class="batch-option-card" type="button" onclick="openBatchDetail('last')">
+                            <span class="batch-option-icon last" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M5 4h11.5A2.5 2.5 0 0 1 19 6.5v11A2.5 2.5 0 0 1 16.5 20h-11A2.5 2.5 0 0 1 3 17.5v-11A2.5 2.5 0 0 1 5.5 4"></path>
+                                    <path d="M8 9h7M8 13h7"></path>
+                                    <path d="m9 17 2 2 4-5"></path>
+                                </svg>
+                            </span>
+                            <span>
+                                <span class="batch-option-title">Last Batch Info</span>
+                                <span class="batch-option-meta">CLOSED BATCH</span>
+                            </span>
+                            <span class="batch-option-arrow" aria-hidden="true">></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="batch-detail hidden" id="batch-detail">
+                    <div class="batch-state" id="batch-loading-state">
+                        <div class="batch-spinner" aria-hidden="true"></div>
+                        <div>Loading batch information...</div>
+                    </div>
+
+                    <div class="batch-state batch-error hidden" id="batch-error-state">
+                        <div id="batch-error-text">Unable to load batch information.</div>
+                        <button class="batch-retry-btn" type="button" onclick="retryBatchInfo(event)">Retry</button>
+                    </div>
+
+                    <div class="batch-detail-content hidden" id="batch-detail-content">
+                        <div class="batch-summary-card">
+                            <div class="batch-summary-top">
+                                <div>
+                                    <div class="batch-summary-title">BATCH <span id="batch-id">-</span></div>
+                                </div>
+                                <span class="batch-status-pill" id="batch-settle-status">-</span>
+                            </div>
+
+                            <div class="batch-summary-stats">
+                                <div class="batch-summary-stat">
+                                    <div class="batch-summary-stat-head">
+                                        <div class="batch-summary-stat-label">Debit</div>
+                                        <div class="batch-summary-stat-count" id="batch-summary-debit-count">Count 0</div>
+                                    </div>
+                                    <div class="batch-summary-stat-value" id="batch-summary-debit-amount">0</div>
+                                </div>
+                                <div class="batch-summary-stat">
+                                    <div class="batch-summary-stat-head">
+                                        <div class="batch-summary-stat-label">Credit</div>
+                                        <div class="batch-summary-stat-count" id="batch-summary-credit-count">Count 0</div>
+                                    </div>
+                                    <div class="batch-summary-stat-value" id="batch-summary-credit-amount">0</div>
+                                </div>
+                            </div>
+
+                            <div class="batch-summary-meta">
+                                <div class="batch-field-row">
+                                    <span class="batch-field-key">Merchant ID</span>
+                                    <span class="batch-field-value" id="batch-mid">-</span>
+                                </div>
+                                <div class="batch-field-row">
+                                    <span class="batch-field-key">Terminal ID</span>
+                                    <span class="batch-field-value" id="batch-tid">-</span>
+                                </div>
+                                <div class="batch-field-row">
+                                    <span class="batch-field-key">Currency</span>
+                                    <span class="batch-field-value" id="batch-currency-code">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="batch-section">
+                            <div class="batch-section-title batch-section-title-row">
+                                <span>TRANSACTION LIST</span>
+                                <span class="batch-section-count" id="batch-transaction-count">0 items</span>
+                            </div>
+                            <div class="batch-tx-list" id="batch-transaction-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)">
             <div class="keypad-panel" onclick="event.stopPropagation()">
                 <div class="keypad-header">
@@ -1790,9 +2351,86 @@
             qr: document.querySelector('[data-brand="qr"]'),
             loyalty: document.querySelector('[data-brand="loyalty"]')
         };
+        const batchOverlay = document.getElementById('batch-overlay');
+        const batchHome = document.getElementById('batch-home');
+        const batchDetail = document.getElementById('batch-detail');
+        const batchHeaderTitle = document.getElementById('batch-header-title');
+        const batchLoadingState = document.getElementById('batch-loading-state');
+        const batchErrorState = document.getElementById('batch-error-state');
+        const batchErrorText = document.getElementById('batch-error-text');
+        const batchDetailContent = document.getElementById('batch-detail-content');
+        const batchTransactionList = document.getElementById('batch-transaction-list');
+        const batchFields = {
+            transactionCount: document.getElementById('batch-transaction-count'),
+            currencyCode: document.getElementById('batch-currency-code'),
+            mid: document.getElementById('batch-mid'),
+            tid: document.getElementById('batch-tid'),
+            batchId: document.getElementById('batch-id'),
+            settleStatus: document.getElementById('batch-settle-status'),
+            summaryDebitCount: document.getElementById('batch-summary-debit-count'),
+            summaryDebitAmount: document.getElementById('batch-summary-debit-amount'),
+            summaryCreditCount: document.getElementById('batch-summary-credit-count'),
+            summaryCreditAmount: document.getElementById('batch-summary-credit-amount')
+        };
+        const batchCurrencyMap = {
+            '036': { code: 'AUD', symbol: '$', digits: 2 },
+            '124': { code: 'CAD', symbol: '$', digits: 2 },
+            '156': { code: 'CNY', symbol: '', digits: 2 },
+            '344': { code: 'HKD', symbol: '$', digits: 2 },
+            '392': { code: 'JPY', symbol: '', digits: 0 },
+            '702': { code: 'SGD', symbol: '$', digits: 2 },
+            '826': { code: 'GBP', symbol: '', digits: 2 },
+            '840': { code: 'USD', symbol: '$', digits: 2 },
+            '978': { code: 'EUR', symbol: '', digits: 2 }
+        };
+        const demoBatchInfo = {
+            current: {
+                sn: 'WP20031Q21000000',
+                packageName: 'com.wizarpos.usbdevicedemo',
+                summary: {
+                    mid: '10800000003',
+                    tid: 'T1344444',
+                    batchId: '000042',
+                    currencyCode: '840',
+                    debitTotalCount: 3,
+                    debitTotalAmount: 12895,
+                    creditTotalCount: 1,
+                    creditTotalAmount: 1250,
+                    settleStatus: 'OPEN'
+                },
+                settlementList: [
+                    { amount: 4895, transId: '251209142807', batchId: '000042', tranTime: '2026-06-25 11:24:39', transType: 'SALE', cardType: 'VISA' },
+                    { amount: 3200, transId: '251209143122', batchId: '000042', tranTime: '2026-06-25 11:31:22', transType: 'SALE', cardType: 'MASTERCARD' },
+                    { amount: 1250, transId: '251209144018', batchId: '000042', tranTime: '2026-06-25 11:40:18', transType: 'REFUND', cardType: 'VISA' },
+                    { amount: 4800, transId: '251209150208', batchId: '000042', tranTime: '2026-06-25 12:02:08', transType: 'SALE', cardType: 'AMEX' }
+                ]
+            },
+            last: {
+                sn: 'WP20031Q21000000',
+                packageName: 'com.wizarpos.usbdevicedemo',
+                summary: {
+                    mid: '10800000003',
+                    tid: 'T1344444',
+                    batchId: '000041',
+                    currencyCode: '840',
+                    debitTotalCount: 2,
+                    debitTotalAmount: 21565,
+                    creditTotalCount: 1,
+                    creditTotalAmount: 2300,
+                    settleStatus: 'CLOSED'
+                },
+                settlementList: [
+                    { amount: 10000, transId: '251208174516', batchId: '000041', tranTime: '2026-06-24 17:45:16', transType: 'SALE', cardType: 'VISA' },
+                    { amount: 11565, transId: '251208181204', batchId: '000041', tranTime: '2026-06-24 18:12:04', transType: 'SALE', cardType: 'MASTERCARD' },
+                    { amount: 2300, transId: '251208191533', batchId: '000041', tranTime: '2026-06-24 19:15:33', transType: 'REFUND', cardType: 'VISA' }
+                ]
+            }
+        };
         let pendingAction = null;
         let cashDiscountEnabled = false;
         let cashDiscountPercentText = '';
+        let activeBatchKind = null;
+        let batchRequestToken = 0;
 
         function updateStatusTime() {
             if (!statusTime) return;
@@ -2038,6 +2676,343 @@
             updateCashDiscountUI({ preserveInput: true });
         }
 
+        function setElementText(element, value) {
+            if (!element) return;
+            element.textContent = value === null || value === undefined || value === '' ? '-' : String(value);
+        }
+
+        function showBatchHome() {
+            activeBatchKind = null;
+            batchRequestToken += 1;
+            if (batchHeaderTitle) batchHeaderTitle.textContent = 'Batch Info';
+            if (batchHome) batchHome.classList.remove('hidden');
+            if (batchDetail) batchDetail.classList.add('hidden');
+        }
+
+        function openBatchInfoPage() {
+            closePrintMenu(null, true);
+            closeKeypad(null);
+            closeSettings(null);
+            showBatchHome();
+            if (batchOverlay) batchOverlay.classList.add('open');
+        }
+
+        function closeBatchInfoPage(e) {
+            if (e) e.stopPropagation();
+            batchRequestToken += 1;
+            showBatchHome();
+            if (batchOverlay) batchOverlay.classList.remove('open');
+        }
+
+        function handleBatchBack(event) {
+            if (event) event.stopPropagation();
+            if (activeBatchKind) {
+                showBatchHome();
+                return;
+            }
+            closeBatchInfoPage(null);
+        }
+
+        function setBatchDetailState(state, message = '') {
+            if (batchLoadingState) batchLoadingState.classList.toggle('hidden', state !== 'loading');
+            if (batchErrorState) batchErrorState.classList.toggle('hidden', state !== 'error');
+            if (batchDetailContent) batchDetailContent.classList.toggle('hidden', state !== 'ready');
+            if (batchErrorText && message) batchErrorText.textContent = message;
+        }
+
+        function retryBatchInfo(event) {
+            if (event) event.stopPropagation();
+            if (!activeBatchKind) return;
+            openBatchDetail(activeBatchKind);
+        }
+
+        async function openBatchDetail(kind) {
+            activeBatchKind = kind === 'last' ? 'last' : 'current';
+            const requestToken = ++batchRequestToken;
+
+            if (batchHeaderTitle) {
+                batchHeaderTitle.textContent = activeBatchKind === 'last' ? 'Last Batch Info' : 'Current Batch Info';
+            }
+            if (batchHome) batchHome.classList.add('hidden');
+            if (batchDetail) batchDetail.classList.remove('hidden');
+            setBatchDetailState('loading');
+
+            try {
+                const batchInfo = await fetchBatchInfoFromTerminal(activeBatchKind);
+                if (requestToken !== batchRequestToken) return;
+                renderBatchInfo(batchInfo, activeBatchKind);
+                setBatchDetailState('ready');
+            } catch (error) {
+                if (requestToken !== batchRequestToken) return;
+                const message = error && error.message ? error.message : 'Unable to load batch information.';
+                setBatchDetailState('error', message);
+            }
+        }
+
+        async function fetchBatchInfoFromTerminal(kind) {
+            const directMethods = kind === 'last'
+                ? ['getLastBatchInfo', 'getLastSettlementBatchInfo', 'getLastBatchSettlement', 'getLastBatch']
+                : ['getCurrentBatchInfo', 'getCurrentBatchSettlement', 'getCurrentBatch'];
+            const genericMethods = ['getBatchInfo', 'queryBatchInfo', 'getSettlementInfo'];
+            const bridgeNames = [
+                'PaywizardTerminal',
+                'PayWizardTerminal',
+                'paywizardTerminal',
+                'TerminalBridge',
+                'NativeBridge',
+                'Android',
+                'android'
+            ];
+            const errors = [];
+
+            for (const methodName of directMethods) {
+                if (typeof window[methodName] === 'function') {
+                    try {
+                        return normalizeBatchInfoPayload(await window[methodName](kind));
+                    } catch (error) {
+                        errors.push(error);
+                    }
+                }
+            }
+
+            for (const bridgeName of bridgeNames) {
+                const bridge = window[bridgeName];
+                if (!bridge) continue;
+
+                for (const methodName of directMethods) {
+                    if (typeof bridge[methodName] === 'function') {
+                        try {
+                            return normalizeBatchInfoPayload(await bridge[methodName]());
+                        } catch (error) {
+                            errors.push(error);
+                        }
+                    }
+                }
+
+                for (const methodName of genericMethods) {
+                    if (typeof bridge[methodName] === 'function') {
+                        try {
+                            return normalizeBatchInfoPayload(await bridge[methodName](kind));
+                        } catch (error) {
+                            errors.push(error);
+                        }
+                    }
+                }
+            }
+
+            const webkitHandler = window.webkit
+                && window.webkit.messageHandlers
+                && window.webkit.messageHandlers.paywizardBatchInfo;
+            if (webkitHandler && typeof webkitHandler.postMessage === 'function') {
+                try {
+                    return normalizeBatchInfoPayload(await requestBatchInfoFromWebkit(kind, webkitHandler));
+                } catch (error) {
+                    errors.push(error);
+                }
+            }
+
+            if (errors.length) {
+                throw errors[errors.length - 1];
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 350));
+            return normalizeBatchInfoPayload(JSON.parse(JSON.stringify(demoBatchInfo[kind])));
+        }
+
+        function requestBatchInfoFromWebkit(kind, handler) {
+            return new Promise((resolve, reject) => {
+                const callbackName = `__paywizardBatchInfo_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+                const timer = setTimeout(() => {
+                    delete window[callbackName];
+                    reject(new Error('Batch info request timed out.'));
+                }, 8000);
+
+                window[callbackName] = (payload) => {
+                    clearTimeout(timer);
+                    delete window[callbackName];
+                    resolve(payload);
+                };
+
+                handler.postMessage({
+                    type: 'getBatchInfo',
+                    batchKind: kind,
+                    callback: callbackName
+                });
+            });
+        }
+
+        function parseBatchPayload(payload) {
+            if (typeof payload === 'string') {
+                const trimmed = payload.trim();
+                if (!trimmed) throw new Error('Empty batch response.');
+                return JSON.parse(trimmed);
+            }
+            return payload;
+        }
+
+        function unwrapBatchPayload(payload) {
+            let data = parseBatchPayload(payload);
+            const wrapperKeys = ['data', 'result', 'payload', 'batchInfo', 'settlementInfo'];
+
+            for (let i = 0; i < 4; i += 1) {
+                if (!data || typeof data !== 'object' || data.summary) break;
+                const wrapperKey = wrapperKeys.find(key => data[key] !== undefined);
+                if (!wrapperKey) break;
+                data = parseBatchPayload(data[wrapperKey]);
+            }
+
+            return data;
+        }
+
+        function toBatchNumber(value) {
+            const parsed = Number(value);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function normalizeBatchInfoPayload(payload) {
+            const data = unwrapBatchPayload(payload);
+            if (!data || typeof data !== 'object') {
+                throw new Error('Invalid batch response.');
+            }
+
+            const summary = data.summary && typeof data.summary === 'object' ? data.summary : {};
+            const settlementList = Array.isArray(data.settlementList) ? data.settlementList : [];
+
+            return {
+                sn: data.sn || '',
+                packageName: data.packageName || '',
+                summary: {
+                    mid: summary.mid || '',
+                    tid: summary.tid || '',
+                    batchId: summary.batchId || '',
+                    currencyCode: summary.currencyCode || '',
+                    debitTotalCount: toBatchNumber(summary.debitTotalCount),
+                    debitTotalAmount: toBatchNumber(summary.debitTotalAmount),
+                    creditTotalCount: toBatchNumber(summary.creditTotalCount),
+                    creditTotalAmount: toBatchNumber(summary.creditTotalAmount),
+                    settleStatus: summary.settleStatus || ''
+                },
+                settlementList: settlementList.map((item) => ({
+                    amount: toBatchNumber(item && item.amount),
+                    transId: item && item.transId ? String(item.transId) : '',
+                    batchId: item && item.batchId ? String(item.batchId) : '',
+                    tranTime: item && item.tranTime ? String(item.tranTime) : '',
+                    transType: item && item.transType ? String(item.transType) : '',
+                    cardType: item && item.cardType ? String(item.cardType) : ''
+                }))
+            };
+        }
+
+        function getBatchCurrencyInfo(currencyCode) {
+            const code = currencyCode ? String(currencyCode).padStart(3, '0') : '';
+            return batchCurrencyMap[code] || { code: code || '-', symbol: '', digits: 2 };
+        }
+
+        function formatBatchAmount(amount, currencyCode) {
+            const currencyInfo = getBatchCurrencyInfo(currencyCode);
+            const numericAmount = toBatchNumber(amount);
+            const divisor = Math.pow(10, currencyInfo.digits);
+            const majorAmount = numericAmount / divisor;
+            const absoluteAmount = Math.abs(majorAmount);
+            const formatted = absoluteAmount.toLocaleString('en-US', {
+                minimumFractionDigits: currencyInfo.digits,
+                maximumFractionDigits: currencyInfo.digits
+            });
+            const sign = majorAmount < 0 ? '-' : '';
+            if (currencyInfo.symbol) {
+                return `${sign}${currencyInfo.symbol}${formatted}`;
+            }
+            return `${sign}${formatted} ${currencyInfo.code}`.trim();
+        }
+
+        function formatBatchCount(count, singular, plural) {
+            const safeCount = toBatchNumber(count);
+            return `${safeCount} ${safeCount === 1 ? singular : plural}`;
+        }
+
+        function formatBatchId(batchId) {
+            if (batchId === null || batchId === undefined || batchId === '') return '';
+            return String(batchId).padStart(6, '0');
+        }
+
+        function formatBatchCountValue(count) {
+            return `Count ${toBatchNumber(count)}`;
+        }
+
+        function formatCurrencyDisplay(currencyCode) {
+            if (!currencyCode) return '';
+            const code = String(currencyCode).padStart(3, '0');
+            const currencyInfo = getBatchCurrencyInfo(code);
+            return currencyInfo.code && currencyInfo.code !== code ? `${currencyInfo.code} (${code})` : code;
+        }
+
+        function formatBatchSummaryAmount(amount, currencyCode) {
+            return formatBatchAmount(amount, currencyCode);
+        }
+
+        function renderBatchInfo(payload, kind) {
+            const data = normalizeBatchInfoPayload(payload);
+            const summary = data.summary;
+            const transactionCount = data.settlementList.length;
+            const settleStatus = summary.settleStatus || (kind === 'last' ? 'CLOSED' : 'OPEN');
+            const isClosed = settleStatus.toUpperCase() === 'CLOSED';
+
+            setElementText(batchFields.transactionCount, formatBatchCount(transactionCount, 'item', 'items'));
+            setElementText(batchFields.currencyCode, formatCurrencyDisplay(summary.currencyCode));
+            setElementText(batchFields.mid, summary.mid);
+            setElementText(batchFields.tid, summary.tid);
+            setElementText(batchFields.batchId, formatBatchId(summary.batchId));
+            setElementText(batchFields.settleStatus, settleStatus);
+            if (batchFields.settleStatus) batchFields.settleStatus.classList.toggle('closed', isClosed);
+            setElementText(batchFields.summaryDebitCount, formatBatchCountValue(summary.debitTotalCount));
+            setElementText(batchFields.summaryDebitAmount, formatBatchSummaryAmount(summary.debitTotalAmount, summary.currencyCode));
+            setElementText(batchFields.summaryCreditCount, formatBatchCountValue(summary.creditTotalCount));
+            setElementText(batchFields.summaryCreditAmount, formatBatchSummaryAmount(summary.creditTotalAmount, summary.currencyCode));
+
+            renderBatchTransactions(data.settlementList, summary.currencyCode);
+        }
+
+        function renderBatchTransactions(transactions, currencyCode) {
+            if (!batchTransactionList) return;
+            batchTransactionList.innerHTML = '';
+
+            if (!transactions.length) {
+                const empty = document.createElement('div');
+                empty.className = 'batch-empty';
+                empty.textContent = 'No settlement transactions.';
+                batchTransactionList.appendChild(empty);
+                return;
+            }
+
+            transactions.forEach((transaction) => {
+                const row = document.createElement('div');
+                row.className = 'batch-tx-row';
+
+                const main = document.createElement('div');
+                main.className = 'batch-tx-main';
+
+                const title = document.createElement('div');
+                title.className = 'batch-tx-title';
+                title.textContent = [transaction.transType, transaction.cardType].filter(Boolean).join(' / ') || 'Transaction';
+
+                const id = document.createElement('div');
+                id.className = 'batch-tx-id';
+                id.textContent = transaction.transId || '';
+
+                const meta = document.createElement('div');
+                meta.className = 'batch-tx-meta';
+                meta.textContent = transaction.tranTime || '-';
+
+                const amount = document.createElement('div');
+                amount.className = 'batch-tx-amount';
+                amount.textContent = formatBatchAmount(transaction.amount, currencyCode);
+
+                main.append(title, id, meta);
+                row.append(main, amount);
+                batchTransactionList.appendChild(row);
+            });
+        }
+
         // Init
         initializeAppStatusBar();
         syncPaymentAvailability();
@@ -2225,6 +3200,11 @@
         }
 
         function doAction(actionName) {
+            if (actionName === 'Batch Info') {
+                openBatchInfoPage();
+                return;
+            }
+
             if (actionName === 'Print') {
                 openPrintMenu();
                 return;
