@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS - Tip Mini</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-dark: #174DB8;
+            --primary-soft: #E6EEFF;
+            --bg-body: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-dark: #111827;
+            --text-muted: #6B7280;
+            --line: #E5E7EB;
+            --danger: #EF4444;
+            --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.16);
+            --shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1B1B1B;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .mini-frame {
+            position: relative;
+            width: 480px;
+            height: 480px;
+            overflow: hidden;
+            border-radius: 24px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 10px #101010, var(--shadow-lg);
+        }
+
+        .mini-frame::before,
+        .mini-frame::after {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            content: "";
+            pointer-events: none;
+        }
+
+        .mini-frame::before {
+            top: -112px;
+            right: -102px;
+            background: radial-gradient(circle at 30% 30%, rgba(10, 91, 255, 0.19), transparent 65%);
+        }
+
+        .mini-frame::after {
+            bottom: -140px;
+            left: -116px;
+            background: radial-gradient(circle at 70% 70%, rgba(91, 124, 235, 0.13), transparent 64%);
+        }
+
+        .mini-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            padding: 14px 16px 16px;
+        }
+
+        .status-bar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 6px;
+            min-height: 16px;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        #time-display {
+            justify-self: start;
+        }
+
+        .screen-label {
+            color: rgba(17, 24, 39, 0.72);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 6px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .battery {
+            position: relative;
+            width: 22px;
+            height: 10px;
+            border: 1.5px solid #9CA3AF;
+            border-radius: 3px;
+        }
+
+        .battery::after {
+            position: absolute;
+            top: 2px;
+            right: -3px;
+            width: 2px;
+            height: 6px;
+            border-radius: 1px;
+            background: #9CA3AF;
+            content: "";
+        }
+
+        .battery-level {
+            display: block;
+            width: 85%;
+            height: 100%;
+            border-radius: 2px;
+            background: var(--text-dark);
+        }
+
+        .tip-panel {
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .page-heading {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            padding: 2px 4px 0;
+        }
+
+        .back-btn {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.84);
+            color: #4B5563;
+            text-decoration: none;
+        }
+
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .page-title {
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.05;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .order-total {
+            max-width: 145px;
+            text-align: right;
+        }
+
+        .order-label {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--text-muted);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+        }
+
+        .base-amount {
+            display: block;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            min-height: 0;
+        }
+
+        .tip-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+            border: 1.5px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), var(--shadow-sm);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+        }
+
+        .tip-card:active {
+            transform: scale(0.988);
+        }
+
+        .tip-card:focus-visible,
+        .btn:focus-visible,
+        .key:focus-visible,
+        .close-btn:focus-visible,
+        .back-btn:focus-visible {
+            outline: 3px solid rgba(10, 91, 255, 0.38);
+            outline-offset: 2px;
+        }
+
+        .tip-card.selected {
+            border-color: rgba(10, 91, 255, 0.58);
+            background: var(--primary-soft);
+            box-shadow: 0 8px 18px rgba(10, 91, 255, 0.12);
+        }
+
+        .tip-card.selected::before {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 4px;
+            background: var(--primary);
+            content: "";
+        }
+
+        .pct {
+            color: #17223B;
+            font-size: 29px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        .calc {
+            max-width: 90%;
+            overflow: hidden;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tag {
+            color: #475569;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .tip-card.selected .pct,
+        .tip-card.selected .tag {
+            color: var(--primary-dark);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 112px;
+            gap: 10px;
+        }
+
+        .btn {
+            height: 56px;
+            border: 1px solid #D1D5DB;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.84);
+            color: #374151;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            transition: filter 0.15s ease, transform 0.15s ease;
+        }
+
+        .btn:active {
+            filter: brightness(0.96);
+            transform: scale(0.985);
+        }
+
+        .btn-primary {
+            border: none;
+            background: var(--primary);
+            box-shadow: 0 10px 20px rgba(10, 91, 255, 0.18);
+            color: #FFFFFF;
+        }
+
+        .btn-skip {
+            color: #64748B;
+        }
+
+        .overlay {
+            position: absolute;
+            z-index: 20;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-sheet {
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.18);
+        }
+
+        .sheet-panel {
+            display: grid;
+            grid-template-rows: auto auto minmax(0, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            padding: 14px 16px 16px;
+            background: #F7F8FA;
+            transform: translateY(100%);
+            transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .custom-sheet.open .sheet-panel {
+            transform: translateY(0);
+        }
+
+        .sheet-header {
+            display: grid;
+            grid-template-columns: 32px minmax(0, 1fr) 32px;
+            align-items: center;
+            min-height: 32px;
+        }
+
+        .sheet-title {
+            grid-column: 2;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .close-btn {
+            display: grid;
+            grid-column: 3;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: #FFFFFF;
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .close-btn svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .custom-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 62px;
+            padding: 10px 16px;
+            border: 1.5px solid rgba(10, 91, 255, 0.36);
+            border-radius: 16px;
+            background: var(--primary-soft);
+        }
+
+        .custom-label {
+            color: var(--primary-dark);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+        }
+
+        .custom-amount {
+            max-width: 280px;
+            overflow: hidden;
+            color: var(--primary-dark);
+            font-size: clamp(29px, 7.4vw, 36px);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1;
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            grid-template-areas:
+                "k7 k8 k9 del"
+                "k4 k5 k6 clr"
+                "k1 k2 k3 ok"
+                "k0 k00 k00 ok";
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .key {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            min-height: 0;
+            border: none;
+            border-radius: 14px;
+            background: #FFFFFF;
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05), 0 6px 13px rgba(15, 23, 42, 0.06);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: 700;
+            transition: background 0.12s ease, transform 0.12s ease;
+        }
+
+        .key:active {
+            background: #F0F2F5;
+            transform: scale(0.98);
+        }
+
+        .key-func {
+            background: #EEF2F6;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .key-clear {
+            color: var(--danger);
+        }
+
+        .key-ok {
+            border: none;
+            background: var(--primary);
+            box-shadow: 0 8px 18px rgba(10, 91, 255, 0.2);
+            color: #FFFFFF;
+            font-size: 16px;
+        }
+
+        .key-ok:active {
+            background: #084FD9;
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-del { grid-area: del; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-clear { grid-area: clr; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+        .key-00 { grid-area: k00; }
+        .key-ok { grid-area: ok; }
+
+        .confirm-modal {
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background: rgba(15, 23, 42, 0.42);
+        }
+
+        .modal-panel {
+            width: 100%;
+            max-width: 390px;
+            padding: 24px 22px 20px;
+            border-radius: 20px;
+            background: #FFFFFF;
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.24);
+            transform: translateY(10px) scale(0.98);
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        .confirm-modal.open .modal-panel {
+            transform: translateY(0) scale(1);
+        }
+
+        .confirm-title {
+            color: var(--text-dark);
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.025em;
+        }
+
+        .confirm-summary {
+            display: grid;
+            gap: 9px;
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #F8FAFC;
+        }
+
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .confirm-row strong {
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .confirm-total {
+            margin-top: 14px;
+            color: var(--primary-dark);
+            font-size: 29px;
+            font-weight: 900;
+            letter-spacing: -0.045em;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .modal-actions .btn {
+            height: 50px;
+            border-radius: 15px;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .mini-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .mini-content,
+            .sheet-panel {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .order-total {
+                max-width: 105px;
+            }
+
+            .base-amount {
+                font-size: 18px;
+            }
+
+            .actions {
+                grid-template-columns: minmax(0, 1fr) 92px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mini-frame">
+        <div class="mini-content">
+            <div class="status-bar" aria-label="Device status">
+                <span id="time-display">09:41</span>
+                <span class="screen-label">Payment</span>
+                <div class="status-right">
+                    <span>85%</span>
+                    <span class="battery" aria-hidden="true"><span class="battery-level"></span></span>
+                </div>
+            </div>
+
+            <main class="tip-panel">
+                <header class="page-heading">
+                    <a href="2.opc_mini.html" class="back-btn" aria-label="Back">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+                        </svg>
+                    </a>
+                    <h1 class="page-title">Select TIP</h1>
+                    <div class="order-total" aria-label="Order amount">
+                        <span class="order-label">Order amount</span>
+                        <strong class="base-amount" id="base-amount">$0.00</strong>
+                    </div>
+                </header>
+
+                <section class="tip-grid" id="tip-grid" aria-label="Tip percentages">
+                    <button class="tip-card" type="button" data-pct="10">
+                        <span class="pct">10%</span>
+                        <span class="calc" id="a10">($0.00)</span>
+                        <span class="tag">Thank you</span>
+                    </button>
+                    <button class="tip-card" type="button" data-pct="15">
+                        <span class="pct">15%</span>
+                        <span class="calc" id="a15">($0.00)</span>
+                        <span class="tag">Great</span>
+                    </button>
+                    <button class="tip-card" type="button" data-pct="20">
+                        <span class="pct">20%</span>
+                        <span class="calc" id="a20">($0.00)</span>
+                        <span class="tag">Excellent</span>
+                    </button>
+                    <button class="tip-card" type="button" data-pct="25">
+                        <span class="pct">25%</span>
+                        <span class="calc" id="a25">($0.00)</span>
+                        <span class="tag">Perfect</span>
+                    </button>
+                </section>
+
+                <div class="actions">
+                    <button class="btn btn-primary" id="btn-custom" type="button">Custom tip</button>
+                    <button class="btn btn-skip" id="btn-skip" type="button">Skip</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="overlay custom-sheet" id="custom-sheet" aria-hidden="true">
+            <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title" onclick="event.stopPropagation()">
+                <div class="sheet-header">
+                    <h2 class="sheet-title" id="sheet-title">Custom Tip</h2>
+                    <button class="close-btn" id="close-sheet" type="button" aria-label="Close custom tip">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                            <path d="M18 6 6 18M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="custom-preview">
+                    <span class="custom-label">Tip amount</span>
+                    <strong class="custom-amount" id="custom-amount">$0.00</strong>
+                </div>
+
+                <div class="keypad">
+                    <button class="key key-7" type="button" data-k="7">7</button>
+                    <button class="key key-8" type="button" data-k="8">8</button>
+                    <button class="key key-9" type="button" data-k="9">9</button>
+                    <button class="key key-func key-del" type="button" data-k="BS">Del</button>
+                    <button class="key key-4" type="button" data-k="4">4</button>
+                    <button class="key key-5" type="button" data-k="5">5</button>
+                    <button class="key key-6" type="button" data-k="6">6</button>
+                    <button class="key key-func key-clear" type="button" data-k="C">C</button>
+                    <button class="key key-1" type="button" data-k="1">1</button>
+                    <button class="key key-2" type="button" data-k="2">2</button>
+                    <button class="key key-3" type="button" data-k="3">3</button>
+                    <button class="key key-ok" type="button" data-k="OK">OK</button>
+                    <button class="key key-0" type="button" data-k="0">0</button>
+                    <button class="key key-func key-00" type="button" data-k="00">00</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="overlay confirm-modal" id="confirm-modal" aria-hidden="true">
+            <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+                <h2 class="confirm-title" id="confirm-title">Confirm tip</h2>
+                <div class="confirm-summary">
+                    <div class="confirm-row"><span>Tip</span><strong id="confirm-tip">$0.00</strong></div>
+                    <div class="confirm-row"><span>Subtotal</span><strong id="confirm-subtotal">$0.00</strong></div>
+                </div>
+                <div class="confirm-total" id="confirm-total">Total $0.00</div>
+                <div class="modal-actions">
+                    <button class="btn" id="confirm-cancel" type="button">Change</button>
+                    <button class="btn btn-primary" id="confirm-ok" type="button">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formatMoney = (cents) => (cents / 100).toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD"
+        });
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") {
+                return null;
+            }
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) {
+                return null;
+            }
+            return Math.round(amount * 100);
+        }
+
+        function resolveAmountCents() {
+            const params = new URLSearchParams(window.location.search);
+            const queryCentsText = params.get("amountCents");
+            const queryCents = Number(queryCentsText);
+            if (queryCentsText !== null && queryCentsText !== "" && Number.isFinite(queryCents) && queryCents >= 0) {
+                return Math.round(queryCents);
+            }
+
+            const queryAmount = parseMoneyToCents(params.get("amount"));
+            if (queryAmount !== null) {
+                return queryAmount;
+            }
+
+            const storedCents = Number(localStorage.getItem("amountCents"));
+            if (Number.isFinite(storedCents) && storedCents >= 0) {
+                return Math.round(storedCents);
+            }
+
+            return 0;
+        }
+
+        const amountCents = resolveAmountCents();
+        localStorage.setItem("amountCents", String(amountCents));
+
+        document.getElementById("base-amount").textContent = formatMoney(amountCents);
+
+        function setCalculatedTip(percent, elementId) {
+            const tipCents = Math.round(amountCents * (percent / 100));
+            document.getElementById(elementId).textContent = "(" + formatMoney(tipCents) + ")";
+        }
+
+        setCalculatedTip(10, "a10");
+        setCalculatedTip(15, "a15");
+        setCalculatedTip(20, "a20");
+        setCalculatedTip(25, "a25");
+
+        function proceed(tipCents, meta = {}) {
+            localStorage.setItem("tipCents", String(tipCents));
+            localStorage.setItem("tipPercent", meta.pct ? String(meta.pct) : "");
+            localStorage.setItem("totalCents", String(amountCents + tipCents));
+            window.location.href = "3_card_wait.html";
+        }
+
+        const confirmModal = document.getElementById("confirm-modal");
+        const tipGrid = document.getElementById("tip-grid");
+        let selectedPercent = null;
+        let selectedTipCents = 0;
+
+        function showConfirm(tipCents) {
+            document.getElementById("confirm-tip").textContent = formatMoney(tipCents);
+            document.getElementById("confirm-subtotal").textContent = formatMoney(amountCents);
+            document.getElementById("confirm-total").textContent = "Total " + formatMoney(amountCents + tipCents);
+            confirmModal.classList.add("open");
+            confirmModal.setAttribute("aria-hidden", "false");
+        }
+
+        function hideConfirm() {
+            confirmModal.classList.remove("open");
+            confirmModal.setAttribute("aria-hidden", "true");
+        }
+
+        function clearSelection() {
+            tipGrid.querySelectorAll(".tip-card").forEach((card) => card.classList.remove("selected"));
+        }
+
+        document.querySelectorAll(".tip-card").forEach((card) => {
+            card.addEventListener("click", () => {
+                const percent = parseInt(card.getAttribute("data-pct"), 10);
+                selectedPercent = percent;
+                selectedTipCents = Math.round(amountCents * (percent / 100));
+                clearSelection();
+                card.classList.add("selected");
+                showConfirm(selectedTipCents);
+            });
+        });
+
+        document.getElementById("confirm-cancel").addEventListener("click", () => {
+            hideConfirm();
+            clearSelection();
+        });
+
+        document.getElementById("confirm-ok").addEventListener("click", () => {
+            hideConfirm();
+            proceed(selectedTipCents, { pct: selectedPercent });
+        });
+
+        const customSheet = document.getElementById("custom-sheet");
+        const customAmountEl = document.getElementById("custom-amount");
+        let customRaw = "0";
+
+        function updateCustomDisplay() {
+            customAmountEl.textContent = formatMoney(parseInt(customRaw || "0", 10));
+        }
+
+        function closeCustomSheet() {
+            customSheet.classList.remove("open");
+            customSheet.setAttribute("aria-hidden", "true");
+            customRaw = "0";
+            updateCustomDisplay();
+        }
+
+        function typeCustom(key) {
+            if (key === "C") {
+                customRaw = "0";
+            } else if (key === "BS") {
+                customRaw = customRaw.length > 1 ? customRaw.slice(0, -1) : "0";
+            } else if (key === "00") {
+                if (customRaw !== "0" && customRaw.length <= 6) {
+                    customRaw += "00";
+                }
+            } else if (key === "OK") {
+                const cents = parseInt(customRaw || "0", 10);
+                customSheet.classList.remove("open");
+                customSheet.setAttribute("aria-hidden", "true");
+                selectedPercent = null;
+                selectedTipCents = Number.isNaN(cents) ? 0 : cents;
+                showConfirm(selectedTipCents);
+                customRaw = "0";
+                updateCustomDisplay();
+                return;
+            } else if (customRaw === "0") {
+                customRaw = key;
+            } else if (customRaw.length < 8) {
+                customRaw += key;
+            }
+            updateCustomDisplay();
+        }
+
+        document.getElementById("btn-custom").addEventListener("click", () => {
+            customSheet.classList.add("open");
+            customSheet.setAttribute("aria-hidden", "false");
+            customRaw = "0";
+            updateCustomDisplay();
+        });
+
+        document.getElementById("close-sheet").addEventListener("click", closeCustomSheet);
+        customSheet.addEventListener("click", (event) => {
+            if (event.target === customSheet) {
+                closeCustomSheet();
+            }
+        });
+        document.querySelectorAll("#custom-sheet .key").forEach((key) => {
+            key.addEventListener("click", () => typeCustom(key.getAttribute("data-k")));
+        });
+
+        document.getElementById("btn-skip").addEventListener("click", () => proceed(0));
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("time-display").textContent = now.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        updateTime();
+        window.setInterval(updateTime, 30000);
+    </script>
+</body>
+
+</html>

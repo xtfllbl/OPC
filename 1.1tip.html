@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS - Select Tip</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --text-dark: #111827;
+            --text-grey: #6B7280;
+            --bg-body: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --color-sale-bg: #EFF6FF;
+            --color-sale-text: #0A5BFF;
+            --color-danger-text: #EF4444;
+            --radius-md: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .android-status-bar {
+            position: relative;
+            z-index: 200;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
+        .header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 8px 22px 6px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            min-height: 20px;
+        }
+
+        .brand-logo img {
+            display: block;
+            width: auto;
+            height: 20px;
+        }
+
+        .icon-btn {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.2;
+        }
+
+        .amount-section {
+            padding: 18px 0 24px;
+            text-align: center;
+        }
+
+        .amount-label {
+            margin-bottom: 4px;
+            color: var(--color-sale-text);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .amount-line {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .currency,
+        .amount-value {
+            color: var(--color-sale-text);
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .currency {
+            margin-right: 4px;
+        }
+
+        .amount-value {
+            max-width: 285px;
+            overflow: hidden;
+            letter-spacing: -1.5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .amount-hint {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .content-sheet {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: 22px 24px 20px;
+            border-radius: 32px 32px 0 0;
+            background: var(--card-bg);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .sheet-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sheet-title {
+            color: var(--text-dark);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .sheet-subtitle {
+            margin-top: 3px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            flex: 1;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .tip-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 0;
+            min-height: 0;
+            padding: 12px 8px;
+            border: 1.5px solid #DCE6FF;
+            border-radius: var(--radius-md);
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .tip-card:active {
+            transform: scale(0.96);
+            background: #FAFAFA;
+        }
+
+        .tip-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(10, 91, 255, 0.08) inset;
+        }
+
+        .tip-percent-box {
+            display: block;
+            color: var(--color-sale-text);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+
+        .tip-card.selected .tip-percent-box {
+            color: var(--primary);
+        }
+
+        .tip-value {
+            max-width: 95%;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tip-tag {
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            height: 52px;
+            border: 1.5px solid #DCE6FF;
+            border-radius: 16px;
+            background: #FFFFFF;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            transition: filter 0.15s ease, transform 0.15s ease;
+        }
+
+        .btn:active {
+            filter: brightness(0.96);
+            transform: scale(0.985);
+        }
+
+        .btn-primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #FFFFFF;
+        }
+
+        .btn-secondary {
+            background: #F9FAFB;
+            color: #64748B;
+        }
+
+        .tip-card:focus-visible,
+        .btn:focus-visible,
+        .icon-btn:focus-visible,
+        .key:focus-visible,
+        .close-btn:focus-visible {
+            outline: 3px solid rgba(10, 91, 255, 0.36);
+            outline-offset: 2px;
+        }
+
+        .overlay {
+            position: absolute;
+            z-index: 100;
+            top: 28px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-overlay {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: rgba(15, 23, 42, 0.16);
+        }
+
+        .custom-panel {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 170px);
+            padding: 16px 20px;
+            border-radius: 32px 32px 0 0;
+            background: #FFFFFF;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .custom-overlay.open .custom-panel {
+            transform: translateY(0);
+        }
+
+        .custom-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 0 8px;
+        }
+
+        .custom-title {
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #F3F4F6;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .close-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-width: 2.5;
+        }
+
+        .custom-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            border: 1.5px solid #DCE6FF;
+            border-radius: 16px;
+            background: var(--primary-light);
+        }
+
+        .custom-label {
+            color: var(--primary);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .custom-amount {
+            max-width: 210px;
+            overflow: hidden;
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            grid-template-areas:
+                "k7 k8 k9 del"
+                "k4 k5 k6 clr"
+                "k1 k2 k3 ok"
+                "k0 k00 k00 ok";
+            flex: 1;
+            gap: 10px;
+            min-height: 0;
+        }
+
+        .key {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            min-height: 0;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            background: #F9FAFB;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .key:active {
+            background: #F3F4F6;
+        }
+
+        .key-func {
+            background: #EEF2FF;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .key-delete,
+        .key-clear {
+            color: var(--color-danger-text);
+        }
+
+        .key-ok {
+            border: none;
+            background: var(--primary);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+            color: #FFFFFF;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-del { grid-area: del; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-clear { grid-area: clr; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+        .key-00 { grid-area: k00; }
+        .key-ok { grid-area: ok; }
+
+        .confirm-overlay {
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.42);
+        }
+
+        .confirm-panel {
+            width: 100%;
+            padding: 24px 20px 20px;
+            border-radius: 20px;
+            background: #FFFFFF;
+            box-shadow: 0 14px 34px rgba(16, 24, 40, 0.22);
+            transform: translateY(8px) scale(0.98);
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        .confirm-overlay.open .confirm-panel {
+            transform: translateY(0) scale(1);
+        }
+
+        .confirm-title {
+            color: var(--text-dark);
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .confirm-summary {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #F9FAFB;
+        }
+
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--text-grey);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .confirm-row strong {
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .confirm-total {
+            margin-top: 16px;
+            color: var(--primary);
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .confirm-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .confirm-actions .btn {
+            height: 48px;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <header class="header">
+            <div class="header-left">
+                <div class="merchant-name">Jose's Store</div>
+                <div class="brand-logo"><img src="TSYS_logo.png" alt="TSYS"></div>
+            </div>
+            <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+        </header>
+
+        <section class="amount-section" aria-label="Transaction amount">
+            <div class="amount-label">Transaction Amount</div>
+            <div class="amount-line"><span class="currency">$</span><span class="amount-value" id="base-amount">0.00</span></div>
+            <div class="amount-hint">Select Tip</div>
+        </section>
+
+        <main class="content-sheet">
+            <div class="sheet-heading">
+                <div>
+                    <h1 class="sheet-title">Add a tip</h1>
+                </div>
+            </div>
+
+            <section class="tip-grid" id="tip-grid" aria-label="Tip percentages">
+                <button class="tip-card" type="button" data-pct="10" aria-pressed="false">
+                    <span class="tip-percent-box">10%</span>
+                    <span class="tip-value" id="a10">$0.00</span>
+                    <span class="tip-tag">Thank you</span>
+                </button>
+                <button class="tip-card" type="button" data-pct="15" aria-pressed="false">
+                    <span class="tip-percent-box">15%</span>
+                    <span class="tip-value" id="a15">$0.00</span>
+                    <span class="tip-tag">Great</span>
+                </button>
+                <button class="tip-card" type="button" data-pct="20" aria-pressed="false">
+                    <span class="tip-percent-box">20%</span>
+                    <span class="tip-value" id="a20">$0.00</span>
+                    <span class="tip-tag">Excellent</span>
+                </button>
+                <button class="tip-card" type="button" data-pct="25" aria-pressed="false">
+                    <span class="tip-percent-box">25%</span>
+                    <span class="tip-value" id="a25">$0.00</span>
+                    <span class="tip-tag">Perfect</span>
+                </button>
+            </section>
+
+            <div class="actions">
+                <button class="btn btn-primary" id="btn-custom" type="button">Custom Tip</button>
+                <button class="btn btn-secondary" id="btn-skip" type="button">No Tip</button>
+            </div>
+        </main>
+
+        <div class="overlay custom-overlay" id="custom-overlay" aria-hidden="true" onclick="closeCustomTip(event)">
+            <div class="custom-panel" role="dialog" aria-modal="true" aria-labelledby="custom-title" onclick="event.stopPropagation()">
+                <div class="custom-header">
+                    <h2 class="custom-title" id="custom-title">Custom Tip</h2>
+                    <button class="close-btn" type="button" onclick="closeCustomTip(event)" aria-label="Close custom tip">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div class="custom-preview">
+                    <span class="custom-label">Tip Amount</span>
+                    <strong class="custom-amount" id="custom-amount">$0.00</strong>
+                </div>
+                <div class="key-grid">
+                    <button class="key key-7" type="button" data-key="7">7</button>
+                    <button class="key key-8" type="button" data-key="8">8</button>
+                    <button class="key key-9" type="button" data-key="9">9</button>
+                    <button class="key key-func key-delete key-del" type="button" data-key="BS">Del</button>
+                    <button class="key key-4" type="button" data-key="4">4</button>
+                    <button class="key key-5" type="button" data-key="5">5</button>
+                    <button class="key key-6" type="button" data-key="6">6</button>
+                    <button class="key key-func key-clear" type="button" data-key="C">C</button>
+                    <button class="key key-1" type="button" data-key="1">1</button>
+                    <button class="key key-2" type="button" data-key="2">2</button>
+                    <button class="key key-3" type="button" data-key="3">3</button>
+                    <button class="key key-ok" type="button" data-key="OK">OK</button>
+                    <button class="key key-0" type="button" data-key="0">0</button>
+                    <button class="key key-func key-00" type="button" data-key="00">00</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="overlay confirm-overlay" id="confirm-overlay" aria-hidden="true">
+            <div class="confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+                <h2 class="confirm-title" id="confirm-title">Confirm Tip</h2>
+                <div class="confirm-summary">
+                    <div class="confirm-row"><span>Tip</span><strong id="confirm-tip">$0.00</strong></div>
+                    <div class="confirm-row"><span>Subtotal</span><strong id="confirm-subtotal">$0.00</strong></div>
+                </div>
+                <div class="confirm-total" id="confirm-total">Total $0.00</div>
+                <div class="confirm-actions">
+                    <button class="btn btn-secondary" id="confirm-cancel" type="button">Change</button>
+                    <button class="btn btn-primary" id="confirm-ok" type="button">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD"
+            });
+        }
+
+        function formatAmount(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") {
+                return null;
+            }
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) {
+                return null;
+            }
+            return Math.round(amount * 100);
+        }
+
+        function resolveAmountCents() {
+            const params = new URLSearchParams(window.location.search);
+            const queryCentsText = params.get("amountCents");
+            const queryCents = Number(queryCentsText);
+            if (queryCentsText !== null && queryCentsText !== "" && Number.isFinite(queryCents) && queryCents >= 0) {
+                return Math.round(queryCents);
+            }
+
+            const queryAmount = parseMoneyToCents(params.get("amount"));
+            if (queryAmount !== null) {
+                return queryAmount;
+            }
+
+            const storedCents = Number(localStorage.getItem("amountCents"));
+            if (Number.isFinite(storedCents) && storedCents >= 0) {
+                return Math.round(storedCents);
+            }
+
+            return 0;
+        }
+
+        const amountCents = resolveAmountCents();
+        const tipCards = Array.from(document.querySelectorAll(".tip-card"));
+        const customOverlay = document.getElementById("custom-overlay");
+        const customAmountEl = document.getElementById("custom-amount");
+        const confirmOverlay = document.getElementById("confirm-overlay");
+        let selectedPercent = null;
+        let selectedTipCents = 0;
+        let customRaw = "0";
+
+        localStorage.setItem("amountCents", String(amountCents));
+        document.getElementById("base-amount").textContent = formatAmount(amountCents);
+
+        function updateCalculatedTip(percent, elementId) {
+            document.getElementById(elementId).textContent = formatCurrency(Math.round(amountCents * percent / 100));
+        }
+
+        updateCalculatedTip(10, "a10");
+        updateCalculatedTip(15, "a15");
+        updateCalculatedTip(20, "a20");
+        updateCalculatedTip(25, "a25");
+
+        function clearSelection() {
+            tipCards.forEach((card) => {
+                card.classList.remove("selected");
+                card.setAttribute("aria-pressed", "false");
+            });
+        }
+
+        function showConfirmation(tipCents) {
+            document.getElementById("confirm-tip").textContent = formatCurrency(tipCents);
+            document.getElementById("confirm-subtotal").textContent = formatCurrency(amountCents);
+            document.getElementById("confirm-total").textContent = "Total " + formatCurrency(amountCents + tipCents);
+            confirmOverlay.classList.add("open");
+            confirmOverlay.setAttribute("aria-hidden", "false");
+        }
+
+        function hideConfirmation() {
+            confirmOverlay.classList.remove("open");
+            confirmOverlay.setAttribute("aria-hidden", "true");
+        }
+
+        function proceed(tipCents, meta = {}) {
+            localStorage.setItem("tipCents", String(tipCents));
+            localStorage.setItem("tipPercent", meta.percent ? String(meta.percent) : "");
+            localStorage.setItem("totalCents", String(amountCents + tipCents));
+            window.location.href = "3_card_wait.html";
+        }
+
+        tipCards.forEach((card) => {
+            card.addEventListener("click", () => {
+                selectedPercent = Number(card.dataset.pct);
+                selectedTipCents = Math.round(amountCents * selectedPercent / 100);
+                clearSelection();
+                card.classList.add("selected");
+                card.setAttribute("aria-pressed", "true");
+                showConfirmation(selectedTipCents);
+            });
+        });
+
+        document.getElementById("confirm-cancel").addEventListener("click", () => {
+            hideConfirmation();
+            clearSelection();
+        });
+
+        document.getElementById("confirm-ok").addEventListener("click", () => {
+            hideConfirmation();
+            proceed(selectedTipCents, { percent: selectedPercent });
+        });
+
+        function updateCustomDisplay() {
+            customAmountEl.textContent = formatCurrency(parseInt(customRaw, 10) || 0);
+        }
+
+        function openCustomTip() {
+            clearSelection();
+            customRaw = "0";
+            updateCustomDisplay();
+            customOverlay.classList.add("open");
+            customOverlay.setAttribute("aria-hidden", "false");
+        }
+
+        function closeCustomTip(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            customOverlay.classList.remove("open");
+            customOverlay.setAttribute("aria-hidden", "true");
+            customRaw = "0";
+            updateCustomDisplay();
+        }
+
+        function typeCustom(key) {
+            if (key === "C") {
+                customRaw = "0";
+            } else if (key === "BS") {
+                customRaw = customRaw.length > 1 ? customRaw.slice(0, -1) : "0";
+            } else if (key === "00") {
+                if (customRaw !== "0" && customRaw.length <= 6) {
+                    customRaw += "00";
+                }
+            } else if (key === "OK") {
+                selectedPercent = null;
+                selectedTipCents = parseInt(customRaw, 10) || 0;
+                closeCustomTip(null);
+                showConfirmation(selectedTipCents);
+                return;
+            } else if (customRaw === "0") {
+                customRaw = key;
+            } else if (customRaw.length < 8) {
+                customRaw += key;
+            }
+            updateCustomDisplay();
+        }
+
+        document.getElementById("btn-custom").addEventListener("click", openCustomTip);
+        document.querySelectorAll("[data-key]").forEach((keyButton) => {
+            keyButton.addEventListener("click", () => typeCustom(keyButton.dataset.key));
+        });
+        document.getElementById("btn-skip").addEventListener("click", () => proceed(0));
+
+        function handleBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = "1.unified_pos.html";
+        }
+
+        function updateStatusTime() {
+            document.getElementById("status-time").textContent = new Intl.DateTimeFormat("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }).format(new Date());
+        }
+
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 1000);
+    </script>
+</body>
+
+</html>

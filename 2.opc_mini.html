@@ -1259,6 +1259,15 @@
         }
 
         function startAction(actionName) {
+            if (actionName === 'Sale') {
+                const amountCents = Math.max(0, parseInt(rawAmount, 10) || 0);
+                localStorage.setItem('amountCents', String(amountCents));
+                localStorage.removeItem('tipCents');
+                localStorage.removeItem('tipPercent');
+                localStorage.removeItem('totalCents');
+                window.location.href = `2.1tip_mini.html?amountCents=${amountCents}`;
+                return;
+            }
             alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
         }
 
