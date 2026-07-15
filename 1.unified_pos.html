@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro POS Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0" rel="stylesheet">
     <style>
         :root {
             --primary: #0A5BFF;
@@ -285,64 +286,6 @@
             fill: none;
         }
 
-        /* --- Payment Brand Strip --- */
-        .brand-strip {
-            margin: 2px 0 6px;
-            padding: 0;
-            background: transparent;
-            border-radius: 0;
-            box-shadow: none;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            min-height: 0;
-            width: auto;
-            flex-wrap: wrap;
-        }
-
-        .brand-strip.hidden {
-            display: none;
-        }
-
-        .brand-set {
-            display: none;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-set.active {
-            display: flex;
-        }
-
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            min-height: 0;
-            min-width: 0;
-        }
-
-        .brand-badge img {
-            height: 20px;
-            width: auto;
-            display: block;
-            opacity: 0.75;
-            filter: grayscale(35%);
-            transition: opacity 0.2s ease, filter 0.2s ease;
-        }
-
-        .brand-badge.primary img {
-            opacity: 1;
-            filter: none;
-        }
-
         /* --- White Sheet Content --- */
         .content-sheet {
             flex: 1;
@@ -466,7 +409,22 @@
         /* 2 Columns for Scan (larger buttons) */
         #grid-scan {
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            grid-auto-rows: 148px;
+            align-content: start;
+            gap: 12px;
+        }
+
+        #grid-scan .action-card {
+            height: 148px;
+            min-height: 148px;
+            padding: 16px 12px;
+            gap: 10px;
+        }
+
+        #grid-scan .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 17px;
         }
 
         .print-submenu-sheet {
@@ -1645,6 +1603,458 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* --- Dejavoo-inspired fixed-entry workspace --- */
+        .material-symbols-rounded {
+            font-family: 'Material Symbols Rounded';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: 'liga';
+        }
+
+        .phone-frame {
+            background: #F5F7FB;
+        }
+
+        .header {
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 10px 22px 6px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .header-left {
+            width: 100%;
+            align-items: center;
+            gap: 0;
+        }
+
+        .merchant-name {
+            font-size: 17px;
+            letter-spacing: -0.01em;
+        }
+
+        .entry-stage {
+            flex: 1 1 auto;
+            min-height: 150px;
+            display: grid;
+            place-items: center;
+            padding: 0 20px;
+        }
+
+        .entry-state {
+            grid-area: 1 / 1;
+            width: 100%;
+            height: 180px;
+            transition: opacity 0.18s ease, transform 0.22s ease, visibility 0.18s ease;
+        }
+
+        .merchant-brand-section {
+            display: grid;
+            place-items: center;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .entry-stage.show-amount .merchant-brand-section {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.96);
+        }
+
+        .amount-section {
+            padding: 2px 0 0;
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+        }
+
+        .entry-stage.show-amount .amount-section {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .amount-section:active {
+            transform: none;
+        }
+
+        .merchant-logo-slot {
+            width: 96px;
+            height: 96px;
+            padding: 5px;
+            border-radius: 25px;
+            display: grid;
+            place-items: center;
+            background: #FFFFFF;
+            border: 1px solid #E1E8F5;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.11);
+        }
+
+        .merchant-logo-slot img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            border-radius: 19px;
+        }
+
+        .amount-label {
+            margin: 18px 0 7px;
+            color: #667085;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.17em;
+        }
+
+        .amount-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .currency,
+        .amount-value {
+            color: var(--primary);
+            font-size: 52px;
+            line-height: 1.05;
+        }
+
+        .amount-context {
+            --transaction-type-size: 20px;
+            --transaction-type-tracking: 0.08em;
+            position: relative;
+            max-width: 86%;
+            min-height: 34px;
+            padding: 0 0 11px;
+            color: var(--primary);
+            background: transparent;
+            border: none;
+            font-size: var(--transaction-type-size);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: var(--transaction-type-tracking);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            text-transform: uppercase;
+            transition: color 0.16s ease, font-size 0.16s ease, letter-spacing 0.16s ease;
+        }
+
+        .amount-context::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            transform: translateX(-50%);
+        }
+
+        .amount-context.error {
+            color: #D92D20;
+        }
+
+        .amount-error {
+            min-height: 13px;
+            margin-top: 6px;
+            color: #D92D20;
+            font-size: 9px;
+            font-weight: 700;
+            opacity: 0;
+        }
+
+        .amount-error.show {
+            opacity: 1;
+        }
+
+        .enter-amount-prompt {
+            width: 100%;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 4px;
+            color: #667085;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .enter-amount-prompt::before,
+        .enter-amount-prompt::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #D8E0EC;
+        }
+
+        .content-sheet.transactions-view {
+            position: absolute;
+            inset: 28px 0 64px;
+            z-index: 105;
+            padding: 16px 18px 18px;
+            border-radius: 0;
+            background: #F8FAFD;
+            box-shadow: none;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100%);
+            transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+        }
+
+        .content-sheet.transactions-view.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        .transactions-view .tabs {
+            flex: 0 0 auto;
+            margin-bottom: 16px;
+        }
+
+        .transactions-view .grid-container {
+            gap: 10px;
+            padding: 2px 2px 16px;
+        }
+
+        .transactions-view .action-card {
+            min-height: 122px;
+            padding: 12px 8px;
+        }
+
+        .keypad-overlay {
+            position: relative;
+            inset: auto;
+            flex: 0 0 376px;
+            min-height: 0;
+            z-index: 1;
+            opacity: 1;
+            pointer-events: auto;
+            display: flex;
+            justify-content: stretch;
+            background: transparent;
+            transition: none;
+        }
+
+        .keypad-panel {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            padding: 4px 18px 8px;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            transform: none;
+            transition: none;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        .key-grid {
+            flex: 0 0 340px;
+            width: 100%;
+            min-height: 0;
+            max-height: 340px;
+            grid-template-rows: repeat(4, minmax(56px, 1fr));
+            gap: 8px;
+        }
+
+        .key {
+            min-height: 0;
+            border-radius: 15px;
+            border: 1px solid #DFE5EF;
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+            color: #101828;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        button.key {
+            appearance: none;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .key:active {
+            transform: scale(0.97);
+            background: #F2F5FA;
+        }
+
+        .key-func {
+            background: #EEF3FF;
+        }
+
+        .key-delete {
+            color: #C45F00;
+            background: #FFF7E6;
+            border-color: #F3C766;
+            box-shadow: 0 3px 10px rgba(196, 95, 0, 0.09);
+        }
+
+        .key-delete:active {
+            color: #9A4600;
+            background: #FFEDC2;
+            border-color: #E8AD35;
+        }
+
+        .key-clear {
+            color: #D92D20;
+            background: #FFF1F2;
+            border-color: #FDA4AF;
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 0;
+            box-shadow: 0 3px 10px rgba(217, 45, 32, 0.08);
+        }
+
+        .key-clear:active {
+            color: #B42318;
+            background: #FFE4E6;
+            border-color: #FB7185;
+        }
+
+        .key-00 {
+            color: #101828;
+            background: #FFFFFF;
+            border-color: #DFE5EF;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+        }
+
+        .key-00:active {
+            background: #F2F5FA;
+            border-color: #D3DAE6;
+        }
+
+        .key-done {
+            background: var(--primary);
+            color: #FFFFFF;
+            font-size: 17px;
+            box-shadow: 0 9px 22px rgba(10, 91, 255, 0.22);
+        }
+
+        .phone-frame.with-keypad .content-sheet {
+            opacity: 0;
+            transform: translateX(100%);
+            pointer-events: none;
+        }
+
+        .phone-frame.with-keypad .keypad-overlay {
+            background: transparent;
+        }
+
+        .settings-overlay,
+        .batch-overlay {
+            inset: 28px 0 64px;
+        }
+
+        .settings-overlay {
+            transform: translateX(100%);
+            transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+        }
+
+        .settings-overlay.open {
+            transform: translateX(0);
+        }
+
+        .bottom-nav {
+            flex: 0 0 64px;
+            height: 64px;
+            padding: 6px 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            align-items: stretch;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.97);
+            border-top: 1px solid #E3E8F1;
+            box-shadow: 0 -8px 26px rgba(15, 23, 42, 0.05);
+            position: relative;
+            z-index: 150;
+        }
+
+        .bottom-nav-item {
+            appearance: none;
+            border: none;
+            width: 52px;
+            height: 52px;
+            justify-self: center;
+            border-radius: 18px;
+            background: transparent;
+            color: #8A94A6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+        }
+
+        .bottom-nav-item:active {
+            transform: scale(0.96);
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary);
+            background: #EEF4FF;
+        }
+
+        .bottom-nav-item .material-symbols-rounded {
+            font-size: 27px;
+        }
+
+        @media (max-height: 760px) {
+            .entry-state {
+                height: 164px;
+            }
+
+            .entry-stage {
+                min-height: 132px;
+            }
+
+            .merchant-logo-slot {
+                width: 82px;
+                height: 82px;
+            }
+
+            .currency,
+            .amount-value {
+                font-size: 48px;
+            }
+
+            .key-grid {
+                flex-basis: 306px;
+                max-height: 306px;
+            }
+
+            .keypad-overlay {
+                flex-basis: 342px;
+            }
+        }
     </style>
 </head>
 
@@ -1668,54 +2078,26 @@
         </div>
         <header class="header">
             <div class="header-left">
-                <div class="merchant-name">Jose's Store</div>
-                <div class="brand-strip" id="brand-strip">
-                    <div class="brand-set" data-brand="qr">
-                        <div class="brand-badge primary">
-                            <img src="alipay.svg" alt="Alipay">
-                        </div>
-                        <div class="brand-badge">
-                            <img src="wechat-pay.svg" alt="WeChat Pay">
-                        </div>
-                    </div>
-                    <div class="brand-set" data-brand="loyalty">
-                        <div class="brand-badge primary">
-                            <img src="f4.png" alt="Gift Card">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="icon-btn" onclick="openSettings()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path
-                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
-                    </path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                <div class="merchant-name">UNIQLO</div>
             </div>
         </header>
 
-        <div class="amount-section" onclick="openKeypad()">
-            <div class="amount-label">TRANSACTION AMOUNT</div>
-            <div><span class="currency">$</span><span class="amount-value" id="main-amount">0.00</span></div>
-            <div class="amount-actions" onclick="event.stopPropagation()">
-                <button class="amount-btn secondary" onclick="clearAmount(event)">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 6l12 12M6 18L18 6" stroke-linecap="round" />
-                    </svg>
-                    <span>Clear</span>
-                </button>
-                <button class="amount-btn" onclick="openKeypad()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M5 8h14M5 12h14M5 16h8" stroke-linecap="round" />
-                    </svg>
-                    <span>Keypad</span>
-                </button>
+        <div class="entry-stage" id="entry-stage">
+            <div class="merchant-brand-section entry-state" id="merchant-brand-state" aria-hidden="false">
+                <div class="merchant-logo-slot" aria-label="Merchant logo">
+                    <img src="uniqlo-logo.svg" alt="UNIQLO merchant logo">
+                </div>
+            </div>
+
+            <div class="amount-section entry-state" id="amount-entry-state" aria-hidden="true">
+                <div class="amount-context" id="amount-context">SALE</div>
+                <div class="amount-label" id="amount-label">TRANSACTION AMOUNT</div>
+                <div class="amount-display"><span class="currency">$</span><span class="amount-value" id="main-amount">0.00</span></div>
+                <div class="amount-error" id="amount-error" aria-live="polite"></div>
             </div>
         </div>
 
-        <div class="content-sheet">
+        <div class="content-sheet transactions-view" id="transactions-view" aria-hidden="true" inert>
             <div class="tabs">
                 <div class="tab-bg" id="tab-pill"></div>
                 <div class="tab-item active" data-group="card" onclick="switchTab(0)">
@@ -1950,7 +2332,7 @@
             </div>
         </div>
 
-        <div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)">
+        <div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)" aria-hidden="true" inert>
             <div class="settings-panel" onclick="event.stopPropagation()">
                 <div class="settings-header-bar">
                     <button class="settings-back-btn" onclick="closeSettings(event)">
@@ -2250,42 +2632,45 @@
                 </div>
             </div>
         </div>
-        <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)">
-            <div class="keypad-panel" onclick="event.stopPropagation()">
-                <div class="keypad-header">
-                    <span class="keypad-title">Keypad</span>
-                    <div class="close-btn" onclick="closeKeypad(event)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="3" stroke-linecap="round">
-                            <path d="M18 6L6 18M6 6l12 12" />
-                        </svg>
-                    </div>
-                </div>
+        <div class="keypad-overlay" id="keypad-overlay">
+            <div class="keypad-panel">
+                <div class="enter-amount-prompt">Enter Amount</div>
                 <div class="key-grid">
-                    <div class="key key-7" onclick="press('7')">7</div>
-                    <div class="key key-8" onclick="press('8')">8</div>
-                    <div class="key key-9" onclick="press('9')">9</div>
-                    <div class="key key-func key-delete key-del" onclick="press('BS')">
+                    <button type="button" class="key key-7" onclick="press('7')">7</button>
+                    <button type="button" class="key key-8" onclick="press('8')">8</button>
+                    <button type="button" class="key key-9" onclick="press('9')">9</button>
+                    <button type="button" class="key key-func key-delete key-del" onclick="press('BS')" aria-label="Delete last digit">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round">
                             <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
                             <line x1="18" y1="9" x2="12" y2="15" />
                             <line x1="12" y1="9" x2="18" y2="15" />
                         </svg>
-                    </div>
-                    <div class="key key-4" onclick="press('4')">4</div>
-                    <div class="key key-5" onclick="press('5')">5</div>
-                    <div class="key key-6" onclick="press('6')">6</div>
-                    <div class="key key-func key-clear" onclick="clearAmount(event)">C</div>
-                    <div class="key key-1" onclick="press('1')">1</div>
-                    <div class="key key-2" onclick="press('2')">2</div>
-                    <div class="key key-3" onclick="press('3')">3</div>
-                    <button class="key key-done key-ok" onclick="confirmAmount(event)">OK</button>
-                    <div class="key key-0" onclick="press('0')">0</div>
-                    <div class="key key-func key-00" onclick="press('00')">00</div>
+                    </button>
+                    <button type="button" class="key key-4" onclick="press('4')">4</button>
+                    <button type="button" class="key key-5" onclick="press('5')">5</button>
+                    <button type="button" class="key key-6" onclick="press('6')">6</button>
+                    <button type="button" class="key key-func key-clear" onclick="clearAmount(event)" aria-label="Clear amount">C</button>
+                    <button type="button" class="key key-1" onclick="press('1')">1</button>
+                    <button type="button" class="key key-2" onclick="press('2')">2</button>
+                    <button type="button" class="key key-3" onclick="press('3')">3</button>
+                    <button type="button" class="key key-done key-ok" onclick="confirmAmount(event)">OK</button>
+                    <button type="button" class="key key-0" onclick="press('0')">0</button>
+                    <button type="button" class="key key-func key-00" onclick="press('00')">00</button>
                 </div>
             </div>
         </div>
+        <nav class="bottom-nav" aria-label="Primary navigation">
+            <button type="button" class="bottom-nav-item active" data-view="home" onclick="showSaleHome(event)" aria-label="Sale" aria-current="page">
+                <span class="material-symbols-rounded" aria-hidden="true">point_of_sale</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-view="transactions" onclick="showAppView('transactions', event)" aria-label="Transactions">
+                <span class="material-symbols-rounded" aria-hidden="true">apps</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-view="settings" onclick="showAppView('settings', event)" aria-label="Settings">
+                <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+            </button>
+        </nav>
     </div>
 
     <script>
@@ -2301,7 +2686,14 @@
         const statusBatteryValue = document.getElementById('status-battery-value');
         const statusBatteryLevel = document.getElementById('status-battery-level');
         const displayEl = document.getElementById('main-amount');
-        const keypadOverlay = document.getElementById('keypad-overlay');
+        const amountLabel = document.getElementById('amount-label');
+        const amountContext = document.getElementById('amount-context');
+        const amountError = document.getElementById('amount-error');
+        const entryStage = document.getElementById('entry-stage');
+        const merchantBrandState = document.getElementById('merchant-brand-state');
+        const amountEntryState = document.getElementById('amount-entry-state');
+        const transactionsView = document.getElementById('transactions-view');
+        const bottomNavItems = Array.from(document.querySelectorAll('.bottom-nav-item'));
         const settingsOverlay = document.getElementById('settings-overlay');
         const settingsExitModal = document.getElementById('settings-exit-modal');
         const settingsExitPasswordInput = document.getElementById('settings-exit-password');
@@ -2321,8 +2713,6 @@
             document.getElementById('grid-scan'),
             document.getElementById('grid-loyalty')
         ];
-        const phoneFrame = document.querySelector('.phone-frame');
-        const keypadTitle = document.querySelector('.keypad-title');
         const tabColors = [
             'var(--color-sale-text)',    // CARD: blue
             'var(--color-success-text)', // QR: green
@@ -2333,19 +2723,26 @@
             'rgba(0, 168, 107, 0.36)',
             'rgba(124, 58, 237, 0.28)'
         ];
-        const actionsRequireAmount = ['Sale', 'Auth', 'Auth-Incremental', 'Tip Adjust', 'Scan QR', 'Show Code', 'Pay', 'Top-up'];
+        const actionsRequireFreshAmount = new Set([
+            'Sale',
+            'Auth',
+            'Auth-Incremental',
+            'Capture',
+            'Refund',
+            'Tip Adjust',
+            'Scan QR',
+            'Show Code',
+            'Pay',
+            'Activate',
+            'Top-up',
+            'Add Tip'
+        ]);
         const SETTINGS_EXIT_PASSWORD = '99999999';
         const paymentGroups = [
             { key: 'card', tab: tabs[0], grid: grids[0], toggle: document.querySelector('.settings-toggle[data-group="card"]') },
             { key: 'qr', tab: tabs[1], grid: grids[1], toggle: document.querySelector('.settings-toggle[data-group="qr"]') },
             { key: 'loyalty', tab: tabs[2], grid: grids[2], toggle: document.querySelector('.settings-toggle[data-group="loyalty"]') }
         ];
-        const brandStrip = document.getElementById('brand-strip');
-        const brandSets = {
-            card: document.querySelector('[data-brand="card"]'),
-            qr: document.querySelector('[data-brand="qr"]'),
-            loyalty: document.querySelector('[data-brand="loyalty"]')
-        };
         const batchOverlay = document.getElementById('batch-overlay');
         const batchHome = document.getElementById('batch-home');
         const batchDetail = document.getElementById('batch-detail');
@@ -2488,7 +2885,6 @@
             const rootStyle = document.documentElement.style;
             rootStyle.setProperty('--tab-active-color', tabColors[index] || 'var(--primary)');
             rootStyle.setProperty('--tab-active-shadow', tabShadows[index] || 'rgba(10, 91, 255, 0.3)');
-            rootStyle.setProperty('--amount-color', tabColors[index] || 'var(--primary)');
         }
 
         function getEnabledPaymentGroups() {
@@ -2503,23 +2899,6 @@
             if (!activeVisible) {
                 const fallbackIndex = paymentGroups.findIndex(group => group.toggle && group.toggle.classList.contains('on'));
                 activeTab = fallbackIndex === -1 ? 0 : fallbackIndex;
-            }
-        }
-
-        function updateBrandStrip() {
-            const activeGroup = paymentGroups[activeTab];
-            const activeKey = activeGroup ? activeGroup.key : null;
-            let hasVisible = false;
-
-            Object.entries(brandSets).forEach(([key, el]) => {
-                if (!el) return;
-                const enabled = activeKey === key && activeGroup && activeGroup.toggle && activeGroup.toggle.classList.contains('on');
-                el.classList.toggle('active', !!enabled);
-                if (enabled) hasVisible = true;
-            });
-
-            if (brandStrip) {
-                brandStrip.classList.toggle('hidden', !hasVisible);
             }
         }
 
@@ -2558,7 +2937,6 @@
             });
 
             applyTabTheme(activeTab);
-            updateBrandStrip();
         }
 
         function syncPaymentAvailability() {
@@ -2687,7 +3065,7 @@
         function openBatchInfoPage() {
             closePrintMenu(null, true);
             closeKeypad(null);
-            closeSettings(null);
+            closeSettings(null, true);
             showBatchHome();
             if (batchOverlay) batchOverlay.classList.add('open');
         }
@@ -3012,7 +3390,7 @@
         initializeAppStatusBar();
         syncPaymentAvailability();
         updateCashDiscountUI();
-        setTimeout(() => { openKeypad(); }, 300); // Auto open keypad for demo feel
+        showAppView('home');
 
         // Logic
         function formatMoney(cents) {
@@ -3029,12 +3407,109 @@
                 else if (rawAmount.length < 10) rawAmount += key;
             }
             displayEl.innerText = formatMoney(rawAmount);
+            updateAmountContext();
         }
 
         function clearAmount(e) {
             if (e) e.stopPropagation();
             rawAmount = "0";
             displayEl.innerText = formatMoney(rawAmount);
+            updateAmountContext();
+        }
+
+        function updateAmountContext() {
+            const showAmountEntry = pendingAction !== null || rawAmount !== "0";
+            const transactionType = pendingAction
+                ? getActionLabel(pendingAction).toUpperCase()
+                : 'SALE';
+
+            if (amountLabel) {
+                amountLabel.textContent = 'TRANSACTION AMOUNT';
+            }
+            if (amountContext) {
+                amountContext.classList.remove('error');
+                amountContext.textContent = transactionType;
+                const typeLength = transactionType.length;
+                const typeSize = typeLength <= 8 ? 20 : typeLength <= 13 ? 18 : typeLength <= 18 ? 16 : 14;
+                const typeTracking = typeLength <= 8 ? '0.10em' : typeLength <= 13 ? '0.06em' : '0.025em';
+                amountContext.style.setProperty('--transaction-type-size', `${typeSize}px`);
+                amountContext.style.setProperty('--transaction-type-tracking', typeTracking);
+                amountContext.setAttribute('aria-label', `Transaction type: ${transactionType}`);
+            }
+            if (amountError) {
+                amountError.textContent = '';
+                amountError.classList.remove('show');
+            }
+            if (entryStage) {
+                entryStage.classList.toggle('show-amount', showAmountEntry);
+            }
+            if (merchantBrandState) {
+                merchantBrandState.setAttribute('aria-hidden', String(showAmountEntry));
+            }
+            if (amountEntryState) {
+                amountEntryState.setAttribute('aria-hidden', String(!showAmountEntry));
+            }
+        }
+
+        function resetTransactionAmount(actionName = null) {
+            pendingAction = actionName;
+            rawAmount = "0";
+            displayEl.innerText = formatMoney(rawAmount);
+            updateAmountContext();
+        }
+
+        function updateBottomNavigation(activeView) {
+            bottomNavItems.forEach((item) => {
+                const isActive = item.dataset.view === activeView;
+                item.classList.toggle('active', isActive);
+                if (isActive) item.setAttribute('aria-current', 'page');
+                else item.removeAttribute('aria-current');
+            });
+        }
+
+        function showSaleHome(e) {
+            if (e) e.stopPropagation();
+            pendingAction = null;
+            rawAmount = "0";
+            displayEl.innerText = formatMoney(rawAmount);
+            updateAmountContext();
+            showAppView('home');
+        }
+
+        function showAppView(viewName, e) {
+            if (e) e.stopPropagation();
+            const activeView = ['home', 'transactions', 'settings'].includes(viewName) ? viewName : 'home';
+
+            if (batchOverlay && batchOverlay.classList.contains('open')) {
+                closeBatchInfoPage(null);
+            }
+            if (activeView !== 'transactions') {
+                closePrintMenu(null, true);
+            }
+
+            if (transactionsView) {
+                const showTransactions = activeView === 'transactions';
+                transactionsView.classList.toggle('open', showTransactions);
+                transactionsView.setAttribute('aria-hidden', String(!showTransactions));
+                transactionsView.toggleAttribute('inert', !showTransactions);
+            }
+
+            if (settingsOverlay) {
+                const showSettings = activeView === 'settings';
+                settingsOverlay.classList.toggle('open', showSettings);
+                settingsOverlay.setAttribute('aria-hidden', String(!showSettings));
+                settingsOverlay.toggleAttribute('inert', !showSettings);
+                if (showSettings) {
+                    closeCashDiscountPage(null, true);
+                    closeExitPasswordModal(null);
+                } else {
+                    closeExitPasswordModal(null);
+                    closeCashDiscountPage(null, true);
+                }
+            }
+
+            updateBottomNavigation(activeView);
+            if (activeView === 'home') updateAmountContext();
         }
 
         function toggleSetting(element) {
@@ -3055,29 +3530,32 @@
         }
 
         function openKeypad() {
-            if (keypadTitle) {
-                keypadTitle.textContent = pendingAction ? getActionLabel(pendingAction) : 'Keypad';
-            }
-            keypadOverlay.classList.add('open');
-            if (phoneFrame) phoneFrame.classList.add('with-keypad');
+            showAppView('home');
+            updateAmountContext();
         }
         function closeKeypad(e) {
             if (e) e.stopPropagation();
-            keypadOverlay.classList.remove('open');
-            if (phoneFrame) phoneFrame.classList.remove('with-keypad');
             pendingAction = null;
-            if (keypadTitle) keypadTitle.textContent = 'Keypad';
+            updateAmountContext();
         }
 
         function confirmAmount(e) {
             if (e) e.stopPropagation();
+            if (rawAmount === "0") {
+                if (amountError) {
+                    amountError.textContent = 'Enter an amount to continue';
+                    amountError.classList.add('show');
+                }
+                return;
+            }
+
             const actionToRun = pendingAction;
             pendingAction = null;
-            closeKeypad(null);
+            updateAmountContext();
             if (actionToRun) {
-                startAction(actionToRun);
-            } else if (rawAmount !== "0") {
-                startAction('Sale');
+                startAction(actionToRun, rawAmount);
+            } else {
+                startAction('Sale', rawAmount);
             }
         }
 
@@ -3085,7 +3563,7 @@
             closePrintMenu(null, true);
             closeCashDiscountPage(null, true);
             closeExitPasswordModal(null);
-            settingsOverlay.classList.add('open');
+            showAppView('settings');
         }
 
         function settingsCanRequestExit() {
@@ -3160,11 +3638,14 @@
             }
         }
 
-        function closeSettings(e) {
+        function closeSettings(e, preserveView = false) {
             if (e) e.stopPropagation();
             closeExitPasswordModal(null);
             closeCashDiscountPage(null, true);
             settingsOverlay.classList.remove('open');
+            settingsOverlay.setAttribute('aria-hidden', 'true');
+            settingsOverlay.setAttribute('inert', '');
+            if (!preserveView) showAppView('home');
         }
 
         function switchTab(index) {
@@ -3192,20 +3673,36 @@
             return actionName;
         }
 
-        function startAction(actionName) {
+        function startAction(actionName, amountCents = null) {
+            const normalizedAmount = amountCents === null
+                ? null
+                : Math.max(0, parseInt(amountCents, 10) || 0);
+
             if (actionName === 'Sale') {
-                const amountCents = Math.max(0, parseInt(rawAmount, 10) || 0);
-                localStorage.setItem('amountCents', String(amountCents));
+                const saleAmount = normalizedAmount === null ? 0 : normalizedAmount;
+                localStorage.setItem('amountCents', String(saleAmount));
                 localStorage.removeItem('tipCents');
                 localStorage.removeItem('tipPercent');
                 localStorage.removeItem('totalCents');
-                window.location.href = `1.1tip.html?amountCents=${amountCents}`;
+                window.location.href = `1.1tip.html?amountCents=${saleAmount}`;
                 return;
             }
-            alert(`Start ${actionName} flow: $${formatMoney(rawAmount)}`);
+            const amountSuffix = normalizedAmount === null ? '' : `: $${formatMoney(normalizedAmount)}`;
+            alert(`Start ${actionName} flow${amountSuffix}`);
         }
 
         function doAction(actionName) {
+            closePrintMenu(null, true);
+
+            if (actionsRequireFreshAmount.has(actionName)) {
+                resetTransactionAmount(actionName);
+                showAppView('home');
+                return;
+            }
+
+            // Utility workflows never inherit the amount entered on the Sale home screen.
+            resetTransactionAmount(null);
+
             if (actionName === 'Batch Info') {
                 openBatchInfoPage();
                 return;
@@ -3216,16 +3713,7 @@
                 return;
             }
 
-            if (actionName === 'Print Last' || actionName === 'Print By Invoice') {
-                closePrintMenu(null, true);
-            }
-
-            if (rawAmount === "0" && actionsRequireAmount.includes(actionName)) {
-                pendingAction = actionName;
-                openKeypad();
-                return;
-            }
-            startAction(actionName);
+            startAction(actionName, null);
         }
     </script>
 </body>
