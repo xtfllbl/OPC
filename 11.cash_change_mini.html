@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Change - Mini</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --cash: #00A86B;
+            --cash-dark: #087344;
+            --cash-soft: #E7FAF1;
+            --bg-body: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-dark: #111827;
+            --text-muted: #6B7280;
+            --line: #E5E7EB;
+            --danger: #EF4444;
+            --warning: #B45309;
+            --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.16);
+            --shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1B1B1B;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .mini-frame {
+            position: relative;
+            width: 480px;
+            height: 480px;
+            overflow: hidden;
+            border-radius: 24px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 10px #101010, var(--shadow-lg);
+        }
+
+        .mini-frame::before,
+        .mini-frame::after {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            content: "";
+            pointer-events: none;
+        }
+
+        .mini-frame::before {
+            top: -112px;
+            right: -102px;
+            background: radial-gradient(circle at 30% 30%, rgba(10, 91, 255, 0.17), transparent 65%);
+        }
+
+        .mini-frame::after {
+            bottom: -140px;
+            left: -116px;
+            background: radial-gradient(circle at 70% 70%, rgba(0, 168, 107, 0.15), transparent 64%);
+        }
+
+        .mini-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            padding: 14px 16px 16px;
+        }
+
+        .status-bar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 6px;
+            min-height: 16px;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        #time-display {
+            justify-self: start;
+        }
+
+        .screen-label {
+            color: rgba(17, 24, 39, 0.72);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 6px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .battery {
+            position: relative;
+            width: 22px;
+            height: 10px;
+            border: 1.5px solid #9CA3AF;
+            border-radius: 3px;
+        }
+
+        .battery::after {
+            position: absolute;
+            top: 2px;
+            right: -3px;
+            width: 2px;
+            height: 6px;
+            border-radius: 1px;
+            background: #9CA3AF;
+            content: "";
+        }
+
+        .battery-level {
+            display: block;
+            width: 85%;
+            height: 100%;
+            border-radius: 2px;
+            background: var(--text-dark);
+        }
+
+        .payment-panel {
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .page-title {
+            padding: 3px 4px 1px;
+            color: var(--text-dark);
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.05;
+        }
+
+        .summary-card {
+            display: grid;
+            grid-template-rows: repeat(3, minmax(0, 1fr)) auto;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            width: 100%;
+            min-height: 0;
+            padding: 11px 17px;
+            border: 1.5px solid var(--line);
+            border-radius: 17px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), var(--shadow-sm);
+            text-align: left;
+        }
+
+        button.summary-row {
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+        }
+
+        button.summary-row:active {
+            transform: scale(0.992);
+        }
+
+        button.summary-row:focus-visible,
+        .btn:focus-visible,
+        .key:focus-visible,
+        .close-btn:focus-visible {
+            outline: 3px solid rgba(10, 91, 255, 0.38);
+            outline-offset: 2px;
+        }
+
+        .summary-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .edit-hint {
+            color: var(--primary);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .summary-value {
+            display: block;
+            max-width: 235px;
+            overflow: hidden;
+            color: #24446D;
+            font-size: clamp(27px, 7vw, 34px);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1;
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .summary-row.paid {
+            border-color: rgba(10, 91, 255, 0.32);
+            background: rgba(255, 255, 255, 0.96);
+        }
+
+        .summary-row.paid .summary-value {
+            color: #174DB8;
+        }
+
+        .summary-row.change {
+            border-color: rgba(0, 168, 107, 0.44);
+            background: var(--cash-soft);
+            box-shadow: 0 8px 18px rgba(0, 168, 107, 0.1);
+        }
+
+        .summary-row.change .summary-label,
+        .summary-row.change .summary-value {
+            color: var(--cash-dark);
+        }
+
+        .summary-row.change .summary-value {
+            font-size: clamp(29px, 7.4vw, 36px);
+        }
+
+        .status {
+            min-height: 15px;
+            padding: 0 4px;
+            overflow: hidden;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 15px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status.warn {
+            color: var(--warning);
+            font-weight: 700;
+        }
+
+        .action-row {
+            display: grid;
+            grid-template-columns: 102px minmax(0, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            height: 56px;
+            border: 1px solid #D1D5DB;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.84);
+            color: #374151;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            transition: filter 0.15s ease, transform 0.15s ease;
+        }
+
+        .btn:active {
+            filter: brightness(0.96);
+            transform: scale(0.985);
+        }
+
+        .btn-primary {
+            border: none;
+            background: var(--cash);
+            box-shadow: 0 10px 20px rgba(0, 168, 107, 0.18);
+            color: #FFFFFF;
+        }
+
+        .keypad-overlay {
+            position: absolute;
+            z-index: 20;
+            inset: 0;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.18);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
+        }
+
+        .keypad-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .keypad-panel {
+            display: grid;
+            grid-template-rows: auto auto minmax(0, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            padding: 14px 16px 16px;
+            background: #F7F8FA;
+            transform: translateY(100%);
+            transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .keypad-overlay.open .keypad-panel {
+            transform: translateY(0);
+        }
+
+        .keypad-header {
+            display: grid;
+            grid-template-columns: 32px minmax(0, 1fr) 32px;
+            align-items: center;
+            min-height: 32px;
+        }
+
+        .keypad-title {
+            grid-column: 2;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            text-align: center;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .close-btn {
+            display: grid;
+            grid-column: 3;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: #FFFFFF;
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.08);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .close-btn svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .keypad-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 62px;
+            padding: 10px 16px;
+            border: 1.5px solid rgba(0, 168, 107, 0.36);
+            border-radius: 16px;
+            background: var(--cash-soft);
+        }
+
+        .keypad-preview-label {
+            color: var(--cash-dark);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+        }
+
+        .keypad-preview-value {
+            max-width: 280px;
+            overflow: hidden;
+            color: var(--cash-dark);
+            font-size: clamp(29px, 7.4vw, 36px);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1;
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            grid-template-areas:
+                "k7 k8 k9 del"
+                "k4 k5 k6 clr"
+                "k1 k2 k3 ok"
+                "k0 k00 k00 ok";
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .key {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            min-height: 0;
+            border: none;
+            border-radius: 14px;
+            background: #FFFFFF;
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05), 0 6px 13px rgba(15, 23, 42, 0.06);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: 700;
+            transition: background 0.12s ease, transform 0.12s ease;
+        }
+
+        .key:active {
+            background: #F0F2F5;
+            transform: scale(0.98);
+        }
+
+        .key-func {
+            background: #EEF2F6;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .key-delete {
+            color: var(--danger);
+        }
+
+        .key-delete svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .key-done {
+            border: none;
+            background: var(--cash);
+            box-shadow: 0 8px 18px rgba(0, 168, 107, 0.2);
+            color: #FFFFFF;
+            font-size: 16px;
+            letter-spacing: 0.04em;
+        }
+
+        .key-done:active {
+            background: #00975F;
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-del { grid-area: del; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-clear { grid-area: clr; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+        .key-00 { grid-area: k00; }
+        .key-ok { grid-area: ok; }
+
+        @media (max-width: 520px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .mini-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .mini-content,
+            .keypad-panel {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .page-title {
+                font-size: 23px;
+            }
+
+            .summary-row {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .summary-value {
+                max-width: 175px;
+            }
+
+            .action-row {
+                grid-template-columns: 84px minmax(0, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mini-frame cash-change-page" id="cash-change-page">
+        <div class="mini-content">
+            <div class="status-bar" aria-label="Device status">
+                <span id="time-display">09:41</span>
+                <span class="screen-label">Cash</span>
+                <div class="status-right">
+                    <span>85%</span>
+                    <span class="battery" aria-hidden="true"><span class="battery-level"></span></span>
+                </div>
+            </div>
+
+            <main class="payment-panel">
+                <h1 class="page-title">Cash &amp; Change</h1>
+
+                <section class="summary-card" aria-label="Cash payment summary">
+                    <div class="summary-row due">
+                        <span class="summary-label">Amount Due</span>
+                        <strong class="summary-value" id="due-amount">$96.00</strong>
+                    </div>
+
+                    <button class="summary-row paid" id="paid-row" type="button" onclick="openKeypad()" aria-label="Edit amount paid" aria-expanded="false">
+                        <span class="summary-copy">
+                            <span class="summary-label">Amount Paid</span>
+                            <span class="edit-hint">Tap to edit</span>
+                        </span>
+                        <strong class="summary-value" id="paid-amount">$0.00</strong>
+                    </button>
+
+                    <div class="summary-row change">
+                        <span class="summary-label">Change</span>
+                        <strong class="summary-value" id="change-amount">$0.00</strong>
+                    </div>
+
+                    <p class="status" id="status-text">Enter the cash received.</p>
+                </section>
+
+                <div class="action-row">
+                    <button class="btn btn-back" type="button" onclick="handleBack()">Back</button>
+                    <button class="btn btn-primary" type="button" onclick="handleComplete()">Finish</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="keypad-overlay" id="keypad-overlay" onclick="closeKeypad(event)" aria-hidden="true">
+            <div class="keypad-panel" role="dialog" aria-modal="true" aria-labelledby="keypad-title" onclick="event.stopPropagation()">
+                <div class="keypad-header">
+                    <h2 class="keypad-title" id="keypad-title">Cash Received</h2>
+                    <button class="close-btn" type="button" onclick="closeKeypad(event)" aria-label="Close keypad">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                            <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="keypad-preview">
+                    <span class="keypad-preview-label">Amount Paid</span>
+                    <strong class="keypad-preview-value" id="keypad-preview-amount">$0.00</strong>
+                </div>
+
+                <div class="key-grid">
+                    <button class="key key-7" type="button" onclick="press('7')">7</button>
+                    <button class="key key-8" type="button" onclick="press('8')">8</button>
+                    <button class="key key-9" type="button" onclick="press('9')">9</button>
+                    <button class="key key-func key-delete key-del" type="button" onclick="press('BS')" aria-label="Delete">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                            <line x1="18" y1="9" x2="12" y2="15"></line>
+                            <line x1="12" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                    </button>
+                    <button class="key key-4" type="button" onclick="press('4')">4</button>
+                    <button class="key key-5" type="button" onclick="press('5')">5</button>
+                    <button class="key key-6" type="button" onclick="press('6')">6</button>
+                    <button class="key key-func key-clear" type="button" onclick="clearAmount(event)">C</button>
+                    <button class="key key-1" type="button" onclick="press('1')">1</button>
+                    <button class="key key-2" type="button" onclick="press('2')">2</button>
+                    <button class="key key-3" type="button" onclick="press('3')">3</button>
+                    <button class="key key-done key-ok" type="button" onclick="confirmAmount(event)">OK</button>
+                    <button class="key key-0" type="button" onclick="press('0')">0</button>
+                    <button class="key key-func key-00" type="button" onclick="press('00')">00</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const keypadOverlay = document.getElementById("keypad-overlay");
+        const pageRoot = document.getElementById("cash-change-page");
+        const paidRow = document.getElementById("paid-row");
+        const dueAmountEl = document.getElementById("due-amount");
+        const paidAmountEl = document.getElementById("paid-amount");
+        const changeAmountEl = document.getElementById("change-amount");
+        const statusTextEl = document.getElementById("status-text");
+        const displayEl = document.getElementById("keypad-preview-amount");
+        const timeDisplay = document.getElementById("time-display");
+
+        let rawAmount = "0";
+        let paidCents = 0;
+        let dueCents = resolveDueCents();
+
+        function formatMoney(cents) {
+            return (Math.max(0, parseInt(cents, 10) || 0) / 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") {
+                return null;
+            }
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) {
+                return null;
+            }
+            return Math.round(amount * 100);
+        }
+
+        function resolveDueCents() {
+            const params = new URLSearchParams(window.location.search);
+            const dueCentsParam = params.get("dueCents");
+            const dueFromCents = Number(dueCentsParam);
+            if (dueCentsParam !== null && dueCentsParam !== "" && Number.isFinite(dueFromCents) && dueFromCents >= 0) {
+                return Math.round(dueFromCents);
+            }
+
+            const dueFromAmount = parseMoneyToCents(params.get("due"));
+            if (dueFromAmount !== null && dueFromAmount >= 0) {
+                return dueFromAmount;
+            }
+
+            const fallbackFromAmount = parseMoneyToCents(params.get("amount"));
+            if (fallbackFromAmount !== null && fallbackFromAmount >= 0) {
+                return fallbackFromAmount;
+            }
+
+            if (Number.isFinite(window.cashDueCents) && window.cashDueCents >= 0) {
+                return Math.round(window.cashDueCents);
+            }
+
+            const fallbackGlobal = parseMoneyToCents(window.cashDueAmount);
+            if (fallbackGlobal !== null && fallbackGlobal >= 0) {
+                return fallbackGlobal;
+            }
+
+            return 9600;
+        }
+
+        function syncSummary() {
+            const changeCents = Math.max(0, paidCents - dueCents);
+            const shortfallCents = Math.max(0, dueCents - paidCents);
+
+            dueAmountEl.textContent = "$" + formatMoney(dueCents);
+            paidAmountEl.textContent = "$" + formatMoney(paidCents);
+            changeAmountEl.textContent = "$" + formatMoney(changeCents);
+
+            if (paidCents === 0) {
+                statusTextEl.textContent = "Enter the cash received.";
+                statusTextEl.classList.remove("warn");
+                return;
+            }
+
+            if (shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(shortfallCents) + ". Please collect more cash.";
+                statusTextEl.classList.add("warn");
+                return;
+            }
+
+            statusTextEl.textContent = "Payment received. Return the change shown above.";
+            statusTextEl.classList.remove("warn");
+        }
+
+        function press(key) {
+            if (key === "BS") {
+                rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+            } else if (key === "00") {
+                if (rawAmount !== "0" && rawAmount.length < 8) {
+                    rawAmount += "00";
+                }
+            } else if (rawAmount === "0") {
+                rawAmount = key;
+            } else if (rawAmount.length < 10) {
+                rawAmount += key;
+            }
+            displayEl.textContent = "$" + formatMoney(rawAmount);
+        }
+
+        function clearAmount(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            rawAmount = "0";
+            displayEl.textContent = "$" + formatMoney(rawAmount);
+        }
+
+        function openKeypad() {
+            rawAmount = String(Math.max(0, paidCents));
+            displayEl.textContent = "$" + formatMoney(rawAmount);
+            keypadOverlay.classList.add("open");
+            keypadOverlay.setAttribute("aria-hidden", "false");
+            paidRow.setAttribute("aria-expanded", "true");
+            pageRoot.classList.add("with-keypad");
+        }
+
+        function closeKeypad(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            keypadOverlay.classList.remove("open");
+            keypadOverlay.setAttribute("aria-hidden", "true");
+            paidRow.setAttribute("aria-expanded", "false");
+            pageRoot.classList.remove("with-keypad");
+        }
+
+        function getPayload() {
+            return {
+                dueCents: dueCents,
+                paidCents: paidCents,
+                changeCents: Math.max(0, paidCents - dueCents),
+                shortfallCents: Math.max(0, dueCents - paidCents)
+            };
+        }
+
+        function confirmAmount(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            paidCents = Math.max(0, parseInt(rawAmount, 10) || 0);
+            syncSummary();
+            closeKeypad(null);
+
+            const payload = getPayload();
+            if (typeof window.onCashChangeConfirm === "function") {
+                window.onCashChangeConfirm(payload);
+            }
+            window.dispatchEvent(new CustomEvent("cash-change-confirm", { detail: payload }));
+        }
+
+        function handleComplete() {
+            const payload = getPayload();
+            if (payload.shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(payload.shortfallCents) + ". Please collect more cash.";
+                statusTextEl.classList.add("warn");
+                openKeypad();
+                return;
+            }
+
+            if (typeof window.onCashChangeComplete === "function") {
+                window.onCashChangeComplete(payload);
+                return;
+            }
+
+            window.dispatchEvent(new CustomEvent("cash-change-complete", { detail: payload }));
+        }
+
+        function handleBack() {
+            if (typeof window.onCashChangeBack === "function") {
+                window.onCashChangeBack();
+                return;
+            }
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+        }
+
+        window.setCashDueCents = function (cents) {
+            if (!Number.isFinite(cents) || cents < 0) {
+                return;
+            }
+            dueCents = Math.round(cents);
+            syncSummary();
+        };
+
+        window.setCashDueAmount = function (amount) {
+            const cents = parseMoneyToCents(amount);
+            if (cents === null || cents < 0) {
+                return;
+            }
+            dueCents = cents;
+            syncSummary();
+        };
+
+        function updateTime() {
+            const now = new Date();
+            timeDisplay.textContent = now.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        syncSummary();
+        updateTime();
+        window.setInterval(updateTime, 30000);
+        window.setTimeout(openKeypad, 300);
+    </script>
+</body>
+
+</html>

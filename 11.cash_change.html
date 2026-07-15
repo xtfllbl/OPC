@@ -132,6 +132,18 @@
             color: #5f6f86;
         }
 
+        .summary-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .edit-hint {
+            color: #2e5fe7;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
         .summary-value {
             font-size: 68px;
             line-height: 1;
@@ -376,7 +388,10 @@
                         <strong class="summary-value" id="due-amount">$96.00</strong>
                     </div>
                     <button class="summary-row paid" type="button" onclick="openKeypad()" aria-label="Edit amount paid">
-                        <span class="summary-label">Amount Paid</span>
+                        <span class="summary-copy">
+                            <span class="summary-label">Amount Paid</span>
+                            <span class="edit-hint">Tap to edit</span>
+                        </span>
                         <strong class="summary-value" id="paid-amount">$0.00</strong>
                     </button>
                     <div class="summary-row change">
