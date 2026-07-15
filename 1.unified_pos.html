@@ -39,6 +39,10 @@
 
             /* Amount theme (sync with tab) */
             --amount-color: var(--color-sale-text);
+
+            /* Fixed amount-entry theme (set by the selected transaction channel) */
+            --entry-color: #0A5BFF;
+            --entry-shadow: rgba(10, 91, 255, 0.22);
         }
 
         * {
@@ -1734,7 +1738,7 @@
 
         .currency,
         .amount-value {
-            color: var(--primary);
+            color: var(--entry-color);
             font-size: 52px;
             line-height: 1.05;
         }
@@ -1746,7 +1750,7 @@
             max-width: 86%;
             min-height: 34px;
             padding: 0 0 11px;
-            color: var(--primary);
+            color: var(--entry-color);
             background: transparent;
             border: none;
             font-size: var(--transaction-type-size);
@@ -1952,10 +1956,10 @@
         }
 
         .key-done {
-            background: var(--primary);
+            background: var(--entry-color);
             color: #FFFFFF;
             font-size: 17px;
-            box-shadow: 0 9px 22px rgba(10, 91, 255, 0.22);
+            box-shadow: 0 9px 22px var(--entry-shadow);
         }
 
         .phone-frame.with-keypad .content-sheet {
@@ -2019,8 +2023,9 @@
         }
 
         .bottom-nav-item.active {
-            color: var(--primary);
-            background: #EEF4FF;
+            color: #344054;
+            background: #F0F2F5;
+            box-shadow: inset 0 0 0 1px #E1E6ED, 0 2px 7px rgba(15, 23, 42, 0.045);
         }
 
         .bottom-nav-item .material-symbols-rounded {
@@ -2677,6 +2682,7 @@
         // State
         let rawAmount = "0";
         let activeTab = 0;
+        let entryThemeIndex = 0;
 
         // References
         const statusTime = document.getElementById('status-time');
@@ -2722,6 +2728,12 @@
             'rgba(10, 91, 255, 0.30)',
             'rgba(0, 168, 107, 0.36)',
             'rgba(124, 58, 237, 0.28)'
+        ];
+        const entryColors = ['#0A5BFF', '#00A86B', '#7C3AED'];
+        const entryShadows = [
+            'rgba(10, 91, 255, 0.22)',
+            'rgba(0, 168, 107, 0.22)',
+            'rgba(124, 58, 237, 0.22)'
         ];
         const actionsRequireFreshAmount = new Set([
             'Sale',
@@ -3422,6 +3434,10 @@
             const transactionType = pendingAction
                 ? getActionLabel(pendingAction).toUpperCase()
                 : 'SALE';
+            const safeThemeIndex = entryColors[entryThemeIndex] ? entryThemeIndex : 0;
+
+            document.documentElement.style.setProperty('--entry-color', entryColors[safeThemeIndex]);
+            document.documentElement.style.setProperty('--entry-shadow', entryShadows[safeThemeIndex]);
 
             if (amountLabel) {
                 amountLabel.textContent = 'TRANSACTION AMOUNT';
@@ -3451,8 +3467,9 @@
             }
         }
 
-        function resetTransactionAmount(actionName = null) {
+        function resetTransactionAmount(actionName = null, themeIndex = actionName ? activeTab : 0) {
             pendingAction = actionName;
+            entryThemeIndex = entryColors[themeIndex] ? themeIndex : 0;
             rawAmount = "0";
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
@@ -3470,6 +3487,7 @@
         function showSaleHome(e) {
             if (e) e.stopPropagation();
             pendingAction = null;
+            entryThemeIndex = 0;
             rawAmount = "0";
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
