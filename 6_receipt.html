@@ -15,6 +15,7 @@
             --success-light: #EAF8F2;
             --text-dark: #111827;
             --text-grey: #667085;
+            --result-ink: #24456D;
             --bg-body: #F5F7FB;
             --surface: #FFFFFF;
             --line: #DCE3ED;
@@ -73,18 +74,119 @@
             box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
+        .phone-frame {
+            --flow-accent: var(--primary);
+        }
+
+        .phone-frame[data-theme="cash"],
+        .phone-frame[data-theme="qr"] {
+            --flow-accent: var(--success);
+        }
+
+        .phone-frame[data-theme="gift"] {
+            --flow-accent: var(--purple);
+        }
+
+        .android-status-bar {
+            position: relative;
+            z-index: 200;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
         .result-area {
             display: flex;
-            flex: 0 0 344px;
+            align-items: center;
+            flex: 0 0 226px;
             flex-direction: column;
-            padding: 22px 18px 18px;
+            padding: 24px 0 18px;
+            text-align: center;
         }
 
         .top-bar {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 0 0 48px;
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 8px 22px 6px;
         }
 
         .merchant-name {
@@ -96,29 +198,59 @@
 
         .success-summary {
             display: flex;
-            flex: 1;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding-top: 4px;
             text-align: center;
         }
 
-        .success-icon {
+        .success-check {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 13px;
             color: var(--success);
-            font-size: 48px;
-            font-variation-settings: "FILL" 1;
+            animation: success-pop 0.42s cubic-bezier(0.2, 0.85, 0.35, 1.25) both;
+        }
+
+        .success-check svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .success-check-circle,
+        .success-check-mark {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.6;
+        }
+
+        .success-check-circle {
+            stroke-dasharray: 126;
+            stroke-dashoffset: 126;
+            animation: draw-success-circle 0.5s ease-out 0.08s forwards;
+        }
+
+        .success-check-mark {
+            stroke-dasharray: 38;
+            stroke-dashoffset: 38;
+            animation: draw-success-mark 0.34s ease-out 0.46s forwards;
         }
 
         .success-title {
             position: relative;
-            margin-top: 9px;
-            padding-bottom: 10px;
-            color: var(--success);
-            font-size: 19px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 0 11px;
+            color: var(--result-ink);
+            font-size: 20px;
             font-weight: 800;
-            letter-spacing: 0.09em;
-            line-height: 1;
+            letter-spacing: 0.1em;
+            line-height: 1.1;
         }
 
         .success-title::after {
@@ -128,66 +260,63 @@
             width: 36px;
             height: 2px;
             border-radius: 999px;
-            background: var(--success);
+            background: currentColor;
             content: "";
             transform: translateX(-50%);
         }
 
-        .amount-label {
-            margin-top: 17px;
-            color: var(--text-grey);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            line-height: 1;
+        .success-title.long-type {
+            font-size: 16px;
+            letter-spacing: 0.06em;
         }
 
         .amount {
-            margin-top: 7px;
-            color: var(--success);
-            font-size: 50px;
+            max-width: 330px;
+            overflow: hidden;
+            margin-top: 16px;
+            color: var(--result-ink);
+            font-size: 52px;
             font-weight: 800;
             letter-spacing: -0.045em;
-            line-height: 1;
+            line-height: 1.05;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .transaction-meta {
-            margin-top: 9px;
-            color: var(--text-grey);
-            font-size: 11px;
-            font-weight: 600;
+        @keyframes success-pop {
+            0% {
+                opacity: 0;
+                transform: scale(0.72);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        .merchant-copy-status {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            min-height: 30px;
-            margin-top: 14px;
-            padding: 0 12px;
-            border: 1px solid #B9E5CF;
-            border-radius: 999px;
-            background: var(--success-light);
-            color: #08734C;
-            font-size: 11px;
-            font-weight: 700;
+        @keyframes draw-success-circle {
+            to {
+                stroke-dashoffset: 0;
+            }
         }
 
-        .merchant-copy-status .material-symbols-rounded {
-            font-size: 17px;
+        @keyframes draw-success-mark {
+            to {
+                stroke-dashoffset: 0;
+            }
         }
 
         .choice-sheet {
+            --flow-divider-offset: 76px;
             position: relative;
             display: flex;
             flex: 1;
             flex-direction: column;
             min-height: 0;
-            padding: 22px 24px 20px;
-            border-radius: 32px 32px 0 0;
-            background: var(--surface);
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.04);
+            padding: var(--flow-divider-offset) 24px 20px;
+            border-radius: 0;
+            background: var(--bg-body);
+            box-shadow: none;
             overflow: hidden;
         }
 
@@ -195,6 +324,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 16px;
             color: var(--text-grey);
             font-size: 12px;
             font-weight: 700;
@@ -215,11 +345,11 @@
         .receipt-options {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            grid-template-rows: minmax(0, 1fr) 64px;
+            grid-template-rows: 158px 64px;
+            align-content: start;
             flex: 1;
             gap: 12px;
             min-height: 0;
-            margin-top: 18px;
         }
 
         .receipt-option {
@@ -248,14 +378,14 @@
         .option-icon {
             display: grid;
             place-items: center;
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border: 1px solid;
-            border-radius: 18px;
+            border-radius: 16px;
         }
 
         .option-icon .material-symbols-rounded {
-            font-size: 30px;
+            font-size: 28px;
         }
 
         .email-option {
@@ -457,6 +587,15 @@
             }
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            .success-check,
+            .success-check-circle,
+            .success-check-mark {
+                animation-duration: 0.01ms;
+                animation-delay: 0ms;
+            }
+        }
+
         @media (max-width: 400px) {
             body {
                 background: var(--bg-body);
@@ -473,22 +612,38 @@
 </head>
 
 <body>
-    <div class="phone-frame">
+    <div class="phone-frame" id="phone-frame" data-theme="card">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <header class="top-bar">
+            <div class="merchant-name">UNIQLO</div>
+        </header>
+
         <section class="result-area" aria-label="Payment result">
-            <header class="top-bar">
-                <div class="merchant-name">UNIQLO</div>
-            </header>
 
             <div class="success-summary">
-                <span class="material-symbols-rounded success-icon" aria-hidden="true">check_circle</span>
-                <h1 class="success-title">PAYMENT APPROVED</h1>
-                <div class="amount-label">TOTAL AMOUNT</div>
+                <span class="success-check" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                        <circle class="success-check-circle" cx="24" cy="24" r="20"></circle>
+                        <path class="success-check-mark" d="m14.5 24.5 6.3 6.3 13-14"></path>
+                    </svg>
+                </span>
+                <h1 class="success-title" id="transaction-type">SALE</h1>
                 <div class="amount" id="amount-display">$104.00</div>
-                <div class="transaction-meta" id="transaction-meta">Card payment · Sale</div>
-                <div class="merchant-copy-status">
-                    <span class="material-symbols-rounded" aria-hidden="true">print</span>
-                    <span>Merchant copy printed</span>
-                </div>
             </div>
         </section>
 
@@ -549,7 +704,7 @@
         CUSTOMER COPY
         <div class="print-rule"></div>
         <span id="print-method">CARD PAYMENT</span><br>
-        SALE<br>
+        <span id="print-transaction-type">SALE</span><br>
         <div class="print-rule"></div>
         TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
         APPROVED
@@ -559,11 +714,14 @@
 
     <script>
         const choiceSheet = document.getElementById("choice-sheet");
+        const phoneFrame = document.getElementById("phone-frame");
+        const statusTime = document.getElementById("status-time");
         const emailInput = document.getElementById("email-input");
         const emailError = document.getElementById("email-error");
         const toast = document.getElementById("toast");
         const amountCents = resolveAmountCents();
         const paymentMethod = resolvePaymentMethod();
+        const transactionType = resolveTransactionType();
         let completionPending = false;
 
         function formatCurrency(cents) {
@@ -600,7 +758,39 @@
         function resolvePaymentMethod() {
             const params = new URLSearchParams(window.location.search);
             const method = params.get("paymentMethod") || params.get("method") || localStorage.getItem("paymentMethod") || "card";
-            return method.toLowerCase() === "cash" ? "cash" : "card";
+            const normalized = method.trim().toLowerCase();
+            if (["cash", "qr", "gift", "card"].includes(normalized)) return normalized;
+            if (["alipay", "wechat", "weixin", "scan"].includes(normalized)) return "qr";
+            return "card";
+        }
+
+        function resolveTransactionType() {
+            const params = new URLSearchParams(window.location.search);
+            const rawType = params.get("transactionType") || params.get("type") || localStorage.getItem("transactionType") || "sale";
+            const normalized = rawType
+                .trim()
+                .replace(/[_\s]+/g, "-")
+                .replace(/-+/g, "-")
+                .toUpperCase();
+            return normalized || "SALE";
+        }
+
+        function getPaymentMethodLabel() {
+            const labels = {
+                cash: "CASH PAYMENT",
+                card: "CARD PAYMENT",
+                qr: "QR PAYMENT",
+                gift: "GIFT PAYMENT"
+            };
+            return labels[paymentMethod] || "CARD PAYMENT";
+        }
+
+        function updateStatusTime() {
+            statusTime.textContent = new Date().toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
         }
 
         function getReceiptPayload(deliveryMethod, extra = {}) {
@@ -608,17 +798,20 @@
                 deliveryMethod: deliveryMethod,
                 amountCents: amountCents,
                 paymentMethod: paymentMethod,
-                transactionType: "sale",
+                transactionType: transactionType.toLowerCase(),
                 ...extra
             };
         }
 
         function syncTransactionDetails() {
             const amountText = formatCurrency(amountCents);
-            const methodLabel = paymentMethod === "cash" ? "Cash payment" : "Card payment";
+            const transactionTypeEl = document.getElementById("transaction-type");
+            phoneFrame.dataset.theme = paymentMethod;
+            transactionTypeEl.textContent = transactionType;
+            transactionTypeEl.classList.toggle("long-type", transactionType.length > 12);
             document.getElementById("amount-display").textContent = amountText;
-            document.getElementById("transaction-meta").textContent = methodLabel + " · Sale";
-            document.getElementById("print-method").textContent = methodLabel.toUpperCase();
+            document.getElementById("print-method").textContent = getPaymentMethodLabel();
+            document.getElementById("print-transaction-type").textContent = transactionType;
             document.getElementById("print-amount").textContent = amountText;
         }
 
@@ -697,6 +890,8 @@
             if (event.key === "Escape") closeEmailPanel();
         });
 
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 30000);
         syncTransactionDetails();
     </script>
 </body>

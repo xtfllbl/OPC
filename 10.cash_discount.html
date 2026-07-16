@@ -535,17 +535,14 @@
                 return;
             }
 
-            if (typeof window.onCashDiscountContinue === "function") {
-                window.onCashDiscountContinue(payload);
-                return;
-            }
-
-            const cardParams = new URLSearchParams({
+            const receiptParams = new URLSearchParams({
                 amount: (cardAmountCents / 100).toFixed(2),
                 amountCents: String(cardAmountCents),
+                paymentMethod: "card",
+                transactionType: "sale",
                 currency: "USD"
             });
-            window.location.href = "18.tapcard.html?" + cardParams.toString();
+            window.location.href = "6_receipt.html?" + receiptParams.toString();
         }
 
         function choosePayment(method, cardElement) {
