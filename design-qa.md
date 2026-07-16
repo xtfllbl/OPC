@@ -1,10 +1,10 @@
 # Design QA
 
-- Source visual truth: latest user-provided Tip selection screenshot and the revised Sale home in the current conversation (no local attachment path exposed)
-- Implementation: `1.1tip.html`
+- Source visual truth: latest user-provided Dejavoo Cash reference plus the established Sale/Tip/Cash Discount screens in the current conversation (no local attachment path exposed)
+- Implementation: `11.cash_change.html`
 - Implementation screenshot: unavailable because no in-app Browser or Chrome surface is available in this session
 - Intended viewport: 375 x 812
-- State: Tip selection for a Sale transaction
+- State: Cash payment with Amount Due, Cash Received, Change, and fixed keypad
 
 **Full-view comparison evidence**
 
@@ -12,12 +12,12 @@ Blocked. The source references are visible in the conversation, but a browser-re
 
 **Focused region comparison evidence**
 
-Blocked for the same reason. The intended focus regions are the merchant/amount hierarchy, fixed keypad, persistent bottom navigation, Transactions view, and Settings view.
+Blocked for the same reason. The intended focus regions are the UNIQLO/Back header, CASH and Amount Due hierarchy, Cash Received/Change metrics, and the fixed one-screen keypad.
 
 **Findings**
 
 - [P1] Browser-rendered visual verification unavailable
-  - Location: full Sale, Transactions, and Settings views.
+  - Location: full Cash Change view and its empty, shortfall, and sufficient-payment states.
   - Evidence: both available browser surfaces reported unavailable, leaving no implementation screenshot or computed-layout evidence.
   - Impact: spacing, clipping, font loading, icon rendering, and overlay/nav stacking cannot be signed off visually.
   - Fix: open the local preview in an available browser surface, capture the 375 x 812 Sale view plus Transactions and Settings states, then compare against the supplied references.
@@ -42,6 +42,7 @@ Blocked for the same reason. The intended focus regions are the merchant/amount 
 - Confirm-Tip hierarchy assertions passed: confirmation uses one dominant amount only. The persistent header changes from Transaction Amount to Total Amount and displays the final value, while the content sheet keeps a lightweight Transaction Amount/Tip breakdown and a Confirm button containing the final amount.
 - Entry-stage transition tests passed: default zero-value Sale shows only the merchant logo; the first digit switches to the Sale amount state; clearing returns to the logo only for default Sale; pending transaction workflows always show their transaction type and amount state, including at zero.
 - Navigation state test passed for Sale, Transactions, and Settings.
+- Cash Change assertions passed: the legacy 720 x 1280 scaled canvas and overlay keypad were removed; the page now uses the shared 375 x 812 frame, centered UNIQLO header, top-left Back control, green CASH hierarchy, fixed Amount Due/Cash Received/Change summary, and fixed 14-key keypad. Input updates Cash Received and Change immediately, and OK blocks completion while a shortfall remains.
 - `git diff --check` passed.
 
 **Required fidelity surfaces**
@@ -50,7 +51,7 @@ Blocked for the same reason. The intended focus regions are the merchant/amount 
 - Spacing and layout rhythm: designed for the existing 375 x 812 frame; visual fit and scroll behavior remain unverified.
 - Colors and visual tokens: existing blue/white POS palette is retained; rendered contrast and balance remain unverified.
 - Image quality and asset fidelity: existing QR/Gift payment assets are preserved; the merchant slot uses the vector UNIQLO mark sourced from Wikimedia Commons.
-- Copy and content: the example merchant is UNIQLO, the current transaction type is shown as a standalone underlined title above `TRANSACTION AMOUNT`, and bottom navigation uses accessible icon-only controls.
+- Copy and content: Cash Change uses the concise `CASH`, `AMOUNT DUE`, `CASH RECEIVED`, and `CHANGE` terminology from the selected workflow without the Dejavoo payment-channel chrome.
 
 **Primary interactions requiring browser verification**
 
@@ -59,6 +60,8 @@ Blocked for the same reason. The intended focus regions are the merchant/amount 
 - Confirm that the app clears the home amount, returns to the fixed keypad for fresh entry, and only forwards the newly entered amount on OK.
 - Open Settings, toggle payment groups, and verify Transactions updates.
 - Open Print, Batch Info, and Cash Discount subviews.
+- On Cash Change, enter less than the amount due and verify the shortfall warning and card feedback.
+- Clear the value, enter more than the amount due, verify live Change, and press OK to complete.
 - Check browser console errors.
 
 **Comparison history**
@@ -87,10 +90,15 @@ Blocked for the same reason. The intended focus regions are the merchant/amount 
 - Iteration 22: the Cash Discount screen was converted from a scaled 720 × 1280 design canvas to the same fixed 375 × 812 terminal frame used by `1.unified_pos.html`. Legacy fit-scale/visualViewport code was removed, and panel padding, typography, cards, radii, gaps, and buttons were proportionally resized for the unified frame. Cash/Card logic and navigation behavior remain unchanged; JavaScript parsing, frame assertions, and `git diff --check` passed; browser surfaces remain unavailable.
 - Iteration 23: the Cash/Card choice screen gained generic, non-branded payment imagery without restoring restricted copy: banknote and card icon tiles, stronger identity grouping, selected check indicators, fuller card height/elevation, and a payment-method icon in the primary action. Selection now also synchronizes `aria-pressed`, button label, and icon. Promotional claims, usage instructions, and card-network logos remain absent; JavaScript parsing, restricted-content/icon-state assertions, and `git diff --check` passed; browser surfaces remain unavailable.
 - Iteration 24: excess vertical whitespace was reduced by increasing each payment card from 154 px to 196 px and enlarging the Cash/Card titles, payment icon tiles, selection indicator, amount typography, internal padding, and identity spacing. The cards remain vertically balanced between the page title and actions, with no restricted marketing or network content reintroduced; static sizing assertions and `git diff --check` passed; browser surfaces remain unavailable.
+- Iteration 25: Cash Change was rebuilt around the selected Dejavoo single-screen workflow while adopting the established POS design system. The scaled 720 x 1280 canvas, summary stack, Finish footer, and overlay keypad were replaced with a 375 x 812 UNIQLO screen containing a top-left Back control, green CASH workflow label, compact Amount Due/Cash Received/Change hierarchy, and always-visible keypad. Cash Received and Change now update on every key press; OK gives an inline shortfall warning or completes the cash payment. JavaScript parsing, amount/change assertions, route compatibility, and `git diff --check` passed; browser-rendered comparison remains blocked because no browser surface is available.
+- Iteration 26: Cash Change status copy was reduced to exception-only messaging: the row stays visually empty at zero and when payment is sufficient, and only renders `Still due` for a shortfall without shifting surrounding layout. Cash Received now uses a neutral white card and dark amount, while Change uses a graphite high-contrast card with a white, slightly larger amount so the value returned to the customer is immediately distinguishable from the green cash workflow. Static state/copy assertions and `git diff --check` passed; browser-rendered comparison remains blocked.
+- Iteration 27: the graphite Change card was softened after feedback that it diverged too far from the established interface. Change now uses the existing pale cash-green surface, a clearer green border, restrained green shadow, and a slightly larger deep-green amount, while Cash Received remains neutral white for differentiation. The metric row was also moved 10 px farther from the dominant Amount Due value, increasing that separation from 16 px to 26 px. Static token/spacing assertions and `git diff --check` passed; browser-rendered comparison remains blocked.
+- Iteration 28: the separation between the dominant Amount Due value and the Cash Received/Change row was increased again from 26 px to 34 px, creating a clearer hierarchy without changing the fixed keypad or one-screen interaction model. Static spacing and script checks passed; browser-rendered comparison remains blocked.
 
 **Implementation checklist**
 
 - Capture Sale, Transactions, and Settings at 375 x 812.
+- Capture Cash Change at 375 x 812 in empty, shortfall, and sufficient-payment states.
 - Fix any P0/P1/P2 clipping, overlap, font, icon, or interaction issues found.
 - Repeat the combined visual comparison and update this report.
 

@@ -12,12 +12,14 @@
             --bg: #ffffff;
             --text-main: #0a2459;
             --text-sub: #4c6079;
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
             --cash-border: #9bdab4;
             --cash-bg: #eaf8ef;
             --cash-strong: #166637;
-            --card-border: #2e5fe7;
-            --card-bg: #edf3ff;
-            --card-strong: #2645a0;
+            --card-border: var(--primary);
+            --card-bg: var(--primary-light);
+            --card-strong: var(--primary);
             --neutral-border: #d3dce8;
             --neutral-bg: #ffffff;
             --radius: 16px;
@@ -78,21 +80,76 @@
         }
 
         .panel {
+            position: relative;
             width: 100%;
             height: 100%;
             background: var(--bg);
-            padding: 28px 18px 18px;
+            padding: 22px 18px 18px;
             display: flex;
             flex-direction: column;
         }
 
+        .top-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 48px;
+        }
+
+        .icon-btn {
+            position: absolute;
+            left: 0;
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: #111827;
+            cursor: pointer;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.2;
+        }
+
+        .merchant-name {
+            color: #111827;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
         .title {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            line-height: 1.05;
-            margin-bottom: 28px;
-            color: #001845;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 12px;
+            color: #667085;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            margin: 0 0 16px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .title::before,
+        .title::after {
+            flex: 1;
+            height: 1px;
+            background: #D8E0EB;
+            content: "";
         }
 
         .option-card {
@@ -101,13 +158,14 @@
             border: 1.5px solid var(--neutral-border);
             background: var(--neutral-bg);
             padding: 24px 22px 22px;
+            height: 196px;
             min-height: 196px;
             display: flex;
             flex-direction: column;
             text-align: left;
             position: relative;
             cursor: pointer;
-            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+            transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
             margin-bottom: 0;
         }
 
@@ -116,27 +174,37 @@
             flex: 1;
             flex-direction: column;
             justify-content: center;
+            gap: 0;
+            min-height: 0;
             margin-top: 0;
+            padding-bottom: 64px;
         }
 
         .cash-card {
-            margin-bottom: 18px;
+            margin-bottom: 28px;
         }
 
         .option-card:active {
-            transform: scale(0.99);
+            transform: translateY(2px) scale(0.975);
+            filter: brightness(0.97);
         }
 
-        .cash-card.selected {
+        .option-card.is-activating {
+            transform: translateY(2px) scale(0.975);
+            filter: brightness(0.96);
+            pointer-events: none;
+        }
+
+        .cash-card {
             border-color: var(--cash-border);
             background: var(--cash-bg);
             box-shadow: 0 10px 26px rgba(22, 102, 55, 0.13);
         }
 
-        .card-card.selected {
+        .card-card {
             border-color: var(--card-border);
             background: var(--card-bg);
-            box-shadow: 0 10px 26px rgba(38, 69, 160, 0.13);
+            box-shadow: 0 10px 26px rgba(10, 91, 255, 0.13);
         }
 
         .option-head {
@@ -173,29 +241,9 @@
         }
 
         .card-icon {
-            color: #315BB8;
-            background: #EEF4FF;
-            border-color: #D6E2FF;
-        }
-
-        .select-indicator {
-            color: #98A2B3;
-            font-size: 30px;
-            opacity: 0;
-            transform: scale(0.82);
-            transition: opacity 0.16s ease, transform 0.16s ease;
-        }
-
-        .cash-card.selected .select-indicator {
-            color: var(--cash-strong);
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .card-card.selected .select-indicator {
-            color: var(--card-strong);
-            opacity: 1;
-            transform: scale(1);
+            color: var(--primary);
+            background: var(--primary-light);
+            border-color: #DCE6FF;
         }
 
         .option-name {
@@ -212,57 +260,12 @@
             color: #1d3557;
         }
 
-        .cash-card.selected .amount {
+        .cash-card .amount {
             color: var(--cash-strong);
         }
 
-        .card-card.selected .amount {
+        .card-card .amount {
             color: var(--card-strong);
-        }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
-            margin-top: auto;
-            padding-top: 16px;
-        }
-
-        .btn {
-            height: 48px;
-            border-radius: 16px;
-            border: 1.5px solid #bcc5d3;
-            background: #f3f4f6;
-            color: #233e63;
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn .material-symbols-rounded {
-            font-size: 23px;
-        }
-
-        .btn-back {
-            width: 112px;
-        }
-
-        .btn-primary {
-            flex: 1;
-            border: none;
-            color: #fff;
-        }
-
-        .btn-primary.is-card {
-            background: linear-gradient(135deg, #2b67f3 0%, #1b4fd5 100%);
-        }
-
-        .btn-primary.is-cash {
-            background: linear-gradient(135deg, #21a85c 0%, #16763f 100%);
         }
 
     </style>
@@ -272,10 +275,15 @@
     <div class="viewport">
         <div class="canvas">
             <main class="panel">
-                <h1 class="title">How will customer pay?</h1>
-
+                <div class="top-bar">
+                    <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                    </button>
+                    <div class="merchant-name">UNIQLO</div>
+                </div>
                 <div class="cards-block">
-                    <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')" aria-pressed="false">
+                    <h1 class="title">SELECT PAYMENT METHOD</h1>
+                    <button class="option-card cash-card" id="cash-card" type="button" onclick="choosePayment('cash', this)" aria-label="Pay cash">
                         <div class="option-head">
                             <div class="option-identity">
                                 <span class="payment-icon cash-icon" aria-hidden="true">
@@ -283,12 +291,11 @@
                                 </span>
                                 <div class="option-name">Cash</div>
                             </div>
-                            <span class="material-symbols-rounded select-indicator" aria-hidden="true">check_circle</span>
                         </div>
                         <div class="amount" id="cash-amount">$100.00</div>
                     </button>
 
-                    <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')" aria-pressed="true">
+                    <button class="option-card card-card" id="card-card" type="button" onclick="choosePayment('card', this)" aria-label="Pay by card">
                         <div class="option-head">
                             <div class="option-identity">
                                 <span class="payment-icon card-icon" aria-hidden="true">
@@ -296,22 +303,11 @@
                                 </span>
                                 <div class="option-name">Card</div>
                             </div>
-                            <span class="material-symbols-rounded select-indicator" aria-hidden="true">check_circle</span>
                         </div>
                         <div class="amount" id="card-amount">$104.00</div>
                     </button>
                 </div>
 
-                <div class="action-row">
-                    <button class="btn btn-back" type="button" onclick="handleBack()">
-                        <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
-                        <span>Back</span>
-                    </button>
-                    <button class="btn btn-primary is-card" id="continue-btn" type="button" onclick="handleContinue()">
-                        <span class="material-symbols-rounded" id="continue-icon" aria-hidden="true">credit_card</span>
-                        <span id="continue-label">Card Payment</span>
-                    </button>
-                </div>
             </main>
         </div>
     </div>
@@ -322,12 +318,8 @@
         const cardCard = document.getElementById("card-card");
         const cashAmountEl = document.getElementById("cash-amount");
         const cardAmountEl = document.getElementById("card-amount");
-        const continueBtn = document.getElementById("continue-btn");
-        const continueIcon = document.getElementById("continue-icon");
-        const continueLabel = document.getElementById("continue-label");
-
-        let selectedMethod = "card";
         let cashAmountCents = resolveIncomingCashAmount();
+        let paymentNavigationPending = false;
 
         function formatMoney(cents) {
             return (Math.max(0, cents) / 100).toLocaleString("en-US", {
@@ -399,26 +391,10 @@
 
         function syncView() {
             const cardAmountCents = getCardAmountCents();
-            const isCash = selectedMethod === "cash";
 
             cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
             cashAmountEl.textContent = "$" + formatMoney(cashAmountCents);
-
-            cashCard.classList.toggle("selected", isCash);
-            cardCard.classList.toggle("selected", !isCash);
-            cashCard.setAttribute("aria-pressed", String(isCash));
-            cardCard.setAttribute("aria-pressed", String(!isCash));
-
-            continueIcon.textContent = isCash ? "payments" : "credit_card";
-            continueLabel.textContent = isCash ? "Cash Payment" : "Card Payment";
-            continueBtn.classList.toggle("is-cash", isCash);
-            continueBtn.classList.toggle("is-card", !isCash);
             equalizeCardHeights();
-        }
-
-        function selectMethod(method) {
-            selectedMethod = method === "cash" ? "cash" : "card";
-            syncView();
         }
 
         function handleBack() {
@@ -431,7 +407,8 @@
             }
         }
 
-        function handleContinue() {
+        function proceedToPayment(method) {
+            const selectedMethod = method === "cash" ? "cash" : "card";
             const cardAmountCents = getCardAmountCents();
             const payload = {
                 method: selectedMethod,
@@ -443,17 +420,34 @@
                 finalAmountCents: selectedMethod === "cash" ? cashAmountCents : cardAmountCents
             };
 
-            if (typeof window.onCashDiscountContinue === "function") {
-                window.onCashDiscountContinue(payload);
-                return;
-            }
+            localStorage.setItem("paymentMethod", selectedMethod);
+            localStorage.setItem("finalAmountCents", String(payload.finalAmountCents));
+
+            window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
 
             if (selectedMethod === "cash") {
                 window.location.href = "11.cash_change.html?dueCents=" + cashAmountCents;
                 return;
             }
 
-            window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
+            if (typeof window.onCashDiscountContinue === "function") {
+                window.onCashDiscountContinue(payload);
+                return;
+            }
+
+            const cardParams = new URLSearchParams({
+                amount: (cardAmountCents / 100).toFixed(2),
+                amountCents: String(cardAmountCents),
+                currency: "USD"
+            });
+            window.location.href = "18.tapcard.html?" + cardParams.toString();
+        }
+
+        function choosePayment(method, cardElement) {
+            if (paymentNavigationPending) return;
+            paymentNavigationPending = true;
+            cardElement.classList.add("is-activating");
+            window.setTimeout(() => proceedToPayment(method), 160);
         }
 
         window.setTransactionAmountCents = function (cents) {
