@@ -431,7 +431,7 @@
 
             <main class="content">
                 <section class="cash-summary" aria-label="Cash payment summary">
-                    <h1 class="workflow-title">CASH</h1>
+                    <h1 class="workflow-title">CASH SALE</h1>
 
                     <div class="due-block">
                         <span class="due-label">Amount Due</span>
@@ -594,6 +594,12 @@
             statusTextEl.textContent = "";
             statusTextEl.classList.remove("warn");
             window.dispatchEvent(new CustomEvent("cash-change-complete", { detail: payload }));
+            const receiptParams = new URLSearchParams({
+                amountCents: String(dueCents),
+                paymentMethod: "cash",
+                changeCents: String(payload.changeCents)
+            });
+            window.location.href = "6_receipt.html?" + receiptParams.toString();
         }
 
         function handleBack() {

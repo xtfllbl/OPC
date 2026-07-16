@@ -1999,6 +1999,18 @@
             box-shadow: 0 -8px 26px rgba(15, 23, 42, 0.05);
             position: relative;
             z-index: 150;
+            overflow: hidden;
+            transition: opacity 0.16s ease, transform 0.2s ease, border-color 0.16s ease,
+                background 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .bottom-nav.amount-input-hidden {
+            border-top-color: transparent;
+            background: transparent;
+            box-shadow: none;
+            opacity: 0;
+            transform: translateY(100%);
+            pointer-events: none;
         }
 
         .bottom-nav-item {
@@ -2683,6 +2695,7 @@
         let rawAmount = "0";
         let activeTab = 0;
         let entryThemeIndex = 0;
+        let amountInputHasStarted = false;
 
         // References
         const statusTime = document.getElementById('status-time');
@@ -2699,6 +2712,7 @@
         const merchantBrandState = document.getElementById('merchant-brand-state');
         const amountEntryState = document.getElementById('amount-entry-state');
         const transactionsView = document.getElementById('transactions-view');
+        const bottomNav = document.querySelector('.bottom-nav');
         const bottomNavItems = Array.from(document.querySelectorAll('.bottom-nav-item'));
         const settingsOverlay = document.getElementById('settings-overlay');
         const settingsExitModal = document.getElementById('settings-exit-modal');
@@ -3412,21 +3426,30 @@
         function press(key) {
             if (key === 'BS') {
                 rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+                if (rawAmount === "0" && pendingAction === null) {
+                    amountInputHasStarted = false;
+                }
             } else if (key === '00') {
                 if (rawAmount !== "0" && rawAmount.length < 8) rawAmount += "00";
             } else {
                 if (rawAmount === "0") rawAmount = key;
                 else if (rawAmount.length < 10) rawAmount += key;
             }
+            if (key !== 'BS' && rawAmount !== "0") {
+                amountInputHasStarted = true;
+            }
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
+            syncBottomNavigationVisibility('home');
         }
 
         function clearAmount(e) {
             if (e) e.stopPropagation();
             rawAmount = "0";
+            amountInputHasStarted = false;
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
+            syncBottomNavigationVisibility('home');
         }
 
         function updateAmountContext() {
@@ -3471,8 +3494,18 @@
             pendingAction = actionName;
             entryThemeIndex = entryColors[themeIndex] ? themeIndex : 0;
             rawAmount = "0";
+            amountInputHasStarted = false;
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
+            syncBottomNavigationVisibility('home');
+        }
+
+        function syncBottomNavigationVisibility(activeView = 'home') {
+            if (!bottomNav) return;
+            const shouldHide = activeView === 'home' && amountInputHasStarted;
+            bottomNav.classList.toggle('amount-input-hidden', shouldHide);
+            bottomNav.setAttribute('aria-hidden', String(shouldHide));
+            bottomNav.toggleAttribute('inert', shouldHide);
         }
 
         function updateBottomNavigation(activeView) {
@@ -3489,6 +3522,7 @@
             pendingAction = null;
             entryThemeIndex = 0;
             rawAmount = "0";
+            amountInputHasStarted = false;
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
             showAppView('home');
@@ -3527,6 +3561,7 @@
             }
 
             updateBottomNavigation(activeView);
+            syncBottomNavigationVisibility(activeView);
             if (activeView === 'home') updateAmountContext();
         }
 
@@ -3704,7 +3739,7 @@
                 localStorage.removeItem('tipPercent');
                 localStorage.removeItem('totalCents');
                 localStorage.removeItem('cashTotalCents');
-                window.location.href = `1.1tip.html?cashAmountCents=${saleAmount}&amountCents=${saleAmount}`;
+                window.location.href = `1.1.tip.html?cashAmountCents=${saleAmount}&amountCents=${saleAmount}`;
                 return;
             }
             const amountSuffix = normalizedAmount === null ? '' : `: $${formatMoney(normalizedAmount)}`;
@@ -3739,5 +3774,4 @@
 </body>
 
 </html>
-
 

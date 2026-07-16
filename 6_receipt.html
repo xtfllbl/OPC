@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --success: #00A86B;
+            --success-light: #EAF8F2;
+            --text-dark: #111827;
+            --text-grey: #667085;
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --line: #DCE3ED;
+            --purple: #7C3AED;
+            --purple-light: #F4F0FF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .material-symbols-rounded {
+            font-family: "Material Symbols Rounded";
+            font-weight: 600;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: "liga";
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga";
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-area {
+            display: flex;
+            flex: 0 0 344px;
+            flex-direction: column;
+            padding: 22px 18px 18px;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 48px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .success-summary {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 4px;
+            text-align: center;
+        }
+
+        .success-icon {
+            color: var(--success);
+            font-size: 48px;
+            font-variation-settings: "FILL" 1;
+        }
+
+        .success-title {
+            position: relative;
+            margin-top: 9px;
+            padding-bottom: 10px;
+            color: var(--success);
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.09em;
+            line-height: 1;
+        }
+
+        .success-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 36px;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--success);
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .amount-label {
+            margin-top: 17px;
+            color: var(--text-grey);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            line-height: 1;
+        }
+
+        .amount {
+            margin-top: 7px;
+            color: var(--success);
+            font-size: 50px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1;
+        }
+
+        .transaction-meta {
+            margin-top: 9px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .merchant-copy-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 30px;
+            margin-top: 14px;
+            padding: 0 12px;
+            border: 1px solid #B9E5CF;
+            border-radius: 999px;
+            background: var(--success-light);
+            color: #08734C;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .merchant-copy-status .material-symbols-rounded {
+            font-size: 17px;
+        }
+
+        .choice-sheet {
+            position: relative;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: 22px 24px 20px;
+            border-radius: 32px 32px 0 0;
+            background: var(--surface);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .sheet-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .sheet-label::before,
+        .sheet-label::after {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+            content: "";
+        }
+
+        .receipt-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: minmax(0, 1fr) 64px;
+            flex: 1;
+            gap: 12px;
+            min-height: 0;
+            margin-top: 18px;
+        }
+
+        .receipt-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 0;
+            border: 1.5px solid var(--line);
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 800;
+            transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+        }
+
+        .receipt-option:active {
+            transform: translateY(2px) scale(0.975);
+            filter: brightness(0.97);
+        }
+
+        .option-icon {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            border: 1px solid;
+            border-radius: 18px;
+        }
+
+        .option-icon .material-symbols-rounded {
+            font-size: 30px;
+        }
+
+        .email-option {
+            border-color: #D6E2FF;
+        }
+
+        .email-option .option-icon {
+            border-color: #D6E2FF;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .print-option {
+            border-color: #E4D8FF;
+        }
+
+        .print-option .option-icon {
+            border-color: #E4D8FF;
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .no-receipt-option {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 10px;
+            border-color: #D7DEE8;
+            background: #F8FAFC;
+            color: #475467;
+            font-size: 14px;
+        }
+
+        .no-receipt-option .material-symbols-rounded {
+            font-size: 22px;
+        }
+
+        .email-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding-top: 24px;
+        }
+
+        .choice-sheet.email-mode .receipt-options {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .email-panel {
+            display: flex;
+        }
+
+        .email-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .email-heading .option-icon {
+            width: 48px;
+            height: 48px;
+            border-color: #D6E2FF;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .email-title {
+            color: var(--text-dark);
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .email-copy {
+            margin-top: 4px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .email-form {
+            margin-top: 28px;
+        }
+
+        .email-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .email-input {
+            width: 100%;
+            height: 54px;
+            padding: 0 14px;
+            border: 1.5px solid var(--line);
+            border-radius: 15px;
+            outline: none;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            font-size: 15px;
+            user-select: text;
+        }
+
+        .email-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 91, 255, 0.1);
+            background: var(--surface);
+        }
+
+        .email-error {
+            min-height: 17px;
+            margin-top: 7px;
+            color: #D92D20;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .email-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.45fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .email-action {
+            height: 52px;
+            border: 1.5px solid #DCE6FF;
+            border-radius: 16px;
+            background: #F8FAFC;
+            color: #64748B;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .email-action.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .toast {
+            position: absolute;
+            z-index: 20;
+            left: 50%;
+            bottom: 24px;
+            max-width: calc(100% - 48px);
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: #101828;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 10px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .print-receipt {
+            display: none;
+        }
+
+        @media print {
+            body {
+                display: block;
+                background: #FFFFFF;
+            }
+
+            .phone-frame {
+                display: none;
+            }
+
+            .print-receipt {
+                display: block;
+                width: 80mm;
+                padding: 8mm 5mm;
+                color: #000000;
+                font-family: monospace;
+                font-size: 12px;
+                line-height: 1.5;
+                text-align: center;
+            }
+
+            .print-rule {
+                margin: 10px 0;
+                border-top: 1px dashed #000000;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <section class="result-area" aria-label="Payment result">
+            <header class="top-bar">
+                <div class="merchant-name">UNIQLO</div>
+            </header>
+
+            <div class="success-summary">
+                <span class="material-symbols-rounded success-icon" aria-hidden="true">check_circle</span>
+                <h1 class="success-title">PAYMENT APPROVED</h1>
+                <div class="amount-label">TOTAL AMOUNT</div>
+                <div class="amount" id="amount-display">$104.00</div>
+                <div class="transaction-meta" id="transaction-meta">Card payment · Sale</div>
+                <div class="merchant-copy-status">
+                    <span class="material-symbols-rounded" aria-hidden="true">print</span>
+                    <span>Merchant copy printed</span>
+                </div>
+            </div>
+        </section>
+
+        <main class="choice-sheet" id="choice-sheet">
+            <div class="sheet-label">CUSTOMER COPY</div>
+
+            <section class="receipt-options" aria-label="Customer receipt options">
+                <button class="receipt-option email-option" type="button" onclick="openEmailPanel()">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">mail</span>
+                    </span>
+                    <span>Email</span>
+                </button>
+
+                <button class="receipt-option print-option" type="button" onclick="printCustomerCopy()">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">print</span>
+                    </span>
+                    <span>Print</span>
+                </button>
+
+                <button class="receipt-option no-receipt-option" type="button" onclick="skipCustomerCopy()">
+                    <span class="material-symbols-rounded" aria-hidden="true">block</span>
+                    <span>No Receipt</span>
+                </button>
+            </section>
+
+            <section class="email-panel" aria-label="Email customer receipt">
+                <div class="email-heading">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">mail</span>
+                    </span>
+                    <div>
+                        <h2 class="email-title">Email Receipt</h2>
+                        <p class="email-copy">Send the customer copy by email.</p>
+                    </div>
+                </div>
+
+                <div class="email-form">
+                    <label class="email-label" for="email-input">Email Address</label>
+                    <input class="email-input" id="email-input" type="email" inputmode="email"
+                        autocomplete="email" placeholder="customer@example.com">
+                    <div class="email-error" id="email-error" aria-live="polite"></div>
+                </div>
+
+                <div class="email-actions">
+                    <button class="email-action" type="button" onclick="closeEmailPanel()">Back</button>
+                    <button class="email-action primary" type="button" onclick="sendEmailReceipt()">Send Receipt</button>
+                </div>
+            </section>
+        </main>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <section class="print-receipt" id="print-receipt" aria-hidden="true">
+        <strong>UNIQLO</strong><br>
+        CUSTOMER COPY
+        <div class="print-rule"></div>
+        <span id="print-method">CARD PAYMENT</span><br>
+        SALE<br>
+        <div class="print-rule"></div>
+        TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
+        APPROVED
+        <div class="print-rule"></div>
+        Thank you for your purchase
+    </section>
+
+    <script>
+        const choiceSheet = document.getElementById("choice-sheet");
+        const emailInput = document.getElementById("email-input");
+        const emailError = document.getElementById("email-error");
+        const toast = document.getElementById("toast");
+        const amountCents = resolveAmountCents();
+        const paymentMethod = resolvePaymentMethod();
+        let completionPending = false;
+
+        function formatCurrency(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD"
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
+        }
+
+        function resolveAmountCents() {
+            const params = new URLSearchParams(window.location.search);
+            const centsText = params.get("amountCents");
+            const cents = Number(centsText);
+            if (centsText !== null && centsText !== "" && Number.isFinite(cents) && cents >= 0) {
+                return Math.round(cents);
+            }
+
+            const amount = parseMoneyToCents(params.get("amount"));
+            if (amount !== null) return amount;
+
+            const stored = Number(localStorage.getItem("finalAmountCents"));
+            if (Number.isFinite(stored) && stored >= 0) return Math.round(stored);
+
+            return 10400;
+        }
+
+        function resolvePaymentMethod() {
+            const params = new URLSearchParams(window.location.search);
+            const method = params.get("paymentMethod") || params.get("method") || localStorage.getItem("paymentMethod") || "card";
+            return method.toLowerCase() === "cash" ? "cash" : "card";
+        }
+
+        function getReceiptPayload(deliveryMethod, extra = {}) {
+            return {
+                deliveryMethod: deliveryMethod,
+                amountCents: amountCents,
+                paymentMethod: paymentMethod,
+                transactionType: "sale",
+                ...extra
+            };
+        }
+
+        function syncTransactionDetails() {
+            const amountText = formatCurrency(amountCents);
+            const methodLabel = paymentMethod === "cash" ? "Cash payment" : "Card payment";
+            document.getElementById("amount-display").textContent = amountText;
+            document.getElementById("transaction-meta").textContent = methodLabel + " · Sale";
+            document.getElementById("print-method").textContent = methodLabel.toUpperCase();
+            document.getElementById("print-amount").textContent = amountText;
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("show");
+            window.setTimeout(() => toast.classList.remove("show"), 1200);
+        }
+
+        function openEmailPanel() {
+            choiceSheet.classList.add("email-mode");
+            emailError.textContent = "";
+            window.setTimeout(() => emailInput.focus(), 80);
+        }
+
+        function closeEmailPanel() {
+            choiceSheet.classList.remove("email-mode");
+            emailError.textContent = "";
+        }
+
+        function finishReceiptChoice(deliveryMethod, extra = {}) {
+            if (completionPending) return;
+            completionPending = true;
+            const payload = getReceiptPayload(deliveryMethod, extra);
+            localStorage.setItem("customerReceiptMethod", deliveryMethod);
+            window.dispatchEvent(new CustomEvent("customer-receipt-complete", { detail: payload }));
+
+            if (typeof window.onCustomerReceiptComplete === "function") {
+                window.onCustomerReceiptComplete(payload);
+                return;
+            }
+
+            window.location.href = "1.unified_pos.html";
+        }
+
+        function sendEmailReceipt() {
+            const email = emailInput.value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = "Enter a valid email address.";
+                emailInput.focus();
+                return;
+            }
+
+            const payload = getReceiptPayload("email", { email: email });
+            emailError.textContent = "";
+            if (typeof window.onCustomerReceiptEmail === "function") {
+                window.onCustomerReceiptEmail(payload);
+            }
+            window.dispatchEvent(new CustomEvent("customer-receipt-email", { detail: payload }));
+            showToast("Receipt emailed");
+            window.setTimeout(() => finishReceiptChoice("email", { email: email }), 700);
+        }
+
+        function printCustomerCopy() {
+            const payload = getReceiptPayload("print");
+            if (typeof window.onCustomerReceiptPrint === "function") {
+                window.onCustomerReceiptPrint(payload);
+            } else {
+                window.print();
+            }
+            window.dispatchEvent(new CustomEvent("customer-receipt-print", { detail: payload }));
+            showToast("Customer copy sent to printer");
+            window.setTimeout(() => finishReceiptChoice("print"), 500);
+        }
+
+        function skipCustomerCopy() {
+            finishReceiptChoice("none");
+        }
+
+        emailInput.addEventListener("input", () => {
+            emailError.textContent = "";
+        });
+
+        emailInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") sendEmailReceipt();
+            if (event.key === "Escape") closeEmailPanel();
+        });
+
+        syncTransactionDetails();
+    </script>
+</body>
+
+</html>

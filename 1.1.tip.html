@@ -181,7 +181,7 @@
         }
 
         .amount-section {
-            padding: 14px 0 24px;
+            padding: 78px 0 24px;
             text-align: center;
         }
 
@@ -248,32 +248,42 @@
         }
 
         .content-sheet {
+            --flow-divider-offset: 76px;
             position: relative;
             z-index: 1;
             display: flex;
             flex: 1;
             flex-direction: column;
             min-height: 0;
-            padding: 22px 24px 20px;
-            border-radius: 32px 32px 0 0;
-            background: var(--card-bg);
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.03);
+            padding: var(--flow-divider-offset) 24px 20px;
+            border-radius: 0;
+            background: var(--bg-body);
+            box-shadow: none;
             overflow: hidden;
         }
 
         .sheet-heading {
             display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
+            align-items: center;
             gap: 12px;
             margin-bottom: 16px;
         }
 
+        .sheet-heading::before,
+        .sheet-heading::after {
+            flex: 1;
+            height: 1px;
+            background: #D8E0EB;
+            content: "";
+        }
+
         .sheet-title {
-            color: var(--text-dark);
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            white-space: nowrap;
         }
 
         .sheet-subtitle {
@@ -615,7 +625,7 @@
             align-items: stretch;
             justify-content: stretch;
             padding: 0;
-            background: #FFFFFF;
+            background: var(--bg-body);
         }
 
         .confirm-panel {
@@ -623,9 +633,9 @@
             flex-direction: column;
             width: 100%;
             height: 100%;
-            padding: 22px 24px 20px;
+            padding: var(--flow-divider-offset) 24px 20px;
             border-radius: 0;
-            background: #FFFFFF;
+            background: transparent;
             box-shadow: none;
             transform: translateX(12px);
             transition: transform 0.24s ease;
@@ -636,11 +646,27 @@
             transform: translateX(0);
         }
 
+        .confirm-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .confirm-heading::before,
+        .confirm-heading::after {
+            flex: 1;
+            height: 1px;
+            background: #D8E0EB;
+            content: "";
+        }
+
         .confirm-title {
-            color: var(--text-dark);
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            white-space: nowrap;
         }
 
         .confirm-body {
@@ -754,7 +780,7 @@
         <main class="content-sheet">
             <div class="sheet-heading">
                 <div>
-                    <h1 class="sheet-title">Add a tip</h1>
+                    <h1 class="sheet-title">ADD A TIP</h1>
                 </div>
             </div>
 
@@ -825,7 +851,7 @@
             <div class="overlay confirm-overlay" id="confirm-overlay" aria-hidden="true">
             <div class="confirm-panel" role="region" aria-labelledby="confirm-title">
                 <div class="confirm-heading">
-                    <h2 class="confirm-title" id="confirm-title">Confirm Tip</h2>
+                    <h2 class="confirm-title" id="confirm-title">CONFIRM TIP</h2>
                 </div>
                 <div class="confirm-body">
                     <div class="confirm-summary">

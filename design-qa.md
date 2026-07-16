@@ -1,10 +1,10 @@
 # Design QA
 
-- Source visual truth: latest user-provided Dejavoo Cash reference plus the established Sale/Tip/Cash Discount screens in the current conversation (no local attachment path exposed)
-- Implementation: `11.cash_change.html`
+- Source visual truth: latest user-provided Dejavoo Customer Copy reference plus the established Sale/Tip/Cash screens in the current conversation (no local attachment path exposed)
+- Implementation: `6_receipt.html`
 - Implementation screenshot: unavailable because no in-app Browser or Chrome surface is available in this session
 - Intended viewport: 375 x 812
-- State: Cash payment with Amount Due, Cash Received, Change, and fixed keypad
+- State: approved Sale with Merchant Copy printed and Customer Copy options
 
 **Full-view comparison evidence**
 
@@ -12,12 +12,12 @@ Blocked. The source references are visible in the conversation, but a browser-re
 
 **Focused region comparison evidence**
 
-Blocked for the same reason. The intended focus regions are the UNIQLO/Back header, CASH and Amount Due hierarchy, Cash Received/Change metrics, and the fixed one-screen keypad.
+Blocked for the same reason. The intended focus regions are the UNIQLO/payment-approved hierarchy, total amount, Merchant Copy status, Customer Copy option cards, and inline Email form.
 
 **Findings**
 
 - [P1] Browser-rendered visual verification unavailable
-  - Location: full Cash Change view and its empty, shortfall, and sufficient-payment states.
+  - Location: full Customer Copy choice and Email-entry states.
   - Evidence: both available browser surfaces reported unavailable, leaving no implementation screenshot or computed-layout evidence.
   - Impact: spacing, clipping, font loading, icon rendering, and overlay/nav stacking cannot be signed off visually.
   - Fix: open the local preview in an available browser surface, capture the 375 x 812 Sale view plus Transactions and Settings states, then compare against the supplied references.
@@ -43,6 +43,7 @@ Blocked for the same reason. The intended focus regions are the UNIQLO/Back head
 - Entry-stage transition tests passed: default zero-value Sale shows only the merchant logo; the first digit switches to the Sale amount state; clearing returns to the logo only for default Sale; pending transaction workflows always show their transaction type and amount state, including at zero.
 - Navigation state test passed for Sale, Transactions, and Settings.
 - Cash Change assertions passed: the legacy 720 x 1280 scaled canvas and overlay keypad were removed; the page now uses the shared 375 x 812 frame, centered UNIQLO header, top-left Back control, green CASH hierarchy, fixed Amount Due/Cash Received/Change summary, and fixed 14-key keypad. Input updates Cash Received and Change immediately, and OK blocks completion while a shortfall remains.
+- Customer Copy assertions passed: the legacy Roboto receipt-preview screen, SMS option, placeholder merchant, product-line details, and always-primary Print button were removed. The replacement uses the shared 375 x 812 frame, Inter, centered UNIQLO header, approved amount hierarchy, explicit Merchant Copy printed state, and exactly Email/Print/No Receipt choices. Email validates inline, Print exposes a printable 80 mm customer copy, and No Receipt completes directly. Cash completion and the card-approval helper both forward amount and payment method into this page.
 - `git diff --check` passed.
 
 **Required fidelity surfaces**
@@ -51,7 +52,7 @@ Blocked for the same reason. The intended focus regions are the UNIQLO/Back head
 - Spacing and layout rhythm: designed for the existing 375 x 812 frame; visual fit and scroll behavior remain unverified.
 - Colors and visual tokens: existing blue/white POS palette is retained; rendered contrast and balance remain unverified.
 - Image quality and asset fidelity: existing QR/Gift payment assets are preserved; the merchant slot uses the vector UNIQLO mark sourced from Wikimedia Commons.
-- Copy and content: Cash Change uses the concise `CASH`, `AMOUNT DUE`, `CASH RECEIVED`, and `CHANGE` terminology from the selected workflow without the Dejavoo payment-channel chrome.
+- Copy and content: the receipt screen uses `PAYMENT APPROVED`, `TOTAL AMOUNT`, `Merchant copy printed`, and `CUSTOMER COPY`; it intentionally omits SMS, environmental marketing copy, and Dejavoo branding.
 
 **Primary interactions requiring browser verification**
 
@@ -62,6 +63,7 @@ Blocked for the same reason. The intended focus regions are the UNIQLO/Back head
 - Open Print, Batch Info, and Cash Discount subviews.
 - On Cash Change, enter less than the amount due and verify the shortfall warning and card feedback.
 - Clear the value, enter more than the amount due, verify live Change, and press OK to complete.
+- On Customer Copy, test Email validation and successful submission, Print, No Receipt, and the transition back to the Sale home.
 - Check browser console errors.
 
 **Comparison history**
@@ -94,11 +96,13 @@ Blocked for the same reason. The intended focus regions are the UNIQLO/Back head
 - Iteration 26: Cash Change status copy was reduced to exception-only messaging: the row stays visually empty at zero and when payment is sufficient, and only renders `Still due` for a shortfall without shifting surrounding layout. Cash Received now uses a neutral white card and dark amount, while Change uses a graphite high-contrast card with a white, slightly larger amount so the value returned to the customer is immediately distinguishable from the green cash workflow. Static state/copy assertions and `git diff --check` passed; browser-rendered comparison remains blocked.
 - Iteration 27: the graphite Change card was softened after feedback that it diverged too far from the established interface. Change now uses the existing pale cash-green surface, a clearer green border, restrained green shadow, and a slightly larger deep-green amount, while Cash Received remains neutral white for differentiation. The metric row was also moved 10 px farther from the dominant Amount Due value, increasing that separation from 16 px to 26 px. Static token/spacing assertions and `git diff --check` passed; browser-rendered comparison remains blocked.
 - Iteration 28: the separation between the dominant Amount Due value and the Cash Received/Change row was increased again from 26 px to 34 px, creating a clearer hierarchy without changing the fixed keypad or one-screen interaction model. Static spacing and script checks passed; browser-rendered comparison remains blocked.
+- Iteration 29: `6_receipt.html` was rebuilt from the selected Dejavoo Customer Copy reference while retaining the established POS design system. The old receipt preview, SMS action, placeholder company/product data, and separate print footer were replaced with a 375 x 812 UNIQLO success screen showing Payment Approved, Total Amount, Merchant copy printed, and exactly three customer-copy choices: Email, Print, and No Receipt. Email replaces the choice region with an inline validated form; Print uses a dedicated 80 mm print layout; No Receipt ends the flow. Cash completion and the card-approval helper now route into the page with the correct amount/payment method. JavaScript parsing, route/action assertions, legacy-content checks, and scoped `git diff --check` passed; browser-rendered comparison remains blocked because no browser surface is available.
 
 **Implementation checklist**
 
 - Capture Sale, Transactions, and Settings at 375 x 812.
 - Capture Cash Change at 375 x 812 in empty, shortfall, and sufficient-payment states.
+- Capture Customer Copy at 375 x 812 in option-choice and Email-entry states.
 - Fix any P0/P1/P2 clipping, overlap, font, icon, or interaction issues found.
 - Repeat the combined visual comparison and update this report.
 

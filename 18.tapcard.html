@@ -212,10 +212,24 @@
                 };
             }
 
-            const formattedAmount = formatAmountParts(resolveAmount(), resolveCurrency());
+            const paymentAmount = resolveAmount();
+            const paymentCurrency = resolveCurrency();
+            const formattedAmount = formatAmountParts(paymentAmount, paymentCurrency);
             document.getElementById("currency-display").textContent = formattedAmount.currencySymbol;
             document.getElementById("amount-display").textContent = formattedAmount.amountValue;
             document.getElementById("serial-display").textContent = resolveSerial();
+
+            window.completeCardPayment = function () {
+                const receiptParams = new URLSearchParams({
+                    amount: paymentAmount.toFixed(2),
+                    amountCents: String(Math.round(paymentAmount * 100)),
+                    paymentMethod: "card",
+                    currency: paymentCurrency
+                });
+                window.location.href = "6_receipt.html?" + receiptParams.toString();
+            };
+
+            window.addEventListener("card-payment-approved", window.completeCardPayment);
         })();
     </script>
 </body>
