@@ -870,6 +870,12 @@
 
         function resolveAmountCents() {
             const params = new URLSearchParams(window.location.search);
+            const queryCashCentsText = params.get("cashAmountCents");
+            const queryCashCents = Number(queryCashCentsText);
+            if (queryCashCentsText !== null && queryCashCentsText !== "" && Number.isFinite(queryCashCents) && queryCashCents >= 0) {
+                return Math.round(queryCashCents);
+            }
+
             const queryCentsText = params.get("amountCents");
             const queryCents = Number(queryCentsText);
             if (queryCentsText !== null && queryCentsText !== "" && Number.isFinite(queryCents) && queryCents >= 0) {
@@ -879,6 +885,11 @@
             const queryAmount = parseMoneyToCents(params.get("amount"));
             if (queryAmount !== null) {
                 return queryAmount;
+            }
+
+            const storedCashCents = Number(localStorage.getItem("cashAmountCents"));
+            if (Number.isFinite(storedCashCents) && storedCashCents >= 0) {
+                return Math.round(storedCashCents);
             }
 
             const storedCents = Number(localStorage.getItem("amountCents"));
@@ -900,6 +911,7 @@
         let selectedTipCents = 0;
         let customRaw = "0";
 
+        localStorage.setItem("cashAmountCents", String(amountCents));
         localStorage.setItem("amountCents", String(amountCents));
         baseAmountEl.textContent = formatAmount(amountCents);
 
@@ -948,7 +960,9 @@
             localStorage.setItem("tipCents", String(tipCents));
             localStorage.setItem("tipPercent", meta.percent ? String(meta.percent) : "");
             localStorage.setItem("totalCents", String(totalCents));
+            localStorage.setItem("cashTotalCents", String(totalCents));
             const cashDiscountParams = new URLSearchParams({
+                cashAmountCents: String(totalCents),
                 amountCents: String(totalCents),
                 subtotalCents: String(amountCents),
                 tipCents: String(tipCents)

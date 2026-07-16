@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cash Discount - Payment Choice</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
     <style>
         :root {
             --bg: #ffffff;
@@ -28,6 +29,21 @@
             box-sizing: border-box;
             font-family: "Inter", sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        .material-symbols-rounded {
+            font-family: "Material Symbols Rounded";
+            font-weight: 600;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: "liga";
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga";
         }
 
         body {
@@ -84,7 +100,8 @@
             border-radius: var(--radius);
             border: 1.5px solid var(--neutral-border);
             background: var(--neutral-bg);
-            padding: 20px 18px 18px;
+            padding: 24px 22px 22px;
+            min-height: 196px;
             display: flex;
             flex-direction: column;
             text-align: left;
@@ -95,11 +112,15 @@
         }
 
         .cards-block {
-            margin-top: 6px;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 0;
         }
 
         .cash-card {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .option-card:active {
@@ -109,30 +130,81 @@
         .cash-card.selected {
             border-color: var(--cash-border);
             background: var(--cash-bg);
-            box-shadow: 0 8px 22px rgba(22, 102, 55, 0.12);
+            box-shadow: 0 10px 26px rgba(22, 102, 55, 0.13);
         }
 
         .card-card.selected {
             border-color: var(--card-border);
             background: var(--card-bg);
-            box-shadow: 0 8px 22px rgba(38, 69, 160, 0.12);
+            box-shadow: 0 10px 26px rgba(38, 69, 160, 0.13);
         }
 
         .option-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 22px;
             padding-right: 0;
         }
 
+        .option-identity {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .payment-icon {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            border: 1px solid;
+            border-radius: 18px;
+        }
+
+        .payment-icon .material-symbols-rounded {
+            font-size: 31px;
+        }
+
+        .cash-icon {
+            color: #177245;
+            background: #E8F7EE;
+            border-color: #C7EAD5;
+        }
+
+        .card-icon {
+            color: #315BB8;
+            background: #EEF4FF;
+            border-color: #D6E2FF;
+        }
+
+        .select-indicator {
+            color: #98A2B3;
+            font-size: 30px;
+            opacity: 0;
+            transform: scale(0.82);
+            transition: opacity 0.16s ease, transform 0.16s ease;
+        }
+
+        .cash-card.selected .select-indicator {
+            color: var(--cash-strong);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .card-card.selected .select-indicator {
+            color: var(--card-strong);
+            opacity: 1;
+            transform: scale(1);
+        }
+
         .option-name {
-            font-size: 23px;
-            font-weight: 700;
+            font-size: 30px;
+            font-weight: 800;
         }
 
         .amount {
-            font-size: 47px;
+            font-size: 54px;
             line-height: 1;
             font-weight: 800;
             letter-spacing: -0.03em;
@@ -165,6 +237,14 @@
             font-weight: 700;
             line-height: 1;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn .material-symbols-rounded {
+            font-size: 23px;
         }
 
         .btn-back {
@@ -195,24 +275,42 @@
                 <h1 class="title">How will customer pay?</h1>
 
                 <div class="cards-block">
-                    <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')">
+                    <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')" aria-pressed="false">
                         <div class="option-head">
-                            <div class="option-name">Cash</div>
+                            <div class="option-identity">
+                                <span class="payment-icon cash-icon" aria-hidden="true">
+                                    <span class="material-symbols-rounded">payments</span>
+                                </span>
+                                <div class="option-name">Cash</div>
+                            </div>
+                            <span class="material-symbols-rounded select-indicator" aria-hidden="true">check_circle</span>
                         </div>
-                        <div class="amount" id="cash-amount">$96.00</div>
+                        <div class="amount" id="cash-amount">$100.00</div>
                     </button>
 
-                    <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')">
+                    <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')" aria-pressed="true">
                         <div class="option-head">
-                            <div class="option-name">Card</div>
+                            <div class="option-identity">
+                                <span class="payment-icon card-icon" aria-hidden="true">
+                                    <span class="material-symbols-rounded">credit_card</span>
+                                </span>
+                                <div class="option-name">Card</div>
+                            </div>
+                            <span class="material-symbols-rounded select-indicator" aria-hidden="true">check_circle</span>
                         </div>
-                        <div class="amount" id="card-amount">$100.00</div>
+                        <div class="amount" id="card-amount">$104.00</div>
                     </button>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-back" type="button" onclick="handleBack()">Back</button>
-                    <button class="btn btn-primary is-card" id="continue-btn" type="button" onclick="handleContinue()">Card Payment</button>
+                    <button class="btn btn-back" type="button" onclick="handleBack()">
+                        <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+                        <span>Back</span>
+                    </button>
+                    <button class="btn btn-primary is-card" id="continue-btn" type="button" onclick="handleContinue()">
+                        <span class="material-symbols-rounded" id="continue-icon" aria-hidden="true">credit_card</span>
+                        <span id="continue-label">Card Payment</span>
+                    </button>
                 </div>
             </main>
         </div>
@@ -225,9 +323,11 @@
         const cashAmountEl = document.getElementById("cash-amount");
         const cardAmountEl = document.getElementById("card-amount");
         const continueBtn = document.getElementById("continue-btn");
+        const continueIcon = document.getElementById("continue-icon");
+        const continueLabel = document.getElementById("continue-label");
 
         let selectedMethod = "card";
-        let cardAmountCents = resolveIncomingAmount();
+        let cashAmountCents = resolveIncomingCashAmount();
 
         function formatMoney(cents) {
             return (Math.max(0, cents) / 100).toLocaleString("en-US", {
@@ -247,8 +347,13 @@
             return Math.round(n * 100);
         }
 
-        function resolveIncomingAmount() {
+        function resolveIncomingCashAmount() {
             const params = new URLSearchParams(window.location.search);
+            const queryCashCents = Number(params.get("cashAmountCents"));
+            if (Number.isFinite(queryCashCents) && queryCashCents > 0) {
+                return Math.round(queryCashCents);
+            }
+
             const queryCents = Number(params.get("amountCents"));
             if (Number.isFinite(queryCents) && queryCents > 0) {
                 return Math.round(queryCents);
@@ -259,8 +364,17 @@
                 return queryAmount;
             }
 
+            if (Number.isFinite(window.cashTransactionAmountCents) && window.cashTransactionAmountCents > 0) {
+                return Math.round(window.cashTransactionAmountCents);
+            }
+
             if (Number.isFinite(window.transactionAmountCents) && window.transactionAmountCents > 0) {
                 return Math.round(window.transactionAmountCents);
+            }
+
+            const globalCashAmount = parseMoneyToCents(window.cashTransactionAmount);
+            if (globalCashAmount !== null && globalCashAmount > 0) {
+                return globalCashAmount;
             }
 
             const globalAmount = parseMoneyToCents(window.transactionAmount);
@@ -271,8 +385,8 @@
             return 10000;
         }
 
-        function getCashAmountCents() {
-            return Math.round(cardAmountCents * (1 - DISCOUNT_RATE));
+        function getCardAmountCents() {
+            return Math.round(cashAmountCents * (1 + DISCOUNT_RATE));
         }
 
         function equalizeCardHeights() {
@@ -284,7 +398,7 @@
         }
 
         function syncView() {
-            const cashAmountCents = getCashAmountCents();
+            const cardAmountCents = getCardAmountCents();
             const isCash = selectedMethod === "cash";
 
             cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
@@ -292,8 +406,11 @@
 
             cashCard.classList.toggle("selected", isCash);
             cardCard.classList.toggle("selected", !isCash);
+            cashCard.setAttribute("aria-pressed", String(isCash));
+            cardCard.setAttribute("aria-pressed", String(!isCash));
 
-            continueBtn.textContent = isCash ? "Cash Payment" : "Card Payment";
+            continueIcon.textContent = isCash ? "payments" : "credit_card";
+            continueLabel.textContent = isCash ? "Cash Payment" : "Card Payment";
             continueBtn.classList.toggle("is-cash", isCash);
             continueBtn.classList.toggle("is-card", !isCash);
             equalizeCardHeights();
@@ -315,12 +432,14 @@
         }
 
         function handleContinue() {
-            const cashAmountCents = getCashAmountCents();
+            const cardAmountCents = getCardAmountCents();
             const payload = {
                 method: selectedMethod,
+                pricingBasis: "cash_price",
                 cardAmountCents: cardAmountCents,
                 cashAmountCents: cashAmountCents,
-                savingsCents: cardAmountCents - cashAmountCents,
+                priceDifferenceCents: cardAmountCents - cashAmountCents,
+                cardRate: DISCOUNT_RATE,
                 finalAmountCents: selectedMethod === "cash" ? cashAmountCents : cardAmountCents
             };
 
@@ -341,7 +460,7 @@
             if (!Number.isFinite(cents) || cents <= 0) {
                 return;
             }
-            cardAmountCents = Math.round(cents);
+            cashAmountCents = Math.round(cents);
             syncView();
         };
 
@@ -350,9 +469,12 @@
             if (cents === null || cents <= 0) {
                 return;
             }
-            cardAmountCents = cents;
+            cashAmountCents = cents;
             syncView();
         };
+
+        window.setCashAmountCents = window.setTransactionAmountCents;
+        window.setCashAmount = window.setTransactionAmount;
 
         syncView();
         window.addEventListener("resize", equalizeCardHeights);
