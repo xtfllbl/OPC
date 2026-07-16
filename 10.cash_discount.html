@@ -1,36 +1,47 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cash Discount - Payment Choice</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Select Payment Method</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
     <style>
         :root {
-            --bg: #ffffff;
-            --text-main: #0a2459;
-            --text-sub: #4c6079;
             --primary: #0A5BFF;
             --primary-light: #EFF6FF;
-            --cash-border: #9bdab4;
-            --cash-bg: #eaf8ef;
-            --cash-strong: #166637;
-            --card-border: var(--primary);
-            --card-bg: var(--primary-light);
-            --card-strong: var(--primary);
-            --neutral-border: #d3dce8;
-            --neutral-bg: #ffffff;
-            --radius: 16px;
+            --text-dark: #111827;
+            --text-grey: #6B7280;
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --line: #D8E0EB;
+            --cash: #0B7A43;
+            --cash-light: #EAF8EF;
+            --cash-border: #9BDAB4;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: "Inter", sans-serif;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
         }
 
         .material-symbols-rounded {
@@ -48,68 +59,136 @@
             font-feature-settings: "liga";
         }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #222;
-            color: var(--text-main);
-            overflow: hidden;
-        }
-
-        .viewport {
-            width: 375px;
-            height: 812px;
-            background: #ffffff;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .canvas {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .canvas::-webkit-scrollbar {
-            display: none;
-        }
-
-        .panel {
+        .phone-frame {
             position: relative;
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            padding: 22px 18px 18px;
             display: flex;
             flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
-        .top-bar {
+        .android-status-bar {
+            position: relative;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
+        .header {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 0 0 48px;
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 8px 22px 6px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
         .icon-btn {
             position: absolute;
-            left: 0;
+            top: 3px;
+            left: 18px;
             display: grid;
             place-items: center;
             width: 40px;
             height: 40px;
             border: none;
             border-radius: 50%;
-            background: #FFFFFF;
+            background: var(--surface);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            color: #111827;
+            color: var(--text-dark);
             cursor: pointer;
+        }
+
+        .icon-btn:active {
+            transform: scale(0.96);
         }
 
         .icon-btn svg {
@@ -122,202 +201,291 @@
             stroke-width: 2.2;
         }
 
-        .merchant-name {
-            color: #111827;
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
+        .amount-section {
+            padding: 78px 0 24px;
+            text-align: center;
         }
 
-        .title {
+        .amount-context {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 0 11px;
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 0.1em;
+        }
+
+        .amount-context::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .amount-label {
+            margin: 18px 0 7px;
+            color: #667085;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.17em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .amount-line {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .currency,
+        .amount-value {
+            color: var(--primary);
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.05;
+        }
+
+        .currency {
+            margin-right: 4px;
+        }
+
+        .amount-value {
+            max-width: 285px;
+            overflow: hidden;
+            letter-spacing: -1.5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .content-sheet {
+            --flow-divider-offset: 76px;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: var(--flow-divider-offset) 24px 20px;
+            background: var(--bg-body);
+            overflow: hidden;
+        }
+
+        .section-title {
             display: flex;
             align-items: center;
-            width: 100%;
             gap: 12px;
-            color: #667085;
-            font-size: 13px;
+            margin-bottom: 16px;
+            color: var(--text-grey);
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.12em;
             line-height: 1;
-            margin: 0 0 16px;
             text-align: center;
             white-space: nowrap;
         }
 
-        .title::before,
-        .title::after {
+        .section-title::before,
+        .section-title::after {
             flex: 1;
             height: 1px;
-            background: #D8E0EB;
+            background: var(--line);
             content: "";
         }
 
-        .option-card {
-            width: 100%;
-            border-radius: var(--radius);
-            border: 1.5px solid var(--neutral-border);
-            background: var(--neutral-bg);
-            padding: 24px 22px 22px;
-            height: 196px;
-            min-height: 196px;
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
-            margin-bottom: 0;
-        }
-
-        .cards-block {
-            display: flex;
+        .payment-options {
+            display: grid;
+            grid-template-rows: repeat(2, minmax(0, 1fr));
             flex: 1;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0;
+            gap: 12px;
             min-height: 0;
-            margin-top: 0;
-            padding-bottom: 64px;
         }
 
-        .cash-card {
-            margin-bottom: 28px;
+        .option-card {
+            display: grid;
+            grid-template-columns: 54px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            min-height: 0;
+            padding: 16px 18px;
+            border: 1.5px solid;
+            border-radius: 18px;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
         }
 
-        .option-card:active {
+        .option-card:active,
+        .option-card.is-activating {
             transform: translateY(2px) scale(0.975);
             filter: brightness(0.97);
         }
 
         .option-card.is-activating {
-            transform: translateY(2px) scale(0.975);
-            filter: brightness(0.96);
             pointer-events: none;
         }
 
         .cash-card {
             border-color: var(--cash-border);
-            background: var(--cash-bg);
-            box-shadow: 0 10px 26px rgba(22, 102, 55, 0.13);
+            background: var(--cash-light);
+            box-shadow: 0 6px 18px rgba(11, 122, 67, 0.08);
         }
 
         .card-card {
-            border-color: var(--card-border);
-            background: var(--card-bg);
-            box-shadow: 0 10px 26px rgba(10, 91, 255, 0.13);
-        }
-
-        .option-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-            padding-right: 0;
-        }
-
-        .option-identity {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+            border-color: #BFD1FF;
+            background: var(--primary-light);
+            box-shadow: 0 6px 18px rgba(10, 91, 255, 0.08);
         }
 
         .payment-icon {
             display: grid;
             place-items: center;
-            width: 56px;
-            height: 56px;
+            width: 54px;
+            height: 54px;
             border: 1px solid;
-            border-radius: 18px;
+            border-radius: 17px;
+            background: var(--surface);
         }
 
         .payment-icon .material-symbols-rounded {
-            font-size: 31px;
+            font-size: 29px;
         }
 
         .cash-icon {
-            color: #177245;
-            background: #E8F7EE;
             border-color: #C7EAD5;
+            color: var(--cash);
         }
 
         .card-icon {
+            border-color: #D6E2FF;
             color: var(--primary);
-            background: var(--primary-light);
-            border-color: #DCE6FF;
+        }
+
+        .option-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            min-width: 0;
         }
 
         .option-name {
+            display: block;
+            color: var(--text-dark);
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .option-amount {
+            max-width: 122px;
+            overflow: hidden;
             font-size: 30px;
             font-weight: 800;
-        }
-
-        .amount {
-            font-size: 54px;
+            letter-spacing: -0.04em;
             line-height: 1;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 4px;
-            color: #1d3557;
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .cash-card .amount {
-            color: var(--cash-strong);
+        .cash-card .option-amount {
+            color: var(--cash);
         }
 
-        .card-card .amount {
-            color: var(--card-strong);
+        .card-card .option-amount {
+            color: var(--primary);
         }
 
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="viewport">
-        <div class="canvas">
-            <main class="panel">
-                <div class="top-bar">
-                    <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-                    </button>
-                    <div class="merchant-name">UNIQLO</div>
-                </div>
-                <div class="cards-block">
-                    <h1 class="title">SELECT PAYMENT METHOD</h1>
-                    <button class="option-card cash-card" id="cash-card" type="button" onclick="choosePayment('cash', this)" aria-label="Pay cash">
-                        <div class="option-head">
-                            <div class="option-identity">
-                                <span class="payment-icon cash-icon" aria-hidden="true">
-                                    <span class="material-symbols-rounded">payments</span>
-                                </span>
-                                <div class="option-name">Cash</div>
-                            </div>
-                        </div>
-                        <div class="amount" id="cash-amount">$100.00</div>
-                    </button>
-
-                    <button class="option-card card-card" id="card-card" type="button" onclick="choosePayment('card', this)" aria-label="Pay by card">
-                        <div class="option-head">
-                            <div class="option-identity">
-                                <span class="payment-icon card-icon" aria-hidden="true">
-                                    <span class="material-symbols-rounded">credit_card</span>
-                                </span>
-                                <div class="option-name">Card</div>
-                            </div>
-                        </div>
-                        <div class="amount" id="card-amount">$104.00</div>
-                    </button>
-                </div>
-
-            </main>
+    <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 100 percent">
+                    <span class="status-battery-value">100</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
         </div>
+
+        <header class="header">
+            <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <div class="merchant-name">UNIQLO</div>
+        </header>
+
+        <section class="amount-section" aria-label="Sale total">
+            <div class="amount-context">SALE</div>
+            <div class="amount-label">Total Amount</div>
+            <div class="amount-line"><span class="currency">$</span><span class="amount-value" id="base-amount">100.00</span></div>
+        </section>
+
+        <main class="content-sheet">
+            <h1 class="section-title">SELECT PAYMENT METHOD</h1>
+            <section class="payment-options" aria-label="Payment methods">
+                <button class="option-card cash-card" id="cash-card" type="button" onclick="choosePayment('cash', this)" aria-label="Pay cash">
+                    <span class="payment-icon cash-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">payments</span>
+                    </span>
+                    <span class="option-copy">
+                        <span class="option-name">Cash</span>
+                    </span>
+                    <strong class="option-amount" id="cash-amount">$100.00</strong>
+                </button>
+
+                <button class="option-card card-card" id="card-card" type="button" onclick="choosePayment('card', this)" aria-label="Pay by card">
+                    <span class="payment-icon card-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">credit_card</span>
+                    </span>
+                    <span class="option-copy">
+                        <span class="option-name">Card</span>
+                    </span>
+                    <strong class="option-amount" id="card-amount">$104.00</strong>
+                </button>
+            </section>
+        </main>
     </div>
 
     <script>
         const DISCOUNT_RATE = 0.04;
-        const cashCard = document.getElementById("cash-card");
-        const cardCard = document.getElementById("card-card");
         const cashAmountEl = document.getElementById("cash-amount");
         const cardAmountEl = document.getElementById("card-amount");
+        const baseAmountEl = document.getElementById("base-amount");
+        const statusTime = document.getElementById("status-time");
         let cashAmountCents = resolveIncomingCashAmount();
         let paymentNavigationPending = false;
 
@@ -329,32 +497,28 @@
         }
 
         function parseMoneyToCents(value) {
-            if (value === null || value === undefined || value === "") {
-                return null;
-            }
-            const n = Number(value);
-            if (!Number.isFinite(n) || n < 0) {
-                return null;
-            }
-            return Math.round(n * 100);
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
         }
 
         function resolveIncomingCashAmount() {
             const params = new URLSearchParams(window.location.search);
-            const queryCashCents = Number(params.get("cashAmountCents"));
-            if (Number.isFinite(queryCashCents) && queryCashCents > 0) {
+            const queryCashCentsText = params.get("cashAmountCents");
+            const queryCashCents = Number(queryCashCentsText);
+            if (queryCashCentsText !== null && queryCashCentsText !== "" && Number.isFinite(queryCashCents) && queryCashCents > 0) {
                 return Math.round(queryCashCents);
             }
 
-            const queryCents = Number(params.get("amountCents"));
-            if (Number.isFinite(queryCents) && queryCents > 0) {
+            const queryCentsText = params.get("amountCents");
+            const queryCents = Number(queryCentsText);
+            if (queryCentsText !== null && queryCentsText !== "" && Number.isFinite(queryCents) && queryCents > 0) {
                 return Math.round(queryCents);
             }
 
             const queryAmount = parseMoneyToCents(params.get("amount"));
-            if (queryAmount !== null && queryAmount > 0) {
-                return queryAmount;
-            }
+            if (queryAmount !== null && queryAmount > 0) return queryAmount;
 
             if (Number.isFinite(window.cashTransactionAmountCents) && window.cashTransactionAmountCents > 0) {
                 return Math.round(window.cashTransactionAmountCents);
@@ -365,14 +529,10 @@
             }
 
             const globalCashAmount = parseMoneyToCents(window.cashTransactionAmount);
-            if (globalCashAmount !== null && globalCashAmount > 0) {
-                return globalCashAmount;
-            }
+            if (globalCashAmount !== null && globalCashAmount > 0) return globalCashAmount;
 
             const globalAmount = parseMoneyToCents(window.transactionAmount);
-            if (globalAmount !== null && globalAmount > 0) {
-                return globalAmount;
-            }
+            if (globalAmount !== null && globalAmount > 0) return globalAmount;
 
             return 10000;
         }
@@ -381,20 +541,11 @@
             return Math.round(cashAmountCents * (1 + DISCOUNT_RATE));
         }
 
-        function equalizeCardHeights() {
-            cashCard.style.height = "auto";
-            cardCard.style.height = "auto";
-            const maxHeight = Math.max(cashCard.offsetHeight, cardCard.offsetHeight);
-            cashCard.style.height = maxHeight + "px";
-            cardCard.style.height = maxHeight + "px";
-        }
-
         function syncView() {
             const cardAmountCents = getCardAmountCents();
-
-            cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
+            baseAmountEl.textContent = formatMoney(cashAmountCents);
             cashAmountEl.textContent = "$" + formatMoney(cashAmountCents);
-            equalizeCardHeights();
+            cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
         }
 
         function handleBack() {
@@ -402,9 +553,7 @@
                 window.onCashDiscountBack();
                 return;
             }
-            if (window.history.length > 1) {
-                window.history.back();
-            }
+            if (window.history.length > 1) window.history.back();
         }
 
         function proceedToPayment(method) {
@@ -422,7 +571,6 @@
 
             localStorage.setItem("paymentMethod", selectedMethod);
             localStorage.setItem("finalAmountCents", String(payload.finalAmountCents));
-
             window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
 
             if (selectedMethod === "cash") {
@@ -451,18 +599,14 @@
         }
 
         window.setTransactionAmountCents = function (cents) {
-            if (!Number.isFinite(cents) || cents <= 0) {
-                return;
-            }
+            if (!Number.isFinite(cents) || cents <= 0) return;
             cashAmountCents = Math.round(cents);
             syncView();
         };
 
         window.setTransactionAmount = function (amount) {
             const cents = parseMoneyToCents(amount);
-            if (cents === null || cents <= 0) {
-                return;
-            }
+            if (cents === null || cents <= 0) return;
             cashAmountCents = cents;
             syncView();
         };
@@ -470,8 +614,17 @@
         window.setCashAmountCents = window.setTransactionAmountCents;
         window.setCashAmount = window.setTransactionAmount;
 
+        function updateStatusTime() {
+            statusTime.textContent = new Intl.DateTimeFormat("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }).format(new Date());
+        }
+
         syncView();
-        window.addEventListener("resize", equalizeCardHeights);
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 1000);
     </script>
 </body>
 
