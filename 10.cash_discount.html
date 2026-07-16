@@ -201,72 +201,31 @@
             stroke-width: 2.2;
         }
 
-        .amount-section {
-            padding: 78px 0 24px;
-            text-align: center;
+        .merchant-stage {
+            display: grid;
+            place-items: center;
+            flex: 0 0 226px;
+            height: 226px;
         }
 
-        .amount-context {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 34px;
-            padding: 0 0 11px;
-            color: var(--primary);
-            font-size: 20px;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: 0.1em;
+        .merchant-logo-slot {
+            display: grid;
+            place-items: center;
+            width: 112px;
+            height: 112px;
+            padding: 6px;
+            border: 1px solid #E1E8F5;
+            border-radius: 29px;
+            background: var(--surface);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.11);
         }
 
-        .amount-context::after {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 34px;
-            height: 2px;
-            border-radius: 999px;
-            background: currentColor;
-            content: "";
-            transform: translateX(-50%);
-        }
-
-        .amount-label {
-            margin: 18px 0 7px;
-            color: #667085;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.17em;
-            line-height: 1;
-            text-transform: uppercase;
-        }
-
-        .amount-line {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            min-width: 0;
-        }
-
-        .currency,
-        .amount-value {
-            color: var(--primary);
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.05;
-        }
-
-        .currency {
-            margin-right: 4px;
-        }
-
-        .amount-value {
-            max-width: 285px;
-            overflow: hidden;
-            letter-spacing: -1.5px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        .merchant-logo-slot img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 22px;
+            object-fit: contain;
         }
 
         .content-sheet {
@@ -448,10 +407,10 @@
             <div class="merchant-name">UNIQLO</div>
         </header>
 
-        <section class="amount-section" aria-label="Sale total">
-            <div class="amount-context">SALE</div>
-            <div class="amount-label">Total Amount</div>
-            <div class="amount-line"><span class="currency">$</span><span class="amount-value" id="base-amount">100.00</span></div>
+        <section class="merchant-stage" aria-label="Merchant identity">
+            <div class="merchant-logo-slot">
+                <img src="uniqlo-logo.svg" alt="UNIQLO merchant logo">
+            </div>
         </section>
 
         <main class="content-sheet">
@@ -484,7 +443,6 @@
         const DISCOUNT_RATE = 0.04;
         const cashAmountEl = document.getElementById("cash-amount");
         const cardAmountEl = document.getElementById("card-amount");
-        const baseAmountEl = document.getElementById("base-amount");
         const statusTime = document.getElementById("status-time");
         let cashAmountCents = resolveIncomingCashAmount();
         let paymentNavigationPending = false;
@@ -543,7 +501,6 @@
 
         function syncView() {
             const cardAmountCents = getCardAmountCents();
-            baseAmountEl.textContent = formatMoney(cashAmountCents);
             cashAmountEl.textContent = "$" + formatMoney(cashAmountCents);
             cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
         }
