@@ -429,7 +429,7 @@
                 <button class="back-btn" type="button" onclick="handleBack()" aria-label="Back">
                     <span class="material-symbols-rounded" aria-hidden="true">arrow_back_ios_new</span>
                 </button>
-                <div class="merchant-name">UNIQLO</div>
+                <div class="merchant-name" data-merchant-name>Merchant</div>
             </header>
 
             <main class="content">
@@ -479,6 +479,7 @@
         </div>
     </div>
 
+    <script src="merchant-context.js"></script>
     <script>
         const dueAmountEl = document.getElementById("due-amount");
         const paidAmountEl = document.getElementById("paid-amount");
@@ -602,6 +603,7 @@
                 paymentMethod: "cash",
                 changeCents: String(payload.changeCents)
             });
+            if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);
             window.location.href = "6_receipt.html?" + receiptParams.toString();
         }
 

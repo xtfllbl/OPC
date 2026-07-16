@@ -1661,7 +1661,7 @@
         .entry-state {
             grid-area: 1 / 1;
             width: 100%;
-            height: 180px;
+            height: 270px;
             transition: opacity 0.18s ease, transform 0.22s ease, visibility 0.18s ease;
         }
 
@@ -1702,15 +1702,37 @@
         }
 
         .merchant-logo-slot {
-            width: 96px;
-            height: 96px;
-            padding: 5px;
-            border-radius: 25px;
+            width: var(--merchant-logo-width, 145px);
+            height: var(--merchant-logo-height, 145px);
+            max-width: 100%;
+            padding: 0;
+            border-radius: 0;
             display: grid;
             place-items: center;
-            background: #FFFFFF;
-            border: 1px solid #E1E8F5;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.11);
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            transition: width 0.18s ease, height 0.18s ease;
+        }
+
+        .merchant-logo-slot[data-shape="round"] {
+            --merchant-logo-width: 155px;
+            --merchant-logo-height: 155px;
+        }
+
+        .merchant-logo-slot[data-shape="wide"] {
+            --merchant-logo-width: 250px;
+            --merchant-logo-height: 130px;
+        }
+
+        .merchant-logo-slot[data-shape="wordmark"] {
+            --merchant-logo-width: 285px;
+            --merchant-logo-height: 125px;
+        }
+
+        .merchant-logo-slot[data-shape="tall"] {
+            --merchant-logo-width: 110px;
+            --merchant-logo-height: 165px;
         }
 
         .merchant-logo-slot img {
@@ -1718,7 +1740,7 @@
             height: 100%;
             display: block;
             object-fit: contain;
-            border-radius: 19px;
+            border-radius: 0;
         }
 
         .amount-label {
@@ -2054,8 +2076,7 @@
             }
 
             .merchant-logo-slot {
-                width: 82px;
-                height: 82px;
+                transform: scale(0.86);
             }
 
             .currency,
@@ -2095,14 +2116,14 @@
         </div>
         <header class="header">
             <div class="header-left">
-                <div class="merchant-name">UNIQLO</div>
+                <div class="merchant-name" id="merchant-name" data-merchant-name>Merchant</div>
             </div>
         </header>
 
         <div class="entry-stage" id="entry-stage">
             <div class="merchant-brand-section entry-state" id="merchant-brand-state" aria-hidden="false">
-                <div class="merchant-logo-slot" aria-label="Merchant logo">
-                    <img src="uniqlo-logo.svg" alt="UNIQLO merchant logo">
+                <div class="merchant-logo-slot" id="merchant-logo-slot" data-merchant-logo-slot data-shape="round" aria-label="Default merchant logo">
+                    <img id="merchant-logo" data-merchant-logo src="merchant-default.svg" alt="Default merchant logo">
                 </div>
             </div>
 
@@ -2690,6 +2711,7 @@
         </nav>
     </div>
 
+    <script src="merchant-context.js"></script>
     <script>
         // State
         let rawAmount = "0";
@@ -2710,6 +2732,9 @@
         const amountError = document.getElementById('amount-error');
         const entryStage = document.getElementById('entry-stage');
         const merchantBrandState = document.getElementById('merchant-brand-state');
+        const merchantName = document.getElementById('merchant-name');
+        const merchantLogoSlot = document.getElementById('merchant-logo-slot');
+        const merchantLogo = document.getElementById('merchant-logo');
         const amountEntryState = document.getElementById('amount-entry-state');
         const transactionsView = document.getElementById('transactions-view');
         const bottomNav = document.querySelector('.bottom-nav');
@@ -2748,6 +2773,17 @@
             'rgba(10, 91, 255, 0.22)',
             'rgba(0, 168, 107, 0.22)',
             'rgba(124, 58, 237, 0.22)'
+        ];
+        const defaultMerchant = { name: 'Merchant', logo: 'merchant-default.svg', shape: 'round' };
+        const demoMerchants = [
+            { name: 'UNIQLO', logo: 'uniqlo-logo.svg', shape: 'square' },
+            { name: 'Target', logo: 'brand-target.svg', shape: 'round' },
+            { name: 'IKEA', logo: 'brand-ikea.svg', shape: 'wide' },
+            { name: 'Coca-Cola', logo: 'brand-cocacola.svg', shape: 'wordmark' },
+            { name: 'Nike', logo: 'brand-nike.svg', shape: 'wordmark' },
+            { name: 'Apple', logo: 'brand-apple.svg', shape: 'square' },
+            { name: "McDonald's", logo: 'brand-mcdonalds.svg', shape: 'tall' },
+            defaultMerchant
         ];
         const actionsRequireFreshAmount = new Set([
             'Sale',
@@ -2906,6 +2942,72 @@
                 renderBatteryStatus(0.87);
             }
         }
+
+        function renderMerchant(merchant, index) {
+            if (!merchantName || !merchantLogoSlot || !merchantLogo) return;
+            const resolvedMerchant = merchant && merchant.logo ? merchant : defaultMerchant;
+            merchantName.textContent = resolvedMerchant.name || defaultMerchant.name;
+            merchantLogo.onerror = resolvedMerchant.logo === defaultMerchant.logo
+                ? null
+                : () => renderMerchant(defaultMerchant, -1);
+            merchantLogo.src = resolvedMerchant.logo;
+            merchantLogo.alt = `${resolvedMerchant.name} merchant logo`;
+            merchantLogoSlot.dataset.shape = resolvedMerchant.shape || 'square';
+            merchantLogoSlot.setAttribute('aria-label', `${resolvedMerchant.name} merchant logo`);
+            merchantLogo.dataset.merchantIndex = String(index);
+            if (window.MerchantContext) {
+                window.MerchantContext.set(resolvedMerchant);
+            }
+        }
+
+        function selectRandomMerchantLogo() {
+            if (!demoMerchants.length) return;
+            let lastIndex = -1;
+            try {
+                lastIndex = Number.parseInt(sessionStorage.getItem('lastDemoMerchantIndex'), 10);
+            } catch (error) {
+                lastIndex = -1;
+            }
+
+            let nextIndex;
+            if (demoMerchants.length === 1 || !Number.isInteger(lastIndex) || lastIndex < 0 || lastIndex >= demoMerchants.length) {
+                nextIndex = Math.floor(Math.random() * demoMerchants.length);
+            } else {
+                const offset = 1 + Math.floor(Math.random() * (demoMerchants.length - 1));
+                nextIndex = (lastIndex + offset) % demoMerchants.length;
+            }
+
+            renderMerchant(demoMerchants[nextIndex], nextIndex);
+            try {
+                sessionStorage.setItem('lastDemoMerchantIndex', String(nextIndex));
+            } catch (error) {
+                // The logo can still rotate when storage is unavailable.
+            }
+        }
+
+        window.showNextMerchantLogo = function () {
+            const currentIndex = Number.parseInt(merchantLogo?.dataset.merchantIndex || '-1', 10);
+            const nextIndex = Number.isInteger(currentIndex) && currentIndex >= 0
+                ? (currentIndex + 1) % demoMerchants.length
+                : 0;
+            renderMerchant(demoMerchants[nextIndex], nextIndex);
+            try {
+                sessionStorage.setItem('lastDemoMerchantIndex', String(nextIndex));
+            } catch (error) {
+                // The manual preview still works when storage is unavailable.
+            }
+        };
+
+        window.setMerchantBrand = function (merchant = {}) {
+            const uploadedMerchant = merchant.logo
+                ? {
+                    name: merchant.name || defaultMerchant.name,
+                    logo: merchant.logo,
+                    shape: merchant.shape || 'square'
+                }
+                : defaultMerchant;
+            renderMerchant(uploadedMerchant, -1);
+        };
 
         function applyTabTheme(index) {
             const rootStyle = document.documentElement.style;
@@ -3414,6 +3516,7 @@
 
         // Init
         initializeAppStatusBar();
+        selectRandomMerchantLogo();
         syncPaymentAvailability();
         updateCashDiscountUI();
         showAppView('home');
@@ -3739,7 +3842,12 @@
                 localStorage.removeItem('tipPercent');
                 localStorage.removeItem('totalCents');
                 localStorage.removeItem('cashTotalCents');
-                window.location.href = `1.1.tip.html?cashAmountCents=${saleAmount}&amountCents=${saleAmount}`;
+                const tipParams = new URLSearchParams({
+                    cashAmountCents: String(saleAmount),
+                    amountCents: String(saleAmount)
+                });
+                if (window.MerchantContext) window.MerchantContext.appendTo(tipParams);
+                window.location.href = `1.1.tip.html?${tipParams.toString()}`;
                 return;
             }
             const amountSuffix = normalizedAmount === null ? '' : `: $${formatMoney(normalizedAmount)}`;
@@ -3774,4 +3882,3 @@
 </body>
 
 </html>
-

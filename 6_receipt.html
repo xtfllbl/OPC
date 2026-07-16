@@ -320,6 +320,96 @@
             overflow: hidden;
         }
 
+        .transaction-details {
+            position: absolute;
+            top: 18px;
+            left: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 0;
+            min-height: 32px;
+            color: #475467;
+        }
+
+        .payment-identity {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            gap: 8px;
+        }
+
+        .card-brand-icon {
+            display: block;
+            width: 42px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .payment-method-icon {
+            display: none;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--success-light);
+            color: #08734C;
+        }
+
+        .payment-method-icon .material-symbols-rounded {
+            font-size: 20px;
+        }
+
+        .transaction-details.non-card .card-brand-icon {
+            display: none;
+        }
+
+        .transaction-details.non-card .payment-method-icon {
+            display: grid;
+        }
+
+        .transaction-details[data-method="qr"] .payment-method-icon {
+            background: #E7F8F1;
+            color: #009D68;
+        }
+
+        .transaction-details[data-method="gift"] .payment-method-icon {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .payment-account {
+            overflow: hidden;
+            color: var(--result-ink);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.035em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .transaction-reference {
+            display: flex;
+            align-items: baseline;
+            flex: 0 0 auto;
+            gap: 5px;
+            margin-left: 14px;
+            color: var(--text-grey);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+
+        .transaction-reference strong {
+            color: var(--result-ink);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
         .sheet-label {
             display: flex;
             align-items: center;
@@ -630,7 +720,7 @@
         </div>
 
         <header class="top-bar">
-            <div class="merchant-name">UNIQLO</div>
+            <div class="merchant-name" data-merchant-name>Merchant</div>
         </header>
 
         <section class="result-area" aria-label="Payment result">
@@ -648,6 +738,20 @@
         </section>
 
         <main class="choice-sheet" id="choice-sheet">
+            <div class="transaction-details" id="transaction-details" data-method="card" aria-label="Payment reference">
+                <div class="payment-identity">
+                    <img class="card-brand-icon" id="card-brand-icon" src="icon_visa.svg" alt="Visa">
+                    <span class="payment-method-icon" id="payment-method-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded" id="payment-method-symbol">payments</span>
+                    </span>
+                    <span class="payment-account" id="payment-account">•••• 2004</span>
+                </div>
+                <div class="transaction-reference">
+                    <span>TRANS</span>
+                    <strong id="transaction-sequence">#0001</strong>
+                </div>
+            </div>
+
             <div class="sheet-label">CUSTOMER COPY</div>
 
             <section class="receipt-options" aria-label="Customer receipt options">
@@ -700,11 +804,13 @@
     </div>
 
     <section class="print-receipt" id="print-receipt" aria-hidden="true">
-        <strong>UNIQLO</strong><br>
+        <strong data-merchant-name>Merchant</strong><br>
         CUSTOMER COPY
         <div class="print-rule"></div>
         <span id="print-method">CARD PAYMENT</span><br>
         <span id="print-transaction-type">SALE</span><br>
+        <span id="print-payment-reference">VISA •••• 2004</span><br>
+        <span id="print-transaction-sequence">TRANS #0001</span><br>
         <div class="print-rule"></div>
         TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
         APPROVED
@@ -712,6 +818,7 @@
         Thank you for your purchase
     </section>
 
+    <script src="merchant-context.js"></script>
     <script>
         const choiceSheet = document.getElementById("choice-sheet");
         const phoneFrame = document.getElementById("phone-frame");
@@ -722,6 +829,9 @@
         const amountCents = resolveAmountCents();
         const paymentMethod = resolvePaymentMethod();
         const transactionType = resolveTransactionType();
+        const cardBrand = resolveCardBrand();
+        const maskedCard = resolveMaskedCard();
+        const transactionSequence = resolveTransactionSequence();
         let completionPending = false;
 
         function formatCurrency(cents) {
@@ -775,6 +885,46 @@
             return normalized || "SALE";
         }
 
+        function resolveCardBrand() {
+            const params = new URLSearchParams(window.location.search);
+            const rawBrand = params.get("cardBrand") || params.get("brand") || localStorage.getItem("cardBrand") || "visa";
+            const normalized = rawBrand.trim().toLowerCase().replace(/[\s_-]+/g, "");
+            const aliases = {
+                visa: "visa",
+                mastercard: "mastercard",
+                mc: "mastercard",
+                amex: "amex",
+                americanexpress: "amex",
+                discover: "discover"
+            };
+            return aliases[normalized] || "visa";
+        }
+
+        function resolveMaskedCard() {
+            const params = new URLSearchParams(window.location.search);
+            const rawCard = params.get("last4") || params.get("maskedCard") || params.get("cardNumber") || localStorage.getItem("cardLast4") || "2004";
+            const digits = rawCard.replace(/\D/g, "");
+            const lastFour = digits.slice(-4) || "2004";
+            return "•••• " + lastFour;
+        }
+
+        function resolveTransactionSequence() {
+            const params = new URLSearchParams(window.location.search);
+            const rawSequence = params.get("transactionNo") || params.get("transactionNumber") || params.get("transNo") || params.get("stan") || localStorage.getItem("transactionSequence") || "0001";
+            const safeSequence = rawSequence.trim().replace(/^#+/, "").replace(/[^A-Za-z0-9-]/g, "").slice(0, 12);
+            return safeSequence || "0001";
+        }
+
+        function getCardBrandConfig() {
+            const brands = {
+                visa: { label: "Visa", src: "icon_visa.svg" },
+                mastercard: { label: "Mastercard", src: "icon_mastercard.svg" },
+                amex: { label: "American Express", src: "icon_amex.svg" },
+                discover: { label: "Discover", src: "icon_discover.svg" }
+            };
+            return brands[cardBrand] || brands.visa;
+        }
+
         function getPaymentMethodLabel() {
             const labels = {
                 cash: "CASH PAYMENT",
@@ -793,12 +943,51 @@
             });
         }
 
+        function syncPaymentReference() {
+            const detailsEl = document.getElementById("transaction-details");
+            const brandIconEl = document.getElementById("card-brand-icon");
+            const methodSymbolEl = document.getElementById("payment-method-symbol");
+            const accountEl = document.getElementById("payment-account");
+            const sequenceEl = document.getElementById("transaction-sequence");
+            const printReferenceEl = document.getElementById("print-payment-reference");
+            const displaySequence = "#" + transactionSequence;
+
+            detailsEl.dataset.method = paymentMethod;
+            detailsEl.classList.toggle("non-card", paymentMethod !== "card");
+            sequenceEl.textContent = displaySequence;
+            document.getElementById("print-transaction-sequence").textContent = "TRANS " + displaySequence;
+
+            if (paymentMethod === "card") {
+                const brand = getCardBrandConfig();
+                brandIconEl.src = brand.src;
+                brandIconEl.alt = brand.label;
+                accountEl.textContent = maskedCard;
+                detailsEl.setAttribute("aria-label", brand.label + " card " + maskedCard + ", transaction " + transactionSequence);
+                printReferenceEl.textContent = brand.label.toUpperCase() + " " + maskedCard;
+                return;
+            }
+
+            const methodDetails = {
+                cash: { symbol: "payments", account: "CASH", label: "Cash payment" },
+                qr: { symbol: "qr_code_2", account: "QR", label: "QR payment" },
+                gift: { symbol: "redeem", account: "GIFT", label: "Gift payment" }
+            };
+            const detail = methodDetails[paymentMethod] || methodDetails.cash;
+            methodSymbolEl.textContent = detail.symbol;
+            accountEl.textContent = detail.account;
+            detailsEl.setAttribute("aria-label", detail.label + ", transaction " + transactionSequence);
+            printReferenceEl.textContent = detail.account;
+        }
+
         function getReceiptPayload(deliveryMethod, extra = {}) {
             return {
                 deliveryMethod: deliveryMethod,
                 amountCents: amountCents,
                 paymentMethod: paymentMethod,
                 transactionType: transactionType.toLowerCase(),
+                cardBrand: paymentMethod === "card" ? cardBrand : null,
+                maskedCard: paymentMethod === "card" ? maskedCard : null,
+                transactionSequence: transactionSequence,
                 ...extra
             };
         }
@@ -813,6 +1002,7 @@
             document.getElementById("print-method").textContent = getPaymentMethodLabel();
             document.getElementById("print-transaction-type").textContent = transactionType;
             document.getElementById("print-amount").textContent = amountText;
+            syncPaymentReference();
         }
 
         function showToast(message) {

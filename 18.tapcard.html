@@ -167,6 +167,7 @@
         </div>
     </div>
 
+    <script src="merchant-context.js"></script>
     <script>
         (function () {
             const DEFAULT_AMOUNT = 5;
@@ -226,6 +227,7 @@
                     paymentMethod: "card",
                     currency: paymentCurrency
                 });
+                if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);
                 window.location.href = "6_receipt.html?" + receiptParams.toString();
             };
 
