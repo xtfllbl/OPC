@@ -8,10 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --design-w: 720;
-            --design-h: 1280;
-            --fit-scale: 1;
-            --viewport-h: 100vh;
             --bg: #ffffff;
             --text-main: #0a2459;
             --text-sub: #4c6079;
@@ -23,7 +19,7 @@
             --card-strong: #2645a0;
             --neutral-border: #d3dce8;
             --neutral-bg: #ffffff;
-            --radius: 22px;
+            --radius: 16px;
         }
 
         * {
@@ -35,32 +31,28 @@
         }
 
         body {
-            min-height: var(--viewport-h);
-            height: var(--viewport-h);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #111827;
+            background: #222;
             color: var(--text-main);
             overflow: hidden;
         }
 
         .viewport {
-            width: calc(var(--design-w) * 1px);
-            height: calc(var(--design-h) * 1px);
+            width: 375px;
+            height: 812px;
             background: #ffffff;
-            border-radius: 34px;
-            border: 1px solid #e5e7eb;
+            border-radius: 18px;
             overflow: hidden;
-            transform: scale(var(--fit-scale));
-            transform-origin: center center;
-            box-shadow: 0 18px 60px rgba(15, 23, 42, 0.34);
+            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .canvas {
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: hidden;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
@@ -71,28 +63,28 @@
 
         .panel {
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             background: var(--bg);
-            padding: 46px 36px 34px;
+            padding: 28px 18px 18px;
             display: flex;
             flex-direction: column;
         }
 
         .title {
-            font-size: 50px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.05;
-            margin-bottom: 42px;
+            margin-bottom: 28px;
             color: #001845;
         }
 
         .option-card {
             width: 100%;
             border-radius: var(--radius);
-            border: 2px solid var(--neutral-border);
+            border: 1.5px solid var(--neutral-border);
             background: var(--neutral-bg);
-            padding: 28px 30px 24px;
+            padding: 20px 18px 18px;
             display: flex;
             flex-direction: column;
             text-align: left;
@@ -103,11 +95,11 @@
         }
 
         .cards-block {
-            margin-top: 18px;
+            margin-top: 6px;
         }
 
         .cash-card {
-            margin-bottom: 28px;
+            margin-bottom: 16px;
         }
 
         .option-card:active {
@@ -130,42 +122,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
             padding-right: 0;
         }
 
         .option-name {
-            font-size: 44px;
+            font-size: 23px;
             font-weight: 700;
-        }
-
-        .badge {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            border-radius: 999px;
-            padding: 12px 22px;
-            min-width: 250px;
-            text-align: center;
-        }
-
-        .badge-save {
-            background: #bfe8cc;
-            color: #1c6d40;
-        }
-
-        .badge-standard {
-            background: #cad8f8;
-            color: #264fa9;
         }
 
         .amount {
-            font-size: 90px;
+            font-size: 47px;
             line-height: 1;
             font-weight: 800;
             letter-spacing: -0.03em;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: #1d3557;
         }
 
@@ -177,53 +148,27 @@
             color: var(--card-strong);
         }
 
-        .note {
-            font-size: 33px;
-            line-height: 1.28;
-            color: #4d5e74;
-            margin-top: 0;
-        }
-
-        .saving {
-            margin-top: 10px;
-            font-size: 33px;
-            font-weight: 700;
-            color: #1d6c40;
-        }
-
-        .logo-row {
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-row img {
-            height: 30px;
-            width: auto;
-        }
-
         .action-row {
             display: flex;
-            gap: 18px;
+            gap: 10px;
             margin-top: auto;
-            padding-top: 28px;
+            padding-top: 16px;
         }
 
         .btn {
-            height: 92px;
-            border-radius: 30px;
+            height: 48px;
+            border-radius: 16px;
             border: 1.5px solid #bcc5d3;
             background: #f3f4f6;
             color: #233e63;
-            font-size: 40px;
+            font-size: 20px;
             font-weight: 700;
             line-height: 1;
             cursor: pointer;
         }
 
         .btn-back {
-            width: 220px;
+            width: 112px;
         }
 
         .btn-primary {
@@ -253,26 +198,15 @@
                     <button class="option-card cash-card" id="cash-card" type="button" onclick="selectMethod('cash')">
                         <div class="option-head">
                             <div class="option-name">Cash</div>
-                            <div class="badge badge-save">Save 4%</div>
                         </div>
                         <div class="amount" id="cash-amount">$96.00</div>
-                        <div class="note">Customer pays this discounted amount in cash.</div>
-                        <div class="saving" id="save-amount">You save $4.00</div>
                     </button>
 
                     <button class="option-card card-card selected" id="card-card" type="button" onclick="selectMethod('card')">
                         <div class="option-head">
                             <div class="option-name">Card</div>
-                            <div class="badge badge-standard">Standard</div>
                         </div>
                         <div class="amount" id="card-amount">$100.00</div>
-                        <div class="note">Tap, dip, swipe, or mobile wallet.</div>
-                        <div class="logo-row" aria-label="Card brands">
-                            <img src="visa.svg" alt="Visa">
-                            <img src="mastercard.svg" alt="Mastercard">
-                            <img src="amex.svg" alt="American Express">
-                            <img src="discover.svg" alt="Discover">
-                        </div>
                     </button>
                 </div>
 
@@ -285,21 +219,11 @@
     </div>
 
     <script>
-        function fitDesign() {
-            const viewport = window.visualViewport;
-            const viewportWidth = viewport ? viewport.width : window.innerWidth;
-            const viewportHeight = viewport ? viewport.height : window.innerHeight;
-            const scale = Math.min(viewportWidth / 720, viewportHeight / 1280);
-            document.documentElement.style.setProperty("--fit-scale", String(Math.max(0.25, scale)));
-            document.documentElement.style.setProperty("--viewport-h", viewportHeight + "px");
-        }
-
         const DISCOUNT_RATE = 0.04;
         const cashCard = document.getElementById("cash-card");
         const cardCard = document.getElementById("card-card");
         const cashAmountEl = document.getElementById("cash-amount");
         const cardAmountEl = document.getElementById("card-amount");
-        const saveAmountEl = document.getElementById("save-amount");
         const continueBtn = document.getElementById("continue-btn");
 
         let selectedMethod = "card";
@@ -361,12 +285,10 @@
 
         function syncView() {
             const cashAmountCents = getCashAmountCents();
-            const savingsCents = cardAmountCents - cashAmountCents;
             const isCash = selectedMethod === "cash";
 
             cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
             cashAmountEl.textContent = "$" + formatMoney(cashAmountCents);
-            saveAmountEl.textContent = "You save $" + formatMoney(savingsCents);
 
             cashCard.classList.toggle("selected", isCash);
             cardCard.classList.toggle("selected", !isCash);
@@ -433,11 +355,6 @@
         };
 
         syncView();
-        fitDesign();
-        window.addEventListener("resize", fitDesign);
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener("resize", fitDesign);
-        }
         window.addEventListener("resize", equalizeCardHeights);
     </script>
 </body>

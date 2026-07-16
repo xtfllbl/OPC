@@ -12,7 +12,7 @@
             --primary-light: #EFF6FF;
             --text-dark: #111827;
             --text-grey: #6B7280;
-            --bg-body: #F3F4F6;
+            --bg-body: #F5F7FB;
             --card-bg: #FFFFFF;
             --color-sale-bg: #EFF6FF;
             --color-sale-text: #0A5BFF;
@@ -138,38 +138,26 @@
         }
 
         .header {
+            position: relative;
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            min-height: 46px;
             padding: 8px 22px 6px;
-        }
-
-        .header-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
         }
 
         .merchant-name {
             color: var(--text-dark);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            min-height: 20px;
-        }
-
-        .brand-logo img {
-            display: block;
-            width: auto;
-            height: 20px;
+            letter-spacing: -0.01em;
         }
 
         .icon-btn {
+            position: absolute;
+            left: 18px;
+            top: 3px;
             display: grid;
             place-items: center;
             width: 40px;
@@ -193,16 +181,42 @@
         }
 
         .amount-section {
-            padding: 18px 0 24px;
+            padding: 14px 0 24px;
             text-align: center;
         }
 
-        .amount-label {
-            margin-bottom: 4px;
+        .amount-context {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 0 11px;
             color: var(--color-sale-text);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.15em;
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 0.1em;
+        }
+
+        .amount-context::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .amount-label {
+            margin: 18px 0 7px;
+            color: #667085;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.17em;
             text-transform: uppercase;
         }
 
@@ -216,9 +230,9 @@
         .currency,
         .amount-value {
             color: var(--color-sale-text);
-            font-size: 56px;
+            font-size: 52px;
             font-weight: 800;
-            line-height: 1;
+            line-height: 1.05;
         }
 
         .currency {
@@ -233,19 +247,6 @@
             white-space: nowrap;
         }
 
-        .amount-hint {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
         .content-sheet {
             position: relative;
             z-index: 1;
@@ -257,6 +258,7 @@
             border-radius: 32px 32px 0 0;
             background: var(--card-bg);
             box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
         }
 
         .sheet-heading {
@@ -411,21 +413,22 @@
         }
 
         .custom-overlay {
+            inset: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            background: rgba(15, 23, 42, 0.16);
+            background: #FFFFFF;
         }
 
         .custom-panel {
             display: flex;
             flex-direction: column;
-            height: calc(100% - 170px);
-            padding: 16px 20px;
-            border-radius: 32px 32px 0 0;
+            width: 100%;
+            height: 100%;
+            padding: 18px 20px 20px;
+            border-radius: 0;
             background: #FFFFFF;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
-            transform: translateY(100%);
+            box-shadow: none;
+            transform: translateX(12px);
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
@@ -443,8 +446,9 @@
 
         .custom-title {
             color: var(--text-dark);
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
         }
 
         .close-btn {
@@ -508,8 +512,10 @@
                 "k4 k5 k6 clr"
                 "k1 k2 k3 ok"
                 "k0 k00 k00 ok";
-            flex: 1;
-            gap: 10px;
+            flex: 0 0 360px;
+            max-height: 360px;
+            gap: 8px;
+            margin-top: auto;
             min-height: 0;
         }
 
@@ -519,34 +525,69 @@
             justify-content: center;
             min-width: 0;
             min-height: 0;
-            border: 1px solid #E5E7EB;
-            border-radius: 16px;
-            background: #F9FAFB;
-            color: var(--text-dark);
+            border: 1px solid #DFE5EF;
+            border-radius: 15px;
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+            color: #101828;
             cursor: pointer;
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 23px;
+            font-weight: 700;
         }
 
         .key:active {
-            background: #F3F4F6;
+            background: #F2F5FA;
+            transform: scale(0.97);
         }
 
         .key-func {
-            background: #EEF2FF;
-            font-size: 14px;
-            font-weight: 800;
+            background: #EEF3FF;
         }
 
-        .key-delete,
+        .key-delete {
+            color: #C45F00;
+            background: #FFF7E6;
+            border-color: #F3C766;
+            box-shadow: 0 3px 10px rgba(196, 95, 0, 0.09);
+        }
+
+        .key-delete:active {
+            color: #9A4600;
+            background: #FFEDC2;
+            border-color: #E8AD35;
+        }
+
         .key-clear {
-            color: var(--color-danger-text);
+            color: #D92D20;
+            background: #FFF1F2;
+            border-color: #FDA4AF;
+            font-size: 23px;
+            font-weight: 800;
+            box-shadow: 0 3px 10px rgba(217, 45, 32, 0.08);
+        }
+
+        .key-clear:active {
+            color: #B42318;
+            background: #FFE4E6;
+            border-color: #FB7185;
+        }
+
+        .key-00 {
+            color: #101828;
+            background: #FFFFFF;
+            border-color: #DFE5EF;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+        }
+
+        .key-00:active {
+            background: #F2F5FA;
+            border-color: #D3DAE6;
         }
 
         .key-ok {
             border: none;
             background: var(--primary);
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+            box-shadow: 0 9px 22px rgba(10, 91, 255, 0.22);
             color: #FFFFFF;
             font-size: 17px;
             font-weight: 800;
@@ -569,39 +610,53 @@
 
         .confirm-overlay {
             z-index: 120;
+            inset: 0;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.42);
+            align-items: stretch;
+            justify-content: stretch;
+            padding: 0;
+            background: #FFFFFF;
         }
 
         .confirm-panel {
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            padding: 24px 20px 20px;
-            border-radius: 20px;
+            height: 100%;
+            padding: 22px 24px 20px;
+            border-radius: 0;
             background: #FFFFFF;
-            box-shadow: 0 14px 34px rgba(16, 24, 40, 0.22);
-            transform: translateY(8px) scale(0.98);
-            transition: transform 0.2s ease;
-            text-align: center;
+            box-shadow: none;
+            transform: translateX(12px);
+            transition: transform 0.24s ease;
+            text-align: left;
         }
 
         .confirm-overlay.open .confirm-panel {
-            transform: translateY(0) scale(1);
+            transform: translateX(0);
         }
 
         .confirm-title {
             color: var(--text-dark);
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .confirm-body {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 16px;
+            min-height: 0;
+            padding: 28px 0;
         }
 
         .confirm-summary {
             display: grid;
-            gap: 10px;
-            margin-top: 18px;
-            padding: 14px 16px;
+            gap: 0;
+            padding: 4px 16px;
             border-radius: 16px;
             background: #F9FAFB;
         }
@@ -614,6 +669,12 @@
             color: var(--text-grey);
             font-size: 13px;
             font-weight: 600;
+            min-height: 48px;
+            border-bottom: 1px solid #E8ECF2;
+        }
+
+        .confirm-row:last-child {
+            border-bottom: none;
         }
 
         .confirm-row strong {
@@ -622,19 +683,11 @@
             font-weight: 800;
         }
 
-        .confirm-total {
-            margin-top: 16px;
-            color: var(--primary);
-            font-size: 30px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-
         .confirm-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: auto;
         }
 
         .confirm-actions .btn {
@@ -651,6 +704,17 @@
                 height: 100dvh;
                 border-radius: 0;
                 box-shadow: none;
+            }
+        }
+
+        @media (max-height: 760px) {
+            .custom-panel {
+                padding-top: 14px;
+            }
+
+            .key-grid {
+                flex-basis: 306px;
+                max-height: 306px;
             }
         }
     </style>
@@ -675,19 +739,16 @@
         </div>
 
         <header class="header">
-            <div class="header-left">
-                <div class="merchant-name">Jose's Store</div>
-                <div class="brand-logo"><img src="TSYS_logo.png" alt="TSYS"></div>
-            </div>
             <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
             </button>
+            <div class="merchant-name">UNIQLO</div>
         </header>
 
         <section class="amount-section" aria-label="Transaction amount">
-            <div class="amount-label">Transaction Amount</div>
+            <div class="amount-context">SALE</div>
+            <div class="amount-label" id="amount-label">Transaction Amount</div>
             <div class="amount-line"><span class="currency">$</span><span class="amount-value" id="base-amount">0.00</span></div>
-            <div class="amount-hint">Select Tip</div>
         </section>
 
         <main class="content-sheet">
@@ -724,10 +785,9 @@
                 <button class="btn btn-primary" id="btn-custom" type="button">Custom Tip</button>
                 <button class="btn btn-secondary" id="btn-skip" type="button">No Tip</button>
             </div>
-        </main>
 
-        <div class="overlay custom-overlay" id="custom-overlay" aria-hidden="true" onclick="closeCustomTip(event)">
-            <div class="custom-panel" role="dialog" aria-modal="true" aria-labelledby="custom-title" onclick="event.stopPropagation()">
+            <div class="overlay custom-overlay" id="custom-overlay" aria-hidden="true">
+            <div class="custom-panel" role="region" aria-labelledby="custom-title">
                 <div class="custom-header">
                     <h2 class="custom-title" id="custom-title">Custom Tip</h2>
                     <button class="close-btn" type="button" onclick="closeCustomTip(event)" aria-label="Close custom tip">
@@ -742,7 +802,13 @@
                     <button class="key key-7" type="button" data-key="7">7</button>
                     <button class="key key-8" type="button" data-key="8">8</button>
                     <button class="key key-9" type="button" data-key="9">9</button>
-                    <button class="key key-func key-delete key-del" type="button" data-key="BS">Del</button>
+                    <button class="key key-func key-delete key-del" type="button" data-key="BS" aria-label="Delete last digit">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                            <line x1="18" y1="9" x2="12" y2="15"></line>
+                            <line x1="12" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                    </button>
                     <button class="key key-4" type="button" data-key="4">4</button>
                     <button class="key key-5" type="button" data-key="5">5</button>
                     <button class="key key-6" type="button" data-key="6">6</button>
@@ -756,21 +822,24 @@
                 </div>
             </div>
         </div>
-
-        <div class="overlay confirm-overlay" id="confirm-overlay" aria-hidden="true">
-            <div class="confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-                <h2 class="confirm-title" id="confirm-title">Confirm Tip</h2>
-                <div class="confirm-summary">
-                    <div class="confirm-row"><span>Tip</span><strong id="confirm-tip">$0.00</strong></div>
-                    <div class="confirm-row"><span>Subtotal</span><strong id="confirm-subtotal">$0.00</strong></div>
+            <div class="overlay confirm-overlay" id="confirm-overlay" aria-hidden="true">
+            <div class="confirm-panel" role="region" aria-labelledby="confirm-title">
+                <div class="confirm-heading">
+                    <h2 class="confirm-title" id="confirm-title">Confirm Tip</h2>
                 </div>
-                <div class="confirm-total" id="confirm-total">Total $0.00</div>
+                <div class="confirm-body">
+                    <div class="confirm-summary">
+                        <div class="confirm-row"><span>Transaction Amount</span><strong id="confirm-subtotal">$0.00</strong></div>
+                        <div class="confirm-row"><span id="confirm-tip-label">Tip</span><strong id="confirm-tip">$0.00</strong></div>
+                    </div>
+                </div>
                 <div class="confirm-actions">
                     <button class="btn btn-secondary" id="confirm-cancel" type="button">Change</button>
-                    <button class="btn btn-primary" id="confirm-ok" type="button">Confirm</button>
+                    <button class="btn btn-primary" id="confirm-ok" type="button">Confirm $0.00</button>
                 </div>
             </div>
         </div>
+        </main>
     </div>
 
     <script>
@@ -821,6 +890,8 @@
         }
 
         const amountCents = resolveAmountCents();
+        const amountLabelEl = document.getElementById("amount-label");
+        const baseAmountEl = document.getElementById("base-amount");
         const tipCards = Array.from(document.querySelectorAll(".tip-card"));
         const customOverlay = document.getElementById("custom-overlay");
         const customAmountEl = document.getElementById("custom-amount");
@@ -830,7 +901,7 @@
         let customRaw = "0";
 
         localStorage.setItem("amountCents", String(amountCents));
-        document.getElementById("base-amount").textContent = formatAmount(amountCents);
+        baseAmountEl.textContent = formatAmount(amountCents);
 
         function updateCalculatedTip(percent, elementId) {
             document.getElementById(elementId).textContent = formatCurrency(Math.round(amountCents * percent / 100));
@@ -849,9 +920,17 @@
         }
 
         function showConfirmation(tipCents) {
-            document.getElementById("confirm-tip").textContent = formatCurrency(tipCents);
+            const totalCents = amountCents + tipCents;
+            document.getElementById("confirm-tip").textContent = tipCents > 0
+                ? "+" + formatCurrency(tipCents)
+                : formatCurrency(0);
             document.getElementById("confirm-subtotal").textContent = formatCurrency(amountCents);
-            document.getElementById("confirm-total").textContent = "Total " + formatCurrency(amountCents + tipCents);
+            document.getElementById("confirm-tip-label").textContent = selectedPercent
+                ? `Tip (${selectedPercent}%)`
+                : "Custom Tip";
+            amountLabelEl.textContent = "TOTAL AMOUNT";
+            baseAmountEl.textContent = formatAmount(totalCents);
+            document.getElementById("confirm-ok").textContent = "Confirm " + formatCurrency(totalCents);
             confirmOverlay.classList.add("open");
             confirmOverlay.setAttribute("aria-hidden", "false");
         }
@@ -859,13 +938,22 @@
         function hideConfirmation() {
             confirmOverlay.classList.remove("open");
             confirmOverlay.setAttribute("aria-hidden", "true");
+            amountLabelEl.textContent = "TRANSACTION AMOUNT";
+            baseAmountEl.textContent = formatAmount(amountCents);
+            document.getElementById("confirm-ok").textContent = "Confirm";
         }
 
         function proceed(tipCents, meta = {}) {
+            const totalCents = amountCents + tipCents;
             localStorage.setItem("tipCents", String(tipCents));
             localStorage.setItem("tipPercent", meta.percent ? String(meta.percent) : "");
-            localStorage.setItem("totalCents", String(amountCents + tipCents));
-            window.location.href = "3_card_wait.html";
+            localStorage.setItem("totalCents", String(totalCents));
+            const cashDiscountParams = new URLSearchParams({
+                amountCents: String(totalCents),
+                subtotalCents: String(amountCents),
+                tipCents: String(tipCents)
+            });
+            window.location.href = "10.cash_discount.html?" + cashDiscountParams.toString();
         }
 
         tipCards.forEach((card) => {
