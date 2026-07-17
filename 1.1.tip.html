@@ -224,7 +224,9 @@
             display: flex;
             align-items: baseline;
             justify-content: center;
+            width: 100%;
             min-width: 0;
+            padding: 0 18px;
         }
 
         .currency,
@@ -233,6 +235,12 @@
             font-size: 52px;
             font-weight: 800;
             line-height: 1.05;
+            transition: color 0.2s ease;
+        }
+
+        .phone-frame.custom-tip-mode .currency,
+        .phone-frame.custom-tip-mode .amount-value {
+            color: #24456D;
         }
 
         .currency {
@@ -243,6 +251,69 @@
             max-width: 285px;
             overflow: hidden;
             letter-spacing: -1.5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .amount-line.amount-compact .currency,
+        .amount-line.amount-compact .amount-value {
+            font-size: 44px;
+        }
+
+        .amount-line.amount-tight .currency,
+        .amount-line.amount-tight .amount-value {
+            font-size: 36px;
+            letter-spacing: -1px;
+        }
+
+        .amount-line.amount-compact .amount-value,
+        .amount-line.amount-tight .amount-value {
+            max-width: 305px;
+        }
+
+        .custom-tip-readout {
+            position: absolute;
+            z-index: 1;
+            top: 12px;
+            right: 24px;
+            left: 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            gap: 12px;
+        }
+
+        .phone-frame.custom-tip-mode .custom-tip-readout {
+            display: flex;
+        }
+
+        .custom-tip-readout-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        .custom-tip-readout-label::after {
+            width: 1px;
+            height: 24px;
+            background: #D8E0EB;
+            content: "";
+        }
+
+        .custom-tip-readout-value {
+            max-width: 220px;
+            overflow: hidden;
+            color: var(--color-sale-text);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
@@ -399,8 +470,7 @@
         .tip-card:focus-visible,
         .btn:focus-visible,
         .icon-btn:focus-visible,
-        .key:focus-visible,
-        .close-btn:focus-visible {
+        .key:focus-visible {
             outline: 3px solid rgba(10, 91, 255, 0.36);
             outline-offset: 2px;
         }
@@ -426,90 +496,47 @@
             inset: 0;
             display: flex;
             flex-direction: column;
-            background: #FFFFFF;
+            background: var(--bg-body);
         }
 
         .custom-panel {
+            position: relative;
             display: flex;
             flex-direction: column;
             width: 100%;
             height: 100%;
-            padding: 18px 20px 20px;
+            padding: var(--flow-divider-offset) 24px 20px;
             border-radius: 0;
-            background: #FFFFFF;
+            background: transparent;
             box-shadow: none;
             transform: translateX(12px);
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: transform 0.24s ease;
         }
 
         .custom-overlay.open .custom-panel {
-            transform: translateY(0);
+            transform: translateX(0);
         }
 
-        .custom-header {
+        .custom-heading {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 0 8px;
+            gap: 12px;
+        }
+
+        .custom-heading::before,
+        .custom-heading::after {
+            flex: 1;
+            height: 1px;
+            background: #D8E0EB;
+            content: "";
         }
 
         .custom-title {
-            color: var(--text-dark);
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-        }
-
-        .close-btn {
-            display: grid;
-            place-items: center;
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 50%;
-            background: #F3F4F6;
-            color: var(--text-dark);
-            cursor: pointer;
-        }
-
-        .close-btn svg {
-            width: 15px;
-            height: 15px;
-            fill: none;
-            stroke: currentColor;
-            stroke-linecap: round;
-            stroke-width: 2.5;
-        }
-
-        .custom-preview {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 12px;
-            padding: 12px 16px;
-            border: 1.5px solid #DCE6FF;
-            border-radius: 16px;
-            background: var(--primary-light);
-        }
-
-        .custom-label {
-            color: var(--primary);
-            font-size: 10px;
-            font-weight: 800;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
             letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        .custom-amount {
-            max-width: 210px;
-            overflow: hidden;
-            color: var(--primary);
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            text-overflow: ellipsis;
+            line-height: 1;
             white-space: nowrap;
         }
 
@@ -525,7 +552,7 @@
             flex: 0 0 360px;
             max-height: 360px;
             gap: 8px;
-            margin-top: auto;
+            margin-top: 16px;
             min-height: 0;
         }
 
@@ -674,39 +701,54 @@
             flex: 1;
             flex-direction: column;
             justify-content: flex-start;
-            gap: 16px;
             min-height: 0;
-            padding: 28px 0;
+            padding: 38px 0;
         }
 
         .confirm-summary {
             display: grid;
-            gap: 0;
-            padding: 4px 16px;
-            border-radius: 16px;
-            background: #F9FAFB;
+            grid-template-columns: minmax(0, 1fr);
+            align-items: center;
+            gap: 22px;
+            width: 100%;
+            padding: 0 24px;
         }
 
-        .confirm-row {
+        .confirm-breakdown-item {
             display: flex;
+            flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 16px;
+            min-width: 0;
+            width: 100%;
+            text-align: left;
+        }
+
+        .confirm-breakdown-label {
             color: var(--text-grey);
-            font-size: 13px;
-            font-weight: 600;
-            min-height: 48px;
-            border-bottom: 1px solid #E8ECF2;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1.2;
+            text-transform: uppercase;
         }
 
-        .confirm-row:last-child {
-            border-bottom: none;
-        }
-
-        .confirm-row strong {
+        .confirm-breakdown-item strong {
+            flex: 0 1 auto;
+            max-width: 100%;
+            overflow: hidden;
             color: var(--text-dark);
-            font-size: 15px;
+            font-size: 24px;
             font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .confirm-breakdown-item.tip strong {
+            color: var(--color-sale-text);
         }
 
         .confirm-actions {
@@ -735,7 +777,7 @@
 
         @media (max-height: 760px) {
             .custom-panel {
-                padding-top: 14px;
+                padding-top: var(--flow-divider-offset);
             }
 
             .key-grid {
@@ -747,7 +789,7 @@
 </head>
 
 <body>
-    <div class="phone-frame">
+    <div class="phone-frame" id="phone-frame">
         <div class="android-status-bar" role="status" aria-label="Device status">
             <time class="status-time" id="status-time">09:41</time>
             <div class="status-icons">
@@ -785,19 +827,20 @@
             </div>
 
             <section class="tip-grid" id="tip-grid" aria-label="Tip percentages">
-                <button class="tip-card" type="button" data-pct="10" aria-pressed="false">
-                    <span class="tip-percent-box">10%</span>
-                    <span class="tip-value" id="a10">$0.00</span>
-                    <span class="tip-tag">Thank you</span>
-                </button>
                 <button class="tip-card" type="button" data-pct="15" aria-pressed="false">
                     <span class="tip-percent-box">15%</span>
                     <span class="tip-value" id="a15">$0.00</span>
-                    <span class="tip-tag">Great</span>
+                    <span class="tip-tag">Thank you</span>
                 </button>
                 <button class="tip-card" type="button" data-pct="20" aria-pressed="false">
                     <span class="tip-percent-box">20%</span>
                     <span class="tip-value" id="a20">$0.00</span>
+                    <span class="tip-tag">Great</span>
+                </button>
+                <button class="tip-card" type="button" data-pct="22"1231
+                 aria-pressed="false">
+                    <span class="tip-percent-box">22%</span>
+                    <span class="tip-value" id="a22">$0.00</span>
                     <span class="tip-tag">Excellent</span>
                 </button>
                 <button class="tip-card" type="button" data-pct="25" aria-pressed="false">
@@ -814,15 +857,12 @@
 
             <div class="overlay custom-overlay" id="custom-overlay" aria-hidden="true">
             <div class="custom-panel" role="region" aria-labelledby="custom-title">
-                <div class="custom-header">
-                    <h2 class="custom-title" id="custom-title">Custom Tip</h2>
-                    <button class="close-btn" type="button" onclick="closeCustomTip(event)" aria-label="Close custom tip">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-                    </button>
+                <div class="custom-tip-readout" id="custom-tip-readout" aria-live="polite">
+                    <span class="custom-tip-readout-label">Tip</span>
+                    <strong class="custom-tip-readout-value" id="custom-tip-amount">$0.00</strong>
                 </div>
-                <div class="custom-preview">
-                    <span class="custom-label">Tip Amount</span>
-                    <strong class="custom-amount" id="custom-amount">$0.00</strong>
+                <div class="custom-heading">
+                    <h2 class="custom-title" id="custom-title">CUSTOM TIP</h2>
                 </div>
                 <div class="key-grid">
                     <button class="key key-7" type="button" data-key="7">7</button>
@@ -855,8 +895,14 @@
                 </div>
                 <div class="confirm-body">
                     <div class="confirm-summary">
-                        <div class="confirm-row"><span>Transaction Amount</span><strong id="confirm-subtotal">$0.00</strong></div>
-                        <div class="confirm-row"><span id="confirm-tip-label">Tip</span><strong id="confirm-tip">$0.00</strong></div>
+                        <div class="confirm-breakdown-item">
+                            <span class="confirm-breakdown-label">Transaction</span>
+                            <strong id="confirm-subtotal">$0.00</strong>
+                        </div>
+                        <div class="confirm-breakdown-item tip">
+                            <span class="confirm-breakdown-label" id="confirm-tip-label">Tip</span>
+                            <strong id="confirm-tip">$0.00</strong>
+                        </div>
                     </div>
                 </div>
                 <div class="confirm-actions">
@@ -928,27 +974,38 @@
         }
 
         const amountCents = resolveAmountCents();
+        const phoneFrame = document.getElementById("phone-frame");
         const amountLabelEl = document.getElementById("amount-label");
+        const amountLineEl = document.querySelector(".amount-line");
         const baseAmountEl = document.getElementById("base-amount");
+        const customTipAmountEl = document.getElementById("custom-tip-amount");
         const tipCards = Array.from(document.querySelectorAll(".tip-card"));
         const customOverlay = document.getElementById("custom-overlay");
-        const customAmountEl = document.getElementById("custom-amount");
         const confirmOverlay = document.getElementById("confirm-overlay");
+        const confirmOkEl = document.getElementById("confirm-ok");
         let selectedPercent = null;
         let selectedTipCents = 0;
         let customRaw = "0";
 
         localStorage.setItem("cashAmountCents", String(amountCents));
         localStorage.setItem("amountCents", String(amountCents));
-        baseAmountEl.textContent = formatAmount(amountCents);
+
+        function setHeroAmount(cents) {
+            const amountText = formatAmount(cents);
+            baseAmountEl.textContent = amountText;
+            amountLineEl.classList.toggle("amount-compact", amountText.length >= 9);
+            amountLineEl.classList.toggle("amount-tight", amountText.length >= 12);
+        }
+
+        setHeroAmount(amountCents);
 
         function updateCalculatedTip(percent, elementId) {
             document.getElementById(elementId).textContent = formatCurrency(Math.round(amountCents * percent / 100));
         }
 
-        updateCalculatedTip(10, "a10");
         updateCalculatedTip(15, "a15");
         updateCalculatedTip(20, "a20");
+        updateCalculatedTip(22, "a22");
         updateCalculatedTip(25, "a25");
 
         function clearSelection() {
@@ -960,16 +1017,16 @@
 
         function showConfirmation(tipCents) {
             const totalCents = amountCents + tipCents;
-            document.getElementById("confirm-tip").textContent = tipCents > 0
-                ? "+" + formatCurrency(tipCents)
-                : formatCurrency(0);
-            document.getElementById("confirm-subtotal").textContent = formatCurrency(amountCents);
+            const subtotalText = formatCurrency(amountCents);
+            const tipText = formatCurrency(tipCents);
+            document.getElementById("confirm-tip").textContent = tipText;
+            document.getElementById("confirm-subtotal").textContent = subtotalText;
             document.getElementById("confirm-tip-label").textContent = selectedPercent
                 ? `Tip (${selectedPercent}%)`
                 : "Custom Tip";
             amountLabelEl.textContent = "TOTAL AMOUNT";
-            baseAmountEl.textContent = formatAmount(totalCents);
-            document.getElementById("confirm-ok").textContent = "Confirm " + formatCurrency(totalCents);
+            setHeroAmount(totalCents);
+            confirmOkEl.textContent = "Confirm";
             confirmOverlay.classList.add("open");
             confirmOverlay.setAttribute("aria-hidden", "false");
         }
@@ -978,8 +1035,8 @@
             confirmOverlay.classList.remove("open");
             confirmOverlay.setAttribute("aria-hidden", "true");
             amountLabelEl.textContent = "TRANSACTION AMOUNT";
-            baseAmountEl.textContent = formatAmount(amountCents);
-            document.getElementById("confirm-ok").textContent = "Confirm";
+            setHeroAmount(amountCents);
+            confirmOkEl.textContent = "Confirm";
         }
 
         function proceed(tipCents, meta = {}) {
@@ -1020,21 +1077,26 @@
         });
 
         function updateCustomDisplay() {
-            customAmountEl.textContent = formatCurrency(parseInt(customRaw, 10) || 0);
+            const tipCents = parseInt(customRaw, 10) || 0;
+            customTipAmountEl.textContent = tipCents > 0
+                ? "+" + formatCurrency(tipCents)
+                : formatCurrency(0);
         }
 
         function openCustomTip() {
             clearSelection();
             customRaw = "0";
-            updateCustomDisplay();
+            phoneFrame.classList.add("custom-tip-mode");
             customOverlay.classList.add("open");
             customOverlay.setAttribute("aria-hidden", "false");
+            updateCustomDisplay();
         }
 
         function closeCustomTip(event) {
             if (event) {
                 event.stopPropagation();
             }
+            phoneFrame.classList.remove("custom-tip-mode");
             customOverlay.classList.remove("open");
             customOverlay.setAttribute("aria-hidden", "true");
             customRaw = "0";
@@ -1071,6 +1133,10 @@
         document.getElementById("btn-skip").addEventListener("click", () => proceed(0));
 
         function handleBack() {
+            if (customOverlay.classList.contains("open")) {
+                closeCustomTip(null);
+                return;
+            }
             if (window.history.length > 1) {
                 window.history.back();
                 return;

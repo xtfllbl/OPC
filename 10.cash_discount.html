@@ -292,13 +292,17 @@
 
         .option-card {
             display: grid;
-            grid-template-columns: 54px minmax(0, 1fr) auto;
+            grid-template-columns: 48px minmax(0, 1fr);
+            grid-template-rows: auto auto;
             align-items: center;
-            gap: 14px;
+            align-content: center;
+            column-gap: 14px;
+            row-gap: 12px;
             min-width: 0;
             min-height: 0;
-            padding: 16px 18px;
+            padding: 30px 34px;
             border: 1.5px solid;
+            border-left-width: 4px;
             border-radius: 18px;
             cursor: pointer;
             text-align: left;
@@ -317,37 +321,34 @@
 
         .cash-card {
             border-color: var(--cash-border);
+            border-left-color: var(--cash);
             background: var(--cash-light);
-            box-shadow: 0 6px 18px rgba(11, 122, 67, 0.08);
+            box-shadow: 0 8px 20px rgba(11, 122, 67, 0.08);
         }
 
         .card-card {
             border-color: #BFD1FF;
+            border-left-color: var(--primary);
             background: var(--primary-light);
-            box-shadow: 0 6px 18px rgba(10, 91, 255, 0.08);
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.08);
         }
 
         .payment-icon {
             display: grid;
             place-items: center;
-            width: 54px;
-            height: 54px;
-            border: 1px solid;
-            border-radius: 17px;
-            background: var(--surface);
+            width: 48px;
+            height: 40px;
         }
 
         .payment-icon .material-symbols-rounded {
-            font-size: 29px;
+            font-size: 34px;
         }
 
         .cash-icon {
-            border-color: #C7EAD5;
             color: var(--cash);
         }
 
         .card-icon {
-            border-color: #D6E2FF;
             color: var(--primary);
         }
 
@@ -361,23 +362,39 @@
 
         .option-name {
             display: block;
-            color: var(--text-dark);
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.1;
         }
 
+        .cash-card .option-name {
+            color: var(--cash);
+        }
+
+        .card-card .option-name {
+            color: var(--primary);
+        }
+
         .option-amount {
-            max-width: 122px;
-            overflow: hidden;
-            font-size: 30px;
+            grid-column: 1 / -1;
+            justify-self: start;
+            min-width: 0;
+            font-size: 42px;
             font-weight: 800;
+            font-variant-numeric: tabular-nums;
             letter-spacing: -0.04em;
             line-height: 1;
-            text-align: right;
-            text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .option-amount.amount-compact {
+            font-size: 34px;
+        }
+
+        .option-amount.amount-tight {
+            font-size: 26px;
+            letter-spacing: -0.025em;
         }
 
         .cash-card .option-amount {
@@ -523,8 +540,24 @@
 
         function syncView() {
             const cardAmountCents = getCardAmountCents();
-            cashAmountEl.textContent = "$" + formatMoney(cashAmountCents);
-            cardAmountEl.textContent = "$" + formatMoney(cardAmountCents);
+            setOptionAmount(cashAmountEl, cashAmountCents);
+            setOptionAmount(cardAmountEl, cardAmountCents);
+            document.getElementById("cash-card").setAttribute(
+                "aria-label",
+                "Pay cash " + cashAmountEl.textContent
+            );
+            document.getElementById("card-card").setAttribute(
+                "aria-label",
+                "Pay by card " + cardAmountEl.textContent
+            );
+        }
+
+        function setOptionAmount(element, cents) {
+            const amountText = "$" + formatMoney(cents);
+            element.textContent = amountText;
+            element.setAttribute("aria-label", amountText);
+            element.classList.toggle("amount-compact", amountText.length >= 11);
+            element.classList.toggle("amount-tight", amountText.length >= 14);
         }
 
         function handleBack() {
