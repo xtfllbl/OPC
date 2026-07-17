@@ -2408,7 +2408,7 @@
                                 </div>
                                 <span>QR</span>
                             </div>
-                            <div class="settings-toggle on" data-group="qr" onclick="toggleSetting(this)">
+                            <div class="settings-toggle" data-group="qr" onclick="toggleSetting(this)">
                                 <div class="settings-toggle-knob"></div>
                             </div>
                         </div>
@@ -2421,7 +2421,7 @@
                                 </div>
                                 <span>GIFT</span>
                             </div>
-                            <div class="settings-toggle on" data-group="loyalty" onclick="toggleSetting(this)">
+                            <div class="settings-toggle" data-group="loyalty" onclick="toggleSetting(this)">
                                 <div class="settings-toggle-knob"></div>
                             </div>
                         </div>
@@ -2718,6 +2718,20 @@
         let activeTab = 0;
         let entryThemeIndex = 0;
         let amountInputHasStarted = false;
+        const transactionStorageKeys = [
+            'cashAmountCents',
+            'amountCents',
+            'tipCents',
+            'tipPercent',
+            'totalCents',
+            'cashTotalCents',
+            'paymentMethod',
+            'finalAmountCents',
+            'cashPaidCents',
+            'cashChangeCents',
+            'transactionType',
+            'customerReceiptMethod'
+        ];
 
         // References
         const statusTime = document.getElementById('status-time');
@@ -3519,7 +3533,10 @@
         selectRandomMerchantLogo();
         syncPaymentAvailability();
         updateCashDiscountUI();
-        showAppView('home');
+        resetHomeAfterCompletedTransaction();
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) resetHomeAfterCompletedTransaction();
+        });
 
         // Logic
         function formatMoney(cents) {
@@ -3553,6 +3570,24 @@
             displayEl.innerText = formatMoney(rawAmount);
             updateAmountContext();
             syncBottomNavigationVisibility('home');
+        }
+
+        function clearTransactionSessionState() {
+            try {
+                transactionStorageKeys.forEach((key) => localStorage.removeItem(key));
+            } catch (error) {
+                // The visible home state can still reset when storage is unavailable.
+            }
+        }
+
+        function resetHomeAfterCompletedTransaction() {
+            clearTransactionSessionState();
+            pendingAction = null;
+            entryThemeIndex = 0;
+            rawAmount = "0";
+            amountInputHasStarted = false;
+            if (displayEl) displayEl.innerText = formatMoney(rawAmount);
+            showAppView('home');
         }
 
         function updateAmountContext() {
@@ -3622,13 +3657,7 @@
 
         function showSaleHome(e) {
             if (e) e.stopPropagation();
-            pendingAction = null;
-            entryThemeIndex = 0;
-            rawAmount = "0";
-            amountInputHasStarted = false;
-            displayEl.innerText = formatMoney(rawAmount);
-            updateAmountContext();
-            showAppView('home');
+            resetHomeAfterCompletedTransaction();
         }
 
         function showAppView(viewName, e) {
@@ -3852,6 +3881,7 @@
             }
             const amountSuffix = normalizedAmount === null ? '' : `: $${formatMoney(normalizedAmount)}`;
             alert(`Start ${actionName} flow${amountSuffix}`);
+            resetHomeAfterCompletedTransaction();
         }
 
         function doAction(actionName) {
