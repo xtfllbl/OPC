@@ -524,8 +524,99 @@
             display: none;
         }
 
+        .phone-frame.email-mode .result-area {
+            display: none;
+        }
+
+        .choice-sheet.email-mode {
+            padding: 185px 24px 20px;
+        }
+
+        .choice-sheet.email-mode .transaction-details {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .sheet-label {
+            order: 2;
+            gap: 0;
+            margin: 22px 0 0;
+            font-size: 0;
+        }
+
         .choice-sheet.email-mode .email-panel {
             display: flex;
+            order: 1;
+            flex: 0 0 auto;
+            min-height: auto;
+            padding-top: 0;
+        }
+
+        .choice-sheet.email-mode .email-heading {
+            display: flex;
+            min-height: 34px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .choice-sheet.email-mode .email-heading .option-icon {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .email-title {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding-bottom: 11px;
+            color: var(--result-ink);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .choice-sheet.email-mode .email-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 36px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .choice-sheet.email-mode .email-copy {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .email-form {
+            margin-top: 28px;
+        }
+
+        .choice-sheet.email-mode .email-label {
+            margin-bottom: 8px;
+        }
+
+        .choice-sheet.email-mode .email-input {
+            height: 54px;
+        }
+
+        .choice-sheet.email-mode .email-error {
+            min-height: 17px;
+            margin-top: 7px;
+        }
+
+        .choice-sheet.email-mode .email-actions {
+            margin-top: 14px;
+        }
+
+        .choice-sheet.email-mode .email-action {
+            height: 52px;
+            border-radius: 16px;
         }
 
         .email-heading {
@@ -622,6 +713,139 @@
             color: #FFFFFF;
         }
 
+        .android-keyboard {
+            position: absolute;
+            z-index: 80;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 302px;
+            padding: 7px 5px 4px;
+            background: #E7ECF2;
+            box-shadow: 0 -1px 0 rgba(71, 84, 103, 0.08), 0 -10px 28px rgba(15, 23, 42, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(100%);
+            transition: transform 0.22s ease, opacity 0.16s ease;
+        }
+
+        .phone-frame.keyboard-visible .android-keyboard {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .keyboard-toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            height: 32px;
+            padding: 0 7px 4px 10px;
+            color: #526176;
+        }
+
+        .keyboard-language {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .keyboard-hide {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 28px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #475467;
+            cursor: pointer;
+        }
+
+        .keyboard-hide .material-symbols-rounded {
+            font-size: 20px;
+        }
+
+        .keyboard-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            height: 48px;
+        }
+
+        .keyboard-row.row-home {
+            padding: 0 17px;
+        }
+
+        .ime-key {
+            display: grid;
+            place-items: center;
+            flex: 1 1 0;
+            min-width: 0;
+            border: 0;
+            border-radius: 8px;
+            background: #FAFCFE;
+            box-shadow: 0 1px 1px rgba(15, 23, 42, 0.15);
+            color: #1F2937;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .ime-key:active,
+        .ime-key.is-active {
+            background: #C9D5E3;
+            transform: translateY(1px);
+        }
+
+        .ime-key.function-key {
+            flex-grow: 1.25;
+            background: #D5DDE7;
+        }
+
+        .ime-key.function-key .material-symbols-rounded {
+            font-size: 21px;
+        }
+
+        .ime-key.space-key {
+            flex-grow: 3.2;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .ime-key.compact-key {
+            flex-grow: 0.9;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ime-key.enter-key {
+            flex-grow: 1.2;
+            background: #A8C7FA;
+            color: #0B3A82;
+        }
+
+        .keyboard-navigation {
+            display: grid;
+            place-items: center;
+            height: 24px;
+        }
+
+        .keyboard-navigation::after {
+            width: 92px;
+            height: 4px;
+            border-radius: 999px;
+            background: #344054;
+            content: "";
+        }
+
         .toast {
             position: absolute;
             z-index: 20;
@@ -680,9 +904,17 @@
         @media (prefers-reduced-motion: reduce) {
             .success-check,
             .success-check-circle,
-            .success-check-mark {
+            .success-check-mark,
+            .android-keyboard {
                 animation-duration: 0.01ms;
                 animation-delay: 0ms;
+                transition-duration: 0.01ms;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .android-keyboard {
+                display: none;
             }
         }
 
@@ -782,7 +1014,6 @@
                     </span>
                     <div>
                         <h2 class="email-title">Email Receipt</h2>
-                        <p class="email-copy">Send the customer copy by email.</p>
                     </div>
                 </div>
 
@@ -799,6 +1030,79 @@
                 </div>
             </section>
         </main>
+
+        <section class="android-keyboard" id="android-keyboard" aria-label="Android on-screen keyboard"
+            aria-hidden="true">
+            <div class="keyboard-toolbar">
+                <span class="keyboard-language">English (US)</span>
+                <button class="keyboard-hide" type="button" tabindex="-1" onclick="hideSimulatedKeyboard()"
+                    aria-label="Hide keyboard">
+                    <span class="material-symbols-rounded" aria-hidden="true">keyboard_hide</span>
+                </button>
+            </div>
+
+            <div class="keyboard-rows">
+                <div class="keyboard-row">
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="q">q</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="w">w</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="e">e</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="r">r</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="t">t</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="y">y</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="u">u</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="i">i</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="o">o</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="p">p</button>
+                </div>
+
+                <div class="keyboard-row row-home">
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="a">a</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="s">s</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="d">d</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="f">f</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="g">g</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="h">h</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="j">j</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="k">k</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="l">l</button>
+                </div>
+
+                <div class="keyboard-row">
+                    <button class="ime-key function-key" id="ime-shift" type="button" tabindex="-1"
+                        data-ime-key="SHIFT" aria-label="Shift">
+                        <span class="material-symbols-rounded" aria-hidden="true">shift</span>
+                    </button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="z">z</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="x">x</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="c">c</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="v">v</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="b">b</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="n">n</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="m">m</button>
+                    <button class="ime-key function-key" type="button" tabindex="-1" data-ime-key="BACKSPACE"
+                        aria-label="Backspace">
+                        <span class="material-symbols-rounded" aria-hidden="true">backspace</span>
+                    </button>
+                </div>
+
+                <div class="keyboard-row">
+                    <button class="ime-key compact-key function-key" type="button" tabindex="-1"
+                        data-ime-key="?123">?123</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1" data-ime-key="@">@</button>
+                    <button class="ime-key space-key" type="button" tabindex="-1"
+                        data-ime-key="SPACE">English (US)</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1" data-ime-key=".">.</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1"
+                        data-ime-key=".com">.com</button>
+                    <button class="ime-key enter-key" type="button" tabindex="-1" data-ime-key="ENTER"
+                        aria-label="Send receipt">
+                        <span class="material-symbols-rounded" aria-hidden="true">keyboard_return</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="keyboard-navigation" aria-hidden="true"></div>
+        </section>
 
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
@@ -825,7 +1129,12 @@
         const statusTime = document.getElementById("status-time");
         const emailInput = document.getElementById("email-input");
         const emailError = document.getElementById("email-error");
+        const androidKeyboard = document.getElementById("android-keyboard");
+        const imeLetterKeys = Array.from(document.querySelectorAll(".ime-letter"));
+        const imeShiftKey = document.getElementById("ime-shift");
+        const imeModeKey = document.querySelector('[data-ime-key="?123"]');
         const toast = document.getElementById("toast");
+        const useSimulatedKeyboard = window.matchMedia("(pointer: fine)").matches;
         const resultRouteParams = new URLSearchParams(window.location.search);
         const failureEvaluationCents = resolveFailureEvaluationCents(resultRouteParams);
 
@@ -841,6 +1150,8 @@
         const maskedCard = resolveMaskedCard();
         const transactionSequence = resolveTransactionSequence();
         let completionPending = false;
+        let imeShiftActive = false;
+        let imeSymbolMode = false;
 
         function formatCurrency(cents) {
             return (Math.max(0, cents) / 100).toLocaleString("en-US", {
@@ -1057,13 +1368,109 @@
 
         function openEmailPanel() {
             choiceSheet.classList.add("email-mode");
+            phoneFrame.classList.add("email-mode");
             emailError.textContent = "";
             window.setTimeout(() => emailInput.focus(), 80);
         }
 
         function closeEmailPanel() {
+            hideSimulatedKeyboard(false);
             choiceSheet.classList.remove("email-mode");
+            phoneFrame.classList.remove("email-mode");
             emailError.textContent = "";
+            emailInput.blur();
+        }
+
+        function showSimulatedKeyboard() {
+            if (!useSimulatedKeyboard || !choiceSheet.classList.contains("email-mode")) return;
+            phoneFrame.classList.add("keyboard-visible");
+            androidKeyboard.setAttribute("aria-hidden", "false");
+        }
+
+        function hideSimulatedKeyboard(blurInput = true) {
+            phoneFrame.classList.remove("keyboard-visible");
+            androidKeyboard.setAttribute("aria-hidden", "true");
+            if (blurInput) emailInput.blur();
+        }
+
+        function renderImeLayout() {
+            const letterValues = "qwertyuiopasdfghjklzxcvbnm".split("");
+            const symbolValues = [
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+                "@", "#", "$", "_", "&", "-", "+", "(", ")",
+                "*", "\"", "'", ";", ":", "!", "?"
+            ];
+            const values = imeSymbolMode ? symbolValues : letterValues;
+
+            imeLetterKeys.forEach((keyElement, index) => {
+                const value = values[index];
+                const displayValue = !imeSymbolMode && imeShiftActive ? value.toUpperCase() : value;
+                keyElement.dataset.imeKey = displayValue;
+                keyElement.textContent = displayValue;
+            });
+
+            imeModeKey.textContent = imeSymbolMode ? "ABC" : "?123";
+            imeShiftKey.classList.toggle("is-active", imeShiftActive && !imeSymbolMode);
+        }
+
+        function insertImeText(text) {
+            if (typeof emailInput.selectionStart === "number") {
+                const start = emailInput.selectionStart;
+                const end = emailInput.selectionEnd ?? start;
+                emailInput.setRangeText(text, start, end, "end");
+            } else {
+                emailInput.value += text;
+            }
+            emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        function deleteImeText() {
+            if (typeof emailInput.selectionStart === "number") {
+                const start = emailInput.selectionStart;
+                const end = emailInput.selectionEnd ?? start;
+                if (start !== end) {
+                    emailInput.setRangeText("", start, end, "end");
+                } else if (start > 0) {
+                    emailInput.setRangeText("", start - 1, start, "end");
+                }
+            } else {
+                emailInput.value = emailInput.value.slice(0, -1);
+            }
+            emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        function typeImeKey(key) {
+            if (key === "SHIFT") {
+                if (!imeSymbolMode) {
+                    imeShiftActive = !imeShiftActive;
+                    renderImeLayout();
+                }
+                return;
+            }
+            if (key === "?123") {
+                imeSymbolMode = !imeSymbolMode;
+                imeShiftActive = false;
+                renderImeLayout();
+                return;
+            }
+            if (key === "BACKSPACE") {
+                deleteImeText();
+                return;
+            }
+            if (key === "SPACE") {
+                insertImeText(" ");
+                return;
+            }
+            if (key === "ENTER") {
+                sendEmailReceipt();
+                return;
+            }
+
+            insertImeText(key);
+            if (imeShiftActive && !imeSymbolMode) {
+                imeShiftActive = false;
+                renderImeLayout();
+            }
         }
 
         function finishReceiptChoice(deliveryMethod, extra = {}) {
@@ -1119,11 +1526,27 @@
             emailError.textContent = "";
         });
 
+        emailInput.addEventListener("focus", showSimulatedKeyboard);
+        emailInput.addEventListener("blur", () => {
+            window.setTimeout(() => {
+                if (document.activeElement !== emailInput) hideSimulatedKeyboard(false);
+            }, 0);
+        });
+
+        androidKeyboard.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+        });
+
+        document.querySelectorAll("[data-ime-key]").forEach((keyElement) => {
+            keyElement.addEventListener("click", () => typeImeKey(keyElement.dataset.imeKey));
+        });
+
         emailInput.addEventListener("keydown", (event) => {
             if (event.key === "Enter") sendEmailReceipt();
             if (event.key === "Escape") closeEmailPanel();
         });
 
+        renderImeLayout();
         updateStatusTime();
         window.setInterval(updateStatusTime, 30000);
         syncTransactionDetails();
