@@ -748,7 +748,7 @@
                 </div>
                 <div class="transaction-reference">
                     <span>TRANS</span>
-                    <strong id="transaction-sequence">#0001</strong>
+                    <strong id="transaction-sequence">000001</strong>
                 </div>
             </div>
 
@@ -810,7 +810,7 @@
         <span id="print-method">CARD PAYMENT</span><br>
         <span id="print-transaction-type">SALE</span><br>
         <span id="print-payment-reference">VISA •••• 2004</span><br>
-        <span id="print-transaction-sequence">TRANS #0001</span><br>
+        <span id="print-transaction-sequence">TRANS 000001</span><br>
         <div class="print-rule"></div>
         TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
         APPROVED
@@ -826,9 +826,17 @@
         const emailInput = document.getElementById("email-input");
         const emailError = document.getElementById("email-error");
         const toast = document.getElementById("toast");
+        const resultRouteParams = new URLSearchParams(window.location.search);
+        const failureEvaluationCents = resolveFailureEvaluationCents(resultRouteParams);
+
+        if (failureEvaluationCents !== null && amountEndsInFour(failureEvaluationCents)) {
+            window.location.replace("6_receipt_failed.html?" + resultRouteParams.toString());
+        }
+
         const amountCents = resolveAmountCents();
         const paymentMethod = resolvePaymentMethod();
         const transactionType = resolveTransactionType();
+        const randomCardIdentity = createRandomCardIdentity();
         const cardBrand = resolveCardBrand();
         const maskedCard = resolveMaskedCard();
         const transactionSequence = resolveTransactionSequence();
@@ -846,6 +854,24 @@
             const amount = Number(value);
             if (!Number.isFinite(amount) || amount < 0) return null;
             return Math.round(amount * 100);
+        }
+
+        function resolveFailureEvaluationCents(params) {
+            const centsText = params.get("amountCents");
+            const cents = Number(centsText);
+            if (centsText !== null && centsText !== "" && Number.isFinite(cents) && cents >= 0) {
+                return Math.round(cents);
+            }
+            return parseMoneyToCents(params.get("amount"));
+        }
+
+        function amountEndsInFour(cents) {
+            if (!Number.isFinite(cents) || cents < 0) return false;
+            const normalizedAmount = (Math.round(cents) / 100)
+                .toFixed(2)
+                .replace(/0+$/, "")
+                .replace(/\.$/, "");
+            return normalizedAmount.endsWith("4");
         }
 
         function resolveAmountCents() {
@@ -885,9 +911,26 @@
             return normalized || "SALE";
         }
 
+        function randomInteger(maxExclusive) {
+            if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+                const values = new Uint32Array(1);
+                window.crypto.getRandomValues(values);
+                return values[0] % maxExclusive;
+            }
+            return Math.floor(Math.random() * maxExclusive);
+        }
+
+        function createRandomCardIdentity() {
+            const brands = ["visa", "mastercard", "amex", "discover"];
+            return {
+                brand: brands[randomInteger(brands.length)],
+                lastFour: String(randomInteger(10000)).padStart(4, "0")
+            };
+        }
+
         function resolveCardBrand() {
             const params = new URLSearchParams(window.location.search);
-            const rawBrand = params.get("cardBrand") || params.get("brand") || localStorage.getItem("cardBrand") || "visa";
+            const rawBrand = params.get("cardBrand") || params.get("brand") || randomCardIdentity.brand;
             const normalized = rawBrand.trim().toLowerCase().replace(/[\s_-]+/g, "");
             const aliases = {
                 visa: "visa",
@@ -902,17 +945,18 @@
 
         function resolveMaskedCard() {
             const params = new URLSearchParams(window.location.search);
-            const rawCard = params.get("last4") || params.get("maskedCard") || params.get("cardNumber") || localStorage.getItem("cardLast4") || "2004";
+            const rawCard = params.get("last4") || params.get("maskedCard") || params.get("cardNumber") || randomCardIdentity.lastFour;
             const digits = rawCard.replace(/\D/g, "");
-            const lastFour = digits.slice(-4) || "2004";
+            const lastFour = digits.slice(-4).padStart(4, "0");
             return "•••• " + lastFour;
         }
 
         function resolveTransactionSequence() {
             const params = new URLSearchParams(window.location.search);
-            const rawSequence = params.get("transactionNo") || params.get("transactionNumber") || params.get("transNo") || params.get("stan") || localStorage.getItem("transactionSequence") || "0001";
-            const safeSequence = rawSequence.trim().replace(/^#+/, "").replace(/[^A-Za-z0-9-]/g, "").slice(0, 12);
-            return safeSequence || "0001";
+            const rawSequence = params.get("transactionNo") || params.get("transactionNumber") || params.get("transNo") || params.get("stan");
+            const digits = rawSequence ? rawSequence.replace(/\D/g, "") : "";
+            if (digits) return digits.slice(-6).padStart(6, "0");
+            return String(randomInteger(1000000)).padStart(6, "0");
         }
 
         function getCardBrandConfig() {
@@ -950,7 +994,7 @@
             const accountEl = document.getElementById("payment-account");
             const sequenceEl = document.getElementById("transaction-sequence");
             const printReferenceEl = document.getElementById("print-payment-reference");
-            const displaySequence = "#" + transactionSequence;
+            const displaySequence = transactionSequence;
 
             detailsEl.dataset.method = paymentMethod;
             detailsEl.classList.toggle("non-card", paymentMethod !== "card");
