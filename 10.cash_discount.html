@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Payment Method</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
     <style>
         :root {
             --primary: #0A5BFF;
@@ -42,21 +41,6 @@
 
         button {
             font: inherit;
-        }
-
-        .material-symbols-rounded {
-            font-family: "Material Symbols Rounded";
-            font-weight: 600;
-            font-style: normal;
-            line-height: 1;
-            letter-spacing: normal;
-            text-transform: none;
-            white-space: nowrap;
-            word-wrap: normal;
-            direction: ltr;
-            -webkit-font-feature-settings: "liga";
-            -webkit-font-smoothing: antialiased;
-            font-feature-settings: "liga";
         }
 
         .phone-frame {
@@ -292,15 +276,15 @@
 
         .option-card {
             display: grid;
-            grid-template-columns: 44px minmax(0, 1fr);
+            grid-template-columns: minmax(0, 1fr);
             grid-template-rows: auto auto;
             align-items: center;
             align-content: center;
-            column-gap: 12px;
-            row-gap: 14px;
+            justify-items: center;
+            row-gap: 20px;
             min-width: 0;
             min-height: 0;
-            padding: 26px 28px;
+            padding: 24px 28px;
             border: 1.5px solid #D8E0EB;
             border-radius: 16px;
             background: rgba(255, 255, 255, 0.72);
@@ -349,52 +333,42 @@
             box-shadow: inset 0 0 0 1px var(--primary), 0 8px 18px rgba(10, 91, 255, 0.12);
         }
 
-        .option-card:active .payment-icon,
-        .option-card.is-activating .payment-icon {
-            border-color: var(--option-accent);
-            background: var(--surface);
-        }
-
         .option-card:active .option-amount,
         .option-card.is-activating .option-amount {
             color: var(--option-accent);
         }
 
-        .payment-icon {
-            display: grid;
-            place-items: center;
-            width: 44px;
-            height: 44px;
-            border: 1px solid color-mix(in srgb, var(--option-accent) 18%, transparent);
-            border-radius: 14px;
-            background: var(--option-accent-soft);
-            color: var(--option-accent);
-        }
-
-        .payment-icon .material-symbols-rounded {
-            font-size: 26px;
-        }
-
         .option-copy {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             min-width: 0;
         }
 
         .option-name {
-            display: block;
-            color: var(--text-dark);
-            font-size: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+            color: var(--option-accent);
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.08em;
             line-height: 1.1;
         }
 
+        .option-name::after {
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+        }
+
         .option-amount {
-            grid-column: 1 / -1;
-            justify-self: start;
+            justify-self: stretch;
+            width: 100%;
             min-width: 0;
             color: #24476F;
             font-size: 38px;
@@ -402,6 +376,7 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: -0.035em;
             line-height: 1;
+            text-align: center;
             white-space: nowrap;
         }
 
@@ -464,21 +439,15 @@
             <h1 class="section-title">SELECT PAYMENT METHOD</h1>
             <section class="payment-options" aria-label="Payment methods">
                 <button class="option-card cash-card" id="cash-card" type="button" onclick="choosePayment('cash', this)" aria-label="Pay cash">
-                    <span class="payment-icon cash-icon" aria-hidden="true">
-                        <span class="material-symbols-rounded">payments</span>
-                    </span>
                     <span class="option-copy">
-                        <span class="option-name">Cash</span>
+                        <span class="option-name">CASH</span>
                     </span>
                     <strong class="option-amount" id="cash-amount">$100.00</strong>
                 </button>
 
                 <button class="option-card card-card" id="card-card" type="button" onclick="choosePayment('card', this)" aria-label="Pay by card">
-                    <span class="payment-icon card-icon" aria-hidden="true">
-                        <span class="material-symbols-rounded">credit_card</span>
-                    </span>
                     <span class="option-copy">
-                        <span class="option-name">Card</span>
+                        <span class="option-name">CARD</span>
                     </span>
                     <strong class="option-amount" id="card-amount">$104.00</strong>
                 </button>
