@@ -1,38 +1,40 @@
-# Design QA — Semantic Payment Cards
+# Design QA — Batch Report Summary Refinement
 
-- Visual target: user-provided payment-method screenshot
-- Implementation: `10.cash_discount.html`
-- Browser screenshot: `design-qa-assets/payment-type-style-cards.png`
-- Large-value screenshot: `design-qa-assets/payment-type-style-cards-large.png`
-- View state: Cash `$15.00`; Card `$15.60`
+- Source visual truth: user-provided Batch Reports screenshot plus `design-qa-assets/batch-report-refinement-final.png`
+- Implementation screenshot: `design-qa-assets/batch-report-summary-refined.png`
+- Full-view comparison evidence: `design-qa-assets/batch-report-summary-refinement-comparison.png`
+- Focused comparison: not required; all changed summary rows and labels are legible in the full 375 × 812 comparison
+- Viewport: 375 × 812
+- State: Transactions → Reports → Current Batch Reports; AMEX expanded; Transaction Details collapsed
 
-## Fidelity check
+## Findings
 
-- Cash uses the target’s pale-green surface and green outline.
-- Card uses the target’s pale-blue surface and blue outline.
-- Payment icons are removed to reduce component noise.
-- CASH and CARD use the same uppercase, tracked-title, short-underline language as transaction types.
-- The payment title and amount share one centered axis.
-- Amounts remain uniform deep blue-grey so the semantic title and the monetary value have distinct roles.
-- Currency symbol, integer, decimal point, and cents share one size, weight, and baseline.
-- Existing merchant identity, divider position, calculations, and workflow navigation remain unchanged.
+No actionable P0, P1, or P2 issues remain.
 
-## Interaction state
+- Fonts and typography: the merged totals retain the existing batch-card type scale. `CARD BATCH SUMMARY`, `CARD BRAND SUMMARY`, and `CASH SUMMARY` now use the same heading treatment. Cash transaction types use the same uppercase hierarchy as card-brand details.
+- Spacing and layout rhythm: Card Net, Cash Net, and Total Receipts are integrated into the batch identity card as a bottom statistics band. The separate card summary is shorter, preserving the existing one-screen density.
+- Colors and visual tokens: Cash Summary now uses the same neutral heading, white rows, slate text, and light neutral total row as Card Brand Summary. The prior green-only heading and total treatment are removed.
+- Image quality and asset fidelity: this report region contains no decorative imagery or card-brand logo assets; the implementation continues to use text labels as required.
+- Copy and content: `CARD BATCH SUMMARY` replaces `BATCH SUMMARY`. Cash rows use `SALE`, `REFUND`, and `NET CASH`; cash counts are bare numerals without the `Count` word.
+- Interaction and responsiveness: card-brand and Transaction Details disclosures remain functional. Current and last batch reports were verified at 375 × 812 with no horizontal clipping or hidden primary controls.
 
-The default cards use the target appearance. On press, the selected card:
+## Primary Interactions Tested
 
-- deepens its semantic surface;
-- strengthens its semantic border with a subtle inner ring;
-- changes the amount to the selected payment color;
-- uses the existing short press-scale transition before navigation.
+- Opened Current Batch Reports and Last Batch Reports.
+- Expanded VISA and verified `SALE` and `REFUND` detail rows.
+- Expanded Transaction Details and verified the existing transaction list.
+- Checked browser console warnings and errors: none.
 
-## Verification
+## Comparison History
 
-- Default Cash and Card states render correctly.
-- Large values `$14,145,000.00` and `$14,710,800.00` remain complete and centered.
-- Card selection with `$104.00` correctly follows the project’s amount-ending-in-4 failure rule and reaches `6_receipt_failed.html`.
-- Inline JavaScript parsing and `git diff --check` passed.
+### Pass 1
 
-No P0, P1, or P2 visual issues remain.
+- Finding: no actionable P0/P1/P2 mismatch was found after implementation.
+- Result: the total-receipts band reads as part of the batch identity, while card and cash summaries now share a consistent table language.
+
+## Residual Differences
+
+- Debit/Credit counts retain the `Count` prefix because the requested count cleanup was scoped to Card Brand Summary and Cash Summary.
+- Dynamic current/last batch values continue to derive from their existing demo payloads.
 
 final result: passed

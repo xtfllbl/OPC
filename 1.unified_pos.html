@@ -477,6 +477,121 @@
             padding-bottom: 12px;
         }
 
+        .invoice-reprint-view {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background: var(--card-bg);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(24px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+
+        .invoice-reprint-view.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        .invoice-entry-stage {
+            flex: 0 0 286px;
+            min-height: 286px;
+            padding: 38px 0 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+        }
+
+        .invoice-entry-label {
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .invoice-entry-input {
+            width: 100%;
+            height: 58px;
+            margin-top: 14px;
+            border: 1.5px solid #D8E0EC;
+            border-radius: 16px;
+            outline: none;
+            background: #FFFFFF;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.07em;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            text-transform: uppercase;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .invoice-entry-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(10, 91, 255, 0.10);
+        }
+
+        .invoice-entry-input::placeholder {
+            color: #A8B2C2;
+            opacity: 1;
+        }
+
+        .invoice-entry-error {
+            min-height: 18px;
+            margin-top: 8px;
+            color: #D92D20;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .invoice-divider {
+            width: 100%;
+            height: 1px;
+            flex: 0 0 1px;
+            background: #D8E0EC;
+        }
+
+        .invoice-keyboard-reserve {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .invoice-reprint-submit {
+            width: 100%;
+            height: 52px;
+            flex: 0 0 52px;
+            margin-top: auto;
+            border: 0;
+            border-radius: 16px;
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.18);
+        }
+
+        .invoice-reprint-submit:active {
+            transform: scale(0.98);
+        }
+
+        .invoice-reprint-submit .material-symbols-rounded {
+            font-size: 20px;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -1165,11 +1280,11 @@
             transform: scale(0.98);
         }
 
-        /* --- Batch Info Page --- */
+        /* --- Batch Reports Page --- */
         .batch-overlay {
             position: absolute;
             inset: 28px 0 0;
-            background: #F2F4F7;
+            background: #F8FAFD;
             z-index: 115;
             opacity: 0;
             pointer-events: none;
@@ -1194,8 +1309,8 @@
         .batch-header-bar {
             height: 56px;
             flex: 0 0 56px;
-            background: #FFFFFF;
-            border-bottom: 1px solid #E6EAF0;
+            background: var(--card-bg);
+            border-bottom: 1px solid #E5E7EB;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -1203,19 +1318,19 @@
         }
 
         .batch-header-title {
-            color: #0F172A;
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 0.2px;
+            color: var(--text-dark);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0;
         }
 
         .batch-icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 16px;
-            border: 1px solid #E6EAF0;
-            background: #FFFFFF;
-            color: #475569;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 0;
+            background: transparent;
+            color: var(--text-dark);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -1228,8 +1343,8 @@
         }
 
         .batch-icon-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             fill: none;
             stroke: currentColor;
             stroke-width: 2;
@@ -1242,7 +1357,7 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            padding: 12px 16px 16px;
+            padding: 16px 16px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -1255,24 +1370,24 @@
 
         .batch-option-list {
             display: grid;
-            gap: 12px;
+            gap: 14px;
         }
 
         .batch-option-card {
             width: 100%;
-            min-height: 96px;
-            border: 1px solid #E6EAF0;
-            border-radius: 12px;
-            background: #FFFFFF;
-            color: #0F172A;
-            padding: 14px;
+            min-height: 88px;
+            border: 1px solid #D8E0EC;
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            padding: 14px 16px;
             display: grid;
-            grid-template-columns: 46px minmax(0, 1fr) 22px;
+            grid-template-columns: 42px minmax(0, 1fr) 18px;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-align: left;
             cursor: pointer;
-            box-shadow: none;
+            box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
         }
 
         .batch-option-card:active {
@@ -1281,26 +1396,26 @@
         }
 
         .batch-option-icon {
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             border: 1px solid #DCE6FF;
-            background: #F8FAFE;
-            color: #0A5BFF;
+            background: var(--primary-light);
+            color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .batch-option-icon.last {
-            border-color: #CCFBF1;
-            background: #F8FFFC;
-            color: #0D9488;
+            border-color: #D8E0EC;
+            background: #F2F4F7;
+            color: #667085;
         }
 
         .batch-option-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 23px;
+            height: 23px;
             fill: none;
             stroke: currentColor;
             stroke-width: 1.9;
@@ -1310,24 +1425,26 @@
 
         .batch-option-title {
             display: block;
-            font-size: 16px;
-            font-weight: 800;
-            line-height: 1.2;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: 0;
         }
 
         .batch-option-meta {
             display: block;
-            margin-top: 4px;
-            color: #64748B;
-            font-size: 12px;
-            font-weight: 700;
+            margin-top: 5px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
 
         .batch-option-arrow {
-            color: #94A3B8;
-            font-size: 24px;
+            color: #98A2B3;
+            font-size: 20px;
+            font-weight: 600;
             line-height: 1;
             justify-self: end;
         }
@@ -1340,9 +1457,9 @@
             justify-content: center;
             gap: 12px;
             text-align: center;
-            color: #64748B;
-            font-size: 13px;
-            font-weight: 700;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .batch-spinner {
@@ -1363,25 +1480,29 @@
             height: 38px;
             border-radius: 12px;
             border: 0;
-            background: #0A5BFF;
+            background: var(--primary);
             color: #FFFFFF;
             padding: 0 16px;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 700;
             cursor: pointer;
         }
 
         .batch-summary-card,
-        .batch-section {
-            background: #FFFFFF;
-            border: 1px solid #E6EAF0;
-            border-radius: 14px;
-            box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02), 0 1px 3px rgba(16, 24, 40, 0.03);
+        .batch-overview-card,
+        .batch-payment-section,
+        .batch-cash-section,
+        .batch-transaction-section {
+            background: var(--card-bg);
+            border: 1px solid #D8E0EC;
+            border-radius: var(--radius-md);
+            box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
         }
 
         .batch-summary-card {
-            padding: 16px 14px;
-            margin-bottom: 14px;
+            padding: 11px 14px 0;
+            margin-bottom: 8px;
+            overflow: hidden;
         }
 
         .batch-summary-top {
@@ -1389,23 +1510,22 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 14px;
         }
 
         .batch-summary-title {
-            color: #0F172A;
-            font-size: 24px;
-            font-weight: 900;
-            line-height: 1.15;
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.2;
         }
 
         .batch-status-pill {
             min-height: 26px;
             border-radius: 999px;
             padding: 7px 14px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.05em;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             display: inline-flex;
             align-items: center;
@@ -1422,33 +1542,98 @@
             background: #F1F5F9;
         }
 
-        .batch-summary-stats {
-            display: block;
-            border: 1px solid #EDF2F7;
-            border-radius: 12px;
+        .batch-identity-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            margin-top: 8px;
+            color: #667085;
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .batch-identity-meta-item {
+            min-width: 0;
             overflow: hidden;
-            background: #F8FAFE;
-            margin-bottom: 14px;
+            text-overflow: ellipsis;
+        }
+
+        .batch-identity-meta-item strong {
+            margin-left: 4px;
+            color: #475467;
+            font-weight: 700;
+        }
+
+        .batch-identity-separator {
+            color: #98A2B3;
+            flex: 0 0 auto;
+        }
+
+        .batch-overview-card {
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .batch-report-heading {
+            min-height: 28px;
+            padding: 7px 13px;
+            border-bottom: 1px solid #E6EAF0;
+            background: #F8FAFD;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .batch-report-heading-split {
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .batch-report-scope {
+            color: #98A2B3;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0;
+            line-height: 1.2;
+            text-align: right;
+            text-transform: none;
+            white-space: nowrap;
+        }
+
+        .batch-summary-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            background: #FFFFFF;
         }
 
         .batch-summary-stat {
-            min-height: 78px;
-            padding: 13px 14px;
-            display: grid;
-            grid-template-columns: 104px minmax(0, 1fr);
-            gap: 14px;
-            align-items: center;
+            min-width: 0;
+            min-height: 64px;
+            padding: 9px 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
         }
 
         .batch-summary-stat + .batch-summary-stat {
-            border-top: 1px solid #E6EAF0;
+            border-left: 1px solid #E6EAF0;
         }
 
         .batch-summary-stat-label {
-            color: #75839B;
+            color: var(--text-grey);
             font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.05em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
@@ -1457,96 +1642,342 @@
             flex-direction: column;
             align-items: flex-start;
             justify-content: center;
-            gap: 7px;
+            gap: 3px;
         }
 
         .batch-summary-stat-count {
-            color: #94A3B8;
+            color: #98A2B3;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 600;
             letter-spacing: 0;
             text-transform: none;
             white-space: nowrap;
         }
 
         .batch-summary-stat-value {
-            color: #0F172A;
-            font-size: 28px;
-            font-weight: 900;
+            color: var(--text-dark);
+            width: 100%;
+            margin-top: 6px;
+            font-size: clamp(19px, 5.6vw, 22px);
+            font-weight: 800;
             line-height: 1.08;
-            text-align: right;
+            text-align: left;
             overflow-wrap: anywhere;
             word-break: normal;
             white-space: normal;
         }
 
-        .batch-summary-meta {
+        .batch-reconciliation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 10px -14px 0;
+            background: #FFFFFF;
+            border-top: 1px solid #E6EAF0;
+        }
+
+        .batch-reconciliation-item {
+            min-width: 0;
+            min-height: 47px;
+            padding: 7px 7px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .batch-reconciliation-item + .batch-reconciliation-item {
+            border-left: 1px solid #E6EAF0;
+        }
+
+        .batch-reconciliation-label {
+            color: #667085;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .batch-reconciliation-value {
+            max-width: 100%;
+            color: #344054;
+            font-size: clamp(13px, 4vw, 16px);
+            font-weight: 800;
+            line-height: 1.1;
+            overflow-wrap: anywhere;
+        }
+
+        .batch-reconciliation-item.total {
+            background: #FFFFFF;
+        }
+
+        .batch-reconciliation-item.total .batch-reconciliation-label,
+        .batch-reconciliation-item.total .batch-reconciliation-value {
+            color: #101828;
+        }
+
+        .batch-reconciliation-item.total .batch-reconciliation-value {
+            font-size: clamp(14px, 4.4vw, 17px);
+        }
+
+        .batch-payment-section {
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .batch-payment-list {
+            background: #FFFFFF;
+        }
+
+        .batch-payment-group + .batch-payment-group {
             border-top: 1px solid #EDF2F7;
         }
 
-        .batch-summary-meta .batch-field-row {
-            padding: 12px 0;
+        .batch-payment-row {
+            width: 100%;
+            min-height: 38px;
+            border: 0;
+            background: #FFFFFF;
+            display: grid;
+            grid-template-columns: minmax(92px, 1fr) 62px minmax(74px, auto) 18px;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 13px;
+            color: inherit;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
         }
 
-        .batch-section {
-            overflow: hidden;
-            margin-bottom: 10px;
+        .batch-payment-row:active {
+            background: #F8FAFD;
         }
 
-        .batch-section-title {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-            color: #90A0B7;
-            background: #F8FAFE;
-            padding: 10px 12px;
-            border-bottom: 1px solid #E6EAF0;
-        }
-
-        .batch-section-title-row {
+        .batch-payment-brand {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .batch-section-count {
-            color: #64748B;
-            font-size: 11px;
+            min-width: 0;
+            color: #344054;
+            font-size: 12px;
             font-weight: 800;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
         }
 
-        .batch-field-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 11px 12px;
-            border-bottom: 1px solid #EDF2F7;
+        .batch-payment-count {
+            color: #667085;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
         }
 
-        .batch-field-row:last-child {
-            border-bottom: none;
+        .batch-payment-amount {
+            min-width: 0;
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 800;
+            text-align: right;
+            overflow-wrap: anywhere;
         }
 
-        .batch-field-key {
-            color: #75839B;
-            font-size: 13px;
+        .batch-payment-chevron {
+            color: #667085;
+            font-size: 19px;
+            line-height: 1;
+            transition: transform 0.18s ease;
+        }
+
+        .batch-payment-row[aria-expanded="true"] .batch-payment-chevron {
+            transform: rotate(90deg);
+        }
+
+        .batch-payment-breakdown {
+            border-top: 1px solid #EDF2F7;
+            background: #F8FAFD;
+        }
+
+        .batch-payment-breakdown[hidden] {
+            display: none;
+        }
+
+        .batch-payment-detail-row {
+            min-height: 32px;
+            margin-left: 20px;
+            padding: 5px 13px 5px 10px;
+            border-left: 2px solid #DCE6FF;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 58px minmax(72px, auto);
+            align-items: center;
+            gap: 8px;
+        }
+
+        .batch-payment-detail-row + .batch-payment-detail-row {
+            border-top: 1px solid #E8EDF5;
+        }
+
+        .batch-payment-detail-title {
+            min-width: 0;
+            color: #475467;
+            font-size: 10px;
             font-weight: 700;
-            flex: 0 0 42%;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            text-transform: uppercase;
         }
 
-        .batch-field-value {
-            color: #0F172A;
+        .batch-payment-detail-count {
+            color: #98A2B3;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .batch-payment-detail-amount {
+            color: #344054;
             font-size: 13px;
             font-weight: 800;
             text-align: right;
-            word-break: break-word;
-            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .batch-payment-detail-note {
+            grid-column: 1 / -1;
+            margin-top: -2px;
+            color: #98A2B3;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .batch-payment-empty {
+            padding: 18px 14px;
+            color: #94A3B8;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .batch-cash-section {
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .batch-cash-list {
+            background: #FFFFFF;
+        }
+
+        .batch-cash-row {
+            min-height: 25px;
+            padding: 3px 13px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 64px minmax(78px, auto);
+            align-items: center;
+            gap: 8px;
+        }
+
+        .batch-cash-row + .batch-cash-row {
+            border-top: 1px solid #EDF2F7;
+        }
+
+        .batch-cash-label {
+            color: #344054;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .batch-cash-count {
+            color: #667085;
+            font-size: 9px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .batch-cash-amount {
+            color: #344054;
+            font-size: 12px;
+            font-weight: 800;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .batch-cash-row.net {
+            min-height: 27px;
+            background: #F8FAFD;
+        }
+
+        .batch-cash-row.net .batch-cash-label,
+        .batch-cash-row.net .batch-cash-amount {
+            color: #344054;
+        }
+
+        .batch-cash-row.net .batch-cash-label {
+            letter-spacing: 0.05em;
+        }
+
+        .batch-transaction-section {
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .batch-transactions-toggle {
+            width: 100%;
+            min-height: 42px;
+            border: 0;
+            background: #FFFFFF;
+            color: var(--text-grey);
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        .batch-transactions-toggle:active {
+            background: #F8FAFD;
+        }
+
+        .batch-transactions-label {
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .batch-transactions-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .batch-transactions-chevron {
+            font-size: 20px;
+            color: #475467;
+            transition: transform 0.18s ease;
+        }
+
+        .batch-transactions-toggle[aria-expanded="true"] .batch-transactions-chevron {
+            transform: rotate(180deg);
         }
 
         .batch-tx-list {
             background: #FFFFFF;
+            border-top: 1px solid #E6EAF0;
+        }
+
+        .batch-tx-list[hidden] {
+            display: none;
         }
 
         .batch-tx-row {
@@ -1567,9 +1998,9 @@
         }
 
         .batch-tx-title {
-            color: #0F172A;
-            font-size: 15px;
-            font-weight: 900;
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1577,9 +2008,9 @@
 
         .batch-tx-meta,
         .batch-tx-id {
-            color: #75839B;
-            font-size: 11px;
-            font-weight: 700;
+            color: var(--text-grey);
+            font-size: 10px;
+            font-weight: 600;
             margin-top: 4px;
             white-space: nowrap;
             overflow: hidden;
@@ -1587,9 +2018,9 @@
         }
 
         .batch-tx-amount {
-            color: #0F172A;
-            font-size: 17px;
-            font-weight: 900;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 700;
             text-align: right;
             white-space: nowrap;
         }
@@ -1598,8 +2029,8 @@
             padding: 18px 12px;
             text-align: center;
             color: #94A3B8;
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         @keyframes spin {
@@ -1871,6 +2302,97 @@
         .transactions-view .action-card {
             min-height: 122px;
             padding: 12px 8px;
+        }
+
+        #grid-card {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            align-content: start;
+        }
+
+        #grid-card > .action-card {
+            grid-column: span 2;
+            order: 4;
+        }
+
+        #grid-card > .action-card.priority-void {
+            order: 1;
+        }
+
+        #grid-card > .action-card.priority-refund {
+            order: 2;
+        }
+
+        #grid-card > .action-card.priority-auth {
+            order: 3;
+        }
+
+        .transaction-section-heading {
+            grid-column: 1 / -1;
+            min-height: 26px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.13em;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .transaction-section-heading::before,
+        .transaction-section-heading::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #D8E0EC;
+        }
+
+        .transaction-section-heading.management-heading {
+            margin-top: 4px;
+            color: #7A8496;
+            order: 5;
+        }
+
+        .transaction-section-heading.management-heading::after {
+            display: none;
+        }
+
+        #grid-card > .action-card.management-card {
+            grid-column: span 3;
+            order: 6;
+            min-height: 76px;
+            padding: 10px 12px;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 10px;
+            border-color: #D8E0EC;
+            background: #FFFFFF;
+            box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
+        }
+
+        #grid-card > .action-card.management-card .icon-box {
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            margin: 0;
+            border-radius: 12px;
+            color: #667085;
+            background: #F2F4F7;
+        }
+
+        #grid-card > .action-card.management-card .icon-box svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        #grid-card > .action-card.management-card .card-label {
+            min-height: 0;
+            max-width: none;
+            justify-content: flex-start;
+            color: #344054;
+            font-size: 12px;
+            text-align: left;
         }
 
         .keypad-overlay {
@@ -2166,7 +2688,7 @@
                     <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
                     <div class="card-label">Debit Sale</div>
                 </div>
-                <div class="action-card" onclick="doAction('Auth')">
+                <div class="action-card priority-auth" onclick="doAction('Auth')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
                                 d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
@@ -2188,19 +2710,19 @@
                         </svg></div>
                     <div class="card-label">Capture</div>
                 </div>
-                <div class="action-card" onclick="doAction('Void')">
+                <div class="action-card priority-void" onclick="doAction('Void')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
                                 d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
                         </svg></div>
                     <div class="card-label">Void</div>
                 </div>
-                <div class="action-card" onclick="doAction('Refund')">
+                <div class="action-card priority-refund" onclick="doAction('Refund')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
                                 d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
                         </svg></div>
-                    <div class="card-label">Credit Refund</div>
+                    <div class="card-label">Refund</div>
                 </div>
                     <div class="action-card" onclick="doAction('Refund')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
@@ -2216,7 +2738,8 @@
                         </svg></div>
                     <div class="card-label">Tip Adjust</div>
                 </div>
-                <div class="action-card" onclick="doAction('Close Batch')">
+                <div class="transaction-section-heading management-heading" aria-hidden="true"></div>
+                <div class="action-card management-card" onclick="doAction('Close Batch')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="5.2" r="1.7" fill="currentColor" stroke="none"></circle>
@@ -2227,23 +2750,23 @@
                         </svg></div>
                     <div class="card-label">Close Batch</div>
                 </div>
-                <div class="action-card" onclick="doAction('Batch Info')">
+                <div class="action-card management-card" onclick="doAction('Reports')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="4" y="3" width="16" height="18" rx="2.5" fill="var(--color-sale-bg)" stroke-width="1.5"></rect>
                             <path d="M8 8h8M8 12h8M8 16h4"></path>
                             <path d="M15.5 15.5 17 17l2.8-3.2"></path>
                         </svg></div>
-                    <div class="card-label">Batch Info</div>
+                    <div class="card-label">Reports</div>
                 </div>
-                <div class="action-card" onclick="doAction('Print')">
+                <div class="action-card management-card" onclick="doAction('Reprint')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
                                 d="M18 8V3H6v5H4c-1.1 0-2 .9-2 2v5h4v4h12v-4h4v-5c0-1.1-.9-2-2-2h-2zm-10-3h8v3H8V5zm8 12H8v-5h8v5zm2-4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                         </svg></div>
-                    <div class="card-label">Print</div>
+                    <div class="card-label">Reprint</div>
                 </div>
-                <div class="action-card" onclick="doAction('Transaction')">
+                <div class="action-card management-card" onclick="doAction('Transaction')">
                     <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                             <path
                                 d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
@@ -2346,26 +2869,51 @@
                             <path d="M15 18l-6-6 6-6" />
                         </svg>
                     </button>
-                    <div class="print-submenu-title">Print</div>
+                    <div class="print-submenu-title">Reprint</div>
                     <div style="width:28px;height:28px;"></div>
                 </div>
                 <div class="print-submenu-grid">
-                    <div class="action-card" onclick="doAction('Print Last')">
+                    <div class="action-card" onclick="doAction('Reprint Last')">
                         <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                                 <path
                                     d="M18 8V3H6v5H4c-1.1 0-2 .9-2 2v5h4v4h12v-4h4v-5c0-1.1-.9-2-2-2h-2zm-10-3h8v3H8V5zm8 12H8v-5h8v5zm2-4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                             </svg></div>
-                        <div class="card-label">Print Last</div>
+                        <div class="card-label">Reprint Last</div>
                     </div>
-                    <div class="action-card" onclick="doAction('Print By Invoice')">
+                    <div class="action-card" onclick="openInvoiceReprint(event)">
                         <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                                 <path
                                     d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5V5h14v6h2V5c0-1.1-.9-2-2-2z" />
                                 <path d="M7 8h10v2H7zm0 4h6v2H7z" />
                                 <path d="M17 12v2h-2v2h2v2h2v-2h2v-2h-2v-2z" />
                             </svg></div>
-                        <div class="card-label">Print By Invoice</div>
+                        <div class="card-label">Reprint By Invoice</div>
                     </div>
+                </div>
+                <div class="invoice-reprint-view" id="invoice-reprint-view" aria-hidden="true">
+                    <div class="print-submenu-header">
+                        <button class="settings-back-btn" type="button" onclick="closeInvoiceReprint(event)"
+                            aria-label="Back to Reprint">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <div class="print-submenu-title">Reprint By Invoice</div>
+                        <div style="width:28px;height:28px;"></div>
+                    </div>
+                    <div class="invoice-entry-stage">
+                        <label class="invoice-entry-label" for="invoice-entry-input">Invoice Number</label>
+                        <input class="invoice-entry-input" id="invoice-entry-input" type="text" inputmode="text"
+                            autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32"
+                            oninput="handleInvoiceInput(event)" onkeydown="handleInvoiceKeydown(event)">
+                        <div class="invoice-entry-error" id="invoice-entry-error" aria-live="polite"></div>
+                        <button class="invoice-reprint-submit" type="button" onclick="submitInvoiceReprint(event)">
+                            <span class="material-symbols-rounded">print</span>
+                            Reprint Receipt
+                        </button>
+                    </div>
+                    <div class="invoice-divider" aria-hidden="true"></div>
+                    <div class="invoice-keyboard-reserve" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
@@ -2569,7 +3117,7 @@
                             <path d="M15 18l-6-6 6-6"></path>
                         </svg>
                     </button>
-                    <div class="batch-header-title" id="batch-header-title">Batch Info</div>
+                    <div class="batch-header-title" id="batch-header-title">Batch Reports</div>
                     <div style="width:32px;height:32px;"></div>
                 </div>
 
@@ -2583,7 +3131,7 @@
                                 </svg>
                             </span>
                             <span>
-                                <span class="batch-option-title">Current Batch Info</span>
+                                <span class="batch-option-title">Current Batch Reports</span>
                                 <span class="batch-option-meta">OPEN BATCH</span>
                             </span>
                             <span class="batch-option-arrow" aria-hidden="true">></span>
@@ -2598,7 +3146,7 @@
                                 </svg>
                             </span>
                             <span>
-                                <span class="batch-option-title">Last Batch Info</span>
+                                <span class="batch-option-title">Last Batch Reports</span>
                                 <span class="batch-option-meta">CLOSED BATCH</span>
                             </span>
                             <span class="batch-option-arrow" aria-hidden="true">></span>
@@ -2609,23 +3157,45 @@
                 <div class="batch-detail hidden" id="batch-detail">
                     <div class="batch-state" id="batch-loading-state">
                         <div class="batch-spinner" aria-hidden="true"></div>
-                        <div>Loading batch information...</div>
+                        <div>Loading batch reports...</div>
                     </div>
 
                     <div class="batch-state batch-error hidden" id="batch-error-state">
-                        <div id="batch-error-text">Unable to load batch information.</div>
+                        <div id="batch-error-text">Unable to load batch reports.</div>
                         <button class="batch-retry-btn" type="button" onclick="retryBatchInfo(event)">Retry</button>
                     </div>
 
                     <div class="batch-detail-content hidden" id="batch-detail-content">
                         <div class="batch-summary-card">
                             <div class="batch-summary-top">
-                                <div>
-                                    <div class="batch-summary-title">BATCH <span id="batch-id">-</span></div>
-                                </div>
+                                <div class="batch-summary-title">BATCH <span id="batch-id">-</span></div>
                                 <span class="batch-status-pill" id="batch-settle-status">-</span>
                             </div>
+                            <div class="batch-identity-meta">
+                                <span class="batch-identity-meta-item">MID <strong id="batch-mid">-</strong></span>
+                                <span class="batch-identity-separator" aria-hidden="true">•</span>
+                                <span class="batch-identity-meta-item">TID <strong id="batch-tid">-</strong></span>
+                            </div>
+                            <div class="batch-reconciliation-grid">
+                                <div class="batch-reconciliation-item">
+                                    <span class="batch-reconciliation-label">Card Net</span>
+                                    <span class="batch-reconciliation-value" id="batch-card-net">$0.00</span>
+                                </div>
+                                <div class="batch-reconciliation-item">
+                                    <span class="batch-reconciliation-label">Cash Net</span>
+                                    <span class="batch-reconciliation-value" id="batch-cash-net">$0.00</span>
+                                </div>
+                                <div class="batch-reconciliation-item total">
+                                    <span class="batch-reconciliation-label">Total Receipts</span>
+                                    <span class="batch-reconciliation-value" id="batch-total-receipts">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="batch-overview-card">
+                            <div class="batch-report-heading batch-report-heading-split">
+                                <span>Card Batch Summary</span>
+                            </div>
                             <div class="batch-summary-stats">
                                 <div class="batch-summary-stat">
                                     <div class="batch-summary-stat-head">
@@ -2642,29 +3212,45 @@
                                     <div class="batch-summary-stat-value" id="batch-summary-credit-amount">0</div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="batch-summary-meta">
-                                <div class="batch-field-row">
-                                    <span class="batch-field-key">Merchant ID</span>
-                                    <span class="batch-field-value" id="batch-mid">-</span>
+                        <div class="batch-payment-section">
+                            <div class="batch-report-heading">Card Brand Summary</div>
+                            <div class="batch-payment-list" id="batch-payment-summary-list"></div>
+                        </div>
+
+                        <div class="batch-cash-section">
+                            <div class="batch-report-heading">Cash Summary</div>
+                            <div class="batch-cash-list">
+                                <div class="batch-cash-row">
+                                    <span class="batch-cash-label">SALE</span>
+                                    <span class="batch-cash-count" id="batch-cash-sale-count">0</span>
+                                    <span class="batch-cash-amount" id="batch-cash-sale-amount">$0.00</span>
                                 </div>
-                                <div class="batch-field-row">
-                                    <span class="batch-field-key">Terminal ID</span>
-                                    <span class="batch-field-value" id="batch-tid">-</span>
+                                <div class="batch-cash-row">
+                                    <span class="batch-cash-label">REFUND</span>
+                                    <span class="batch-cash-count" id="batch-cash-refund-count">0</span>
+                                    <span class="batch-cash-amount" id="batch-cash-refund-amount">$0.00</span>
                                 </div>
-                                <div class="batch-field-row">
-                                    <span class="batch-field-key">Currency</span>
-                                    <span class="batch-field-value" id="batch-currency-code">-</span>
+                                <div class="batch-cash-row net">
+                                    <span class="batch-cash-label">NET CASH</span>
+                                    <span class="batch-cash-count" id="batch-cash-net-count">0</span>
+                                    <span class="batch-cash-amount" id="batch-cash-summary-net">$0.00</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="batch-section">
-                            <div class="batch-section-title batch-section-title-row">
-                                <span>TRANSACTION LIST</span>
-                                <span class="batch-section-count" id="batch-transaction-count">0 items</span>
-                            </div>
-                            <div class="batch-tx-list" id="batch-transaction-list"></div>
+                        <div class="batch-transaction-section">
+                            <button class="batch-transactions-toggle" id="batch-transactions-toggle" type="button"
+                                aria-expanded="false" onclick="toggleBatchTransactions(event)">
+                                <span class="batch-transactions-label">Transaction Details</span>
+                                <span class="batch-transactions-meta">
+                                    <span id="batch-transaction-count">0 items</span>
+                                    <span class="material-symbols-rounded batch-transactions-chevron"
+                                        aria-hidden="true">expand_more</span>
+                                </span>
+                            </button>
+                            <div class="batch-tx-list" id="batch-transaction-list" hidden></div>
                         </div>
                     </div>
                 </div>
@@ -2718,6 +3304,7 @@
         let activeTab = 0;
         let entryThemeIndex = 0;
         let amountInputHasStarted = false;
+        let invoiceNumber = '';
         const transactionStorageKeys = [
             'cashAmountCents',
             'amountCents',
@@ -2758,6 +3345,9 @@
         const settingsExitPasswordInput = document.getElementById('settings-exit-password');
         const settingsExitPasswordError = document.getElementById('settings-exit-password-error');
         const printSubmenuSheet = document.getElementById('print-submenu-sheet');
+        const invoiceReprintView = document.getElementById('invoice-reprint-view');
+        const invoiceEntryInput = document.getElementById('invoice-entry-input');
+        const invoiceEntryError = document.getElementById('invoice-entry-error');
         const cashDiscountPage = document.getElementById('cash-discount-page');
         const cashDiscountToggle = document.getElementById('cash-discount-toggle');
         const cashDiscountRateGroup = document.getElementById('cash-discount-rate-group');
@@ -2828,9 +3418,10 @@
         const batchErrorText = document.getElementById('batch-error-text');
         const batchDetailContent = document.getElementById('batch-detail-content');
         const batchTransactionList = document.getElementById('batch-transaction-list');
+        const batchPaymentSummaryList = document.getElementById('batch-payment-summary-list');
+        const batchTransactionsToggle = document.getElementById('batch-transactions-toggle');
         const batchFields = {
             transactionCount: document.getElementById('batch-transaction-count'),
-            currencyCode: document.getElementById('batch-currency-code'),
             mid: document.getElementById('batch-mid'),
             tid: document.getElementById('batch-tid'),
             batchId: document.getElementById('batch-id'),
@@ -2838,7 +3429,16 @@
             summaryDebitCount: document.getElementById('batch-summary-debit-count'),
             summaryDebitAmount: document.getElementById('batch-summary-debit-amount'),
             summaryCreditCount: document.getElementById('batch-summary-credit-count'),
-            summaryCreditAmount: document.getElementById('batch-summary-credit-amount')
+            summaryCreditAmount: document.getElementById('batch-summary-credit-amount'),
+            cardNet: document.getElementById('batch-card-net'),
+            cashNet: document.getElementById('batch-cash-net'),
+            totalReceipts: document.getElementById('batch-total-receipts'),
+            cashSaleCount: document.getElementById('batch-cash-sale-count'),
+            cashSaleAmount: document.getElementById('batch-cash-sale-amount'),
+            cashRefundCount: document.getElementById('batch-cash-refund-count'),
+            cashRefundAmount: document.getElementById('batch-cash-refund-amount'),
+            cashNetCount: document.getElementById('batch-cash-net-count'),
+            cashSummaryNet: document.getElementById('batch-cash-summary-net')
         };
         const batchCurrencyMap = {
             '036': { code: 'AUD', symbol: '$', digits: 2 },
@@ -2870,7 +3470,8 @@
                     { amount: 4895, transId: '251209142807', batchId: '000042', tranTime: '2026-06-25 11:24:39', transType: 'SALE', cardType: 'VISA' },
                     { amount: 3200, transId: '251209143122', batchId: '000042', tranTime: '2026-06-25 11:31:22', transType: 'SALE', cardType: 'MASTERCARD' },
                     { amount: 1250, transId: '251209144018', batchId: '000042', tranTime: '2026-06-25 11:40:18', transType: 'REFUND', cardType: 'VISA' },
-                    { amount: 4800, transId: '251209150208', batchId: '000042', tranTime: '2026-06-25 12:02:08', transType: 'SALE', cardType: 'AMEX' }
+                    { amount: 4800, transId: '251209150208', batchId: '000042', tranTime: '2026-06-25 12:02:08', transType: 'SALE', cardType: 'AMEX' },
+                    { amount: 2500, transId: 'C000042', batchId: '000042', tranTime: '2026-06-25 12:18:44', transType: 'CASH SALE', cardType: 'CASH' }
                 ]
             },
             last: {
@@ -2890,7 +3491,8 @@
                 settlementList: [
                     { amount: 10000, transId: '251208174516', batchId: '000041', tranTime: '2026-06-24 17:45:16', transType: 'SALE', cardType: 'VISA' },
                     { amount: 11565, transId: '251208181204', batchId: '000041', tranTime: '2026-06-24 18:12:04', transType: 'SALE', cardType: 'MASTERCARD' },
-                    { amount: 2300, transId: '251208191533', batchId: '000041', tranTime: '2026-06-24 19:15:33', transType: 'REFUND', cardType: 'VISA' }
+                    { amount: 2300, transId: '251208191533', batchId: '000041', tranTime: '2026-06-24 19:15:33', transType: 'REFUND', cardType: 'VISA' },
+                    { amount: 4500, transId: 'C000041', batchId: '000041', tranTime: '2026-06-24 19:32:10', transType: 'CASH SALE', cardType: 'CASH' }
                 ]
             }
         };
@@ -2899,6 +3501,7 @@
         let cashDiscountPercentText = '';
         let activeBatchKind = null;
         let batchRequestToken = 0;
+        let batchTransactionsExpanded = false;
 
         function updateStatusTime() {
             if (!statusTime) return;
@@ -3199,7 +3802,8 @@
         function showBatchHome() {
             activeBatchKind = null;
             batchRequestToken += 1;
-            if (batchHeaderTitle) batchHeaderTitle.textContent = 'Batch Info';
+            setBatchTransactionsExpanded(false);
+            if (batchHeaderTitle) batchHeaderTitle.textContent = 'Batch Reports';
             if (batchHome) batchHome.classList.remove('hidden');
             if (batchDetail) batchDetail.classList.add('hidden');
         }
@@ -3241,12 +3845,30 @@
             openBatchDetail(activeBatchKind);
         }
 
+        function setBatchTransactionsExpanded(expanded) {
+            batchTransactionsExpanded = Boolean(expanded);
+            if (batchTransactionsToggle) {
+                batchTransactionsToggle.setAttribute('aria-expanded', String(batchTransactionsExpanded));
+            }
+            if (batchTransactionList) {
+                batchTransactionList.hidden = !batchTransactionsExpanded;
+            }
+        }
+
+        function toggleBatchTransactions(event) {
+            if (event) event.stopPropagation();
+            setBatchTransactionsExpanded(!batchTransactionsExpanded);
+        }
+
         async function openBatchDetail(kind) {
             activeBatchKind = kind === 'last' ? 'last' : 'current';
             const requestToken = ++batchRequestToken;
+            setBatchTransactionsExpanded(false);
 
             if (batchHeaderTitle) {
-                batchHeaderTitle.textContent = activeBatchKind === 'last' ? 'Last Batch Info' : 'Current Batch Info';
+                batchHeaderTitle.textContent = activeBatchKind === 'last'
+                    ? 'Last Batch Reports'
+                    : 'Current Batch Reports';
             }
             if (batchHome) batchHome.classList.add('hidden');
             if (batchDetail) batchDetail.classList.remove('hidden');
@@ -3259,7 +3881,7 @@
                 setBatchDetailState('ready');
             } catch (error) {
                 if (requestToken !== batchRequestToken) return;
-                const message = error && error.message ? error.message : 'Unable to load batch information.';
+                const message = error && error.message ? error.message : 'Unable to load batch reports.';
                 setBatchDetailState('error', message);
             }
         }
@@ -3454,15 +4076,225 @@
             return `Count ${toBatchNumber(count)}`;
         }
 
-        function formatCurrencyDisplay(currencyCode) {
-            if (!currencyCode) return '';
-            const code = String(currencyCode).padStart(3, '0');
-            const currencyInfo = getBatchCurrencyInfo(code);
-            return currencyInfo.code && currencyInfo.code !== code ? `${currencyInfo.code} (${code})` : code;
-        }
-
         function formatBatchSummaryAmount(amount, currencyCode) {
             return formatBatchAmount(amount, currencyCode);
+        }
+
+        function normalizeBatchPaymentType(transaction) {
+            const rawCardType = transaction && transaction.cardType
+                ? String(transaction.cardType).trim().toUpperCase()
+                : '';
+            const rawTransType = transaction && transaction.transType
+                ? String(transaction.transType).trim().toUpperCase()
+                : '';
+            const compactType = rawCardType.replace(/[^A-Z0-9]/g, '');
+
+            if (rawCardType.includes('CASH') || rawTransType.includes('CASH')) return 'CASH';
+            if (compactType === 'MC' || compactType === 'MASTER' || compactType === 'MASTERCARD') return 'MASTERCARD';
+            if (compactType === 'AMEX' || compactType === 'AMERICANEXPRESS') return 'AMEX';
+            if (compactType === 'VISA') return 'VISA';
+            if (compactType === 'DISCOVER') return 'DISCOVER';
+            if (compactType === 'JCB') return 'JCB';
+            if (compactType === 'UNIONPAY' || compactType === 'CUP') return 'UNIONPAY';
+            return rawCardType || 'OTHER';
+        }
+
+        function getBatchTransactionKind(transaction) {
+            const rawType = transaction && transaction.transType
+                ? String(transaction.transType).trim().toUpperCase()
+                : '';
+            const isRefund = rawType.includes('REFUND');
+            const isVoid = rawType.includes('VOID');
+            const isCompletion = rawType.includes('CAPTURE')
+                || rawType.includes('COMPLETION')
+                || rawType.includes('COMPLETE');
+            const isIncremental = rawType.includes('INCREMENT');
+            const isAuthOnly = rawType.includes('AUTH') && !isCompletion && !isIncremental;
+            const isDebit = rawType.includes('DEBIT');
+
+            if (isRefund) return { key: isDebit ? 'DEBIT REFUND' : 'REFUND', settlement: 'negative' };
+            if (isVoid) return { key: 'VOID', settlement: 'excluded' };
+            if (isCompletion) return { key: 'PRE-AUTH COMPLETION', settlement: 'positive' };
+            if (isIncremental) return { key: 'AUTH-INCREMENTAL', settlement: 'excluded' };
+            if (isAuthOnly) return { key: 'AUTH ONLY', settlement: 'excluded' };
+            if (isDebit) return { key: 'DEBIT SALE', settlement: 'positive' };
+            return { key: 'SALE', settlement: 'positive' };
+        }
+
+        function getBatchSettlementAmount(transaction) {
+            const amount = Math.abs(toBatchNumber(transaction && transaction.amount));
+            const kind = getBatchTransactionKind(transaction);
+            if (kind.settlement === 'negative') return -amount;
+            if (kind.settlement === 'excluded') return 0;
+            return amount;
+        }
+
+        function summarizeBatchCardBrands(transactions) {
+            const totals = new Map();
+
+            transactions.forEach((transaction) => {
+                const paymentType = normalizeBatchPaymentType(transaction);
+                if (paymentType === 'CASH') return;
+
+                const kind = getBatchTransactionKind(transaction);
+                const current = totals.get(paymentType) || {
+                    type: paymentType,
+                    count: 0,
+                    amount: 0,
+                    details: new Map()
+                };
+                const detail = current.details.get(kind.key) || {
+                    type: kind.key,
+                    count: 0,
+                    amount: 0,
+                    settlement: kind.settlement
+                };
+
+                current.count += 1;
+                current.amount += getBatchSettlementAmount(transaction);
+                detail.count += 1;
+                detail.amount += kind.settlement === 'excluded'
+                    ? Math.abs(toBatchNumber(transaction && transaction.amount))
+                    : getBatchSettlementAmount(transaction);
+                current.details.set(kind.key, detail);
+                totals.set(paymentType, current);
+            });
+
+            const preferredOrder = ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'JCB', 'UNIONPAY', 'OTHER'];
+            return Array.from(totals.values())
+                .map((total) => ({ ...total, details: Array.from(total.details.values()) }))
+                .sort((left, right) => {
+                    const leftIndex = preferredOrder.indexOf(left.type);
+                    const rightIndex = preferredOrder.indexOf(right.type);
+                    const normalizedLeft = leftIndex === -1 ? preferredOrder.length : leftIndex;
+                    const normalizedRight = rightIndex === -1 ? preferredOrder.length : rightIndex;
+                    return normalizedLeft - normalizedRight || left.type.localeCompare(right.type);
+                });
+        }
+
+        function summarizeBatchCash(transactions) {
+            const cashTransactions = transactions.filter((transaction) => normalizeBatchPaymentType(transaction) === 'CASH');
+            const saleTransactions = cashTransactions.filter((transaction) => !getBatchTransactionKind(transaction).key.includes('REFUND'));
+            const refundTransactions = cashTransactions.filter((transaction) => getBatchTransactionKind(transaction).key.includes('REFUND'));
+            const saleAmount = saleTransactions.reduce(
+                (total, transaction) => total + Math.abs(toBatchNumber(transaction && transaction.amount)),
+                0
+            );
+            const refundAmount = refundTransactions.reduce(
+                (total, transaction) => total + Math.abs(toBatchNumber(transaction && transaction.amount)),
+                0
+            );
+
+            return {
+                saleCount: saleTransactions.length,
+                saleAmount,
+                refundCount: refundTransactions.length,
+                refundAmount,
+                count: cashTransactions.length,
+                netAmount: saleAmount - refundAmount
+            };
+        }
+
+        function renderBatchReconciliation(transactions, currencyCode) {
+            const cashSummary = summarizeBatchCash(transactions);
+            const cardNet = transactions.reduce((total, transaction) => {
+                if (normalizeBatchPaymentType(transaction) === 'CASH') return total;
+                return total + getBatchSettlementAmount(transaction);
+            }, 0);
+            const totalReceipts = cardNet + cashSummary.netAmount;
+
+            setElementText(batchFields.cardNet, formatBatchAmount(cardNet, currencyCode));
+            setElementText(batchFields.cashNet, formatBatchAmount(cashSummary.netAmount, currencyCode));
+            setElementText(batchFields.totalReceipts, formatBatchAmount(totalReceipts, currencyCode));
+            setElementText(batchFields.cashSaleCount, String(cashSummary.saleCount));
+            setElementText(batchFields.cashSaleAmount, formatBatchAmount(cashSummary.saleAmount, currencyCode));
+            setElementText(batchFields.cashRefundCount, String(cashSummary.refundCount));
+            setElementText(batchFields.cashRefundAmount, formatBatchAmount(cashSummary.refundAmount, currencyCode));
+            setElementText(batchFields.cashNetCount, String(cashSummary.count));
+            setElementText(batchFields.cashSummaryNet, formatBatchAmount(cashSummary.netAmount, currencyCode));
+        }
+
+        function renderBatchPaymentSummary(transactions, currencyCode) {
+            if (!batchPaymentSummaryList) return;
+            batchPaymentSummaryList.innerHTML = '';
+
+            const paymentTotals = summarizeBatchCardBrands(transactions);
+            if (!paymentTotals.length) {
+                const empty = document.createElement('div');
+                empty.className = 'batch-payment-empty';
+                empty.textContent = 'No card transactions.';
+                batchPaymentSummaryList.appendChild(empty);
+                return;
+            }
+
+            paymentTotals.forEach((total) => {
+                const group = document.createElement('div');
+                group.className = 'batch-payment-group';
+
+                const row = document.createElement('button');
+                row.className = 'batch-payment-row';
+                row.type = 'button';
+
+                const brand = document.createElement('div');
+                brand.className = 'batch-payment-brand';
+                brand.textContent = total.type;
+
+                const count = document.createElement('div');
+                count.className = 'batch-payment-count';
+                count.textContent = String(total.count);
+
+                const amount = document.createElement('div');
+                amount.className = 'batch-payment-amount';
+                amount.textContent = formatBatchAmount(total.amount, currencyCode);
+
+                const chevron = document.createElement('span');
+                chevron.className = 'material-symbols-rounded batch-payment-chevron';
+                chevron.setAttribute('aria-hidden', 'true');
+                chevron.textContent = 'chevron_right';
+
+                const breakdown = document.createElement('div');
+                breakdown.className = 'batch-payment-breakdown';
+                breakdown.hidden = true;
+
+                total.details.forEach((detail) => {
+                    const detailRow = document.createElement('div');
+                    detailRow.className = 'batch-payment-detail-row';
+
+                    const title = document.createElement('div');
+                    title.className = 'batch-payment-detail-title';
+                    title.textContent = detail.type;
+
+                    const detailCount = document.createElement('div');
+                    detailCount.className = 'batch-payment-detail-count';
+                    detailCount.textContent = String(detail.count);
+
+                    const detailAmount = document.createElement('div');
+                    detailAmount.className = 'batch-payment-detail-amount';
+                    detailAmount.textContent = formatBatchAmount(detail.amount, currencyCode);
+
+                    detailRow.append(title, detailCount, detailAmount);
+                    if (detail.settlement === 'excluded') {
+                        const note = document.createElement('div');
+                        note.className = 'batch-payment-detail-note';
+                        note.textContent = 'Not included in settlement';
+                        detailRow.appendChild(note);
+                    }
+                    breakdown.appendChild(detailRow);
+                });
+
+                const startsExpanded = total.type === 'AMEX';
+                row.setAttribute('aria-expanded', String(startsExpanded));
+                breakdown.hidden = !startsExpanded;
+                row.addEventListener('click', () => {
+                    const expanded = row.getAttribute('aria-expanded') === 'true';
+                    row.setAttribute('aria-expanded', String(!expanded));
+                    breakdown.hidden = expanded;
+                });
+
+                row.append(brand, count, amount, chevron);
+                group.append(row, breakdown);
+                batchPaymentSummaryList.appendChild(group);
+            });
         }
 
         function renderBatchInfo(payload, kind) {
@@ -3473,7 +4305,6 @@
             const isClosed = settleStatus.toUpperCase() === 'CLOSED';
 
             setElementText(batchFields.transactionCount, formatBatchCount(transactionCount, 'item', 'items'));
-            setElementText(batchFields.currencyCode, formatCurrencyDisplay(summary.currencyCode));
             setElementText(batchFields.mid, summary.mid);
             setElementText(batchFields.tid, summary.tid);
             setElementText(batchFields.batchId, formatBatchId(summary.batchId));
@@ -3484,7 +4315,10 @@
             setElementText(batchFields.summaryCreditCount, formatBatchCountValue(summary.creditTotalCount));
             setElementText(batchFields.summaryCreditAmount, formatBatchSummaryAmount(summary.creditTotalAmount, summary.currencyCode));
 
+            renderBatchPaymentSummary(data.settlementList, summary.currencyCode);
+            renderBatchReconciliation(data.settlementList, summary.currencyCode);
             renderBatchTransactions(data.settlementList, summary.currencyCode);
+            setBatchTransactionsExpanded(false);
         }
 
         function renderBatchTransactions(transactions, currencyCode) {
@@ -3843,6 +4677,7 @@
 
         function openPrintMenu() {
             if (!printSubmenuSheet) return;
+            closeInvoiceReprint(null);
             printSubmenuSheet.classList.add('open');
         }
 
@@ -3850,7 +4685,125 @@
             if (e) e.stopPropagation();
             if (!printSubmenuSheet) return;
             if (!forceClose && !printSubmenuSheet.classList.contains('open')) return;
+            closeInvoiceReprint(null);
             printSubmenuSheet.classList.remove('open');
+        }
+
+        function updateInvoiceReprintUI() {
+            if (invoiceEntryInput && invoiceEntryInput.value !== invoiceNumber) {
+                invoiceEntryInput.value = invoiceNumber;
+            }
+            if (invoiceEntryError) invoiceEntryError.textContent = '';
+        }
+
+        function openInvoiceReprint(e) {
+            if (e) e.stopPropagation();
+            invoiceNumber = '';
+            updateInvoiceReprintUI();
+            if (!invoiceReprintView) return;
+            invoiceReprintView.classList.add('open');
+            invoiceReprintView.setAttribute('aria-hidden', 'false');
+            window.setTimeout(() => {
+                if (invoiceEntryInput && invoiceReprintView.classList.contains('open')) {
+                    invoiceEntryInput.focus();
+                }
+            }, 120);
+        }
+
+        function closeInvoiceReprint(e) {
+            if (e) e.stopPropagation();
+            if (invoiceEntryInput) invoiceEntryInput.blur();
+            if (invoiceReprintView) {
+                invoiceReprintView.classList.remove('open');
+                invoiceReprintView.setAttribute('aria-hidden', 'true');
+            }
+            invoiceNumber = '';
+            updateInvoiceReprintUI();
+        }
+
+        function handleInvoiceInput(e) {
+            const normalizedValue = String(e && e.target ? e.target.value : '')
+                .toUpperCase()
+                .replace(/[^C0-9]/g, '')
+                .replace(/(?!^)C/g, '')
+                .slice(0, 32);
+            invoiceNumber = normalizedValue;
+            if (invoiceEntryInput && invoiceEntryInput.value !== normalizedValue) {
+                invoiceEntryInput.value = normalizedValue;
+            }
+            if (invoiceEntryError) invoiceEntryError.textContent = '';
+        }
+
+        function handleInvoiceKeydown(e) {
+            if (e && e.key === 'Enter') {
+                submitInvoiceReprint(e);
+            }
+        }
+
+        async function submitInvoiceReprint(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            const invoiceFormatIsValid = /^(?:\d+|C\d+)$/.test(invoiceNumber);
+            if (!invoiceFormatIsValid) {
+                if (invoiceEntryError) {
+                    invoiceEntryError.textContent = 'Enter a numeric invoice or cash invoice such as C000001.';
+                }
+                if (invoiceEntryInput) invoiceEntryInput.focus();
+                return;
+            }
+
+            const invoiceToPrint = invoiceNumber;
+            const methodNames = ['reprintByInvoice', 'printReceiptByInvoice', 'reprintReceipt'];
+            const bridgeNames = [
+                'PaywizardTerminal',
+                'PayWizardTerminal',
+                'paywizardTerminal',
+                'TerminalBridge',
+                'NativeBridge',
+                'Android',
+                'android'
+            ];
+
+            try {
+                let handled = false;
+                for (const methodName of methodNames) {
+                    if (typeof window[methodName] === 'function') {
+                        await window[methodName](invoiceToPrint);
+                        handled = true;
+                        break;
+                    }
+                }
+
+                if (!handled) {
+                    for (const bridgeName of bridgeNames) {
+                        const bridge = window[bridgeName];
+                        if (!bridge) continue;
+                        for (const methodName of methodNames) {
+                            if (typeof bridge[methodName] === 'function') {
+                                await bridge[methodName](invoiceToPrint);
+                                handled = true;
+                                break;
+                            }
+                        }
+                        if (handled) break;
+                    }
+                }
+
+                if (!handled) {
+                    alert(`Printing receipt for invoice ${invoiceToPrint}`);
+                }
+                closePrintMenu(null, true);
+                resetHomeAfterCompletedTransaction();
+            } catch (error) {
+                if (invoiceEntryError) {
+                    invoiceEntryError.textContent = error && error.message
+                        ? error.message
+                        : 'Unable to print this receipt.';
+                }
+            }
         }
 
         function getActionLabel(actionName) {
@@ -3896,12 +4849,12 @@
             // Utility workflows never inherit the amount entered on the Sale home screen.
             resetTransactionAmount(null);
 
-            if (actionName === 'Batch Info') {
+            if (actionName === 'Reports') {
                 openBatchInfoPage();
                 return;
             }
 
-            if (actionName === 'Print') {
+            if (actionName === 'Reprint') {
                 openPrintMenu();
                 return;
             }
