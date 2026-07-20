@@ -1,40 +1,68 @@
-# Design QA — Batch Report Summary Refinement
+# Design QA — Settlement-Focused Batch Reports
 
-- Source visual truth: user-provided Batch Reports screenshot plus `design-qa-assets/batch-report-refinement-final.png`
-- Implementation screenshot: `design-qa-assets/batch-report-summary-refined.png`
-- Full-view comparison evidence: `design-qa-assets/batch-report-summary-refinement-comparison.png`
-- Focused comparison: not required; all changed summary rows and labels are legible in the full 375 × 812 comparison
-- Viewport: 375 × 812
-- State: Transactions → Reports → Current Batch Reports; AMEX expanded; Transaction Details collapsed
+- Source visual truth: the user’s four supplied references for Card Transaction Summary, Card Brand Summary, Transaction Details, and the desired three-column Transactions list
+- Implementation: `1.unified_pos.html`
+- Viewport: 375 × 812 device frame
+- States: current batch, previous batch, expanded Amex breakdown, and expanded transaction details
+- Full-view comparison evidence: both batch variants were rendered in the existing terminal frame and inspected against the supplied references
+- Focused comparison evidence: settlement grouping, card-brand logo slots, three-column detail header, card/cash marks, negative values, masked card details, and compact receipt references
 
 ## Findings
 
 No actionable P0, P1, or P2 issues remain.
 
-- Fonts and typography: the merged totals retain the existing batch-card type scale. `CARD BATCH SUMMARY`, `CARD BRAND SUMMARY`, and `CASH SUMMARY` now use the same heading treatment. Cash transaction types use the same uppercase hierarchy as card-brand details.
-- Spacing and layout rhythm: Card Net, Cash Net, and Total Receipts are integrated into the batch identity card as a bottom statistics band. The separate card summary is shorter, preserving the existing one-screen density.
-- Colors and visual tokens: Cash Summary now uses the same neutral heading, white rows, slate text, and light neutral total row as Card Brand Summary. The prior green-only heading and total treatment are removed.
-- Image quality and asset fidelity: this report region contains no decorative imagery or card-brand logo assets; the implementation continues to use text labels as required.
-- Copy and content: `CARD BATCH SUMMARY` replaces `BATCH SUMMARY`. Cash rows use `SALE`, `REFUND`, and `NET CASH`; cash counts are bare numerals without the `Count` word.
-- Interaction and responsiveness: card-brand and Transaction Details disclosures remain functional. Current and last batch reports were verified at 375 × 812 with no horizontal clipping or hidden primary controls.
+- Information architecture: batch reporting is settlement-focused. `AUTH`, `AUTH-INCREMENTAL`, and `VOID` are omitted from the summary, brand breakdown, and transaction details.
+- Tip accounting: standalone `TIP` rows are omitted. Tip value is folded into `SALE` amounts without adding another transaction to sale or card-brand counts.
+- Reconciliation: `CARD NET` is calculated from sale (including tip), refund, and capture activity and matches the top batch total.
+- Transaction semantics: completion activity is displayed as `CAPTURE`; normal card and cash purchases are displayed as `Sale`, and refunds as `Refund`.
+- Negative transactions: refund values use the existing muted refund red (`#A94750`) and always include a minus sign in summary, card-brand breakdown, cash summary, and transaction details.
+- Card brands: real project assets render inside identical bordered logo tiles, with restrained optical sizing that preserves each mark’s aspect ratio.
+- Transaction details: the expanded view uses `Date & Time / Total / Card details` columns. Each row exposes a compact date, emphasized time, receipt reference, amount, payment mark, transaction type, and masked card details.
+- Data compatibility: terminal-provided `receiptNo`/`localReceiptNo` and card last-four fields are used when present, with deterministic demo fallbacks.
+- Current/previous parity: both report variants render through the same grouping, ordering, amount-sign, brand, and detail-row rules.
 
 ## Primary Interactions Tested
 
-- Opened Current Batch Reports and Last Batch Reports.
-- Expanded VISA and verified `SALE` and `REFUND` detail rows.
-- Expanded Transaction Details and verified the existing transaction list.
-- Checked browser console warnings and errors: none.
+- Opened Transactions → Reports → Current Batch Reports.
+- Verified `SALE`, `REFUND`, `CAPTURE`, and the single settlement activity group.
+- Confirmed current Card Net matches the top Card Net value.
+- Confirmed TIP value is included in SALE while TIP does not add to transaction counts.
+- Confirmed the Card Brand Summary keeps all count and amount columns aligned while logos occupy identical visible tiles.
+- Expanded Transaction Details and verified the three-column header plus date, time, receipt reference, sale, cash sale, refund, and capture rows.
+- Confirmed `TIP`, `AUTH`, and `VOID` are absent from current and previous report detail views.
+- Opened Last Batch Reports and confirmed the same labels and expanded-detail structure.
+- Parsed the inline script successfully and ran `git diff --check`.
 
 ## Comparison History
 
 ### Pass 1
 
-- Finding: no actionable P0/P1/P2 mismatch was found after implementation.
-- Result: the total-receipts band reads as part of the batch identity, while card and cash summaries now share a consistent table language.
+- Finding: the included/excluded model exposed non-settlement actions and made the report harder to reconcile.
+- Severity: P2.
+- Fix: removed the excluded group, replaced the remaining label with `Settlement Activity`, and filtered authorization and void activity from report presentation.
 
-## Residual Differences
+### Pass 2
 
-- Debit/Credit counts retain the `Count` prefix because the requested count cleanup was scoped to Card Brand Summary and Cash Summary.
-- Dynamic current/last batch values continue to derive from their existing demo payloads.
+- Finding: raw card-brand assets had inconsistent perceived sizes.
+- Severity: P2.
+- Fix: introduced identical bordered logo tiles with controlled optical sizes for Visa, Mastercard, Amex, Discover, JCB, and UnionPay.
+
+### Pass 3
+
+- Finding: the original transaction detail rows required reading stacked title, ID, timestamp, and amount instead of supporting column scanning.
+- Severity: P2.
+- Fix: rebuilt expanded details as a compact `Date / Total / Card details` table based on the selected reference.
+
+### Pass 4
+
+- Finding: separate TIP rows overstated activity counts and duplicated information already represented by the sale.
+- Severity: P1.
+- Fix: merged tip value into sale amounts while preserving the underlying sale count, and removed TIP from brand and transaction-detail presentation.
+
+### Pass 5
+
+- Finding: the first transaction-detail column showed only time, making transactions from different calendar days ambiguous.
+- Severity: P1.
+- Fix: changed the column to `Date & Time` and introduced a compact three-level stack: date, emphasized time, and receipt reference.
 
 final result: passed

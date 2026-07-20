@@ -43,6 +43,7 @@
             /* Fixed amount-entry theme (set by the selected transaction channel) */
             --entry-color: #0A5BFF;
             --entry-shadow: rgba(10, 91, 255, 0.22);
+            --entry-label-color: #667085;
         }
 
         * {
@@ -477,7 +478,7 @@
             padding-bottom: 12px;
         }
 
-        .invoice-reprint-view {
+        .receipt-reprint-view {
             position: absolute;
             inset: 0;
             z-index: 2;
@@ -491,13 +492,13 @@
             transition: opacity 0.22s ease, transform 0.22s ease;
         }
 
-        .invoice-reprint-view.open {
+        .receipt-reprint-view.open {
             opacity: 1;
             pointer-events: auto;
             transform: translateX(0);
         }
 
-        .invoice-entry-stage {
+        .receipt-entry-stage {
             flex: 0 0 286px;
             min-height: 286px;
             padding: 38px 0 18px;
@@ -508,7 +509,7 @@
             text-align: center;
         }
 
-        .invoice-entry-label {
+        .receipt-entry-label {
             color: var(--text-grey);
             font-size: 11px;
             font-weight: 600;
@@ -516,7 +517,7 @@
             text-transform: uppercase;
         }
 
-        .invoice-entry-input {
+        .receipt-entry-input {
             width: 100%;
             height: 58px;
             margin-top: 14px;
@@ -535,17 +536,17 @@
             transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
-        .invoice-entry-input:focus {
+        .receipt-entry-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(10, 91, 255, 0.10);
         }
 
-        .invoice-entry-input::placeholder {
+        .receipt-entry-input::placeholder {
             color: #A8B2C2;
             opacity: 1;
         }
 
-        .invoice-entry-error {
+        .receipt-entry-error {
             min-height: 18px;
             margin-top: 8px;
             color: #D92D20;
@@ -553,19 +554,19 @@
             font-weight: 600;
         }
 
-        .invoice-divider {
+        .receipt-divider {
             width: 100%;
             height: 1px;
             flex: 0 0 1px;
             background: #D8E0EC;
         }
 
-        .invoice-keyboard-reserve {
+        .receipt-keyboard-reserve {
             flex: 1;
             min-height: 0;
         }
 
-        .invoice-reprint-submit {
+        .receipt-reprint-submit {
             width: 100%;
             height: 52px;
             flex: 0 0 52px;
@@ -584,11 +585,11 @@
             box-shadow: 0 8px 20px rgba(10, 91, 255, 0.18);
         }
 
-        .invoice-reprint-submit:active {
+        .receipt-reprint-submit:active {
             transform: scale(0.98);
         }
 
-        .invoice-reprint-submit .material-symbols-rounded {
+        .receipt-reprint-submit .material-symbols-rounded {
             font-size: 20px;
         }
 
@@ -1035,6 +1036,11 @@
         .settings-icon svg.filled {
             fill: currentColor;
             stroke: none;
+        }
+
+        .settings-icon .material-symbols-rounded {
+            font-size: 15px;
+            font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 20;
         }
 
         .settings-toggle {
@@ -1609,62 +1615,100 @@
             white-space: nowrap;
         }
 
-        .batch-summary-stats {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .batch-transaction-summary {
             background: #FFFFFF;
         }
 
-        .batch-summary-stat {
+        .batch-summary-group-label {
+            min-height: 25px;
+            padding: 9px 13px 5px;
+            background: #FFFFFF;
+            color: #7D8798;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            line-height: 1.2;
+        }
+
+        .batch-summary-group-label.excluded {
+            padding-top: 10px;
+            border-top: 1px solid #E6EAF0;
+        }
+
+        .batch-summary-type-row,
+        .batch-summary-net-row {
+            min-height: 34px;
+            padding: 6px 13px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 44px minmax(82px, auto);
+            align-items: center;
+            gap: 9px;
+        }
+
+        .batch-summary-type-row + .batch-summary-type-row {
+            border-top: 1px solid #EDF2F7;
+        }
+
+        .batch-summary-type-label,
+        .batch-summary-net-label {
             min-width: 0;
-            min-height: 64px;
-            padding: 9px 14px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        .batch-summary-stat + .batch-summary-stat {
-            border-left: 1px solid #E6EAF0;
-        }
-
-        .batch-summary-stat-label {
-            color: var(--text-grey);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            color: #344054;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.035em;
+            line-height: 1.2;
             text-transform: uppercase;
         }
 
-        .batch-summary-stat-head {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 3px;
-        }
-
-        .batch-summary-stat-count {
-            color: #98A2B3;
-            font-size: 11px;
+        .batch-summary-type-count {
+            color: #667085;
+            font-size: 10px;
             font-weight: 600;
-            letter-spacing: 0;
-            text-transform: none;
+            text-align: center;
             white-space: nowrap;
         }
 
-        .batch-summary-stat-value {
-            color: var(--text-dark);
-            width: 100%;
-            margin-top: 6px;
-            font-size: clamp(19px, 5.6vw, 22px);
+        .batch-summary-type-amount,
+        .batch-summary-net-amount {
+            min-width: 0;
+            color: #101828;
+            font-size: 13px;
             font-weight: 800;
-            line-height: 1.08;
-            text-align: left;
+            line-height: 1.15;
+            text-align: right;
             overflow-wrap: anywhere;
-            word-break: normal;
-            white-space: normal;
+        }
+
+        .batch-summary-type-amount.negative,
+        .batch-payment-detail-amount.negative,
+        .batch-cash-amount.negative,
+        .batch-tx-amount.negative {
+            color: #A94750;
+        }
+
+        .batch-summary-net-row {
+            min-height: 39px;
+            border-top: 1px solid #D8E0EC;
+            background: #F5F7FB;
+        }
+
+        .batch-summary-net-label {
+            grid-column: 1 / 3;
+            color: #253B5C;
+            letter-spacing: 0.07em;
+        }
+
+        .batch-summary-net-amount {
+            color: #253B5C;
+            font-size: 15px;
+        }
+
+        .batch-summary-empty {
+            padding: 13px;
+            color: #98A2B3;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
         }
 
         .batch-reconciliation-grid {
@@ -1764,6 +1808,49 @@
             font-weight: 800;
             letter-spacing: 0.02em;
             text-transform: uppercase;
+        }
+
+        .batch-payment-brand-frame {
+            width: 52px;
+            height: 32px;
+            border: 1px solid #D8E0EC;
+            border-radius: 8px;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 52px;
+            overflow: hidden;
+        }
+
+        .batch-payment-brand-logo {
+            display: block;
+            width: 38px;
+            height: 20px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .batch-payment-brand-logo.brand-visa {
+            width: 38px;
+            height: 14px;
+        }
+
+        .batch-payment-brand-logo.brand-mastercard {
+            width: 34px;
+            height: 21px;
+        }
+
+        .batch-payment-brand-logo.brand-amex,
+        .batch-payment-brand-logo.brand-jcb,
+        .batch-payment-brand-logo.brand-unionpay {
+            width: 28px;
+            height: 22px;
+        }
+
+        .batch-payment-brand-logo.brand-discover {
+            width: 40px;
+            height: 14px;
         }
 
         .batch-payment-count {
@@ -1980,12 +2067,28 @@
             display: none;
         }
 
+        .batch-tx-table-header {
+            min-height: 30px;
+            padding: 7px 12px;
+            display: grid;
+            grid-template-columns: 72px 76px minmax(0, 1fr);
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #E6EAF0;
+            background: #F8FAFD;
+            color: #8792A6;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
         .batch-tx-row {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 12px;
+            grid-template-columns: 72px 76px minmax(0, 1fr);
+            gap: 8px;
             align-items: center;
-            padding: 12px;
+            min-height: 76px;
+            padding: 8px 12px;
             border-bottom: 1px solid #EDF2F7;
         }
 
@@ -1993,25 +2096,35 @@
             border-bottom: none;
         }
 
-        .batch-tx-main {
+        .batch-tx-date,
+        .batch-tx-payment-copy {
             min-width: 0;
         }
 
-        .batch-tx-title {
-            color: var(--text-dark);
-            font-size: 13px;
+        .batch-tx-calendar-date {
+            color: #667085;
+            font-size: 9px;
             font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .batch-tx-time {
+            margin-top: 2px;
+            color: var(--text-dark);
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .batch-tx-meta,
-        .batch-tx-id {
-            color: var(--text-grey);
-            font-size: 10px;
+        .batch-tx-receipt {
+            margin-top: 3px;
+            color: #98A2B3;
+            font-size: 9px;
             font-weight: 600;
-            margin-top: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -2019,10 +2132,86 @@
 
         .batch-tx-amount {
             color: var(--text-dark);
-            font-size: 14px;
-            font-weight: 700;
-            text-align: right;
+            font-size: 16px;
+            font-weight: 800;
+            text-align: left;
             white-space: nowrap;
+        }
+
+        .batch-tx-payment {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .batch-tx-payment-mark {
+            width: 34px;
+            height: 24px;
+            border: 1px solid #D8E0EC;
+            border-radius: 7px;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 34px;
+            overflow: hidden;
+        }
+
+        .batch-tx-payment-logo {
+            display: block;
+            width: 27px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .batch-tx-payment-logo.brand-mastercard {
+            width: 24px;
+            height: 16px;
+        }
+
+        .batch-tx-payment-logo.brand-amex,
+        .batch-tx-payment-logo.brand-jcb,
+        .batch-tx-payment-logo.brand-unionpay {
+            width: 20px;
+            height: 17px;
+        }
+
+        .batch-tx-payment-logo.brand-discover {
+            width: 28px;
+            height: 12px;
+        }
+
+        .batch-tx-cash-mark {
+            border-color: #A8D88E;
+            background: #74BD43;
+            color: #FFFFFF;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .batch-tx-payment-title {
+            min-width: 0;
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .batch-tx-payment-meta {
+            min-width: 0;
+            margin-top: 4px;
+            color: #98A2B3;
+            font-size: 9px;
+            font-weight: 600;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .batch-empty {
@@ -2176,7 +2365,7 @@
 
         .amount-label {
             margin: 18px 0 7px;
-            color: #667085;
+            color: var(--entry-label-color);
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.17em;
@@ -2880,40 +3069,41 @@
                             </svg></div>
                         <div class="card-label">Reprint Last</div>
                     </div>
-                    <div class="action-card" onclick="openInvoiceReprint(event)">
+                    <div class="action-card" onclick="openReceiptReprint(event)">
                         <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
                                 <path
                                     d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5V5h14v6h2V5c0-1.1-.9-2-2-2z" />
                                 <path d="M7 8h10v2H7zm0 4h6v2H7z" />
                                 <path d="M17 12v2h-2v2h2v2h2v-2h2v-2h-2v-2z" />
                             </svg></div>
-                        <div class="card-label">Reprint By Invoice</div>
+                        <div class="card-label">Reprint By<br>Receipt No.</div>
                     </div>
                 </div>
-                <div class="invoice-reprint-view" id="invoice-reprint-view" aria-hidden="true">
+                <div class="receipt-reprint-view" id="receipt-reprint-view" aria-hidden="true">
                     <div class="print-submenu-header">
-                        <button class="settings-back-btn" type="button" onclick="closeInvoiceReprint(event)"
+                        <button class="settings-back-btn" type="button" onclick="closeReceiptReprint(event)"
                             aria-label="Back to Reprint">
                             <svg viewBox="0 0 24 24">
                                 <path d="M15 18l-6-6 6-6" />
                             </svg>
                         </button>
-                        <div class="print-submenu-title">Reprint By Invoice</div>
+                        <div class="print-submenu-title">Reprint By Receipt No.</div>
                         <div style="width:28px;height:28px;"></div>
                     </div>
-                    <div class="invoice-entry-stage">
-                        <label class="invoice-entry-label" for="invoice-entry-input">Invoice Number</label>
-                        <input class="invoice-entry-input" id="invoice-entry-input" type="text" inputmode="text"
-                            autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32"
-                            oninput="handleInvoiceInput(event)" onkeydown="handleInvoiceKeydown(event)">
-                        <div class="invoice-entry-error" id="invoice-entry-error" aria-live="polite"></div>
-                        <button class="invoice-reprint-submit" type="button" onclick="submitInvoiceReprint(event)">
+                    <div class="receipt-entry-stage">
+                        <label class="receipt-entry-label" for="receipt-entry-input">Receipt No.</label>
+                        <input class="receipt-entry-input" id="receipt-entry-input" type="text" inputmode="numeric"
+                            pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="32"
+                            aria-label="Receipt number"
+                            oninput="handleReceiptInput(event)" onkeydown="handleReceiptKeydown(event)">
+                        <div class="receipt-entry-error" id="receipt-entry-error" aria-live="polite"></div>
+                        <button class="receipt-reprint-submit" type="button" onclick="submitReceiptReprint(event)">
                             <span class="material-symbols-rounded">print</span>
                             Reprint Receipt
                         </button>
                     </div>
-                    <div class="invoice-divider" aria-hidden="true"></div>
-                    <div class="invoice-keyboard-reserve" aria-hidden="true"></div>
+                    <div class="receipt-divider" aria-hidden="true"></div>
+                    <div class="receipt-keyboard-reserve" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
@@ -3037,6 +3227,32 @@
                             <div class="settings-row-right">
                                 <span class="settings-meta" id="cash-discount-summary">OFF</span>
                                 <div class="settings-chevron">></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon cash">
+                                    <span class="material-symbols-rounded" aria-hidden="true">currency_exchange</span>
+                                </div>
+                                <span>Cash Refund</span>
+                            </div>
+                            <div class="settings-toggle" id="cash-refund-toggle"
+                                role="switch" aria-checked="false"
+                                onclick="toggleCashRefundSwitch(event)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <span class="material-symbols-rounded" aria-hidden="true">draw</span>
+                                </div>
+                                <span>Electronic Signature</span>
+                            </div>
+                            <div class="settings-toggle" id="electronic-signature-toggle"
+                                role="switch" aria-checked="false"
+                                onclick="toggleElectronicSignatureSwitch(event)">
+                                <div class="settings-toggle-knob"></div>
                             </div>
                         </div>
                     </div>
@@ -3194,24 +3410,9 @@
 
                         <div class="batch-overview-card">
                             <div class="batch-report-heading batch-report-heading-split">
-                                <span>Card Batch Summary</span>
+                                <span>Card Transaction Summary</span>
                             </div>
-                            <div class="batch-summary-stats">
-                                <div class="batch-summary-stat">
-                                    <div class="batch-summary-stat-head">
-                                        <div class="batch-summary-stat-label">Debit</div>
-                                        <div class="batch-summary-stat-count" id="batch-summary-debit-count">Count 0</div>
-                                    </div>
-                                    <div class="batch-summary-stat-value" id="batch-summary-debit-amount">0</div>
-                                </div>
-                                <div class="batch-summary-stat">
-                                    <div class="batch-summary-stat-head">
-                                        <div class="batch-summary-stat-label">Credit</div>
-                                        <div class="batch-summary-stat-count" id="batch-summary-credit-count">Count 0</div>
-                                    </div>
-                                    <div class="batch-summary-stat-value" id="batch-summary-credit-amount">0</div>
-                                </div>
-                            </div>
+                            <div class="batch-transaction-summary" id="batch-card-transaction-summary"></div>
                         </div>
 
                         <div class="batch-payment-section">
@@ -3304,7 +3505,7 @@
         let activeTab = 0;
         let entryThemeIndex = 0;
         let amountInputHasStarted = false;
-        let invoiceNumber = '';
+        let receiptNumber = '';
         const transactionStorageKeys = [
             'cashAmountCents',
             'amountCents',
@@ -3345,15 +3546,17 @@
         const settingsExitPasswordInput = document.getElementById('settings-exit-password');
         const settingsExitPasswordError = document.getElementById('settings-exit-password-error');
         const printSubmenuSheet = document.getElementById('print-submenu-sheet');
-        const invoiceReprintView = document.getElementById('invoice-reprint-view');
-        const invoiceEntryInput = document.getElementById('invoice-entry-input');
-        const invoiceEntryError = document.getElementById('invoice-entry-error');
+        const receiptReprintView = document.getElementById('receipt-reprint-view');
+        const receiptEntryInput = document.getElementById('receipt-entry-input');
+        const receiptEntryError = document.getElementById('receipt-entry-error');
         const cashDiscountPage = document.getElementById('cash-discount-page');
         const cashDiscountToggle = document.getElementById('cash-discount-toggle');
         const cashDiscountRateGroup = document.getElementById('cash-discount-rate-group');
         const cashDiscountInput = document.getElementById('cash-discount-input');
         const cashDiscountError = document.getElementById('cash-discount-error');
         const cashDiscountSummary = document.getElementById('cash-discount-summary');
+        const cashRefundToggle = document.getElementById('cash-refund-toggle');
+        const electronicSignatureToggle = document.getElementById('electronic-signature-toggle');
         const tabPill = document.getElementById('tab-pill');
         const tabsContainer = document.querySelector('.tabs');
         const tabs = Array.from(document.querySelectorAll('.tab-item'));
@@ -3378,6 +3581,11 @@
             'rgba(0, 168, 107, 0.22)',
             'rgba(124, 58, 237, 0.22)'
         ];
+        const refundEntryTheme = {
+            color: '#A94750',
+            label: '#8D5B62',
+            shadow: 'rgba(169, 71, 80, 0.20)'
+        };
         const defaultMerchant = { name: 'Merchant', logo: 'merchant-default.svg', shape: 'round' };
         const demoMerchants = [
             { name: 'UNIQLO', logo: 'uniqlo-logo.svg', shape: 'square' },
@@ -3419,6 +3627,7 @@
         const batchDetailContent = document.getElementById('batch-detail-content');
         const batchTransactionList = document.getElementById('batch-transaction-list');
         const batchPaymentSummaryList = document.getElementById('batch-payment-summary-list');
+        const batchCardTransactionSummary = document.getElementById('batch-card-transaction-summary');
         const batchTransactionsToggle = document.getElementById('batch-transactions-toggle');
         const batchFields = {
             transactionCount: document.getElementById('batch-transaction-count'),
@@ -3426,10 +3635,6 @@
             tid: document.getElementById('batch-tid'),
             batchId: document.getElementById('batch-id'),
             settleStatus: document.getElementById('batch-settle-status'),
-            summaryDebitCount: document.getElementById('batch-summary-debit-count'),
-            summaryDebitAmount: document.getElementById('batch-summary-debit-amount'),
-            summaryCreditCount: document.getElementById('batch-summary-credit-count'),
-            summaryCreditAmount: document.getElementById('batch-summary-credit-amount'),
             cardNet: document.getElementById('batch-card-net'),
             cashNet: document.getElementById('batch-cash-net'),
             totalReceipts: document.getElementById('batch-total-receipts'),
@@ -3482,7 +3687,11 @@
                     { amount: 3660, transId: '251209165503', batchId: '000042', tranTime: '2026-06-25 13:55:03', transType: 'SALE', cardType: 'AMEX' },
                     { amount: 500, transId: '251209171122', batchId: '000042', tranTime: '2026-06-25 14:11:22', transType: 'REFUND', cardType: 'AMEX' },
                     { amount: 995, transId: '251209172803', batchId: '000042', tranTime: '2026-06-25 14:28:03', transType: 'SALE', cardType: 'VISA' },
-                    { amount: 550, transId: 'C000044', batchId: '000042', tranTime: '2026-06-25 14:36:48', transType: 'CASH REFUND', cardType: 'CASH' }
+                    { amount: 550, transId: 'C000044', batchId: '000042', tranTime: '2026-06-25 14:36:48', transType: 'CASH REFUND', cardType: 'CASH' },
+                    { amount: 1500, transId: '251209174512', batchId: '000042', tranTime: '2026-06-25 14:45:12', transType: 'CAPTURE', cardType: 'VISA' },
+                    { amount: 900, transId: '251209175126', batchId: '000042', tranTime: '2026-06-25 14:51:26', transType: 'TIP ADJUST', cardType: 'MASTERCARD' },
+                    { amount: 2000, transId: '251209175944', batchId: '000042', tranTime: '2026-06-25 14:59:44', transType: 'VOID', cardType: 'DISCOVER' },
+                    { amount: 3000, transId: '251209180317', batchId: '000042', tranTime: '2026-06-25 15:03:17', transType: 'AUTH', cardType: 'AMEX' }
                 ]
             },
             last: {
@@ -3519,13 +3728,19 @@
                     { amount: 925, transId: '251208223608', batchId: '000041', tranTime: '2026-06-24 22:36:08', transType: 'REFUND', cardType: 'DISCOVER' },
                     { amount: 6660, transId: '251208225201', batchId: '000041', tranTime: '2026-06-24 22:52:01', transType: 'SALE', cardType: 'JCB' },
                     { amount: 1850, transId: 'C000041', batchId: '000041', tranTime: '2026-06-24 23:08:37', transType: 'CASH SALE', cardType: 'CASH' },
-                    { amount: 2450, transId: '251208232416', batchId: '000041', tranTime: '2026-06-24 23:24:16', transType: 'SALE', cardType: 'VISA' }
+                    { amount: 2450, transId: '251208232416', batchId: '000041', tranTime: '2026-06-24 23:24:16', transType: 'SALE', cardType: 'VISA' },
+                    { amount: 1850, transId: '251208233245', batchId: '000041', tranTime: '2026-06-24 23:32:45', transType: 'CAPTURE', cardType: 'MASTERCARD' },
+                    { amount: 650, transId: '251208234019', batchId: '000041', tranTime: '2026-06-24 23:40:19', transType: 'TIP ADJUST', cardType: 'VISA' },
+                    { amount: 1250, transId: '251208234833', batchId: '000041', tranTime: '2026-06-24 23:48:33', transType: 'VOID', cardType: 'AMEX' },
+                    { amount: 4200, transId: '251208235507', batchId: '000041', tranTime: '2026-06-24 23:55:07', transType: 'AUTH', cardType: 'DISCOVER' }
                 ]
             }
         };
         let pendingAction = null;
         let cashDiscountEnabled = false;
         let cashDiscountPercentText = '';
+        let cashRefundEnabled = readCashRefundSetting();
+        let electronicSignatureEnabled = readElectronicSignatureSetting();
         let activeBatchKind = null;
         let batchRequestToken = 0;
         let batchTransactionsExpanded = false;
@@ -3724,6 +3939,56 @@
             const parsed = Number(text);
             if (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100) return null;
             return Math.round(parsed * 100) / 100;
+        }
+
+        function readCashRefundSetting() {
+            try {
+                return localStorage.getItem('cashRefundEnabled') === 'true';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function updateCashRefundUI() {
+            if (!cashRefundToggle) return;
+            cashRefundToggle.classList.toggle('on', cashRefundEnabled);
+            cashRefundToggle.setAttribute('aria-checked', String(cashRefundEnabled));
+        }
+
+        function toggleCashRefundSwitch(event) {
+            if (event) event.stopPropagation();
+            cashRefundEnabled = !cashRefundEnabled;
+            try {
+                localStorage.setItem('cashRefundEnabled', String(cashRefundEnabled));
+            } catch (error) {
+                // The current session can still use the in-memory setting.
+            }
+            updateCashRefundUI();
+        }
+
+        function readElectronicSignatureSetting() {
+            try {
+                return localStorage.getItem('electronicSignatureEnabled') === 'true';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function updateElectronicSignatureUI() {
+            if (!electronicSignatureToggle) return;
+            electronicSignatureToggle.classList.toggle('on', electronicSignatureEnabled);
+            electronicSignatureToggle.setAttribute('aria-checked', String(electronicSignatureEnabled));
+        }
+
+        function toggleElectronicSignatureSwitch(event) {
+            if (event) event.stopPropagation();
+            electronicSignatureEnabled = !electronicSignatureEnabled;
+            try {
+                localStorage.setItem('electronicSignatureEnabled', String(electronicSignatureEnabled));
+            } catch (error) {
+                // The current session can still use the in-memory setting.
+            }
+            updateElectronicSignatureUI();
         }
 
         function formatCashDiscountPercent(value) {
@@ -4059,10 +4324,16 @@
                 settlementList: settlementList.map((item) => ({
                     amount: toBatchNumber(item && item.amount),
                     transId: item && item.transId ? String(item.transId) : '',
+                    receiptNo: item && (item.receiptNo || item.localReceiptNo)
+                        ? String(item.receiptNo || item.localReceiptNo)
+                        : '',
                     batchId: item && item.batchId ? String(item.batchId) : '',
                     tranTime: item && item.tranTime ? String(item.tranTime) : '',
                     transType: item && item.transType ? String(item.transType) : '',
-                    cardType: item && item.cardType ? String(item.cardType) : ''
+                    cardType: item && item.cardType ? String(item.cardType) : '',
+                    cardLastFour: item && (item.cardLastFour || item.lastFour || item.last4)
+                        ? String(item.cardLastFour || item.lastFour || item.last4).replace(/\D/g, '').slice(-4)
+                        : ''
                 }))
             };
         }
@@ -4132,6 +4403,7 @@
                 : '';
             const isRefund = rawType.includes('REFUND');
             const isVoid = rawType.includes('VOID');
+            const isTip = rawType.includes('TIP');
             const isCompletion = rawType.includes('CAPTURE')
                 || rawType.includes('COMPLETION')
                 || rawType.includes('COMPLETE');
@@ -4139,12 +4411,12 @@
             const isAuthOnly = rawType.includes('AUTH') && !isCompletion && !isIncremental;
             const isDebit = rawType.includes('DEBIT');
 
-            if (isRefund) return { key: isDebit ? 'DEBIT REFUND' : 'REFUND', settlement: 'negative' };
+            if (isRefund) return { key: 'REFUND', settlement: 'negative' };
             if (isVoid) return { key: 'VOID', settlement: 'excluded' };
-            if (isCompletion) return { key: 'PRE-AUTH COMPLETION', settlement: 'positive' };
+            if (isTip) return { key: 'TIP', settlement: 'positive' };
+            if (isCompletion) return { key: 'CAPTURE', settlement: 'positive' };
             if (isIncremental) return { key: 'AUTH-INCREMENTAL', settlement: 'excluded' };
-            if (isAuthOnly) return { key: 'AUTH ONLY', settlement: 'excluded' };
-            if (isDebit) return { key: 'DEBIT SALE', settlement: 'positive' };
+            if (isAuthOnly) return { key: 'AUTH', settlement: 'excluded' };
             return { key: 'SALE', settlement: 'positive' };
         }
 
@@ -4156,6 +4428,15 @@
             return amount;
         }
 
+        function getVisibleBatchTransactions(transactions) {
+            return transactions.filter((transaction) => {
+                const kind = getBatchTransactionKind(transaction);
+                return kind.key === 'SALE'
+                    || kind.key === 'REFUND'
+                    || kind.key === 'CAPTURE';
+            });
+        }
+
         function summarizeBatchCardBrands(transactions) {
             const totals = new Map();
 
@@ -4164,32 +4445,44 @@
                 if (paymentType === 'CASH') return;
 
                 const kind = getBatchTransactionKind(transaction);
+                if (kind.settlement === 'excluded') return;
+
+                const isTip = kind.key === 'TIP';
+                const visibleKind = isTip
+                    ? { key: 'SALE', settlement: 'positive' }
+                    : kind;
                 const current = totals.get(paymentType) || {
                     type: paymentType,
                     count: 0,
                     amount: 0,
                     details: new Map()
                 };
-                const detail = current.details.get(kind.key) || {
-                    type: kind.key,
+                const detail = current.details.get(visibleKind.key) || {
+                    type: visibleKind.key,
                     count: 0,
                     amount: 0,
-                    settlement: kind.settlement
+                    settlement: visibleKind.settlement
                 };
 
-                current.count += 1;
+                if (!isTip) current.count += 1;
                 current.amount += getBatchSettlementAmount(transaction);
-                detail.count += 1;
-                detail.amount += kind.settlement === 'excluded'
-                    ? Math.abs(toBatchNumber(transaction && transaction.amount))
-                    : getBatchSettlementAmount(transaction);
-                current.details.set(kind.key, detail);
+                if (!isTip) detail.count += 1;
+                detail.amount += getBatchSettlementAmount(transaction);
+                current.details.set(visibleKind.key, detail);
                 totals.set(paymentType, current);
             });
 
             const preferredOrder = ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'JCB', 'UNIONPAY', 'OTHER'];
+            const detailOrder = ['SALE', 'REFUND', 'CAPTURE'];
             return Array.from(totals.values())
-                .map((total) => ({ ...total, details: Array.from(total.details.values()) }))
+                .map((total) => ({
+                    ...total,
+                    details: Array.from(total.details.values()).sort((left, right) => {
+                        const leftIndex = detailOrder.indexOf(left.type);
+                        const rightIndex = detailOrder.indexOf(right.type);
+                        return leftIndex - rightIndex || left.type.localeCompare(right.type);
+                    })
+                }))
                 .sort((left, right) => {
                     const leftIndex = preferredOrder.indexOf(left.type);
                     const rightIndex = preferredOrder.indexOf(right.type);
@@ -4197,6 +4490,125 @@
                     const normalizedRight = rightIndex === -1 ? preferredOrder.length : rightIndex;
                     return normalizedLeft - normalizedRight || left.type.localeCompare(right.type);
                 });
+        }
+
+        function summarizeBatchCardTransactions(transactions) {
+            const included = new Map();
+            let cardNet = 0;
+
+            transactions.forEach((transaction) => {
+                if (normalizeBatchPaymentType(transaction) === 'CASH') return;
+
+                const kind = getBatchTransactionKind(transaction);
+                if (kind.settlement === 'excluded') return;
+
+                const isTip = kind.key === 'TIP';
+                const visibleKind = isTip
+                    ? { key: 'SALE', settlement: 'positive' }
+                    : kind;
+                const current = included.get(visibleKind.key) || {
+                    type: visibleKind.key,
+                    count: 0,
+                    amount: 0,
+                    settlement: visibleKind.settlement
+                };
+                const absoluteAmount = Math.abs(toBatchNumber(transaction && transaction.amount));
+                const signedAmount = visibleKind.settlement === 'negative' ? -absoluteAmount : absoluteAmount;
+
+                if (!isTip) current.count += 1;
+                current.amount += signedAmount;
+                included.set(visibleKind.key, current);
+                cardNet += signedAmount;
+            });
+
+            const preferredOrder = ['SALE', 'REFUND', 'CAPTURE'];
+            const sortRows = (rows) => Array.from(rows.values()).sort((left, right) => {
+                const leftIndex = preferredOrder.indexOf(left.type);
+                const rightIndex = preferredOrder.indexOf(right.type);
+                const normalizedLeft = leftIndex === -1 ? preferredOrder.length : leftIndex;
+                const normalizedRight = rightIndex === -1 ? preferredOrder.length : rightIndex;
+                return normalizedLeft - normalizedRight || left.type.localeCompare(right.type);
+            });
+
+            return {
+                included: sortRows(included),
+                cardNet
+            };
+        }
+
+        function renderBatchCardTransactionSummary(transactions, currencyCode) {
+            if (!batchCardTransactionSummary) return;
+            batchCardTransactionSummary.innerHTML = '';
+            const summary = summarizeBatchCardTransactions(transactions);
+
+            const appendGroupLabel = (label, className = '') => {
+                const heading = document.createElement('div');
+                heading.className = `batch-summary-group-label${className ? ` ${className}` : ''}`;
+                heading.textContent = label;
+                batchCardTransactionSummary.appendChild(heading);
+            };
+
+            const appendRows = (rows) => {
+                if (!rows.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'batch-summary-empty';
+                    empty.textContent = 'No transactions';
+                    batchCardTransactionSummary.appendChild(empty);
+                    return;
+                }
+
+                rows.forEach((item) => {
+                    const row = document.createElement('div');
+                    row.className = 'batch-summary-type-row';
+
+                    const label = document.createElement('div');
+                    label.className = 'batch-summary-type-label';
+                    label.textContent = item.type;
+
+                    const count = document.createElement('div');
+                    count.className = 'batch-summary-type-count';
+                    count.textContent = String(item.count);
+
+                    const amount = document.createElement('div');
+                    amount.className = 'batch-summary-type-amount';
+                    const isNegative = item.settlement === 'negative' || item.type === 'VOID';
+                    const displayedAmount = isNegative
+                        ? -Math.abs(item.amount)
+                        : Math.abs(item.amount);
+                    amount.textContent = formatBatchAmount(displayedAmount, currencyCode);
+                    amount.classList.toggle('negative', isNegative);
+
+                    row.append(label, count, amount);
+                    batchCardTransactionSummary.appendChild(row);
+                });
+            };
+
+            appendGroupLabel('Settlement Activity');
+            appendRows(summary.included);
+
+            const netRow = document.createElement('div');
+            netRow.className = 'batch-summary-net-row';
+            const netLabel = document.createElement('div');
+            netLabel.className = 'batch-summary-net-label';
+            netLabel.textContent = 'Card Net';
+            const netAmount = document.createElement('div');
+            netAmount.className = 'batch-summary-net-amount';
+            netAmount.textContent = formatBatchAmount(summary.cardNet, currencyCode);
+            netRow.append(netLabel, netAmount);
+            batchCardTransactionSummary.appendChild(netRow);
+
+        }
+
+        function getBatchCardBrandAsset(type) {
+            const assets = {
+                VISA: { summarySrc: 'visa.svg', detailSrc: 'visa.svg', className: 'brand-visa', shortName: 'VISA' },
+                MASTERCARD: { summarySrc: 'mastercard.svg', detailSrc: 'mastercard.svg', className: 'brand-mastercard', shortName: 'MC' },
+                AMEX: { summarySrc: 'amex.svg', detailSrc: 'amex.svg', className: 'brand-amex', shortName: 'AMEX' },
+                DISCOVER: { summarySrc: 'discover.svg', detailSrc: 'discover.svg', className: 'brand-discover', shortName: 'DISC' },
+                JCB: { summarySrc: 'icon_jcb.svg', detailSrc: 'icon_jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
+                UNIONPAY: { summarySrc: 'unionpay.svg', detailSrc: 'unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' }
+            };
+            return assets[type] || null;
         }
 
         function summarizeBatchCash(transactions) {
@@ -4236,7 +4648,10 @@
             setElementText(batchFields.cashSaleCount, String(cashSummary.saleCount));
             setElementText(batchFields.cashSaleAmount, formatBatchAmount(cashSummary.saleAmount, currencyCode));
             setElementText(batchFields.cashRefundCount, String(cashSummary.refundCount));
-            setElementText(batchFields.cashRefundAmount, formatBatchAmount(cashSummary.refundAmount, currencyCode));
+            setElementText(batchFields.cashRefundAmount, formatBatchAmount(-cashSummary.refundAmount, currencyCode));
+            if (batchFields.cashRefundAmount) {
+                batchFields.cashRefundAmount.classList.toggle('negative', cashSummary.refundAmount > 0);
+            }
             setElementText(batchFields.cashNetCount, String(cashSummary.count));
             setElementText(batchFields.cashSummaryNet, formatBatchAmount(cashSummary.netAmount, currencyCode));
         }
@@ -4264,7 +4679,19 @@
 
                 const brand = document.createElement('div');
                 brand.className = 'batch-payment-brand';
-                brand.textContent = total.type;
+                const brandAsset = getBatchCardBrandAsset(total.type);
+                if (brandAsset) {
+                    const frame = document.createElement('span');
+                    frame.className = 'batch-payment-brand-frame';
+                    const logo = document.createElement('img');
+                    logo.className = `batch-payment-brand-logo ${brandAsset.className}`;
+                    logo.src = brandAsset.summarySrc;
+                    logo.alt = total.type;
+                    frame.appendChild(logo);
+                    brand.appendChild(frame);
+                } else {
+                    brand.textContent = total.type;
+                }
 
                 const count = document.createElement('div');
                 count.className = 'batch-payment-count';
@@ -4297,15 +4724,14 @@
 
                     const detailAmount = document.createElement('div');
                     detailAmount.className = 'batch-payment-detail-amount';
-                    detailAmount.textContent = formatBatchAmount(detail.amount, currencyCode);
+                    const detailIsNegative = detail.settlement === 'negative' || detail.type === 'VOID';
+                    const detailDisplayAmount = detailIsNegative
+                        ? -Math.abs(detail.amount)
+                        : Math.abs(detail.amount);
+                    detailAmount.textContent = formatBatchAmount(detailDisplayAmount, currencyCode);
+                    detailAmount.classList.toggle('negative', detailIsNegative);
 
                     detailRow.append(title, detailCount, detailAmount);
-                    if (detail.settlement === 'excluded') {
-                        const note = document.createElement('div');
-                        note.className = 'batch-payment-detail-note';
-                        note.textContent = 'Not included in settlement';
-                        detailRow.appendChild(note);
-                    }
                     breakdown.appendChild(detailRow);
                 });
 
@@ -4327,7 +4753,7 @@
         function renderBatchInfo(payload, kind) {
             const data = normalizeBatchInfoPayload(payload);
             const summary = data.summary;
-            const transactionCount = data.settlementList.length;
+            const transactionCount = getVisibleBatchTransactions(data.settlementList).length;
             const settleStatus = summary.settleStatus || (kind === 'last' ? 'CLOSED' : 'OPEN');
             const isClosed = settleStatus.toUpperCase() === 'CLOSED';
 
@@ -4337,11 +4763,8 @@
             setElementText(batchFields.batchId, formatBatchId(summary.batchId));
             setElementText(batchFields.settleStatus, settleStatus);
             if (batchFields.settleStatus) batchFields.settleStatus.classList.toggle('closed', isClosed);
-            setElementText(batchFields.summaryDebitCount, formatBatchCountValue(summary.debitTotalCount));
-            setElementText(batchFields.summaryDebitAmount, formatBatchSummaryAmount(summary.debitTotalAmount, summary.currencyCode));
-            setElementText(batchFields.summaryCreditCount, formatBatchCountValue(summary.creditTotalCount));
-            setElementText(batchFields.summaryCreditAmount, formatBatchSummaryAmount(summary.creditTotalAmount, summary.currencyCode));
 
+            renderBatchCardTransactionSummary(data.settlementList, summary.currencyCode);
             renderBatchPaymentSummary(data.settlementList, summary.currencyCode);
             renderBatchReconciliation(data.settlementList, summary.currencyCode);
             renderBatchTransactions(data.settlementList, summary.currencyCode);
@@ -4351,8 +4774,9 @@
         function renderBatchTransactions(transactions, currencyCode) {
             if (!batchTransactionList) return;
             batchTransactionList.innerHTML = '';
+            const visibleTransactions = getVisibleBatchTransactions(transactions);
 
-            if (!transactions.length) {
+            if (!visibleTransactions.length) {
                 const empty = document.createElement('div');
                 empty.className = 'batch-empty';
                 empty.textContent = 'No settlement transactions.';
@@ -4360,31 +4784,103 @@
                 return;
             }
 
-            transactions.forEach((transaction) => {
+            const header = document.createElement('div');
+            header.className = 'batch-tx-table-header';
+            ['Date & Time', 'Total', 'Card details'].forEach((labelText) => {
+                const label = document.createElement('span');
+                label.textContent = labelText;
+                header.appendChild(label);
+            });
+            batchTransactionList.appendChild(header);
+
+            visibleTransactions.forEach((transaction) => {
                 const row = document.createElement('div');
                 row.className = 'batch-tx-row';
 
-                const main = document.createElement('div');
-                main.className = 'batch-tx-main';
+                const date = document.createElement('div');
+                date.className = 'batch-tx-date';
 
-                const title = document.createElement('div');
-                title.className = 'batch-tx-title';
-                title.textContent = [transaction.transType, transaction.cardType].filter(Boolean).join(' / ') || 'Transaction';
+                const calendarDate = document.createElement('div');
+                calendarDate.className = 'batch-tx-calendar-date';
 
-                const id = document.createElement('div');
-                id.className = 'batch-tx-id';
-                id.textContent = transaction.transId || '';
+                const time = document.createElement('div');
+                time.className = 'batch-tx-time';
+                const parsedTime = transaction.tranTime ? new Date(transaction.tranTime.replace(' ', 'T')) : null;
+                calendarDate.textContent = parsedTime && !Number.isNaN(parsedTime.getTime())
+                    ? parsedTime.toLocaleDateString('en-US', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: '2-digit'
+                    })
+                    : '-';
+                time.textContent = parsedTime && !Number.isNaN(parsedTime.getTime())
+                    ? parsedTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                    : (transaction.tranTime || '-');
 
-                const meta = document.createElement('div');
-                meta.className = 'batch-tx-meta';
-                meta.textContent = transaction.tranTime || '-';
+                const receipt = document.createElement('div');
+                receipt.className = 'batch-tx-receipt';
+                const rawReceipt = String(transaction.transId || '');
+                const localReceipt = String(transaction.receiptNo || '');
+                receipt.textContent = localReceipt || (rawReceipt.startsWith('C')
+                    ? rawReceipt
+                    : `#${rawReceipt.slice(-6)}`);
+                date.append(calendarDate, time, receipt);
+
+                const kind = getBatchTransactionKind(transaction);
+                const paymentType = normalizeBatchPaymentType(transaction);
+                const isCash = paymentType === 'CASH';
+                const isNegative = kind.settlement === 'negative' || kind.key === 'VOID';
 
                 const amount = document.createElement('div');
                 amount.className = 'batch-tx-amount';
-                amount.textContent = formatBatchAmount(transaction.amount, currencyCode);
+                amount.textContent = formatBatchAmount(
+                    isNegative ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
+                    currencyCode
+                );
+                amount.classList.toggle('negative', isNegative);
 
-                main.append(title, id, meta);
-                row.append(main, amount);
+                const payment = document.createElement('div');
+                payment.className = 'batch-tx-payment';
+
+                const mark = document.createElement('span');
+                mark.className = `batch-tx-payment-mark${isCash ? ' batch-tx-cash-mark' : ''}`;
+                const brandAsset = getBatchCardBrandAsset(paymentType);
+                if (isCash) {
+                    mark.textContent = 'CASH';
+                } else if (brandAsset) {
+                    const logo = document.createElement('img');
+                    logo.className = `batch-tx-payment-logo ${brandAsset.className}`;
+                    logo.src = brandAsset.detailSrc;
+                    logo.alt = paymentType;
+                    mark.appendChild(logo);
+                } else {
+                    mark.textContent = paymentType.slice(0, 3);
+                }
+
+                const paymentCopy = document.createElement('div');
+                paymentCopy.className = 'batch-tx-payment-copy';
+
+                const paymentTitle = document.createElement('div');
+                paymentTitle.className = 'batch-tx-payment-title';
+                if (kind.key === 'REFUND') paymentTitle.textContent = 'Refund';
+                else if (kind.key === 'SALE') paymentTitle.textContent = 'Sale';
+                else if (kind.key === 'CAPTURE') paymentTitle.textContent = 'Capture';
+                else paymentTitle.textContent = kind.key.replaceAll('-', ' ');
+
+                const paymentMeta = document.createElement('div');
+                paymentMeta.className = 'batch-tx-payment-meta';
+                if (isCash) {
+                    paymentMeta.textContent = 'Cash';
+                } else {
+                    const shortName = brandAsset ? brandAsset.shortName : paymentType;
+                    const lastFour = transaction.cardLastFour
+                        || rawReceipt.replace(/\D/g, '').slice(-4).padStart(4, '0');
+                    paymentMeta.textContent = `${shortName} ••••${lastFour}`;
+                }
+
+                paymentCopy.append(paymentTitle, paymentMeta);
+                payment.append(mark, paymentCopy);
+                row.append(date, amount, payment);
                 batchTransactionList.appendChild(row);
             });
         }
@@ -4394,6 +4890,8 @@
         selectRandomMerchantLogo();
         syncPaymentAvailability();
         updateCashDiscountUI();
+        updateCashRefundUI();
+        updateElectronicSignatureUI();
         resetHomeAfterCompletedTransaction();
         window.addEventListener('pageshow', (event) => {
             if (event.persisted) resetHomeAfterCompletedTransaction();
@@ -4457,9 +4955,20 @@
                 ? getActionLabel(pendingAction).toUpperCase()
                 : 'SALE';
             const safeThemeIndex = entryColors[entryThemeIndex] ? entryThemeIndex : 0;
+            const isRefundEntry = transactionType.includes('REFUND');
 
-            document.documentElement.style.setProperty('--entry-color', entryColors[safeThemeIndex]);
-            document.documentElement.style.setProperty('--entry-shadow', entryShadows[safeThemeIndex]);
+            document.documentElement.style.setProperty(
+                '--entry-color',
+                isRefundEntry ? refundEntryTheme.color : entryColors[safeThemeIndex]
+            );
+            document.documentElement.style.setProperty(
+                '--entry-label-color',
+                isRefundEntry ? refundEntryTheme.label : '#667085'
+            );
+            document.documentElement.style.setProperty(
+                '--entry-shadow',
+                isRefundEntry ? refundEntryTheme.shadow : entryShadows[safeThemeIndex]
+            );
 
             if (amountLabel) {
                 amountLabel.textContent = 'TRANSACTION AMOUNT';
@@ -4704,7 +5213,7 @@
 
         function openPrintMenu() {
             if (!printSubmenuSheet) return;
-            closeInvoiceReprint(null);
+            closeReceiptReprint(null);
             printSubmenuSheet.classList.add('open');
         }
 
@@ -4712,78 +5221,76 @@
             if (e) e.stopPropagation();
             if (!printSubmenuSheet) return;
             if (!forceClose && !printSubmenuSheet.classList.contains('open')) return;
-            closeInvoiceReprint(null);
+            closeReceiptReprint(null);
             printSubmenuSheet.classList.remove('open');
         }
 
-        function updateInvoiceReprintUI() {
-            if (invoiceEntryInput && invoiceEntryInput.value !== invoiceNumber) {
-                invoiceEntryInput.value = invoiceNumber;
+        function updateReceiptReprintUI() {
+            if (receiptEntryInput && receiptEntryInput.value !== receiptNumber) {
+                receiptEntryInput.value = receiptNumber;
             }
-            if (invoiceEntryError) invoiceEntryError.textContent = '';
+            if (receiptEntryError) receiptEntryError.textContent = '';
         }
 
-        function openInvoiceReprint(e) {
+        function openReceiptReprint(e) {
             if (e) e.stopPropagation();
-            invoiceNumber = '';
-            updateInvoiceReprintUI();
-            if (!invoiceReprintView) return;
-            invoiceReprintView.classList.add('open');
-            invoiceReprintView.setAttribute('aria-hidden', 'false');
+            receiptNumber = '';
+            updateReceiptReprintUI();
+            if (!receiptReprintView) return;
+            receiptReprintView.classList.add('open');
+            receiptReprintView.setAttribute('aria-hidden', 'false');
             window.setTimeout(() => {
-                if (invoiceEntryInput && invoiceReprintView.classList.contains('open')) {
-                    invoiceEntryInput.focus();
+                if (receiptEntryInput && receiptReprintView.classList.contains('open')) {
+                    receiptEntryInput.focus();
                 }
             }, 120);
         }
 
-        function closeInvoiceReprint(e) {
+        function closeReceiptReprint(e) {
             if (e) e.stopPropagation();
-            if (invoiceEntryInput) invoiceEntryInput.blur();
-            if (invoiceReprintView) {
-                invoiceReprintView.classList.remove('open');
-                invoiceReprintView.setAttribute('aria-hidden', 'true');
+            if (receiptEntryInput) receiptEntryInput.blur();
+            if (receiptReprintView) {
+                receiptReprintView.classList.remove('open');
+                receiptReprintView.setAttribute('aria-hidden', 'true');
             }
-            invoiceNumber = '';
-            updateInvoiceReprintUI();
+            receiptNumber = '';
+            updateReceiptReprintUI();
         }
 
-        function handleInvoiceInput(e) {
+        function handleReceiptInput(e) {
             const normalizedValue = String(e && e.target ? e.target.value : '')
-                .toUpperCase()
-                .replace(/[^C0-9]/g, '')
-                .replace(/(?!^)C/g, '')
+                .replace(/\D/g, '')
                 .slice(0, 32);
-            invoiceNumber = normalizedValue;
-            if (invoiceEntryInput && invoiceEntryInput.value !== normalizedValue) {
-                invoiceEntryInput.value = normalizedValue;
+            receiptNumber = normalizedValue;
+            if (receiptEntryInput && receiptEntryInput.value !== normalizedValue) {
+                receiptEntryInput.value = normalizedValue;
             }
-            if (invoiceEntryError) invoiceEntryError.textContent = '';
+            if (receiptEntryError) receiptEntryError.textContent = '';
         }
 
-        function handleInvoiceKeydown(e) {
+        function handleReceiptKeydown(e) {
             if (e && e.key === 'Enter') {
-                submitInvoiceReprint(e);
+                submitReceiptReprint(e);
             }
         }
 
-        async function submitInvoiceReprint(e) {
+        async function submitReceiptReprint(e) {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
 
-            const invoiceFormatIsValid = /^(?:\d+|C\d+)$/.test(invoiceNumber);
-            if (!invoiceFormatIsValid) {
-                if (invoiceEntryError) {
-                    invoiceEntryError.textContent = 'Enter a numeric invoice or cash invoice such as C000001.';
+            const receiptNumberIsValid = /^\d+$/.test(receiptNumber);
+            if (!receiptNumberIsValid) {
+                if (receiptEntryError) {
+                    receiptEntryError.textContent = 'Enter a valid Receipt No.';
                 }
-                if (invoiceEntryInput) invoiceEntryInput.focus();
+                if (receiptEntryInput) receiptEntryInput.focus();
                 return;
             }
 
-            const invoiceToPrint = invoiceNumber;
-            const methodNames = ['reprintByInvoice', 'printReceiptByInvoice', 'reprintReceipt'];
+            const receiptNumberToPrint = receiptNumber;
+            const methodNames = ['reprintByReceiptNo', 'printReceiptByReceiptNo', 'reprintReceipt'];
             const bridgeNames = [
                 'PaywizardTerminal',
                 'PayWizardTerminal',
@@ -4798,7 +5305,7 @@
                 let handled = false;
                 for (const methodName of methodNames) {
                     if (typeof window[methodName] === 'function') {
-                        await window[methodName](invoiceToPrint);
+                        await window[methodName](receiptNumberToPrint);
                         handled = true;
                         break;
                     }
@@ -4810,7 +5317,7 @@
                         if (!bridge) continue;
                         for (const methodName of methodNames) {
                             if (typeof bridge[methodName] === 'function') {
-                                await bridge[methodName](invoiceToPrint);
+                                await bridge[methodName](receiptNumberToPrint);
                                 handled = true;
                                 break;
                             }
@@ -4820,13 +5327,13 @@
                 }
 
                 if (!handled) {
-                    alert(`Printing receipt for invoice ${invoiceToPrint}`);
+                    alert(`Printing receipt ${receiptNumberToPrint}`);
                 }
                 closePrintMenu(null, true);
                 resetHomeAfterCompletedTransaction();
             } catch (error) {
-                if (invoiceEntryError) {
-                    invoiceEntryError.textContent = error && error.message
+                if (receiptEntryError) {
+                    receiptEntryError.textContent = error && error.message
                         ? error.message
                         : 'Unable to print this receipt.';
                 }
@@ -4857,6 +5364,30 @@
                 });
                 if (window.MerchantContext) window.MerchantContext.appendTo(tipParams);
                 window.location.href = `1.1.tip.html?${tipParams.toString()}`;
+                return;
+            }
+            if (actionName === 'Refund') {
+                const refundAmount = normalizedAmount === null ? 0 : normalizedAmount;
+                localStorage.setItem('amountCents', String(refundAmount));
+                localStorage.setItem('finalAmountCents', String(refundAmount));
+                localStorage.setItem('transactionType', 'refund');
+
+                const refundParams = new URLSearchParams({
+                    amount: (refundAmount / 100).toFixed(2),
+                    amountCents: String(refundAmount),
+                    transactionType: 'refund',
+                    currency: 'USD'
+                });
+                if (window.MerchantContext) window.MerchantContext.appendTo(refundParams);
+
+                if (cashRefundEnabled) {
+                    window.location.href = `dual_refund.html?${refundParams.toString()}`;
+                    return;
+                }
+
+                refundParams.set('paymentMethod', 'card');
+                localStorage.setItem('paymentMethod', 'card');
+                window.location.href = `6_receipt.html?${refundParams.toString()}`;
                 return;
             }
             const amountSuffix = normalizedAmount === null ? '' : `: $${formatMoney(normalizedAmount)}`;

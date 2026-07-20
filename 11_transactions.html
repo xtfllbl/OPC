@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>POS - Transactions</title>
+    <style>
+        :root {
+            --bg: #F2F4F7;
+            --card: #FFFFFF;
+            --blue: #0A5BFF;
+            --text: #0F172A;
+            --muted: #64748B;
+            --border: #E6EAF0;
+            --line: #EDF2F7;
+            --danger: #C62828;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(180deg, #F8FAFD 0%, #F2F4F7 100%);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--card);
+            z-index: 10;
+        }
+
+        .app-header {
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .app-header .left {
+            width: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .app-header .title {
+            flex: 1;
+            text-align: center;
+            font-weight: 800;
+            color: var(--text);
+            font-size: 18px;
+            letter-spacing: 0.2px;
+        }
+
+        .app-header .right {
+            width: 84px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .filter-wrap {
+            position: relative;
+        }
+
+        .back-btn,
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #FFFFFF;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-btn svg,
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .filter-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            min-width: 170px;
+            padding: 6px;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+            display: none;
+            z-index: 40;
+        }
+
+        .filter-menu.open {
+            display: block;
+        }
+
+        .filter-item {
+            width: 100%;
+            height: 34px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #0F172A;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .filter-item:hover {
+            background: #F1F5FF;
+        }
+
+        .filter-item.active {
+            background: #EAF1FF;
+            color: #1D4ED8;
+            font-weight: 700;
+        }
+
+        .content {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toolbar {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #F8FAFE;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-chip {
+            height: 30px;
+            border-radius: 999px;
+            background: #EAF1FF;
+            border: 1px solid #CFDFFF;
+            color: #1D4ED8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 0 12px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .count-text {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .search-wrap {
+            display: none;
+            padding: 8px 16px 10px;
+            background: #F8FAFE;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-wrap.open {
+            display: block;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text);
+            background: #FFFFFF;
+            outline: none;
+        }
+
+        .table-head {
+            display: grid;
+            grid-template-columns: 76px 90px minmax(0, 1fr);
+            gap: 10px;
+            padding: 10px 16px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--line);
+            color: #8190A7;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tx-list {
+            flex: 1;
+            overflow: auto;
+            background: #FFFFFF;
+        }
+
+        .tx-row {
+            display: grid;
+            grid-template-columns: 76px 90px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            min-height: 68px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text);
+            border-bottom: 1px solid var(--line);
+            transition: background 0.15s ease;
+        }
+
+        .tx-row:active {
+            background: #F4F8FF;
+        }
+
+        .tx-time {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .tx-id {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+
+        .tx-amount {
+            text-align: left;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.1px;
+        }
+
+        .tx-amount.negative {
+            color: var(--danger);
+        }
+
+        .tx-tender {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-chip {
+            width: 34px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1px solid #D9E2EF;
+            flex-shrink: 0;
+        }
+
+        .brand-mastercard {
+            position: relative;
+            background: #FFFFFF;
+            overflow: hidden;
+        }
+
+        .brand-mastercard::before,
+        .brand-mastercard::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .brand-mastercard::before {
+            left: 7px;
+            background: #EA001B;
+            opacity: 0.85;
+        }
+
+        .brand-mastercard::after {
+            right: 7px;
+            background: #FF9F1A;
+            opacity: 0.85;
+        }
+
+        .cash-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #7FC242;
+            border-color: #6FAF39;
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .tx-method {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tx-sub {
+            margin-top: 2px;
+            color: #94A3B8;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .empty-state {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 24px;
+        }
+
+        .notice {
+            text-align: center;
+            color: #8A96A8;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 14px 20px 18px;
+            line-height: 1.35;
+            border-top: 1px solid var(--line);
+            background: #FFFFFF;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Wi-Fi 100%</span>
+        </div>
+
+        <div class="app-header">
+            <div class="left">
+                <a class="back-btn" href="1_home.html" aria-label="Back">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+                </a>
+            </div>
+            <div class="title">Transactions</div>
+            <div class="right">
+                <div class="filter-wrap">
+                    <button id="filter-btn" class="icon-btn" type="button" aria-label="Open filter menu" aria-haspopup="menu" aria-expanded="false">
+                        <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm3 6h12v2H6v-2zm4 6h4v2h-4v-2z"></path></svg>
+                    </button>
+                    <div id="filter-menu" class="filter-menu" role="menu" aria-label="Transaction filter">
+                        <button class="filter-item active" type="button" data-filter="all">All Transactions</button>
+                        <button class="filter-item" type="button" data-filter="card">Card Payments</button>
+                        <button class="filter-item" type="button" data-filter="cash">Cash Payments</button>
+                        <button class="filter-item" type="button" data-filter="refund">Refunds</button>
+                    </div>
+                </div>
+                <button id="search-btn" class="icon-btn" type="button" aria-label="Search transactions">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5a6.5 6.5 0 1 0-6.5 6.5 6.47 6.47 0 0 0 4.23-1.57l.27.28v.79L19 20.49 20.49 19l-4.99-5zM9.5 14A4.5 4.5 0 1 1 14 9.5 4.51 4.51 0 0 1 9.5 14z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="toolbar">
+                <div id="filter-label" class="filter-chip">All Transactions</div>
+                <div id="count-text" class="count-text">0 transactions</div>
+            </div>
+
+            <div id="search-wrap" class="search-wrap">
+                <input id="search-input" class="search-input" type="text" placeholder="Search by invoice, tender, amount">
+            </div>
+
+            <div class="table-head">
+                <span>Date</span>
+                <span>Total</span>
+                <span>Card details</span>
+            </div>
+
+            <div id="tx-list" class="tx-list"></div>
+            <div id="empty-state" class="empty-state">No matching transactions.</div>
+
+        </div>
+    </div>
+
+    <script>
+        const transactions = [
+            {
+                id: 'txn_000437',
+                time: '7:35 PM',
+                invoice: '000437',
+                amount: 21.65,
+                kind: 'payment',
+                tenderType: 'card',
+                tenderLabel: 'Credit Card',
+                tenderMeta: 'MC ****0198'
+            },
+            {
+                id: 'txn_000436',
+                time: '7:49 PM',
+                invoice: '000436',
+                amount: 17.20,
+                kind: 'payment',
+                tenderType: 'cash',
+                tenderLabel: 'Cash',
+                tenderMeta: ''
+            },
+            {
+                id: 'txn_000435',
+                time: '7:48 PM',
+                invoice: '000435',
+                amount: 17.20,
+                kind: 'payment',
+                tenderType: 'cash',
+                tenderLabel: 'Cash',
+                tenderMeta: ''
+            },
+            {
+                id: 'txn_000434',
+                time: '6:15 PM',
+                invoice: '000434',
+                amount: 12.88,
+                kind: 'payment',
+                tenderType: 'card',
+                tenderLabel: 'Credit Card',
+                tenderMeta: 'VISA ****4477'
+            },
+            {
+                id: 'txn_000433',
+                time: '4:11 PM',
+                invoice: '000433',
+                amount: -23.50,
+                kind: 'refund',
+                tenderType: 'card',
+                tenderLabel: 'Refund',
+                tenderMeta: 'MC ****0198'
+            },
+            {
+                id: 'txn_000432',
+                time: '4:07 PM',
+                invoice: '000432',
+                amount: 15.55,
+                kind: 'payment',
+                tenderType: 'card',
+                tenderLabel: 'Credit Card',
+                tenderMeta: 'MC ****1299'
+            },
+            {
+                id: 'txn_000431',
+                time: '3:54 PM',
+                invoice: '000431',
+                amount: 23.09,
+                kind: 'payment',
+                tenderType: 'card',
+                tenderLabel: 'Credit Card',
+                tenderMeta: 'VISA ****9911'
+            }
+        ];
+
+        const state = {
+            filter: 'all',
+            query: ''
+        };
+
+        const filterLabelMap = {
+            all: 'All Transactions',
+            card: 'Card Payments',
+            cash: 'Cash Payments',
+            refund: 'Refunds'
+        };
+
+        const listEl = document.getElementById('tx-list');
+        const emptyEl = document.getElementById('empty-state');
+        const filterLabelEl = document.getElementById('filter-label');
+        const countTextEl = document.getElementById('count-text');
+        const filterBtn = document.getElementById('filter-btn');
+        const filterMenu = document.getElementById('filter-menu');
+        const filterItems = Array.from(document.querySelectorAll('.filter-item'));
+        const searchBtn = document.getElementById('search-btn');
+        const searchWrap = document.getElementById('search-wrap');
+        const searchInput = document.getElementById('search-input');
+
+        function formatAmount(amount) {
+            const value = Math.abs(Number(amount || 0)).toFixed(2);
+            return amount < 0 ? '-$' + value : '$' + value;
+        }
+
+        function tenderIconMarkup(tx) {
+            if (tx.tenderType === 'cash') {
+                return '<span class="brand-chip cash-chip" aria-hidden="true">CASH</span>';
+            }
+            return '<span class="brand-chip brand-mastercard" aria-hidden="true"></span>';
+        }
+
+        function matchesFilter(tx) {
+            if (state.filter === 'all') return true;
+            if (state.filter === 'card') return tx.tenderType === 'card' && tx.kind !== 'refund';
+            if (state.filter === 'cash') return tx.tenderType === 'cash';
+            if (state.filter === 'refund') return tx.kind === 'refund';
+            return true;
+        }
+
+        function matchesQuery(tx) {
+            if (!state.query) return true;
+            const haystack = [
+                tx.time,
+                tx.invoice,
+                tx.tenderLabel,
+                tx.tenderMeta,
+                formatAmount(tx.amount)
+            ].join(' ').toLowerCase();
+            return haystack.includes(state.query);
+        }
+
+        function renderRows() {
+            const rows = transactions.filter((tx) => matchesFilter(tx) && matchesQuery(tx));
+
+            filterLabelEl.textContent = filterLabelMap[state.filter];
+            countTextEl.textContent = rows.length + (rows.length === 1 ? ' transaction' : ' transactions');
+            filterItems.forEach((item) => {
+                item.classList.toggle('active', item.dataset.filter === state.filter);
+            });
+
+            if (!rows.length) {
+                listEl.innerHTML = '';
+                emptyEl.style.display = 'flex';
+                return;
+            }
+
+            emptyEl.style.display = 'none';
+            listEl.innerHTML = rows.map((tx) => {
+                const amountClass = tx.amount < 0 ? 'tx-amount negative' : 'tx-amount';
+                const tenderMeta = tx.tenderMeta ? `<div class="tx-sub">${tx.tenderMeta}</div>` : '';
+                return `
+                    <a class="tx-row" href="11_transaction_detail.html?id=${encodeURIComponent(tx.id)}">
+                        <div>
+                            <div class="tx-time">${tx.time}</div>
+                            <div class="tx-id">#${tx.invoice}</div>
+                        </div>
+                        <div class="${amountClass}">${formatAmount(tx.amount)}</div>
+                        <div class="tx-tender">
+                            ${tenderIconMarkup(tx)}
+                            <div style="min-width:0;">
+                                <div class="tx-method">${tx.tenderLabel}</div>
+                                ${tenderMeta}
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        function closeFilterMenu() {
+            filterMenu.classList.remove('open');
+            filterBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        function openFilterMenu() {
+            filterMenu.classList.add('open');
+            filterBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        filterBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = filterMenu.classList.contains('open');
+            if (isOpen) {
+                closeFilterMenu();
+            } else {
+                openFilterMenu();
+            }
+        });
+
+        filterItems.forEach((item) => {
+            item.addEventListener('click', (event) => {
+                event.stopPropagation();
+                state.filter = item.dataset.filter || 'all';
+                closeFilterMenu();
+                renderRows();
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.filter-wrap')) {
+                closeFilterMenu();
+            }
+        });
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeFilterMenu();
+            }
+        });
+
+        searchBtn.addEventListener('click', () => {
+            const open = !searchWrap.classList.contains('open');
+            searchWrap.classList.toggle('open', open);
+            if (open) {
+                searchInput.focus();
+            } else {
+                state.query = '';
+                searchInput.value = '';
+                renderRows();
+            }
+        });
+
+        searchInput.addEventListener('input', (event) => {
+            state.query = event.target.value.trim().toLowerCase();
+            renderRows();
+        });
+
+        renderRows();
+    </script>
+</body>
+</html>

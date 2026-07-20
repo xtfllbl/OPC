@@ -16,6 +16,7 @@
             --text-dark: #111827;
             --text-grey: #667085;
             --result-ink: #24456D;
+            --refund-ink: #A94750;
             --bg-body: #F5F7FB;
             --surface: #FFFFFF;
             --line: #DCE3ED;
@@ -283,6 +284,11 @@
             white-space: nowrap;
         }
 
+        .phone-frame.is-refund .success-title,
+        .phone-frame.is-refund .amount {
+            color: var(--refund-ink);
+        }
+
         @keyframes success-pop {
             0% {
                 opacity: 0;
@@ -440,6 +446,120 @@
             flex: 1;
             gap: 12px;
             min-height: 0;
+        }
+
+        .signature-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            animation: panel-in 0.24s ease-out both;
+        }
+
+        .choice-sheet.signature-mode .signature-panel {
+            display: flex;
+        }
+
+        .choice-sheet.signature-mode .receipt-options,
+        .choice-sheet.signature-mode .email-panel {
+            display: none;
+        }
+
+        .signature-pad {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            border: 1.5px solid #CBD7E6;
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: inset 0 0 0 1px rgba(36, 69, 109, 0.02);
+        }
+
+        .signature-canvas {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .signature-guide {
+            position: absolute;
+            right: 22px;
+            bottom: 34px;
+            left: 22px;
+            height: 1px;
+            background: #DCE3ED;
+            pointer-events: none;
+        }
+
+        .signature-placeholder {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #98A2B3;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            pointer-events: none;
+            transition: opacity 0.16s ease;
+        }
+
+        .signature-panel.has-signature .signature-placeholder {
+            opacity: 0;
+        }
+
+        .signature-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.45fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .signature-action {
+            height: 54px;
+            border: 1.5px solid #D9E3F1;
+            border-radius: 16px;
+            background: #F8FAFC;
+            color: #64748B;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            transition: transform 0.14s ease, filter 0.14s ease, opacity 0.14s ease;
+        }
+
+        .signature-action.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .signature-action:active:not(:disabled) {
+            transform: translateY(2px) scale(0.98);
+            filter: brightness(0.97);
+        }
+
+        .signature-action:disabled {
+            opacity: 0.38;
+            cursor: default;
+        }
+
+        @keyframes panel-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .receipt-option {
@@ -905,6 +1025,7 @@
             .success-check,
             .success-check-circle,
             .success-check-mark,
+            .signature-panel,
             .android-keyboard {
                 animation-duration: 0.01ms;
                 animation-delay: 0ms;
@@ -984,7 +1105,22 @@
                 </div>
             </div>
 
-            <div class="sheet-label">CUSTOMER COPY</div>
+            <div class="sheet-label" id="sheet-label">CUSTOMER COPY</div>
+
+            <section class="signature-panel" id="signature-panel" aria-label="Electronic signature">
+                <div class="signature-pad" id="signature-pad">
+                    <canvas class="signature-canvas" id="signature-canvas" aria-label="Signature pad"></canvas>
+                    <div class="signature-guide" aria-hidden="true"></div>
+                    <div class="signature-placeholder" id="signature-placeholder">Sign here</div>
+                </div>
+
+                <div class="signature-actions">
+                    <button class="signature-action" id="clear-signature-button" type="button"
+                        onclick="clearSignature()" disabled>Clear</button>
+                    <button class="signature-action primary" id="confirm-signature-button" type="button"
+                        onclick="confirmSignature()" disabled>Confirm</button>
+                </div>
+            </section>
 
             <section class="receipt-options" aria-label="Customer receipt options">
                 <button class="receipt-option email-option" type="button" onclick="openEmailPanel()">
@@ -1130,6 +1266,12 @@
         const emailInput = document.getElementById("email-input");
         const emailError = document.getElementById("email-error");
         const androidKeyboard = document.getElementById("android-keyboard");
+        const sheetLabel = document.getElementById("sheet-label");
+        const signaturePanel = document.getElementById("signature-panel");
+        const signaturePad = document.getElementById("signature-pad");
+        const signatureCanvas = document.getElementById("signature-canvas");
+        const clearSignatureButton = document.getElementById("clear-signature-button");
+        const confirmSignatureButton = document.getElementById("confirm-signature-button");
         const imeLetterKeys = Array.from(document.querySelectorAll(".ime-letter"));
         const imeShiftKey = document.getElementById("ime-shift");
         const imeModeKey = document.querySelector('[data-ime-key="?123"]');
@@ -1149,9 +1291,14 @@
         const cardBrand = resolveCardBrand();
         const maskedCard = resolveMaskedCard();
         const transactionSequence = resolveTransactionSequence();
+        const signatureRequired = resolveSignatureRequired();
         let completionPending = false;
         let imeShiftActive = false;
         let imeSymbolMode = false;
+        let signatureCaptured = false;
+        let signatureDrawing = false;
+        let signatureLastPoint = null;
+        let signatureContext = null;
 
         function formatCurrency(cents) {
             return (Math.max(0, cents) / 100).toLocaleString("en-US", {
@@ -1220,6 +1367,19 @@
                 .replace(/-+/g, "-")
                 .toUpperCase();
             return normalized || "SALE";
+        }
+
+        function resolveSignatureRequired() {
+            const params = new URLSearchParams(window.location.search);
+            const override = params.get("signature");
+            if (override !== null) {
+                return ["1", "true", "on", "yes"].includes(override.trim().toLowerCase());
+            }
+            try {
+                return localStorage.getItem("electronicSignatureEnabled") === "true";
+            } catch (error) {
+                return false;
+            }
         }
 
         function randomInteger(maxExclusive) {
@@ -1343,6 +1503,7 @@
                 cardBrand: paymentMethod === "card" ? cardBrand : null,
                 maskedCard: paymentMethod === "card" ? maskedCard : null,
                 transactionSequence: transactionSequence,
+                signatureCaptured: signatureCaptured,
                 ...extra
             };
         }
@@ -1351,6 +1512,7 @@
             const amountText = formatCurrency(amountCents);
             const transactionTypeEl = document.getElementById("transaction-type");
             phoneFrame.dataset.theme = paymentMethod;
+            phoneFrame.classList.toggle("is-refund", transactionType.includes("REFUND"));
             transactionTypeEl.textContent = transactionType;
             transactionTypeEl.classList.toggle("long-type", transactionType.length > 12);
             document.getElementById("amount-display").textContent = amountText;
@@ -1358,6 +1520,101 @@
             document.getElementById("print-transaction-type").textContent = transactionType;
             document.getElementById("print-amount").textContent = amountText;
             syncPaymentReference();
+        }
+
+        function updateSignatureActions() {
+            signaturePanel.classList.toggle("has-signature", signatureCaptured);
+            clearSignatureButton.disabled = !signatureCaptured;
+            confirmSignatureButton.disabled = !signatureCaptured;
+        }
+
+        function prepareSignatureCanvas() {
+            if (!signatureRequired) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            signatureCanvas.width = Math.round(rect.width * pixelRatio);
+            signatureCanvas.height = Math.round(rect.height * pixelRatio);
+            signatureContext = signatureCanvas.getContext("2d");
+            signatureContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            signatureContext.lineWidth = 3;
+            signatureContext.lineCap = "round";
+            signatureContext.lineJoin = "round";
+            signatureContext.strokeStyle = "#24456D";
+            signatureContext.fillStyle = "#24456D";
+            signatureCaptured = false;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            updateSignatureActions();
+        }
+
+        function getSignaturePoint(event) {
+            const rect = signatureCanvas.getBoundingClientRect();
+            return {
+                x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)),
+                y: Math.max(0, Math.min(rect.height, event.clientY - rect.top))
+            };
+        }
+
+        function beginSignature(event) {
+            if (!signatureRequired || !signatureContext) return;
+            event.preventDefault();
+            signatureCanvas.setPointerCapture(event.pointerId);
+            signatureDrawing = true;
+            signatureLastPoint = getSignaturePoint(event);
+            signatureContext.beginPath();
+            signatureContext.arc(signatureLastPoint.x, signatureLastPoint.y, 1.5, 0, Math.PI * 2);
+            signatureContext.fill();
+            signatureCaptured = true;
+            updateSignatureActions();
+        }
+
+        function drawSignature(event) {
+            if (!signatureDrawing || !signatureContext || !signatureLastPoint) return;
+            event.preventDefault();
+            const events = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [event];
+            events.forEach((sample) => {
+                const nextPoint = getSignaturePoint(sample);
+                signatureContext.beginPath();
+                signatureContext.moveTo(signatureLastPoint.x, signatureLastPoint.y);
+                signatureContext.lineTo(nextPoint.x, nextPoint.y);
+                signatureContext.stroke();
+                signatureLastPoint = nextPoint;
+            });
+        }
+
+        function endSignature(event) {
+            if (!signatureDrawing) return;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            if (event && signatureCanvas.hasPointerCapture(event.pointerId)) {
+                signatureCanvas.releasePointerCapture(event.pointerId);
+            }
+        }
+
+        function clearSignature() {
+            if (!signatureContext) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            signatureContext.clearRect(0, 0, rect.width, rect.height);
+            signatureCaptured = false;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            updateSignatureActions();
+        }
+
+        function confirmSignature() {
+            if (!signatureCaptured) return;
+            choiceSheet.classList.remove("signature-mode");
+            sheetLabel.textContent = "CUSTOMER COPY";
+            showToast("Signature captured");
+        }
+
+        function initializeSignatureStep() {
+            if (!signatureRequired) return;
+            choiceSheet.classList.add("signature-mode");
+            sheetLabel.textContent = "SIGNATURE";
+            window.requestAnimationFrame(prepareSignatureCanvas);
         }
 
         function showToast(message) {
@@ -1546,10 +1803,16 @@
             if (event.key === "Escape") closeEmailPanel();
         });
 
+        signatureCanvas.addEventListener("pointerdown", beginSignature);
+        signatureCanvas.addEventListener("pointermove", drawSignature);
+        signatureCanvas.addEventListener("pointerup", endSignature);
+        signatureCanvas.addEventListener("pointercancel", endSignature);
+
         renderImeLayout();
         updateStatusTime();
         window.setInterval(updateStatusTime, 30000);
         syncTransactionDetails();
+        initializeSignatureStep();
     </script>
 </body>
 
