@@ -1321,6 +1321,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 14px;
+            position: relative;
+            z-index: 20;
         }
 
         .batch-header-title {
@@ -1358,7 +1360,141 @@
             stroke-linejoin: round;
         }
 
+        .batch-header-actions {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .batch-print-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #D8E0EC;
+            border-radius: 999px;
+            background: #F8FAFC;
+            color: #344054;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+        }
+
+        .batch-print-btn:active,
+        .batch-print-btn[aria-expanded="true"] {
+            border-color: #B7C3D4;
+            background: #EEF2F7;
+            transform: scale(0.96);
+        }
+
+        .batch-print-btn.hidden {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .batch-print-btn .material-symbols-rounded {
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .batch-print-menu {
+            position: absolute;
+            top: 38px;
+            right: 0;
+            width: 228px;
+            padding: 8px;
+            border: 1px solid #D8E0EC;
+            border-radius: 13px;
+            background: #FFFFFF;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-5px) scale(0.98);
+            transform-origin: top right;
+            pointer-events: none;
+            transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+        }
+
+        .batch-print-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .batch-print-option {
+            width: 100%;
+            min-height: 52px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #253B5C;
+            display: flex;
+            align-items: center;
+            font-size: 13.5px;
+            font-weight: 650;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .batch-print-option-index {
+            width: 28px;
+            height: 28px;
+            margin-right: 12px;
+            border-radius: 50%;
+            background: #EEF3FA;
+            color: #51647F;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1;
+        }
+
+        .batch-print-option + .batch-print-option {
+            border-top: 1px solid #EEF2F6;
+        }
+
+        .batch-print-option:active {
+            background: #F1F5F9;
+        }
+
+        .batch-print-toast {
+            position: absolute;
+            left: 50%;
+            bottom: 82px;
+            z-index: 30;
+            min-width: 164px;
+            max-width: calc(100% - 40px);
+            min-height: 38px;
+            padding: 9px 15px;
+            border-radius: 12px;
+            background: #253B5C;
+            color: #FFFFFF;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.2);
+            font-size: 11px;
+            font-weight: 650;
+            line-height: 1.25;
+            text-align: center;
+            opacity: 0;
+            transform: translate(-50%, 8px);
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
+        .batch-print-toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
         .batch-home,
+        .batch-history,
         .batch-detail {
             flex: 1;
             min-height: 0;
@@ -1368,6 +1504,7 @@
         }
 
         .batch-home.hidden,
+        .batch-history.hidden,
         .batch-detail.hidden,
         .batch-state.hidden,
         .batch-detail-content.hidden {
@@ -1419,6 +1556,17 @@
             color: #667085;
         }
 
+        .batch-option-icon.history {
+            border-color: #DDE3EC;
+            background: #F7F8FA;
+            color: #475467;
+        }
+
+        .batch-option-icon .material-symbols-rounded {
+            font-size: 24px;
+            line-height: 1;
+        }
+
         .batch-option-icon svg {
             width: 23px;
             height: 23px;
@@ -1453,6 +1601,154 @@
             font-weight: 600;
             line-height: 1;
             justify-self: end;
+        }
+
+        .batch-history {
+            padding-top: 13px;
+        }
+
+        .batch-history-heading {
+            min-height: 28px;
+            margin: 0 2px 9px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .batch-history-heading-title,
+        .batch-history-heading-limit {
+            color: #667085;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+
+        .batch-history-heading-limit {
+            color: #98A2B3;
+            font-size: 9px;
+        }
+
+        .batch-history-list {
+            display: grid;
+            gap: 10px;
+            padding-bottom: 12px;
+        }
+
+        .batch-history-card {
+            width: 100%;
+            min-height: 114px;
+            padding: 13px 14px 0;
+            border: 1px solid #D8E0EC;
+            border-radius: 17px;
+            background: #FFFFFF;
+            color: var(--text-dark);
+            text-align: left;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
+        }
+
+        .batch-history-card:active {
+            transform: scale(0.992);
+            background: #FBFCFE;
+        }
+
+        .batch-history-card-top {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto 16px;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .batch-history-batch-id {
+            min-width: 0;
+            font-size: 15px;
+            font-weight: 750;
+            line-height: 1.15;
+            letter-spacing: 0.01em;
+        }
+
+        .batch-history-date {
+            color: #667085;
+            font-size: 10px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .batch-history-arrow {
+            color: #98A2B3;
+            font-size: 19px;
+            line-height: 1;
+        }
+
+        .batch-history-identity {
+            margin-top: 6px;
+            color: #667085;
+            font-size: 9.5px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .batch-history-totals {
+            margin: 11px -14px 0;
+            min-height: 43px;
+            border-top: 1px solid #E4E9F1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .batch-history-total {
+            min-width: 0;
+            padding: 6px 5px 7px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .batch-history-total + .batch-history-total {
+            border-left: 1px solid #E4E9F1;
+        }
+
+        .batch-history-total-label {
+            color: #667085;
+            font-size: 8px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .batch-history-total-value {
+            max-width: 100%;
+            color: #253B5C;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .batch-history-total.receipts .batch-history-total-label,
+        .batch-history-total.receipts .batch-history-total-value {
+            color: #111827;
+        }
+
+        .batch-history-state {
+            min-height: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
         }
 
         .batch-state {
@@ -1836,21 +2132,44 @@
             height: 14px;
         }
 
-        .batch-payment-brand-logo.brand-mastercard {
+        .batch-payment-brand-logo.brand-mastercard,
+        .batch-payment-brand-logo.brand-maestro {
             width: 34px;
             height: 21px;
         }
 
         .batch-payment-brand-logo.brand-amex,
-        .batch-payment-brand-logo.brand-jcb,
-        .batch-payment-brand-logo.brand-unionpay {
+        .batch-payment-brand-logo.brand-unionpay,
+        .batch-payment-brand-logo.brand-interac {
             width: 28px;
             height: 22px;
+        }
+
+        .batch-payment-brand-logo.brand-jcb {
+            width: 32px;
+            height: 24px;
         }
 
         .batch-payment-brand-logo.brand-discover {
             width: 40px;
             height: 14px;
+        }
+
+        .batch-payment-brand-logo.brand-diners {
+            width: 34px;
+            height: 22px;
+        }
+
+        .batch-payment-brand-logo.brand-rupay,
+        .batch-payment-brand-logo.brand-eftpos,
+        .batch-payment-brand-logo.brand-mir {
+            width: 40px;
+            height: 16px;
+        }
+
+        .batch-payment-brand-logo.brand-elo {
+            width: 38px;
+            height: 16px;
         }
 
         .batch-payment-count {
@@ -2165,20 +2484,43 @@
             object-fit: contain;
         }
 
-        .batch-tx-payment-logo.brand-mastercard {
+        .batch-tx-payment-logo.brand-mastercard,
+        .batch-tx-payment-logo.brand-maestro {
             width: 24px;
             height: 16px;
         }
 
         .batch-tx-payment-logo.brand-amex,
-        .batch-tx-payment-logo.brand-jcb,
-        .batch-tx-payment-logo.brand-unionpay {
+        .batch-tx-payment-logo.brand-unionpay,
+        .batch-tx-payment-logo.brand-interac {
             width: 20px;
             height: 17px;
         }
 
+        .batch-tx-payment-logo.brand-jcb {
+            width: 23px;
+            height: 18px;
+        }
+
         .batch-tx-payment-logo.brand-discover {
             width: 28px;
+            height: 12px;
+        }
+
+        .batch-tx-payment-logo.brand-diners {
+            width: 24px;
+            height: 16px;
+        }
+
+        .batch-tx-payment-logo.brand-rupay,
+        .batch-tx-payment-logo.brand-eftpos,
+        .batch-tx-payment-logo.brand-mir {
+            width: 28px;
+            height: 12px;
+        }
+
+        .batch-tx-payment-logo.brand-elo {
+            width: 27px;
             height: 12px;
         }
 
@@ -3334,7 +3676,31 @@
                         </svg>
                     </button>
                     <div class="batch-header-title" id="batch-header-title">Batch Reports</div>
-                    <div style="width:32px;height:32px;"></div>
+                    <div class="batch-header-actions" id="batch-header-actions">
+                        <button class="batch-print-btn hidden" id="batch-print-btn" type="button"
+                            aria-label="Print batch reports" aria-haspopup="menu" aria-expanded="false"
+                            onclick="toggleBatchPrintMenu(event)">
+                            <span class="material-symbols-rounded" aria-hidden="true">print</span>
+                        </button>
+                        <div class="batch-print-menu" id="batch-print-menu" role="menu"
+                            aria-label="Select batch report to print">
+                            <button class="batch-print-option" type="button" role="menuitem"
+                                onclick="handleBatchReportPrint('summary', event)">
+                                <span class="batch-print-option-index" aria-hidden="true">1</span>
+                                <span>Batch Summary</span>
+                            </button>
+                            <button class="batch-print-option" type="button" role="menuitem"
+                                onclick="handleBatchReportPrint('details', event)">
+                                <span class="batch-print-option-index" aria-hidden="true">2</span>
+                                <span>Transaction Details</span>
+                            </button>
+                            <button class="batch-print-option" type="button" role="menuitem"
+                                onclick="handleBatchReportPrint('all', event)">
+                                <span class="batch-print-option-index" aria-hidden="true">3</span>
+                                <span>Summary + Details</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="batch-home" id="batch-home">
@@ -3367,7 +3733,26 @@
                             </span>
                             <span class="batch-option-arrow" aria-hidden="true">></span>
                         </button>
+
+                        <button class="batch-option-card" type="button" onclick="openBatchHistory()">
+                            <span class="batch-option-icon history" aria-hidden="true">
+                                <span class="material-symbols-rounded">history</span>
+                            </span>
+                            <span>
+                                <span class="batch-option-title">Batch History</span>
+                                <span class="batch-option-meta">RECENT 15 CLOSED BATCHES</span>
+                            </span>
+                            <span class="batch-option-arrow" aria-hidden="true">></span>
+                        </button>
                     </div>
+                </div>
+
+                <div class="batch-history hidden" id="batch-history">
+                    <div class="batch-history-heading">
+                        <span class="batch-history-heading-title">Closed batch reports</span>
+                        <span class="batch-history-heading-limit">Most recent 15</span>
+                    </div>
+                    <div class="batch-history-list" id="batch-history-list"></div>
                 </div>
 
                 <div class="batch-detail hidden" id="batch-detail">
@@ -3455,6 +3840,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="batch-print-toast" id="batch-print-toast" role="status" aria-live="polite"></div>
             </div>
         </div>
         <div class="keypad-overlay" id="keypad-overlay">
@@ -3619,6 +4005,8 @@
         ];
         const batchOverlay = document.getElementById('batch-overlay');
         const batchHome = document.getElementById('batch-home');
+        const batchHistory = document.getElementById('batch-history');
+        const batchHistoryList = document.getElementById('batch-history-list');
         const batchDetail = document.getElementById('batch-detail');
         const batchHeaderTitle = document.getElementById('batch-header-title');
         const batchLoadingState = document.getElementById('batch-loading-state');
@@ -3629,6 +4017,10 @@
         const batchPaymentSummaryList = document.getElementById('batch-payment-summary-list');
         const batchCardTransactionSummary = document.getElementById('batch-card-transaction-summary');
         const batchTransactionsToggle = document.getElementById('batch-transactions-toggle');
+        const batchHeaderActions = document.getElementById('batch-header-actions');
+        const batchPrintButton = document.getElementById('batch-print-btn');
+        const batchPrintMenu = document.getElementById('batch-print-menu');
+        const batchPrintToast = document.getElementById('batch-print-toast');
         const batchFields = {
             transactionCount: document.getElementById('batch-transaction-count'),
             mid: document.getElementById('batch-mid'),
@@ -3691,7 +4083,16 @@
                     { amount: 1500, transId: '251209174512', batchId: '000042', tranTime: '2026-06-25 14:45:12', transType: 'CAPTURE', cardType: 'VISA' },
                     { amount: 900, transId: '251209175126', batchId: '000042', tranTime: '2026-06-25 14:51:26', transType: 'TIP ADJUST', cardType: 'MASTERCARD' },
                     { amount: 2000, transId: '251209175944', batchId: '000042', tranTime: '2026-06-25 14:59:44', transType: 'VOID', cardType: 'DISCOVER' },
-                    { amount: 3000, transId: '251209180317', batchId: '000042', tranTime: '2026-06-25 15:03:17', transType: 'AUTH', cardType: 'AMEX' }
+                    { amount: 3000, transId: '251209180317', batchId: '000042', tranTime: '2026-06-25 15:03:17', transType: 'AUTH', cardType: 'AMEX' },
+                    { amount: 3360, transId: '251209180742', receiptNo: 'R000042021', batchId: '000042', tranTime: '2026-06-25 15:07:42', transType: 'SALE', cardType: 'JCB', cardLastFour: '3521' },
+                    { amount: 4125, transId: '251209181208', receiptNo: 'R000042022', batchId: '000042', tranTime: '2026-06-25 15:12:08', transType: 'SALE', cardType: 'UNIONPAY', cardLastFour: '6218' },
+                    { amount: 2840, transId: '251209181633', receiptNo: 'R000042023', batchId: '000042', tranTime: '2026-06-25 15:16:33', transType: 'SALE', cardType: 'DINERS CLUB', cardLastFour: '3057' },
+                    { amount: 3765, transId: '251209182104', receiptNo: 'R000042024', batchId: '000042', tranTime: '2026-06-25 15:21:04', transType: 'SALE', cardType: 'MAESTRO', cardLastFour: '6759' },
+                    { amount: 5290, transId: '251209182527', receiptNo: 'R000042025', batchId: '000042', tranTime: '2026-06-25 15:25:27', transType: 'SALE', cardType: 'RUPAY', cardLastFour: '8174' },
+                    { amount: 2485, transId: '251209182951', receiptNo: 'R000042026', batchId: '000042', tranTime: '2026-06-25 15:29:51', transType: 'SALE', cardType: 'INTERAC', cardLastFour: '4506' },
+                    { amount: 4610, transId: '251209183418', receiptNo: 'R000042027', batchId: '000042', tranTime: '2026-06-25 15:34:18', transType: 'SALE', cardType: 'ELO', cardLastFour: '5092' },
+                    { amount: 3195, transId: '251209183842', receiptNo: 'R000042028', batchId: '000042', tranTime: '2026-06-25 15:38:42', transType: 'SALE', cardType: 'EFTPOS', cardLastFour: '7338' },
+                    { amount: 5875, transId: '251209184307', receiptNo: 'R000042029', batchId: '000042', tranTime: '2026-06-25 15:43:07', transType: 'SALE', cardType: 'MIR', cardLastFour: '2204' }
                 ]
             },
             last: {
@@ -3732,18 +4133,82 @@
                     { amount: 1850, transId: '251208233245', batchId: '000041', tranTime: '2026-06-24 23:32:45', transType: 'CAPTURE', cardType: 'MASTERCARD' },
                     { amount: 650, transId: '251208234019', batchId: '000041', tranTime: '2026-06-24 23:40:19', transType: 'TIP ADJUST', cardType: 'VISA' },
                     { amount: 1250, transId: '251208234833', batchId: '000041', tranTime: '2026-06-24 23:48:33', transType: 'VOID', cardType: 'AMEX' },
-                    { amount: 4200, transId: '251208235507', batchId: '000041', tranTime: '2026-06-24 23:55:07', transType: 'AUTH', cardType: 'DISCOVER' }
+                    { amount: 4200, transId: '251208235507', batchId: '000041', tranTime: '2026-06-24 23:55:07', transType: 'AUTH', cardType: 'DISCOVER' },
+                    { amount: 4380, transId: '251209000318', receiptNo: 'R000041025', batchId: '000041', tranTime: '2026-06-25 00:03:18', transType: 'SALE', cardType: 'UNIONPAY', cardLastFour: '6286' },
+                    { amount: 2955, transId: '251209001147', receiptNo: 'R000041026', batchId: '000041', tranTime: '2026-06-25 00:11:47', transType: 'SALE', cardType: 'DINERS CLUB', cardLastFour: '3019' },
+                    { amount: 3890, transId: '251209002019', receiptNo: 'R000041027', batchId: '000041', tranTime: '2026-06-25 00:20:19', transType: 'SALE', cardType: 'MAESTRO', cardLastFour: '6764' },
+                    { amount: 5475, transId: '251209002846', receiptNo: 'R000041028', batchId: '000041', tranTime: '2026-06-25 00:28:46', transType: 'SALE', cardType: 'RUPAY', cardLastFour: '8127' },
+                    { amount: 2610, transId: '251209003714', receiptNo: 'R000041029', batchId: '000041', tranTime: '2026-06-25 00:37:14', transType: 'SALE', cardType: 'INTERAC', cardLastFour: '4518' },
+                    { amount: 4795, transId: '251209004542', receiptNo: 'R000041030', batchId: '000041', tranTime: '2026-06-25 00:45:42', transType: 'SALE', cardType: 'ELO', cardLastFour: '5063' },
+                    { amount: 3275, transId: '251209005409', receiptNo: 'R000041031', batchId: '000041', tranTime: '2026-06-25 00:54:09', transType: 'SALE', cardType: 'EFTPOS', cardLastFour: '7391' },
+                    { amount: 6040, transId: '251209010238', receiptNo: 'R000041032', batchId: '000041', tranTime: '2026-06-25 01:02:38', transType: 'SALE', cardType: 'MIR', cardLastFour: '2208' }
                 ]
             }
         };
+
+        function createDemoHistoricalBatchInfo(index) {
+            const source = JSON.parse(JSON.stringify(demoBatchInfo.last));
+            const safeIndex = Math.max(0, Math.min(14, Number(index) || 0));
+            const batchNumber = 41 - safeIndex;
+            const batchId = String(batchNumber).padStart(6, '0');
+            const baseDate = new Date(Date.UTC(2026, 5, 24));
+            baseDate.setUTCDate(baseDate.getUTCDate() - safeIndex);
+            const dateText = baseDate.toISOString().slice(0, 10);
+            const multipliers = [1, 0.82, 1.14, 0.93, 1.27, 0.76, 1.08, 0.89, 1.19, 0.97, 1.31, 0.84, 1.04, 0.91, 1.22];
+            const multiplier = multipliers[safeIndex];
+
+            source.summary.batchId = batchId;
+            source.summary.settleStatus = 'CLOSED';
+            source.settlementList = source.settlementList.map((transaction, transactionIndex) => {
+                if (safeIndex === 0) return transaction;
+                const timeText = String(transaction.tranTime || '').split(' ')[1] || '12:00:00';
+                const amountVariation = 0.92 + (((transactionIndex + safeIndex) % 5) * 0.04);
+                const isCash = normalizeBatchPaymentType(transaction) === 'CASH';
+                return {
+                    ...transaction,
+                    amount: Math.max(1, Math.round(Math.abs(transaction.amount) * multiplier * amountVariation)),
+                    batchId,
+                    tranTime: `${dateText} ${timeText}`,
+                    transId: isCash
+                        ? `C${batchId}${String(transactionIndex + 1).padStart(2, '0')}`
+                        : `${String(batchNumber).padStart(2, '0')}${String(transactionIndex + 1).padStart(10, '0')}`,
+                    receiptNo: `R${batchId}${String(transactionIndex + 1).padStart(3, '0')}`
+                };
+            });
+
+            return source;
+        }
+
+        function getDemoBatchHistoryReports() {
+            return Array.from({ length: 15 }, (_, index) => {
+                const batchInfo = createDemoHistoricalBatchInfo(index);
+                const lastTransaction = batchInfo.settlementList[batchInfo.settlementList.length - 1];
+                return {
+                    batchInfo,
+                    closedAt: lastTransaction && lastTransaction.tranTime
+                        ? lastTransaction.tranTime
+                        : ''
+                };
+            });
+        }
+
+        function getDemoHistoricalBatchInfo(batchId) {
+            const normalizedBatchId = formatBatchId(batchId);
+            const match = getDemoBatchHistoryReports().find((entry) => (
+                formatBatchId(entry.batchInfo.summary.batchId) === normalizedBatchId
+            ));
+            return match ? match.batchInfo : createDemoHistoricalBatchInfo(0);
+        }
         let pendingAction = null;
         let cashDiscountEnabled = false;
         let cashDiscountPercentText = '';
         let cashRefundEnabled = readCashRefundSetting();
         let electronicSignatureEnabled = readElectronicSignatureSetting();
         let activeBatchKind = null;
+        let activeHistoricalBatchId = '';
         let batchRequestToken = 0;
         let batchTransactionsExpanded = false;
+        let batchPrintToastTimer = 0;
 
         function updateStatusTime() {
             if (!statusTime) return;
@@ -4091,12 +4556,123 @@
             element.textContent = value === null || value === undefined || value === '' ? '-' : String(value);
         }
 
-        function showBatchHome() {
+        function setBatchPrintAvailable(available) {
+            if (!batchPrintButton) return;
+            batchPrintButton.classList.toggle('hidden', !available);
+            if (!available) closeBatchPrintMenu();
+        }
+
+        function closeBatchPrintMenu() {
+            if (batchPrintMenu) batchPrintMenu.classList.remove('open');
+            if (batchPrintButton) batchPrintButton.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleBatchPrintMenu(event) {
+            if (event) event.stopPropagation();
+            if (!batchPrintMenu || !batchPrintButton || batchPrintButton.classList.contains('hidden')) return;
+            const shouldOpen = !batchPrintMenu.classList.contains('open');
+            closeBatchPrintMenu();
+            if (shouldOpen) {
+                batchPrintMenu.classList.add('open');
+                batchPrintButton.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        function showBatchPrintToast(message) {
+            if (!batchPrintToast) return;
+            window.clearTimeout(batchPrintToastTimer);
+            batchPrintToast.textContent = message;
+            batchPrintToast.classList.add('show');
+            batchPrintToastTimer = window.setTimeout(() => {
+                batchPrintToast.classList.remove('show');
+            }, 2200);
+        }
+
+        async function handleBatchReportPrint(printScope, event) {
+            if (event) event.stopPropagation();
+            if (!activeBatchKind) return;
+
+            const scopeLabels = {
+                summary: 'Batch Summary',
+                details: 'Transaction Details',
+                all: 'Summary + Details'
+            };
+            const normalizedScope = Object.prototype.hasOwnProperty.call(scopeLabels, printScope)
+                ? printScope
+                : 'summary';
+            const payload = {
+                batchType: activeBatchKind,
+                printScope: normalizedScope,
+                batchId: activeHistoricalBatchId || undefined
+            };
+            const globalMethodNames = ['printBatchReportNative', 'printBatchReports'];
+            const bridgeMethodNames = ['printBatchReport', 'printBatchReports'];
+            const bridgeNames = [
+                'PaywizardTerminal',
+                'PayWizardTerminal',
+                'paywizardTerminal',
+                'TerminalBridge',
+                'NativeBridge',
+                'Android',
+                'android'
+            ];
+
+            closeBatchPrintMenu();
+            showBatchPrintToast(`Printing ${scopeLabels[normalizedScope]}...`);
+
+            try {
+                let handled = false;
+                for (const methodName of globalMethodNames) {
+                    if (typeof window[methodName] === 'function') {
+                        await window[methodName](JSON.stringify(payload));
+                        handled = true;
+                        break;
+                    }
+                }
+
+                if (!handled) {
+                    for (const bridgeName of bridgeNames) {
+                        const bridge = window[bridgeName];
+                        if (!bridge) continue;
+                        for (const methodName of bridgeMethodNames) {
+                            if (typeof bridge[methodName] === 'function') {
+                                await bridge[methodName](JSON.stringify(payload));
+                                handled = true;
+                                break;
+                            }
+                        }
+                        if (handled) break;
+                    }
+                }
+
+                window.dispatchEvent(new CustomEvent('opc:print-batch-report', { detail: payload }));
+                showBatchPrintToast(`${scopeLabels[normalizedScope]} sent to printer.`);
+            } catch (error) {
+                showBatchPrintToast(error && error.message ? error.message : 'Unable to print batch report.');
+            }
+        }
+
+        function showBatchHistoryView() {
             activeBatchKind = null;
+            activeHistoricalBatchId = '';
             batchRequestToken += 1;
             setBatchTransactionsExpanded(false);
+            setBatchPrintAvailable(false);
+            if (batchHeaderTitle) batchHeaderTitle.textContent = 'Batch History';
+            if (batchHome) batchHome.classList.add('hidden');
+            if (batchHistory) batchHistory.classList.remove('hidden');
+            if (batchDetail) batchDetail.classList.add('hidden');
+        }
+
+        function showBatchHome() {
+            activeBatchKind = null;
+            activeHistoricalBatchId = '';
+            batchRequestToken += 1;
+            setBatchTransactionsExpanded(false);
+            setBatchPrintAvailable(false);
             if (batchHeaderTitle) batchHeaderTitle.textContent = 'Batch Reports';
             if (batchHome) batchHome.classList.remove('hidden');
+            if (batchHistory) batchHistory.classList.add('hidden');
             if (batchDetail) batchDetail.classList.add('hidden');
         }
 
@@ -4117,7 +4693,15 @@
 
         function handleBatchBack(event) {
             if (event) event.stopPropagation();
+            if (activeBatchKind === 'history') {
+                showBatchHistoryView();
+                return;
+            }
             if (activeBatchKind) {
+                showBatchHome();
+                return;
+            }
+            if (batchHistory && !batchHistory.classList.contains('hidden')) {
                 showBatchHome();
                 return;
             }
@@ -4128,13 +4712,14 @@
             if (batchLoadingState) batchLoadingState.classList.toggle('hidden', state !== 'loading');
             if (batchErrorState) batchErrorState.classList.toggle('hidden', state !== 'error');
             if (batchDetailContent) batchDetailContent.classList.toggle('hidden', state !== 'ready');
+            setBatchPrintAvailable(state === 'ready' && Boolean(activeBatchKind));
             if (batchErrorText && message) batchErrorText.textContent = message;
         }
 
         function retryBatchInfo(event) {
             if (event) event.stopPropagation();
             if (!activeBatchKind) return;
-            openBatchDetail(activeBatchKind);
+            openBatchDetail(activeBatchKind, activeHistoricalBatchId);
         }
 
         function setBatchTransactionsExpanded(expanded) {
@@ -4152,24 +4737,229 @@
             setBatchTransactionsExpanded(!batchTransactionsExpanded);
         }
 
-        async function openBatchDetail(kind) {
-            activeBatchKind = kind === 'last' ? 'last' : 'current';
+        function calculateBatchHistoryTotals(batchInfo, suppliedTotals = {}) {
+            const transactions = Array.isArray(batchInfo && batchInfo.settlementList)
+                ? batchInfo.settlementList
+                : [];
+            const currencyCode = batchInfo && batchInfo.summary ? batchInfo.summary.currencyCode : '840';
+            const cashSummary = summarizeBatchCash(transactions);
+            const cardNet = transactions.reduce((total, transaction) => {
+                if (normalizeBatchPaymentType(transaction) === 'CASH') return total;
+                return total + getBatchSettlementAmount(transaction);
+            }, 0);
+            const resolvedCardNet = Number.isFinite(Number(suppliedTotals.cardNet))
+                ? Number(suppliedTotals.cardNet)
+                : cardNet;
+            const resolvedCashNet = Number.isFinite(Number(suppliedTotals.cashNet))
+                ? Number(suppliedTotals.cashNet)
+                : cashSummary.netAmount;
+            const resolvedTotal = Number.isFinite(Number(suppliedTotals.totalReceipts))
+                ? Number(suppliedTotals.totalReceipts)
+                : resolvedCardNet + resolvedCashNet;
+
+            return {
+                currencyCode,
+                cardNet: resolvedCardNet,
+                cashNet: resolvedCashNet,
+                totalReceipts: resolvedTotal
+            };
+        }
+
+        function normalizeBatchHistoryPayload(payload) {
+            let data = payload;
+            if (typeof data === 'string') {
+                const trimmed = data.trim();
+                if (!trimmed) return [];
+                data = JSON.parse(trimmed);
+            }
+
+            const rows = Array.isArray(data)
+                ? data
+                : (data && (data.items || data.batchList || data.history || data.reports));
+            if (!Array.isArray(rows)) return [];
+
+            return rows.slice(0, 15).map((row) => {
+                const source = row && (row.batchInfo || row.report || row.data || row);
+                const batchInfo = source && source.summary
+                    ? normalizeBatchInfoPayload(source)
+                    : normalizeBatchInfoPayload({
+                        summary: {
+                            mid: row && (row.mid || row.merchantId),
+                            tid: row && (row.tid || row.terminalId),
+                            batchId: row && (row.batchId || row.id),
+                            currencyCode: row && row.currencyCode,
+                            settleStatus: 'CLOSED'
+                        },
+                        settlementList: row && Array.isArray(row.settlementList) ? row.settlementList : []
+                    });
+                return {
+                    batchInfo,
+                    closedAt: row && (row.closedAt || row.settledAt || row.closeTime || row.settleTime) || '',
+                    totals: calculateBatchHistoryTotals(batchInfo, row || {})
+                };
+            });
+        }
+
+        function formatBatchHistoryDate(value) {
+            if (!value) return 'Closed batch';
+            const parsed = new Date(String(value).replace(' ', 'T'));
+            if (Number.isNaN(parsed.getTime())) return String(value);
+            return parsed.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        }
+
+        function renderBatchHistory(reports) {
+            if (!batchHistoryList) return;
+            batchHistoryList.innerHTML = '';
+
+            if (!reports.length) {
+                const empty = document.createElement('div');
+                empty.className = 'batch-history-state';
+                empty.textContent = 'No closed batch reports are available.';
+                batchHistoryList.appendChild(empty);
+                return;
+            }
+
+            reports.slice(0, 15).forEach((report) => {
+                const summary = report.batchInfo.summary;
+                const totals = report.totals || calculateBatchHistoryTotals(report.batchInfo);
+                const batchId = formatBatchId(summary.batchId);
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'batch-history-card';
+                card.setAttribute('aria-label', `Open batch ${batchId} reports`);
+
+                const top = document.createElement('div');
+                top.className = 'batch-history-card-top';
+                const title = document.createElement('span');
+                title.className = 'batch-history-batch-id';
+                title.textContent = `BATCH ${batchId}`;
+                const date = document.createElement('span');
+                date.className = 'batch-history-date';
+                date.textContent = formatBatchHistoryDate(report.closedAt);
+                const arrow = document.createElement('span');
+                arrow.className = 'material-symbols-rounded batch-history-arrow';
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = 'chevron_right';
+                top.append(title, date, arrow);
+
+                const identity = document.createElement('div');
+                identity.className = 'batch-history-identity';
+                identity.textContent = `MID ${summary.mid || '-'}  •  TID ${summary.tid || '-'}`;
+
+                const totalsGrid = document.createElement('div');
+                totalsGrid.className = 'batch-history-totals';
+                [
+                    ['Card Net', totals.cardNet, ''],
+                    ['Cash Net', totals.cashNet, ''],
+                    ['Total Receipts', totals.totalReceipts, 'receipts']
+                ].forEach(([labelText, value, className]) => {
+                    const item = document.createElement('span');
+                    item.className = `batch-history-total${className ? ` ${className}` : ''}`;
+                    const label = document.createElement('span');
+                    label.className = 'batch-history-total-label';
+                    label.textContent = labelText;
+                    const amount = document.createElement('span');
+                    amount.className = 'batch-history-total-value';
+                    amount.textContent = formatBatchAmount(value, totals.currencyCode);
+                    item.append(label, amount);
+                    totalsGrid.appendChild(item);
+                });
+
+                card.append(top, identity, totalsGrid);
+                card.addEventListener('click', () => openBatchDetail('history', batchId));
+                batchHistoryList.appendChild(card);
+            });
+        }
+
+        async function fetchBatchHistoryFromTerminal() {
+            const methodNames = ['getBatchHistory', 'getRecentBatchHistory', 'getClosedBatchList', 'getBatchReportList'];
+            const bridgeNames = [
+                'PaywizardTerminal',
+                'PayWizardTerminal',
+                'paywizardTerminal',
+                'TerminalBridge',
+                'NativeBridge',
+                'Android',
+                'android'
+            ];
+
+            for (const methodName of methodNames) {
+                if (typeof window[methodName] === 'function') {
+                    return normalizeBatchHistoryPayload(await window[methodName](15));
+                }
+            }
+            for (const bridgeName of bridgeNames) {
+                const bridge = window[bridgeName];
+                if (!bridge) continue;
+                for (const methodName of methodNames) {
+                    if (typeof bridge[methodName] === 'function') {
+                        return normalizeBatchHistoryPayload(await bridge[methodName](15));
+                    }
+                }
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 120));
+            return getDemoBatchHistoryReports().map((report) => ({
+                ...report,
+                totals: calculateBatchHistoryTotals(report.batchInfo)
+            }));
+        }
+
+        async function openBatchHistory() {
+            showBatchHistoryView();
+            const requestToken = batchRequestToken;
+            if (batchHistoryList) {
+                batchHistoryList.innerHTML = '<div class="batch-history-state"><div class="batch-spinner" aria-hidden="true"></div><div>Loading batch history...</div></div>';
+            }
+            try {
+                const reports = await fetchBatchHistoryFromTerminal();
+                if (requestToken !== batchRequestToken) return;
+                renderBatchHistory(reports);
+            } catch (error) {
+                if (requestToken !== batchRequestToken || !batchHistoryList) return;
+                batchHistoryList.innerHTML = '';
+                const state = document.createElement('div');
+                state.className = 'batch-history-state';
+                const message = document.createElement('div');
+                message.textContent = error && error.message ? error.message : 'Unable to load batch history.';
+                const retry = document.createElement('button');
+                retry.type = 'button';
+                retry.className = 'batch-retry-btn';
+                retry.textContent = 'Retry';
+                retry.addEventListener('click', openBatchHistory);
+                state.append(message, retry);
+                batchHistoryList.appendChild(state);
+            }
+        }
+
+        async function openBatchDetail(kind, batchId = '') {
+            activeBatchKind = kind === 'history'
+                ? 'history'
+                : (kind === 'last' ? 'last' : 'current');
+            activeHistoricalBatchId = activeBatchKind === 'history' ? formatBatchId(batchId) : '';
             const requestToken = ++batchRequestToken;
             setBatchTransactionsExpanded(false);
 
             if (batchHeaderTitle) {
-                batchHeaderTitle.textContent = activeBatchKind === 'last'
-                    ? 'Last Batch Reports'
-                    : 'Current Batch Reports';
+                batchHeaderTitle.textContent = activeBatchKind === 'history'
+                    ? `Batch ${activeHistoricalBatchId} Reports`
+                    : (activeBatchKind === 'last' ? 'Last Batch Reports' : 'Current Batch Reports');
             }
             if (batchHome) batchHome.classList.add('hidden');
+            if (batchHistory) batchHistory.classList.add('hidden');
             if (batchDetail) batchDetail.classList.remove('hidden');
             setBatchDetailState('loading');
 
             try {
-                const batchInfo = await fetchBatchInfoFromTerminal(activeBatchKind);
+                const batchInfo = await fetchBatchInfoFromTerminal(activeBatchKind, activeHistoricalBatchId);
                 if (requestToken !== batchRequestToken) return;
-                renderBatchInfo(batchInfo, activeBatchKind);
+                renderBatchInfo(batchInfo, activeBatchKind === 'history' ? 'last' : activeBatchKind);
                 setBatchDetailState('ready');
             } catch (error) {
                 if (requestToken !== batchRequestToken) return;
@@ -4178,10 +4968,12 @@
             }
         }
 
-        async function fetchBatchInfoFromTerminal(kind) {
-            const directMethods = kind === 'last'
-                ? ['getLastBatchInfo', 'getLastSettlementBatchInfo', 'getLastBatchSettlement', 'getLastBatch']
-                : ['getCurrentBatchInfo', 'getCurrentBatchSettlement', 'getCurrentBatch'];
+        async function fetchBatchInfoFromTerminal(kind, batchId = '') {
+            const directMethods = kind === 'history'
+                ? ['getHistoricalBatchInfo', 'getBatchReportById', 'getClosedBatchInfo']
+                : (kind === 'last'
+                    ? ['getLastBatchInfo', 'getLastSettlementBatchInfo', 'getLastBatchSettlement', 'getLastBatch']
+                    : ['getCurrentBatchInfo', 'getCurrentBatchSettlement', 'getCurrentBatch']);
             const genericMethods = ['getBatchInfo', 'queryBatchInfo', 'getSettlementInfo'];
             const bridgeNames = [
                 'PaywizardTerminal',
@@ -4197,7 +4989,7 @@
             for (const methodName of directMethods) {
                 if (typeof window[methodName] === 'function') {
                     try {
-                        return normalizeBatchInfoPayload(await window[methodName](kind));
+                        return normalizeBatchInfoPayload(await window[methodName](kind === 'history' ? batchId : kind));
                     } catch (error) {
                         errors.push(error);
                     }
@@ -4211,7 +5003,7 @@
                 for (const methodName of directMethods) {
                     if (typeof bridge[methodName] === 'function') {
                         try {
-                            return normalizeBatchInfoPayload(await bridge[methodName]());
+                            return normalizeBatchInfoPayload(await bridge[methodName](kind === 'history' ? batchId : undefined));
                         } catch (error) {
                             errors.push(error);
                         }
@@ -4221,7 +5013,9 @@
                 for (const methodName of genericMethods) {
                     if (typeof bridge[methodName] === 'function') {
                         try {
-                            return normalizeBatchInfoPayload(await bridge[methodName](kind));
+                            return normalizeBatchInfoPayload(await bridge[methodName](kind === 'history'
+                                ? JSON.stringify({ kind, batchId })
+                                : kind));
                         } catch (error) {
                             errors.push(error);
                         }
@@ -4234,7 +5028,7 @@
                 && window.webkit.messageHandlers.paywizardBatchInfo;
             if (webkitHandler && typeof webkitHandler.postMessage === 'function') {
                 try {
-                    return normalizeBatchInfoPayload(await requestBatchInfoFromWebkit(kind, webkitHandler));
+                    return normalizeBatchInfoPayload(await requestBatchInfoFromWebkit(kind, webkitHandler, batchId));
                 } catch (error) {
                     errors.push(error);
                 }
@@ -4245,10 +5039,13 @@
             }
 
             await new Promise(resolve => setTimeout(resolve, 350));
-            return normalizeBatchInfoPayload(JSON.parse(JSON.stringify(demoBatchInfo[kind])));
+            const fallback = kind === 'history'
+                ? getDemoHistoricalBatchInfo(batchId)
+                : demoBatchInfo[kind];
+            return normalizeBatchInfoPayload(JSON.parse(JSON.stringify(fallback)));
         }
 
-        function requestBatchInfoFromWebkit(kind, handler) {
+        function requestBatchInfoFromWebkit(kind, handler, batchId = '') {
             return new Promise((resolve, reject) => {
                 const callbackName = `__paywizardBatchInfo_${Date.now()}_${Math.random().toString(16).slice(2)}`;
                 const timer = setTimeout(() => {
@@ -4265,6 +5062,7 @@
                 handler.postMessage({
                     type: 'getBatchInfo',
                     batchKind: kind,
+                    batchId,
                     callback: callbackName
                 });
             });
@@ -4394,6 +5192,13 @@
             if (compactType === 'DISCOVER') return 'DISCOVER';
             if (compactType === 'JCB') return 'JCB';
             if (compactType === 'UNIONPAY' || compactType === 'CUP') return 'UNIONPAY';
+            if (compactType === 'DINERS' || compactType === 'DINERSCLUB' || compactType === 'DCI') return 'DINERS';
+            if (compactType === 'MAESTRO' || compactType === 'MAESTROCARD') return 'MAESTRO';
+            if (compactType === 'RUPAY' || compactType === 'RUPAYCARD') return 'RUPAY';
+            if (compactType === 'INTERAC' || compactType === 'INTERACDEBIT') return 'INTERAC';
+            if (compactType === 'ELO' || compactType === 'ELOCARD') return 'ELO';
+            if (compactType === 'EFTPOS' || compactType === 'EFTPOSAUSTRALIA') return 'EFTPOS';
+            if (compactType === 'MIR' || compactType === 'MIRCARD' || compactType === 'MIRPAY' || compactType === 'NSPK') return 'MIR';
             return rawCardType || 'OTHER';
         }
 
@@ -4472,7 +5277,10 @@
                 totals.set(paymentType, current);
             });
 
-            const preferredOrder = ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'JCB', 'UNIONPAY', 'OTHER'];
+            const preferredOrder = [
+                'VISA', 'MASTERCARD', 'AMEX', 'DISCOVER', 'JCB', 'UNIONPAY',
+                'DINERS', 'MAESTRO', 'RUPAY', 'INTERAC', 'ELO', 'EFTPOS', 'MIR', 'OTHER'
+            ];
             const detailOrder = ['SALE', 'REFUND', 'CAPTURE'];
             return Array.from(totals.values())
                 .map((total) => ({
@@ -4605,8 +5413,15 @@
                 MASTERCARD: { summarySrc: 'mastercard.svg', detailSrc: 'mastercard.svg', className: 'brand-mastercard', shortName: 'MC' },
                 AMEX: { summarySrc: 'amex.svg', detailSrc: 'amex.svg', className: 'brand-amex', shortName: 'AMEX' },
                 DISCOVER: { summarySrc: 'discover.svg', detailSrc: 'discover.svg', className: 'brand-discover', shortName: 'DISC' },
-                JCB: { summarySrc: 'icon_jcb.svg', detailSrc: 'icon_jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
-                UNIONPAY: { summarySrc: 'unionpay.svg', detailSrc: 'unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' }
+                JCB: { summarySrc: 'jcb.svg', detailSrc: 'jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
+                UNIONPAY: { summarySrc: 'unionpay.svg', detailSrc: 'unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' },
+                DINERS: { summarySrc: 'diners.svg', detailSrc: 'diners.svg', className: 'brand-diners', shortName: 'DINERS' },
+                MAESTRO: { summarySrc: 'maestro-mark.svg', detailSrc: 'maestro-mark.svg', className: 'brand-maestro', shortName: 'MAESTRO' },
+                RUPAY: { summarySrc: 'rupay.svg', detailSrc: 'rupay.svg', className: 'brand-rupay', shortName: 'RUPAY' },
+                INTERAC: { summarySrc: 'Interac.png', detailSrc: 'Interac.png', className: 'brand-interac', shortName: 'INTERAC' },
+                ELO: { summarySrc: 'elo.svg', detailSrc: 'elo.svg', className: 'brand-elo', shortName: 'ELO' },
+                EFTPOS: { summarySrc: 'eftpos.svg', detailSrc: 'eftpos.svg', className: 'brand-eftpos', shortName: 'EFTPOS' },
+                MIR: { summarySrc: 'mir.svg', detailSrc: 'mir.svg', className: 'brand-mir', shortName: 'MIR' }
             };
             return assets[type] || null;
         }
@@ -4883,6 +5698,16 @@
                 row.append(date, amount, payment);
                 batchTransactionList.appendChild(row);
             });
+        }
+
+        document.addEventListener('click', (event) => {
+            if (!batchPrintMenu || !batchPrintMenu.classList.contains('open')) return;
+            if (batchHeaderActions && batchHeaderActions.contains(event.target)) return;
+            closeBatchPrintMenu();
+        });
+
+        if (batchDetail) {
+            batchDetail.addEventListener('scroll', closeBatchPrintMenu, { passive: true });
         }
 
         // Init
@@ -5414,6 +6239,11 @@
 
             if (actionName === 'Reprint') {
                 openPrintMenu();
+                return;
+            }
+
+            if (actionName === 'Transaction') {
+                window.location.href = '11_transactions.html';
                 return;
             }
 

@@ -66,3 +66,15 @@ No actionable P0, P1, or P2 issues remain.
 - Fix: changed the column to `Date & Time` and introduced a compact three-level stack: date, emphasized time, and receipt reference.
 
 final result: passed
+
+## Batch Report Print Menu
+
+- Added the same right-aligned printer control to ready-state Current Batch Reports and Last Batch Reports.
+- Added three text-only actions: `Batch Summary`, `Transaction Details`, and `Summary + Details`.
+- Increased the dropdown width to 228px and each action target to 52px for terminal touch use.
+- Confirmed the menu closes on outside click, report scrolling, navigation, and selection.
+- Confirmed the selection payload differentiates current/last batch and summary/details/all output.
+- Parsed the inline JavaScript successfully and ran `git diff --check`.
+- Final visual touch validation is intentionally left for the user's quick manual check, per request.
+
+final result: passed

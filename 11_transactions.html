@@ -253,15 +253,25 @@
             background: #F4F8FF;
         }
 
-        .tx-time {
-            font-size: 15px;
+        .tx-date {
+            color: #667085;
+            font-size: 9px;
             font-weight: 700;
             line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .tx-time {
+            margin-top: 2px;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
         .tx-id {
-            margin-top: 4px;
-            font-size: 11px;
+            margin-top: 3px;
+            font-size: 9px;
             color: #94A3B8;
             font-weight: 600;
         }
@@ -290,34 +300,57 @@
             border-radius: 6px;
             border: 1px solid #D9E2EF;
             flex-shrink: 0;
-        }
-
-        .brand-mastercard {
-            position: relative;
             background: #FFFFFF;
             overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .brand-mastercard::before,
-        .brand-mastercard::after {
-            content: "";
-            position: absolute;
-            top: 4px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
+        .brand-chip-logo {
+            display: block;
+            width: 27px;
+            height: 16px;
+            object-fit: contain;
         }
 
-        .brand-mastercard::before {
-            left: 7px;
-            background: #EA001B;
-            opacity: 0.85;
+        .brand-chip-logo.brand-mastercard,
+        .brand-chip-logo.brand-maestro {
+            width: 24px;
+            height: 16px;
         }
 
-        .brand-mastercard::after {
-            right: 7px;
-            background: #FF9F1A;
-            opacity: 0.85;
+        .brand-chip-logo.brand-amex,
+        .brand-chip-logo.brand-unionpay,
+        .brand-chip-logo.brand-interac {
+            width: 20px;
+            height: 17px;
+        }
+
+        .brand-chip-logo.brand-jcb {
+            width: 23px;
+            height: 18px;
+        }
+
+        .brand-chip-logo.brand-discover,
+        .brand-chip-logo.brand-rupay,
+        .brand-chip-logo.brand-eftpos,
+        .brand-chip-logo.brand-mir {
+            width: 28px;
+            height: 12px;
+        }
+
+        .brand-chip-logo.brand-diners,
+        .brand-chip-logo.brand-elo {
+            width: 24px;
+            height: 16px;
+        }
+
+        .brand-fallback {
+            color: #475569;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
         }
 
         .cash-chip {
@@ -417,7 +450,7 @@
             </div>
 
             <div class="table-head">
-                <span>Date</span>
+                <span>Date &amp; Time</span>
                 <span>Total</span>
                 <span>Card details</span>
             </div>
@@ -432,79 +465,142 @@
         const transactions = [
             {
                 id: 'txn_000437',
-                time: '7:35 PM',
+                tranTime: '2025-03-13 19:35:50',
                 invoice: '000437',
                 amount: 21.65,
                 kind: 'payment',
                 tenderType: 'card',
                 tenderLabel: 'Credit Card',
-                tenderMeta: 'MC ****0198'
+                cardType: 'MASTERCARD',
+                lastFour: '0198'
             },
             {
                 id: 'txn_000436',
-                time: '7:49 PM',
+                tranTime: '2025-03-13 19:49:02',
                 invoice: '000436',
                 amount: 17.20,
                 kind: 'payment',
                 tenderType: 'cash',
-                tenderLabel: 'Cash',
-                tenderMeta: ''
+                tenderLabel: 'Cash'
             },
             {
                 id: 'txn_000435',
-                time: '7:48 PM',
+                tranTime: '2025-03-13 19:48:04',
                 invoice: '000435',
                 amount: 17.20,
                 kind: 'payment',
                 tenderType: 'cash',
-                tenderLabel: 'Cash',
-                tenderMeta: ''
+                tenderLabel: 'Cash'
             },
             {
                 id: 'txn_000434',
-                time: '6:15 PM',
+                tranTime: '2025-03-13 18:15:11',
                 invoice: '000434',
                 amount: 12.88,
                 kind: 'payment',
                 tenderType: 'card',
                 tenderLabel: 'Credit Card',
-                tenderMeta: 'VISA ****4477'
+                cardType: 'VISA',
+                lastFour: '4477'
             },
             {
                 id: 'txn_000433',
-                time: '4:11 PM',
+                tranTime: '2025-03-13 16:11:18',
                 invoice: '000433',
                 amount: -23.50,
                 kind: 'refund',
                 tenderType: 'card',
                 tenderLabel: 'Refund',
-                tenderMeta: 'MC ****0198'
+                cardType: 'MASTERCARD',
+                lastFour: '0198'
             },
             {
                 id: 'txn_000432',
-                time: '4:07 PM',
+                tranTime: '2025-03-13 16:07:23',
                 invoice: '000432',
                 amount: 15.55,
                 kind: 'payment',
                 tenderType: 'card',
                 tenderLabel: 'Credit Card',
-                tenderMeta: 'MC ****1299'
+                cardType: 'MASTERCARD',
+                lastFour: '1299'
             },
             {
                 id: 'txn_000431',
-                time: '3:54 PM',
+                tranTime: '2025-03-13 15:54:27',
                 invoice: '000431',
                 amount: 23.09,
                 kind: 'payment',
                 tenderType: 'card',
                 tenderLabel: 'Credit Card',
-                tenderMeta: 'VISA ****9911'
+                cardType: 'VISA',
+                lastFour: '9911'
+            },
+            {
+                id: 'txn_000430', tranTime: '2025-03-13 15:42:10', invoice: '000430', amount: 48.00,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'AMEX', lastFour: '2148'
+            },
+            {
+                id: 'txn_000429', tranTime: '2025-03-13 15:29:34', invoice: '000429', amount: 44.80,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'DISCOVER', lastFour: '4407'
+            },
+            {
+                id: 'txn_000428', tranTime: '2025-03-13 15:15:52', invoice: '000428', amount: 33.60,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'JCB', lastFour: '3521'
+            },
+            {
+                id: 'txn_000427', tranTime: '2025-03-13 14:58:17', invoice: '000427', amount: 41.25,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'UNIONPAY', lastFour: '6218'
+            },
+            {
+                id: 'txn_000426', tranTime: '2025-03-13 14:44:39', invoice: '000426', amount: 28.40,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'DINERS', lastFour: '3057'
+            },
+            {
+                id: 'txn_000425', tranTime: '2025-03-13 14:31:05', invoice: '000425', amount: 37.65,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'MAESTRO', lastFour: '6759'
+            },
+            {
+                id: 'txn_000424', tranTime: '2025-03-13 14:18:43', invoice: '000424', amount: 52.90,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'RUPAY', lastFour: '8174'
+            },
+            {
+                id: 'txn_000423', tranTime: '2025-03-13 14:04:26', invoice: '000423', amount: 24.85,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Debit Card', cardType: 'INTERAC', lastFour: '4506'
+            },
+            {
+                id: 'txn_000422', tranTime: '2025-03-13 13:51:08', invoice: '000422', amount: 46.10,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'ELO', lastFour: '5092'
+            },
+            {
+                id: 'txn_000421', tranTime: '2025-03-13 13:37:41', invoice: '000421', amount: 31.95,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Debit Card', cardType: 'EFTPOS', lastFour: '7338'
+            },
+            {
+                id: 'txn_000420', tranTime: '2025-03-13 13:22:19', invoice: '000420', amount: 58.75,
+                kind: 'payment', tenderType: 'card', tenderLabel: 'Credit Card', cardType: 'MIR', lastFour: '2204'
             }
         ];
 
         const state = {
             filter: 'all',
             query: ''
+        };
+
+        const cardBrandAssets = {
+            VISA: { src: 'visa.svg', className: 'brand-visa', shortName: 'VISA' },
+            MASTERCARD: { src: 'mastercard.svg', className: 'brand-mastercard', shortName: 'MC' },
+            AMEX: { src: 'amex.svg', className: 'brand-amex', shortName: 'AMEX' },
+            DISCOVER: { src: 'discover.svg', className: 'brand-discover', shortName: 'DISC' },
+            JCB: { src: 'jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
+            UNIONPAY: { src: 'unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' },
+            DINERS: { src: 'diners.svg', className: 'brand-diners', shortName: 'DINERS' },
+            MAESTRO: { src: 'maestro-mark.svg', className: 'brand-maestro', shortName: 'MAESTRO' },
+            RUPAY: { src: 'rupay.svg', className: 'brand-rupay', shortName: 'RUPAY' },
+            INTERAC: { src: 'Interac.png', className: 'brand-interac', shortName: 'INTERAC' },
+            ELO: { src: 'elo.svg', className: 'brand-elo', shortName: 'ELO' },
+            EFTPOS: { src: 'eftpos.svg', className: 'brand-eftpos', shortName: 'EFTPOS' },
+            MIR: { src: 'mir.svg', className: 'brand-mir', shortName: 'MIR' }
         };
 
         const filterLabelMap = {
@@ -530,11 +626,46 @@
             return amount < 0 ? '-$' + value : '$' + value;
         }
 
+        function parseTransactionTime(tranTime) {
+            if (!tranTime) return null;
+            const parsed = new Date(String(tranTime).replace(' ', 'T'));
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        function formatTransactionDate(tranTime) {
+            const parsed = parseTransactionTime(tranTime);
+            return parsed
+                ? parsed.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+                : '-';
+        }
+
+        function formatTransactionTime(tranTime) {
+            const parsed = parseTransactionTime(tranTime);
+            return parsed
+                ? parsed.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                : (tranTime || '-');
+        }
+
+        function cardMeta(tx) {
+            if (tx.tenderType !== 'card') return '';
+            const asset = cardBrandAssets[tx.cardType];
+            const brandName = asset ? asset.shortName : (tx.cardType || 'CARD');
+            return `${brandName} ****${String(tx.lastFour || '').padStart(4, '0')}`;
+        }
+
         function tenderIconMarkup(tx) {
             if (tx.tenderType === 'cash') {
                 return '<span class="brand-chip cash-chip" aria-hidden="true">CASH</span>';
             }
-            return '<span class="brand-chip brand-mastercard" aria-hidden="true"></span>';
+            const asset = cardBrandAssets[tx.cardType];
+            if (!asset) {
+                return `<span class="brand-chip brand-fallback" aria-hidden="true">${tx.cardType || 'CARD'}</span>`;
+            }
+            return `
+                <span class="brand-chip">
+                    <img class="brand-chip-logo ${asset.className}" src="${asset.src}" alt="${tx.cardType}">
+                </span>
+            `;
         }
 
         function matchesFilter(tx) {
@@ -548,10 +679,14 @@
         function matchesQuery(tx) {
             if (!state.query) return true;
             const haystack = [
-                tx.time,
+                tx.tranTime,
+                formatTransactionDate(tx.tranTime),
+                formatTransactionTime(tx.tranTime),
                 tx.invoice,
                 tx.tenderLabel,
-                tx.tenderMeta,
+                tx.cardType,
+                tx.lastFour,
+                cardMeta(tx),
                 formatAmount(tx.amount)
             ].join(' ').toLowerCase();
             return haystack.includes(state.query);
@@ -575,11 +710,13 @@
             emptyEl.style.display = 'none';
             listEl.innerHTML = rows.map((tx) => {
                 const amountClass = tx.amount < 0 ? 'tx-amount negative' : 'tx-amount';
-                const tenderMeta = tx.tenderMeta ? `<div class="tx-sub">${tx.tenderMeta}</div>` : '';
+                const meta = cardMeta(tx);
+                const tenderMeta = meta ? `<div class="tx-sub">${meta}</div>` : '';
                 return `
                     <a class="tx-row" href="11_transaction_detail.html?id=${encodeURIComponent(tx.id)}">
                         <div>
-                            <div class="tx-time">${tx.time}</div>
+                            <div class="tx-date">${formatTransactionDate(tx.tranTime)}</div>
+                            <div class="tx-time">${formatTransactionTime(tx.tranTime)}</div>
                             <div class="tx-id">#${tx.invoice}</div>
                         </div>
                         <div class="${amountClass}">${formatAmount(tx.amount)}</div>

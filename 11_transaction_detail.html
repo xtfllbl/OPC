@@ -331,6 +331,38 @@
     </div>
 
     <script>
+        function createDemoCardDetail({
+            total,
+            datetime,
+            method = 'Credit Card',
+            brand,
+            lastFour,
+            invoice,
+            order,
+            reference,
+            auth,
+            voidTid
+        }) {
+            return {
+                summaryType: 'Payment',
+                total,
+                datetime,
+                status: 'Payment successful',
+                method,
+                account: `${brand} ****${lastFour}`,
+                customer: 'Demo Cardholder',
+                invoice,
+                order,
+                reference,
+                auth,
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.00,
+                voidTid,
+                canVoid: true
+            };
+        }
+
         const transactions = {
             txn_000437: {
                 summaryType: 'Payment',
@@ -457,7 +489,51 @@
                 tax: 1.09,
                 voidTid: '123456789012',
                 canVoid: true
-            }
+            },
+            txn_000430: createDemoCardDetail({
+                total: 48.00, datetime: 'March 13, 2025 - 3:42:10 PM', brand: 'AMEX', lastFour: '2148',
+                invoice: '000430', order: '200018', reference: 'DEMO-AMEX-000430', auth: 'D00430', voidTid: '251113000430'
+            }),
+            txn_000429: createDemoCardDetail({
+                total: 44.80, datetime: 'March 13, 2025 - 3:29:34 PM', brand: 'DISC', lastFour: '4407',
+                invoice: '000429', order: '200019', reference: 'DEMO-DISC-000429', auth: 'D00429', voidTid: '251113000429'
+            }),
+            txn_000428: createDemoCardDetail({
+                total: 33.60, datetime: 'March 13, 2025 - 3:15:52 PM', brand: 'JCB', lastFour: '3521',
+                invoice: '000428', order: '200020', reference: 'DEMO-JCB-000428', auth: 'D00428', voidTid: '251113000428'
+            }),
+            txn_000427: createDemoCardDetail({
+                total: 41.25, datetime: 'March 13, 2025 - 2:58:17 PM', brand: 'CUP', lastFour: '6218',
+                invoice: '000427', order: '200021', reference: 'DEMO-CUP-000427', auth: 'D00427', voidTid: '251113000427'
+            }),
+            txn_000426: createDemoCardDetail({
+                total: 28.40, datetime: 'March 13, 2025 - 2:44:39 PM', brand: 'DINERS', lastFour: '3057',
+                invoice: '000426', order: '200022', reference: 'DEMO-DINERS-000426', auth: 'D00426', voidTid: '251113000426'
+            }),
+            txn_000425: createDemoCardDetail({
+                total: 37.65, datetime: 'March 13, 2025 - 2:31:05 PM', brand: 'MAESTRO', lastFour: '6759',
+                invoice: '000425', order: '200023', reference: 'DEMO-MAESTRO-000425', auth: 'D00425', voidTid: '251113000425'
+            }),
+            txn_000424: createDemoCardDetail({
+                total: 52.90, datetime: 'March 13, 2025 - 2:18:43 PM', brand: 'RUPAY', lastFour: '8174',
+                invoice: '000424', order: '200024', reference: 'DEMO-RUPAY-000424', auth: 'D00424', voidTid: '251113000424'
+            }),
+            txn_000423: createDemoCardDetail({
+                total: 24.85, datetime: 'March 13, 2025 - 2:04:26 PM', method: 'Debit Card', brand: 'INTERAC', lastFour: '4506',
+                invoice: '000423', order: '200025', reference: 'DEMO-INTERAC-000423', auth: 'D00423', voidTid: '251113000423'
+            }),
+            txn_000422: createDemoCardDetail({
+                total: 46.10, datetime: 'March 13, 2025 - 1:51:08 PM', brand: 'ELO', lastFour: '5092',
+                invoice: '000422', order: '200026', reference: 'DEMO-ELO-000422', auth: 'D00422', voidTid: '251113000422'
+            }),
+            txn_000421: createDemoCardDetail({
+                total: 31.95, datetime: 'March 13, 2025 - 1:37:41 PM', method: 'Debit Card', brand: 'EFTPOS', lastFour: '7338',
+                invoice: '000421', order: '200027', reference: 'DEMO-EFTPOS-000421', auth: 'D00421', voidTid: '251113000421'
+            }),
+            txn_000420: createDemoCardDetail({
+                total: 58.75, datetime: 'March 13, 2025 - 1:22:19 PM', brand: 'MIR', lastFour: '2204',
+                invoice: '000420', order: '200028', reference: 'DEMO-MIR-000420', auth: 'D00420', voidTid: '251113000420'
+            })
         };
 
         function money(value) {
