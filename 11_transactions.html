@@ -416,7 +416,7 @@
 
         <div class="app-header">
             <div class="left">
-                <a class="back-btn" href="1_home.html" aria-label="Back">
+                <a class="back-btn" href="1.unified_pos.html" aria-label="Back">
                     <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
                 </a>
             </div>
@@ -653,6 +653,18 @@
             return `${brandName} ****${String(tx.lastFour || '').padStart(4, '0')}`;
         }
 
+        function transactionTypeLabel(tx) {
+            const kind = String(tx && tx.kind ? tx.kind : '').trim().toLowerCase();
+            if (kind === 'refund') return 'Refund';
+            if (kind === 'capture') return 'Capture';
+            if (kind === 'payment' || kind === 'sale') return 'Sale';
+            return kind ? kind.charAt(0).toUpperCase() + kind.slice(1) : 'Sale';
+        }
+
+        function transactionMeta(tx) {
+            return tx.tenderType === 'cash' ? 'Cash' : cardMeta(tx);
+        }
+
         function tenderIconMarkup(tx) {
             if (tx.tenderType === 'cash') {
                 return '<span class="brand-chip cash-chip" aria-hidden="true">CASH</span>';
@@ -683,10 +695,10 @@
                 formatTransactionDate(tx.tranTime),
                 formatTransactionTime(tx.tranTime),
                 tx.invoice,
-                tx.tenderLabel,
+                transactionTypeLabel(tx),
                 tx.cardType,
                 tx.lastFour,
-                cardMeta(tx),
+                transactionMeta(tx),
                 formatAmount(tx.amount)
             ].join(' ').toLowerCase();
             return haystack.includes(state.query);
@@ -710,7 +722,7 @@
             emptyEl.style.display = 'none';
             listEl.innerHTML = rows.map((tx) => {
                 const amountClass = tx.amount < 0 ? 'tx-amount negative' : 'tx-amount';
-                const meta = cardMeta(tx);
+                const meta = transactionMeta(tx);
                 const tenderMeta = meta ? `<div class="tx-sub">${meta}</div>` : '';
                 return `
                     <a class="tx-row" href="11_transaction_detail.html?id=${encodeURIComponent(tx.id)}">
@@ -723,7 +735,7 @@
                         <div class="tx-tender">
                             ${tenderIconMarkup(tx)}
                             <div style="min-width:0;">
-                                <div class="tx-method">${tx.tenderLabel}</div>
+                                <div class="tx-method">${transactionTypeLabel(tx)}</div>
                                 ${tenderMeta}
                             </div>
                         </div>
