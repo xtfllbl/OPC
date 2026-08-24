@@ -297,7 +297,7 @@
             cursor: not-allowed;
         }
 
-        .status-card {
+        .results-area {
             margin-top: 18px;
             min-height: 0;
             padding: 18px 4px 6px;
@@ -308,8 +308,59 @@
             box-shadow: none;
         }
 
-        .status-card[hidden] {
+        .results-area[hidden],
+        .workflow-section[hidden] {
             display: none;
+        }
+
+        .workflow-section:not([hidden]) + .workflow-section:not([hidden]) {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+        }
+
+        .workflow-disclosure {
+            width: 100%;
+            min-height: 46px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid #B8E8D2;
+            border-radius: 14px;
+            background: #FAFFFC;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 750;
+            text-align: left;
+        }
+
+        .workflow-disclosure[hidden],
+        .workflow-detail[hidden] {
+            display: none;
+        }
+
+        .workflow-disclosure .material-symbols-rounded {
+            flex: 0 0 auto;
+            font-size: 19px;
+        }
+
+        .workflow-disclosure-label {
+            flex: 1;
+        }
+
+        .workflow-disclosure .disclosure-chevron {
+            color: var(--text-grey);
+            font-size: 18px;
+            transition: transform 0.18s ease;
+        }
+
+        .workflow-disclosure[aria-expanded="true"] .disclosure-chevron {
+            transform: rotate(180deg);
+        }
+
+        .workflow-disclosure + .workflow-detail:not([hidden]) {
+            margin-top: 12px;
         }
 
         .status-heading {
@@ -675,19 +726,40 @@
                 </button>
             </div>
 
-            <section class="status-card" id="status-card" aria-labelledby="status-heading-title" aria-live="polite" hidden>
-                <div class="status-heading">
-                    <h2 id="status-heading-title">Provisioning Status</h2>
-                </div>
-
-                <div class="task-list" id="task-list"></div>
-
-                <div class="retry-row" id="retry-row">
-                    <button class="retry-btn" id="retry-button" type="button">
-                        <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
-                        Retry
+            <section class="results-area" id="results-area" aria-label="Download results" aria-live="polite" hidden>
+                <section class="workflow-section" id="app-results" aria-labelledby="app-results-title" hidden>
+                    <button class="workflow-disclosure" id="app-summary-toggle" type="button"
+                        aria-expanded="false" aria-controls="app-result-detail" hidden>
+                        <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+                        <span class="workflow-disclosure-label">Applications installed</span>
+                        <span class="material-symbols-rounded disclosure-chevron" aria-hidden="true">expand_more</span>
                     </button>
-                </div>
+                    <div class="workflow-detail" id="app-result-detail">
+                        <div class="status-heading">
+                            <h2 id="app-results-title">Application Download</h2>
+                        </div>
+                        <div class="task-list" id="app-task-list"></div>
+                        <div class="retry-row" id="app-retry-row">
+                            <button class="retry-btn" id="app-retry-button" type="button">
+                                <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="workflow-section" id="parameter-results" aria-labelledby="parameter-results-title" hidden>
+                    <div class="status-heading">
+                        <h2 id="parameter-results-title">Parameter Download</h2>
+                    </div>
+                    <div class="task-list" id="parameter-task-list"></div>
+                    <div class="retry-row" id="parameter-retry-row">
+                        <button class="retry-btn" id="parameter-retry-button" type="button">
+                            <span class="material-symbols-rounded" aria-hidden="true">refresh</span>
+                            Retry
+                        </button>
+                    </div>
+                </section>
             </section>
         </main>
 
@@ -701,7 +773,7 @@
                 <div class="demo-options" role="radiogroup" aria-label="Binding state">
                     <label class="demo-option"><input type="radio" name="demo-state" value="bound" checked> Bound · TC-000001234</label>
                     <label class="demo-option"><input type="radio" name="demo-state" value="unbound"> No TCI binding</label>
-                    <label class="demo-option"><input type="radio" name="demo-state" value="swap"> SWAP complete · TC-000004321</label>
+                    <label class="demo-option"><input type="radio" name="demo-state" value="swap"> SWAP complete · TC-000004321 · App failure demo</label>
                 </div>
                 <div class="demo-actions">
                     <button class="demo-btn cancel" id="demo-cancel" type="button">Cancel</button>
@@ -745,10 +817,24 @@
         const appButton = document.getElementById("download-app");
         const parameterButton = document.getElementById("download-parameters");
         const parameterActionLabel = document.getElementById("parameter-action-label");
-        const statusCard = document.getElementById("status-card");
-        const taskList = document.getElementById("task-list");
-        const retryRow = document.getElementById("retry-row");
-        const retryButton = document.getElementById("retry-button");
+        const mainElement = document.querySelector("main");
+        const resultsArea = document.getElementById("results-area");
+        const appSummaryToggle = document.getElementById("app-summary-toggle");
+        const appResultDetail = document.getElementById("app-result-detail");
+        const workflowElements = {
+            app: {
+                section: document.getElementById("app-results"),
+                list: document.getElementById("app-task-list"),
+                retryRow: document.getElementById("app-retry-row"),
+                retryButton: document.getElementById("app-retry-button")
+            },
+            parameters: {
+                section: document.getElementById("parameter-results"),
+                list: document.getElementById("parameter-task-list"),
+                retryRow: document.getElementById("parameter-retry-row"),
+                retryButton: document.getElementById("parameter-retry-button")
+            }
+        };
         const appTitle = document.getElementById("app-title");
         const demoModal = document.getElementById("demo-modal");
         const demoCancel = document.getElementById("demo-cancel");
@@ -825,14 +911,15 @@
         };
 
         let demoState = "bound";
-        let activeWorkflow = null;
         let running = false;
         let bindingReady = false;
         let runToken = 0;
         const simulatedFailuresConsumed = { app: false, parameters: false };
+        const installedApps = new Set();
+        const workflowStates = { app: [], parameters: [] };
         let parametersDownloaded = false;
+        let pendingParametersAfterApps = false;
         let verifiedTci = "";
-        let taskStates = [];
         let titleHoldTimer = 0;
 
         function digitsOnly() {
@@ -876,18 +963,48 @@
         function resetWorkflowUi() {
             runToken += 1;
             running = false;
-            activeWorkflow = null;
             parametersDownloaded = false;
+            pendingParametersAfterApps = false;
             simulatedFailuresConsumed.app = false;
             simulatedFailuresConsumed.parameters = false;
-            taskStates = [];
             parameterActionLabel.textContent = "Download Parameters";
             parameterButton.removeAttribute("aria-label");
-            statusCard.hidden = true;
-            statusCard.className = "status-card";
-            taskList.replaceChildren();
-            retryRow.classList.remove("show");
+            clearResultSections();
             clearInputError();
+        }
+
+        function clearResultSections() {
+            workflowStates.app = [];
+            workflowStates.parameters = [];
+            Object.values(workflowElements).forEach(({ section, list, retryRow }) => {
+                section.hidden = true;
+                list.replaceChildren();
+                retryRow.classList.remove("show");
+            });
+            appSummaryToggle.hidden = true;
+            appSummaryToggle.setAttribute("aria-expanded", "false");
+            appResultDetail.hidden = false;
+            resultsArea.hidden = true;
+        }
+
+        function setAppResultsCollapsed(collapsed) {
+            if (workflowElements.app.section.hidden || !workflowIsComplete("app")) return;
+            appSummaryToggle.hidden = false;
+            appSummaryToggle.setAttribute("aria-expanded", String(!collapsed));
+            appResultDetail.hidden = collapsed;
+        }
+
+        function bringWorkflowIntoView(type) {
+            const section = workflowElements[type].section;
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            window.requestAnimationFrame(() => {
+                if (section.hidden) return;
+                const targetTop = section.offsetTop - mainElement.offsetTop - 8;
+                mainElement.scrollTo({
+                    top: Math.max(0, targetTop),
+                    behavior: reduceMotion ? "auto" : "smooth"
+                });
+            });
         }
 
         async function queryBinding(sn) {
@@ -900,6 +1017,11 @@
             await wait(700);
             if (sn !== TERMINAL_SN || tci === CONFLICT_TCI) return { ok: false, reason: "conflict" };
             return { ok: true, tci };
+        }
+
+        async function queryInstalledApps() {
+            await wait(550);
+            return new Set(installedApps);
         }
 
         async function simulateAppStart() {
@@ -935,10 +1057,11 @@
             };
         }
 
-        function renderTaskList() {
+        function renderTaskList(type) {
+            const taskList = workflowElements[type].list;
             taskList.replaceChildren();
 
-            taskStates.forEach((task) => {
+            workflowStates[type].forEach((task) => {
                 const item = document.createElement("article");
                 item.className = "task-item";
                 item.dataset.taskId = task.id;
@@ -987,6 +1110,9 @@
 
                 task.elements = { item, track, fill, phase, percent };
             });
+
+            resultsArea.hidden = false;
+            workflowElements[type].section.hidden = false;
         }
 
         function updateTaskState(task, progress, phase, status = "working") {
@@ -1002,12 +1128,24 @@
             percent.textContent = `${progress}%`;
         }
 
-        function updateStatusCardState() {
-            const hasError = taskStates.some((task) => task.status === "error");
-            const allComplete = taskStates.length > 0 && taskStates.every((task) => task.status === "success");
-            statusCard.className = "status-card";
-            if (hasError) statusCard.classList.add("error");
-            else if (allComplete) statusCard.classList.add("success");
+        function setRetryVisible(type, visible) {
+            workflowElements[type].retryRow.classList.toggle("show", visible);
+        }
+
+        function workflowHasError(type) {
+            return workflowStates[type].some((task) => task.status === "error");
+        }
+
+        function workflowIsComplete(type) {
+            return workflowStates[type].length > 0 &&
+                workflowStates[type].every((task) => task.status === "success");
+        }
+
+        function prepareWorkflow(type) {
+            const workflow = workflows[type];
+            workflowStates[type] = workflow.tasks.map((task) => createTaskState(task, workflow.completeLabel));
+            setRetryVisible(type, false);
+            renderTaskList(type);
         }
 
         function wait(milliseconds) {
@@ -1022,7 +1160,9 @@
                 await wait(phase.delay);
                 if (token !== runToken) return "cancelled";
 
-                if (verifiedTci === "TC-000000000" && task.demoFailure &&
+                const isLegacyPartialFailure = verifiedTci === "TC-000000000";
+                const isSwappedAppFailure = verifiedTci === SWAPPED_TCI && type === "app";
+                if ((isLegacyPartialFailure || isSwappedAppFailure) && task.demoFailure &&
                     !simulatedFailuresConsumed[type] && index === 2) {
                     simulatedFailuresConsumed[type] = true;
                     updateTaskState(task, task.progress, "Connection failed", "error");
@@ -1033,7 +1173,13 @@
                 updateTaskState(task, phase.progress, phase.label, status);
             }
 
+            if (type === "app") installedApps.add(task.id);
             return "success";
+        }
+
+        async function runTasks(type, tasks, token) {
+            await Promise.all(tasks.map((task) => runTask(task, type, token)));
+            return token === runToken;
         }
 
         async function ensureBinding() {
@@ -1069,54 +1215,154 @@
             return true;
         }
 
-        async function runWorkflow(type, retryFailedOnly = false) {
-            if (running || !bindingReady) return;
-            if (!retryFailedOnly && !(await ensureBinding())) return;
-
-            activeWorkflow = type;
-            running = true;
-            const workflow = workflows[type];
-            const token = ++runToken;
-
-            statusCard.hidden = false;
-            setControlsDisabled(true);
-            retryRow.classList.remove("show");
-            document.getElementById("status-heading-title").textContent = workflow.heading;
-
-            if (!retryFailedOnly || taskStates.length === 0) {
-                taskStates = workflow.tasks.map((task) => createTaskState(task, workflow.completeLabel));
-                renderTaskList();
-            } else {
-                taskStates.filter((task) => task.status === "error")
-                    .forEach((task) => updateTaskState(task, 0, "Waiting", "queued"));
-            }
-
-            statusCard.className = "status-card";
-            const tasksToRun = retryFailedOnly
-                ? taskStates.filter((task) => task.status !== "success")
-                : taskStates;
-
-            await Promise.all(tasksToRun.map((task) => runTask(task, type, token)));
-            if (token !== runToken) return;
-
-            updateStatusCardState();
-            const allComplete = taskStates.every((task) => task.status === "success");
-            const hasError = taskStates.some((task) => task.status === "error");
-
-            if (hasError) retryRow.classList.add("show");
-
-            if (type === "parameters" && allComplete && !parametersDownloaded) {
-                parametersDownloaded = true;
-                parameterActionLabel.textContent = "Update Parameters";
-                parameterButton.setAttribute("aria-label", "Update Parameters");
-            }
+        function finishOperation() {
             running = false;
             setControlsDisabled(false);
         }
 
-        appButton.addEventListener("click", () => runWorkflow("app"));
-        parameterButton.addEventListener("click", () => runWorkflow("parameters"));
-        retryButton.addEventListener("click", () => runWorkflow(activeWorkflow || "app", true));
+        function markParametersDownloaded() {
+            parametersDownloaded = true;
+            parameterActionLabel.textContent = "Update Parameters";
+            parameterButton.setAttribute("aria-label", "Update Parameters");
+        }
+
+        async function runParameterStage(token, retryFailedOnly = false) {
+            if (!retryFailedOnly) {
+                prepareWorkflow("parameters");
+                bringWorkflowIntoView("parameters");
+            } else {
+                workflowStates.parameters
+                    .filter((task) => task.status === "error")
+                    .forEach((task) => updateTaskState(task, 0, "Waiting", "queued"));
+                setRetryVisible("parameters", false);
+            }
+
+            const tasksToRun = retryFailedOnly
+                ? workflowStates.parameters.filter((task) => task.status !== "success")
+                : workflowStates.parameters;
+
+            if (!(await runTasks("parameters", tasksToRun, token))) return false;
+
+            const hasError = workflowHasError("parameters");
+            setRetryVisible("parameters", hasError);
+            if (!hasError && workflowIsComplete("parameters")) markParametersDownloaded();
+            return !hasError;
+        }
+
+        async function startAppDownload() {
+            if (running || !bindingReady) return;
+            if (!(await ensureBinding())) return;
+
+            running = true;
+            pendingParametersAfterApps = false;
+            clearResultSections();
+            const token = ++runToken;
+            setControlsDisabled(true);
+            prepareWorkflow("app");
+            bringWorkflowIntoView("app");
+
+            if (!(await runTasks("app", workflowStates.app, token))) return;
+            setRetryVisible("app", workflowHasError("app"));
+            finishOperation();
+        }
+
+        async function startParameterDownload() {
+            if (running || !bindingReady) return;
+            if (!(await ensureBinding())) return;
+
+            running = true;
+            pendingParametersAfterApps = true;
+            clearResultSections();
+            const token = ++runToken;
+            setControlsDisabled(true);
+            bindingMessage.hidden = false;
+            bindingMessage.textContent = "Checking installed applications…";
+
+            const currentInstalledApps = await queryInstalledApps();
+            if (token !== runToken) return;
+            bindingMessage.hidden = true;
+            bindingMessage.textContent = "";
+
+            const missingAppIds = workflows.app.tasks
+                .map((task) => task.id)
+                .filter((id) => !currentInstalledApps.has(id));
+
+            if (missingAppIds.length > 0) {
+                prepareWorkflow("app");
+                bringWorkflowIntoView("app");
+                workflowStates.app.forEach((task) => {
+                    if (currentInstalledApps.has(task.id)) {
+                        updateTaskState(task, 100, "Installed", "success");
+                    }
+                });
+
+                const missingTasks = workflowStates.app.filter((task) => missingAppIds.includes(task.id));
+                if (!(await runTasks("app", missingTasks, token))) return;
+
+                if (workflowHasError("app")) {
+                    setRetryVisible("app", true);
+                    finishOperation();
+                    return;
+                }
+
+                setAppResultsCollapsed(true);
+            }
+
+            pendingParametersAfterApps = false;
+            await runParameterStage(token);
+            if (token !== runToken) return;
+            finishOperation();
+        }
+
+        async function retryAppDownload() {
+            if (running || !workflowHasError("app")) return;
+
+            running = true;
+            setControlsDisabled(true);
+            setRetryVisible("app", false);
+            const token = ++runToken;
+            const failedTasks = workflowStates.app.filter((task) => task.status === "error");
+            failedTasks.forEach((task) => updateTaskState(task, 0, "Waiting", "queued"));
+
+            if (!(await runTasks("app", failedTasks, token))) return;
+            if (workflowHasError("app")) {
+                setRetryVisible("app", true);
+                finishOperation();
+                return;
+            }
+
+            if (pendingParametersAfterApps) {
+                setAppResultsCollapsed(true);
+                pendingParametersAfterApps = false;
+                await runParameterStage(token);
+                if (token !== runToken) return;
+            }
+            finishOperation();
+        }
+
+        async function retryParameterDownload() {
+            if (running || !workflowHasError("parameters")) return;
+
+            running = true;
+            setControlsDisabled(true);
+            const token = ++runToken;
+            await runParameterStage(token, true);
+            if (token !== runToken) return;
+            finishOperation();
+        }
+
+        appButton.addEventListener("click", startAppDownload);
+        parameterButton.addEventListener("click", startParameterDownload);
+        workflowElements.app.retryButton.addEventListener("click", retryAppDownload);
+        workflowElements.parameters.retryButton.addEventListener("click", retryParameterDownload);
+        appSummaryToggle.addEventListener("click", () => {
+            const expanded = appSummaryToggle.getAttribute("aria-expanded") === "true";
+            appSummaryToggle.setAttribute("aria-expanded", String(!expanded));
+            appResultDetail.hidden = expanded;
+            if (expanded && !workflowElements.parameters.section.hidden) {
+                bringWorkflowIntoView("parameters");
+            }
+        });
 
         tcidInput.addEventListener("input", () => {
             digitsOnly();
@@ -1126,7 +1372,7 @@
         });
 
         tcidInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") runWorkflow("app");
+            if (event.key === "Enter") startAppDownload();
         });
 
         function openDemoModal() {
@@ -1166,6 +1412,7 @@
         });
         demoApply.addEventListener("click", () => {
             demoState = document.querySelector('input[name="demo-state"]:checked').value;
+            if (demoState === "swap") installedApps.clear();
             closeDemoModal();
             simulateAppStart();
         });
