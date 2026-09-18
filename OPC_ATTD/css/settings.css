@@ -1,7 +1,7 @@
 /* --- Settings Page --- */
         .settings-overlay {
             position: absolute;
-            inset: 28px 0 0;
+            inset: 28px 0 64px;
             background: var(--bg-body);
             z-index: 120;
             opacity: 0;
@@ -17,16 +17,19 @@
         }
 
         .settings-panel {
-            flex: 1;
+            flex: 1 1 auto;
             width: 100%;
             height: 100%;
+            min-height: 0;
             background: transparent;
             display: flex;
             flex-direction: column;
             position: relative;
+            overflow: hidden;
         }
 
         .settings-header-bar {
+            flex: 0 0 auto;
             padding: 14px 18px 12px;
             display: flex;
             align-items: center;
@@ -63,14 +66,18 @@
         }
 
         .settings-list {
-            flex: 1;
+            flex: 1 1 auto;
+            min-height: 0;
             padding: 10px 16px 16px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .settings-footer {
-            padding: 10px 16px 18px;
+            flex: 0 0 auto;
+            padding: 10px 16px 14px;
             background: var(--bg-body);
+            border-top: 1px solid rgba(229, 231, 235, 0.75);
         }
 
         .settings-exit-btn {
@@ -268,9 +275,11 @@
         }
 
         .settings-subpage-list {
-            flex: 1;
+            flex: 1 1 auto;
+            min-height: 0;
             padding: 10px 16px 16px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .settings-row-stack {

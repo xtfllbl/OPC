@@ -35,3 +35,11 @@ _Avoid_: Error page, decline screen, 6_receipt_failed.html
 **Simulation Magic Numbers**:
 Predictable test inputs that trigger deterministic terminal branches: any amount ending in `4` cents (e.g. $0.64, $1.04) simulates a declined transaction routed to Failure Receipt.
 _Avoid_: Hardcoded bugs, mock triggers
+
+**Settings View**:
+The administrative and configuration workspace within OPC_ATTD providing payment method toggles, system preferences, and feature flags above the primary navigation.
+_Avoid_: Preferences page, config screen, options modal
+
+**Settings Exit**:
+The privileged terminal exit workflow requiring supervisor passkey verification (`99999999`) to transition from Attended POS out to the operating system launcher.
+_Avoid_: Quit app, close window, logout button
