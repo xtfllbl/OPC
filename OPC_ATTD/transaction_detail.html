@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>POS - Transaction Detail</title>
+    <style>
+        :root {
+            --bg: #F2F4F7;
+            --card: #FFFFFF;
+            --text: #0F172A;
+            --muted: #64748B;
+            --line: #EDF2F7;
+            --border: #E6EAF0;
+            --danger: #F35A62;
+            --danger-text: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(180deg, #F8FAFD 0%, #F2F4F7 100%);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--card);
+            z-index: 10;
+        }
+
+        .app-header {
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .app-header .left {
+            width: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-header .title {
+            flex: 1;
+            text-align: center;
+            font-weight: 800;
+            color: var(--text);
+            font-size: 18px;
+            letter-spacing: 0.2px;
+        }
+
+        .app-header .right {
+            width: 56px;
+        }
+
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #FFFFFF;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .content {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            padding: 10px 16px 12px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02), 0 1px 3px rgba(16, 24, 40, 0.03);
+        }
+
+        .summary-card {
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .summary-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .summary-type {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .summary-amount {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: 0.2px;
+        }
+
+        .summary-datetime {
+            font-size: 15px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .summary-status {
+            font-size: 13px;
+            color: #16A34A;
+            font-weight: 700;
+        }
+
+        .section {
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--card);
+            box-shadow: 0 1px 0 rgba(16, 24, 40, 0.02), 0 1px 3px rgba(16, 24, 40, 0.03);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #90A0B7;
+            background: #F8FAFE;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-key {
+            color: #75839B;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .item-value {
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 2px 2px;
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .footer {
+            padding: 10px 16px 18px;
+            background: linear-gradient(180deg, rgba(242, 244, 247, 0) 0%, rgba(242, 244, 247, 1) 32%);
+        }
+
+        .void-btn {
+            width: 100%;
+            height: 52px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--danger);
+            color: var(--danger-text);
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .void-btn.secondary {
+            background: #CBD5E1;
+            color: #334155;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Wi-Fi 100%</span>
+        </div>
+
+        <div class="app-header">
+            <div class="left">
+                <a class="back-btn" href="transactions.html" aria-label="Back to transactions">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+                </a>
+            </div>
+            <div class="title">Transaction Details</div>
+            <div class="right"></div>
+        </div>
+
+        <div class="content">
+            <div class="card summary-card">
+                <div class="summary-top">
+                    <div id="summary-type" class="summary-type">Payment</div>
+                    <div id="summary-amount" class="summary-amount">$0.00</div>
+                </div>
+                <div id="summary-datetime" class="summary-datetime"></div>
+                <div id="summary-status" class="summary-status">Payment successful</div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">DETAILS</div>
+                <div class="item">
+                    <div class="item-key">Payment method</div>
+                    <div id="field-method" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Account</div>
+                    <div id="field-account" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Customer</div>
+                    <div id="field-customer" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Invoice No.</div>
+                    <div id="field-invoice" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Order No.</div>
+                    <div id="field-order" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Reference ID</div>
+                    <div id="field-reference" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Auth code</div>
+                    <div id="field-auth" class="item-value"></div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Clerk</div>
+                    <div id="field-clerk" class="item-value"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">RECEIPTS</div>
+                <div class="item">
+                    <div class="item-key">Tip</div>
+                    <div id="field-tip" class="item-value">$0.00</div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Subtotal</div>
+                    <div id="field-subtotal" class="item-value">$0.00</div>
+                </div>
+                <div class="item">
+                    <div class="item-key">Tax</div>
+                    <div id="field-tax" class="item-value">$0.00</div>
+                </div>
+            </div>
+
+            <div class="total-row">
+                <span>Total</span>
+                <span id="field-total">$0.00</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button id="void-btn" class="void-btn" type="button">Void</button>
+        </div>
+    </div>
+
+    <script>
+        function createDemoCardDetail({
+            total,
+            datetime,
+            method = 'Credit Card',
+            brand,
+            lastFour,
+            invoice,
+            order,
+            reference,
+            auth,
+            voidTid
+        }) {
+            return {
+                summaryType: 'Payment',
+                total,
+                datetime,
+                status: 'Payment successful',
+                method,
+                account: `${brand} ****${lastFour}`,
+                customer: 'Demo Cardholder',
+                invoice,
+                order,
+                reference,
+                auth,
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.00,
+                voidTid,
+                canVoid: true
+            };
+        }
+
+        const transactions = {
+            txn_000437: {
+                summaryType: 'Payment',
+                total: 21.65,
+                datetime: 'March 13, 2025 - 7:35:50 PM',
+                status: 'Payment successful',
+                method: 'Credit Card',
+                account: 'MC ****0198',
+                customer: 'Jose Molina',
+                invoice: '000437',
+                order: '200011',
+                reference: 'C047UG43463867',
+                auth: 'XYAX9KL93B568',
+                clerk: 'WILL',
+                tip: 3.30,
+                tax: 0.00,
+                voidTid: '251113154034',
+                canVoid: true
+            },
+            txn_000436: {
+                summaryType: 'Payment',
+                total: 17.20,
+                datetime: 'March 13, 2025 - 7:49:02 PM',
+                status: 'Payment successful',
+                method: 'Cash',
+                account: 'Drawer 1',
+                customer: 'Walk-in Customer',
+                invoice: '000436',
+                order: '200012',
+                reference: 'CASH-DRAWER-1',
+                auth: 'N/A',
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.00,
+                voidTid: '123456789012',
+                canVoid: true
+            },
+            txn_000435: {
+                summaryType: 'Payment',
+                total: 17.20,
+                datetime: 'March 13, 2025 - 7:48:04 PM',
+                status: 'Payment successful',
+                method: 'Cash',
+                account: 'Drawer 1',
+                customer: 'Walk-in Customer',
+                invoice: '000435',
+                order: '200013',
+                reference: 'CASH-DRAWER-1',
+                auth: 'N/A',
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.00,
+                voidTid: '123456789012',
+                canVoid: true
+            },
+            txn_000434: {
+                summaryType: 'Payment',
+                total: 12.88,
+                datetime: 'March 13, 2025 - 6:15:11 PM',
+                status: 'Payment successful',
+                method: 'Credit Card',
+                account: 'VISA ****4477',
+                customer: 'Jamie Brooks',
+                invoice: '000434',
+                order: '200014',
+                reference: 'R98KPQ7726610',
+                auth: 'A18844',
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.88,
+                voidTid: '123456789012',
+                canVoid: true
+            },
+            txn_000433: {
+                summaryType: 'Refund',
+                total: -23.50,
+                datetime: 'March 13, 2025 - 4:11:18 PM',
+                status: 'Refund completed',
+                method: 'Credit Card',
+                account: 'MC ****0198',
+                customer: 'Jose Molina',
+                invoice: '000433',
+                order: '200015',
+                reference: 'RFN87374290013',
+                auth: 'R33195',
+                clerk: 'WILL',
+                tip: 0.00,
+                tax: 0.00,
+                voidTid: '',
+                canVoid: false
+            },
+            txn_000432: {
+                summaryType: 'Payment',
+                total: 15.55,
+                datetime: 'March 13, 2025 - 4:07:23 PM',
+                status: 'Payment successful',
+                method: 'Credit Card',
+                account: 'MC ****1299',
+                customer: 'Alex Hart',
+                invoice: '000432',
+                order: '200016',
+                reference: 'B12UQ92210058',
+                auth: 'Q72822',
+                clerk: 'WILL',
+                tip: 1.50,
+                tax: 0.00,
+                voidTid: '987654321000',
+                canVoid: true
+            },
+            txn_000431: {
+                summaryType: 'Payment',
+                total: 23.09,
+                datetime: 'March 13, 2025 - 3:54:27 PM',
+                status: 'Payment successful',
+                method: 'Credit Card',
+                account: 'VISA ****9911',
+                customer: 'Kendra Vaughn',
+                invoice: '000431',
+                order: '200017',
+                reference: 'T22V001874512',
+                auth: 'P93277',
+                clerk: 'WILL',
+                tip: 2.00,
+                tax: 1.09,
+                voidTid: '123456789012',
+                canVoid: true
+            },
+            txn_000430: createDemoCardDetail({
+                total: 48.00, datetime: 'March 13, 2025 - 3:42:10 PM', brand: 'AMEX', lastFour: '2148',
+                invoice: '000430', order: '200018', reference: 'DEMO-AMEX-000430', auth: 'D00430', voidTid: '251113000430'
+            }),
+            txn_000429: createDemoCardDetail({
+                total: 44.80, datetime: 'March 13, 2025 - 3:29:34 PM', brand: 'DISC', lastFour: '4407',
+                invoice: '000429', order: '200019', reference: 'DEMO-DISC-000429', auth: 'D00429', voidTid: '251113000429'
+            }),
+            txn_000428: createDemoCardDetail({
+                total: 33.60, datetime: 'March 13, 2025 - 3:15:52 PM', brand: 'JCB', lastFour: '3521',
+                invoice: '000428', order: '200020', reference: 'DEMO-JCB-000428', auth: 'D00428', voidTid: '251113000428'
+            }),
+            txn_000427: createDemoCardDetail({
+                total: 41.25, datetime: 'March 13, 2025 - 2:58:17 PM', brand: 'CUP', lastFour: '6218',
+                invoice: '000427', order: '200021', reference: 'DEMO-CUP-000427', auth: 'D00427', voidTid: '251113000427'
+            }),
+            txn_000426: createDemoCardDetail({
+                total: 28.40, datetime: 'March 13, 2025 - 2:44:39 PM', brand: 'DINERS', lastFour: '3057',
+                invoice: '000426', order: '200022', reference: 'DEMO-DINERS-000426', auth: 'D00426', voidTid: '251113000426'
+            }),
+            txn_000425: createDemoCardDetail({
+                total: 37.65, datetime: 'March 13, 2025 - 2:31:05 PM', brand: 'MAESTRO', lastFour: '6759',
+                invoice: '000425', order: '200023', reference: 'DEMO-MAESTRO-000425', auth: 'D00425', voidTid: '251113000425'
+            }),
+            txn_000424: createDemoCardDetail({
+                total: 52.90, datetime: 'March 13, 2025 - 2:18:43 PM', brand: 'RUPAY', lastFour: '8174',
+                invoice: '000424', order: '200024', reference: 'DEMO-RUPAY-000424', auth: 'D00424', voidTid: '251113000424'
+            }),
+            txn_000423: createDemoCardDetail({
+                total: 24.85, datetime: 'March 13, 2025 - 2:04:26 PM', method: 'Debit Card', brand: 'INTERAC', lastFour: '4506',
+                invoice: '000423', order: '200025', reference: 'DEMO-INTERAC-000423', auth: 'D00423', voidTid: '251113000423'
+            }),
+            txn_000422: createDemoCardDetail({
+                total: 46.10, datetime: 'March 13, 2025 - 1:51:08 PM', brand: 'ELO', lastFour: '5092',
+                invoice: '000422', order: '200026', reference: 'DEMO-ELO-000422', auth: 'D00422', voidTid: '251113000422'
+            }),
+            txn_000421: createDemoCardDetail({
+                total: 31.95, datetime: 'March 13, 2025 - 1:37:41 PM', method: 'Debit Card', brand: 'EFTPOS', lastFour: '7338',
+                invoice: '000421', order: '200027', reference: 'DEMO-EFTPOS-000421', auth: 'D00421', voidTid: '251113000421'
+            }),
+            txn_000420: createDemoCardDetail({
+                total: 58.75, datetime: 'March 13, 2025 - 1:22:19 PM', brand: 'MIR', lastFour: '2204',
+                invoice: '000420', order: '200028', reference: 'DEMO-MIR-000420', auth: 'D00420', voidTid: '251113000420'
+            })
+        };
+
+        function money(value) {
+            const num = Number(value || 0);
+            const fixed = Math.abs(num).toFixed(2);
+            return (num < 0 ? '-$' : '$') + fixed;
+        }
+
+        function setText(id, value) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            element.textContent = value;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const selectedId = params.get('id') || 'txn_000437';
+        const tx = transactions[selectedId] || transactions.txn_000437;
+
+        const subtotal = Number(tx.total || 0) - Number(tx.tip || 0) - Number(tx.tax || 0);
+
+        setText('summary-type', tx.summaryType);
+        setText('summary-amount', money(tx.total));
+        setText('summary-datetime', tx.datetime);
+        setText('summary-status', tx.status);
+        setText('field-method', tx.method);
+        setText('field-account', tx.account);
+        setText('field-customer', tx.customer);
+        setText('field-invoice', tx.invoice);
+        setText('field-order', tx.order);
+        setText('field-reference', tx.reference);
+        setText('field-auth', tx.auth);
+        setText('field-clerk', tx.clerk);
+        setText('field-tip', money(tx.tip));
+        setText('field-subtotal', money(subtotal));
+        setText('field-tax', money(tx.tax));
+        setText('field-total', money(tx.total));
+
+        const voidBtn = document.getElementById('void-btn');
+        if (!tx.canVoid) {
+            voidBtn.textContent = 'Back to Transactions';
+            voidBtn.classList.add('secondary');
+        }
+
+        voidBtn.addEventListener('click', () => {
+            if (!tx.canVoid) {
+                window.location.href = 'transactions.html';
+                return;
+            }
+            const tid = tx.voidTid || tx.invoice;
+            window.location.href = '9_void_confirm.html?tid=' + encodeURIComponent(tid);
+        });
+    </script>
+</body>
+</html>

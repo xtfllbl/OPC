@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 158" role="img" aria-labelledby="title">
+  <title id="title">Maestro</title>
+  <defs><clipPath id="maestro-left"><circle cx="79" cy="79" r="79"/></clipPath></defs>
+  <circle cx="79" cy="79" r="79" fill="#d32011"/>
+  <circle cx="177" cy="79" r="79" fill="#0099df"/>
+  <circle cx="177" cy="79" r="79" fill="#6c6bbd" clip-path="url(#maestro-left)"/>
+</svg>

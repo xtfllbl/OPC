@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --success: #00A86B;
+            --success-light: #EAF8F2;
+            --text-dark: #111827;
+            --text-grey: #667085;
+            --result-ink: #24456D;
+            --refund-ink: #A94750;
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --line: #DCE3ED;
+            --purple: #7C3AED;
+            --purple-light: #F4F0FF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .material-symbols-rounded {
+            font-family: "Material Symbols Rounded";
+            font-weight: 600;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: "liga";
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga";
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .phone-frame {
+            --flow-accent: var(--primary);
+        }
+
+        .phone-frame[data-theme="cash"],
+        .phone-frame[data-theme="qr"] {
+            --flow-accent: var(--success);
+        }
+
+        .phone-frame[data-theme="gift"] {
+            --flow-accent: var(--purple);
+        }
+
+        .android-status-bar {
+            position: relative;
+            z-index: 200;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
+        .result-area {
+            display: flex;
+            align-items: center;
+            flex: 0 0 226px;
+            flex-direction: column;
+            padding: 24px 0 18px;
+            text-align: center;
+        }
+
+        .top-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 8px 22px 6px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .success-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .success-check {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 13px;
+            color: var(--success);
+            animation: success-pop 0.42s cubic-bezier(0.2, 0.85, 0.35, 1.25) both;
+        }
+
+        .success-check svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .success-check-circle,
+        .success-check-mark {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.6;
+        }
+
+        .success-check-circle {
+            stroke-dasharray: 126;
+            stroke-dashoffset: 126;
+            animation: draw-success-circle 0.5s ease-out 0.08s forwards;
+        }
+
+        .success-check-mark {
+            stroke-dasharray: 38;
+            stroke-dashoffset: 38;
+            animation: draw-success-mark 0.34s ease-out 0.46s forwards;
+        }
+
+        .success-title {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 0 11px;
+            color: var(--result-ink);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            line-height: 1.1;
+        }
+
+        .success-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 36px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .success-title.long-type {
+            font-size: 16px;
+            letter-spacing: 0.06em;
+        }
+
+        .amount {
+            max-width: 330px;
+            overflow: hidden;
+            margin-top: 16px;
+            color: var(--result-ink);
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.05;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .phone-frame.is-refund .success-title,
+        .phone-frame.is-refund .amount {
+            color: var(--refund-ink);
+        }
+
+        @keyframes success-pop {
+            0% {
+                opacity: 0;
+                transform: scale(0.72);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes draw-success-circle {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes draw-success-mark {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .choice-sheet {
+            --flow-divider-offset: 76px;
+            position: relative;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: var(--flow-divider-offset) 24px 20px;
+            border-radius: 0;
+            background: var(--bg-body);
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .transaction-details {
+            position: absolute;
+            top: 18px;
+            left: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 0;
+            min-height: 32px;
+            color: #475467;
+        }
+
+        .payment-identity {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            gap: 8px;
+        }
+
+        .card-brand-icon {
+            display: block;
+            width: 42px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .payment-method-icon {
+            display: none;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: var(--success-light);
+            color: #08734C;
+        }
+
+        .payment-method-icon .material-symbols-rounded {
+            font-size: 20px;
+        }
+
+        .transaction-details.non-card .card-brand-icon {
+            display: none;
+        }
+
+        .transaction-details.non-card .payment-method-icon {
+            display: grid;
+        }
+
+        .transaction-details[data-method="qr"] .payment-method-icon {
+            background: #E7F8F1;
+            color: #009D68;
+        }
+
+        .transaction-details[data-method="gift"] .payment-method-icon {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .payment-account {
+            overflow: hidden;
+            color: var(--result-ink);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.035em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .transaction-reference {
+            display: flex;
+            align-items: baseline;
+            flex: 0 0 auto;
+            gap: 5px;
+            margin-left: 14px;
+            color: var(--text-grey);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+
+        .transaction-reference strong {
+            color: var(--result-ink);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .sheet-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .sheet-label::before,
+        .sheet-label::after {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+            content: "";
+        }
+
+        .receipt-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: 158px 64px;
+            align-content: start;
+            flex: 1;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .signature-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            animation: panel-in 0.24s ease-out both;
+        }
+
+        .choice-sheet.signature-mode .signature-panel {
+            display: flex;
+        }
+
+        .choice-sheet.signature-mode .receipt-options,
+        .choice-sheet.signature-mode .email-panel {
+            display: none;
+        }
+
+        .signature-pad {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            border: 1.5px solid #CBD7E6;
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: inset 0 0 0 1px rgba(36, 69, 109, 0.02);
+        }
+
+        .signature-canvas {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .signature-guide {
+            position: absolute;
+            right: 22px;
+            bottom: 34px;
+            left: 22px;
+            height: 1px;
+            background: #DCE3ED;
+            pointer-events: none;
+        }
+
+        .signature-placeholder {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #98A2B3;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            pointer-events: none;
+            transition: opacity 0.16s ease;
+        }
+
+        .signature-panel.has-signature .signature-placeholder {
+            opacity: 0;
+        }
+
+        .signature-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.45fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .signature-action {
+            height: 54px;
+            border: 1.5px solid #D9E3F1;
+            border-radius: 16px;
+            background: #F8FAFC;
+            color: #64748B;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            transition: transform 0.14s ease, filter 0.14s ease, opacity 0.14s ease;
+        }
+
+        .signature-action.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .signature-action:active:not(:disabled) {
+            transform: translateY(2px) scale(0.98);
+            filter: brightness(0.97);
+        }
+
+        .signature-action:disabled {
+            opacity: 0.38;
+            cursor: default;
+        }
+
+        @keyframes panel-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .receipt-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 0;
+            border: 1.5px solid var(--line);
+            border-radius: 18px;
+            background: var(--surface);
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 800;
+            transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+        }
+
+        .receipt-option:active {
+            transform: translateY(2px) scale(0.975);
+            filter: brightness(0.97);
+        }
+
+        .option-icon {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            border: 1px solid;
+            border-radius: 16px;
+        }
+
+        .option-icon .material-symbols-rounded {
+            font-size: 28px;
+        }
+
+        .email-option {
+            border-color: #D6E2FF;
+        }
+
+        .email-option .option-icon {
+            border-color: #D6E2FF;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .print-option {
+            border-color: #E4D8FF;
+        }
+
+        .print-option .option-icon {
+            border-color: #E4D8FF;
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .no-receipt-option {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 10px;
+            border-color: #D7DEE8;
+            background: #F8FAFC;
+            color: #475467;
+            font-size: 14px;
+        }
+
+        .no-receipt-option .material-symbols-rounded {
+            font-size: 22px;
+        }
+
+        .email-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding-top: 24px;
+        }
+
+        .choice-sheet.email-mode .receipt-options {
+            display: none;
+        }
+
+        .phone-frame.email-mode .result-area {
+            display: none;
+        }
+
+        .choice-sheet.email-mode {
+            padding: 58px 24px 20px;
+        }
+
+        .choice-sheet.email-mode .transaction-details {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .sheet-label {
+            order: 2;
+            gap: 0;
+            margin: 22px 0 0;
+            font-size: 0;
+        }
+
+        .choice-sheet.email-mode .email-panel {
+            display: flex;
+            order: 1;
+            flex: 0 0 auto;
+            min-height: auto;
+            padding-top: 0;
+        }
+
+        .choice-sheet.email-mode .email-heading {
+            display: flex;
+            min-height: 34px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .choice-sheet.email-mode .email-heading .option-icon {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .email-title {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding-bottom: 11px;
+            color: var(--result-ink);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .choice-sheet.email-mode .email-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 36px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .choice-sheet.email-mode .email-copy {
+            display: none;
+        }
+
+        .choice-sheet.email-mode .email-form {
+            margin-top: 28px;
+        }
+
+        .choice-sheet.email-mode .email-label {
+            margin-bottom: 8px;
+        }
+
+        .choice-sheet.email-mode .email-input {
+            height: 54px;
+        }
+
+        .choice-sheet.email-mode .email-error {
+            min-height: 17px;
+            margin-top: 7px;
+        }
+
+        .choice-sheet.email-mode .email-actions {
+            margin-top: 14px;
+        }
+
+        .choice-sheet.email-mode .email-action {
+            height: 52px;
+            border-radius: 16px;
+        }
+
+        .email-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .email-heading .option-icon {
+            width: 48px;
+            height: 48px;
+            border-color: #D6E2FF;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .email-title {
+            color: var(--text-dark);
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .email-copy {
+            margin-top: 4px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .email-form {
+            margin-top: 28px;
+        }
+
+        .email-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .email-input {
+            width: 100%;
+            height: 54px;
+            padding: 0 14px;
+            border: 1.5px solid var(--line);
+            border-radius: 15px;
+            outline: none;
+            background: #F8FAFC;
+            color: var(--text-dark);
+            font-size: 15px;
+            user-select: text;
+        }
+
+        .email-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 91, 255, 0.1);
+            background: var(--surface);
+        }
+
+        .email-error {
+            min-height: 17px;
+            margin-top: 7px;
+            color: #D92D20;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .email-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.45fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .email-action {
+            height: 52px;
+            border: 1.5px solid #DCE6FF;
+            border-radius: 16px;
+            background: #F8FAFC;
+            color: #64748B;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .email-action.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            box-shadow: 0 8px 20px rgba(10, 91, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .android-keyboard {
+            position: absolute;
+            z-index: 80;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 302px;
+            padding: 7px 5px 4px;
+            background: #E7ECF2;
+            box-shadow: 0 -1px 0 rgba(71, 84, 103, 0.08), 0 -10px 28px rgba(15, 23, 42, 0.08);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(100%);
+            transition: transform 0.22s ease, opacity 0.16s ease;
+        }
+
+        .phone-frame.keyboard-visible .android-keyboard {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .keyboard-toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            height: 32px;
+            padding: 0 7px 4px 10px;
+            color: #526176;
+        }
+
+        .keyboard-language {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .keyboard-hide {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 28px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #475467;
+            cursor: pointer;
+        }
+
+        .keyboard-hide .material-symbols-rounded {
+            font-size: 20px;
+        }
+
+        .keyboard-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            height: 48px;
+        }
+
+        .keyboard-row.row-home {
+            padding: 0 17px;
+        }
+
+        .ime-key {
+            display: grid;
+            place-items: center;
+            flex: 1 1 0;
+            min-width: 0;
+            border: 0;
+            border-radius: 8px;
+            background: #FAFCFE;
+            box-shadow: 0 1px 1px rgba(15, 23, 42, 0.15);
+            color: #1F2937;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .ime-key:active,
+        .ime-key.is-active {
+            background: #C9D5E3;
+            transform: translateY(1px);
+        }
+
+        .ime-key.function-key {
+            flex-grow: 1.25;
+            background: #D5DDE7;
+        }
+
+        .ime-key.function-key .material-symbols-rounded {
+            font-size: 21px;
+        }
+
+        .ime-key.space-key {
+            flex-grow: 3.2;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .ime-key.compact-key {
+            flex-grow: 0.9;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ime-key.enter-key {
+            flex-grow: 1.2;
+            background: #A8C7FA;
+            color: #0B3A82;
+        }
+
+        .keyboard-navigation {
+            display: grid;
+            place-items: center;
+            height: 24px;
+        }
+
+        .keyboard-navigation::after {
+            width: 92px;
+            height: 4px;
+            border-radius: 999px;
+            background: #344054;
+            content: "";
+        }
+
+        .toast {
+            position: absolute;
+            z-index: 20;
+            left: 50%;
+            bottom: 24px;
+            max-width: calc(100% - 48px);
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: #101828;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 10px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .print-receipt {
+            display: none;
+        }
+
+        @media print {
+            body {
+                display: block;
+                background: #FFFFFF;
+            }
+
+            .phone-frame {
+                display: none;
+            }
+
+            .print-receipt {
+                display: block;
+                width: 80mm;
+                padding: 8mm 5mm;
+                color: #000000;
+                font-family: monospace;
+                font-size: 12px;
+                line-height: 1.5;
+                text-align: center;
+            }
+
+            .print-rule {
+                margin: 10px 0;
+                border-top: 1px dashed #000000;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .success-check,
+            .success-check-circle,
+            .success-check-mark,
+            .signature-panel,
+            .android-keyboard {
+                animation-duration: 0.01ms;
+                animation-delay: 0ms;
+                transition-duration: 0.01ms;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .android-keyboard {
+                display: none;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame" id="phone-frame" data-theme="card">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <header class="top-bar">
+            <div class="merchant-name" data-merchant-name>Merchant</div>
+        </header>
+
+        <section class="result-area" aria-label="Payment result">
+
+            <div class="success-summary">
+                <span class="success-check" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                        <circle class="success-check-circle" cx="24" cy="24" r="20"></circle>
+                        <path class="success-check-mark" d="m14.5 24.5 6.3 6.3 13-14"></path>
+                    </svg>
+                </span>
+                <h1 class="success-title" id="transaction-type">SALE</h1>
+                <div class="amount" id="amount-display">$104.00</div>
+            </div>
+        </section>
+
+        <main class="choice-sheet" id="choice-sheet">
+            <div class="transaction-details" id="transaction-details" data-method="card" aria-label="Payment reference">
+                <div class="payment-identity">
+                    <img class="card-brand-icon" id="card-brand-icon" src="assets/icon_visa.svg" alt="Visa">
+                    <span class="payment-method-icon" id="payment-method-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded" id="payment-method-symbol">payments</span>
+                    </span>
+                    <span class="payment-account" id="payment-account">•••• 2004</span>
+                </div>
+                <div class="transaction-reference">
+                    <span>TRANS</span>
+                    <strong id="transaction-sequence">000001</strong>
+                </div>
+            </div>
+
+            <div class="sheet-label" id="sheet-label">CUSTOMER COPY</div>
+
+            <section class="signature-panel" id="signature-panel" aria-label="Electronic signature">
+                <div class="signature-pad" id="signature-pad">
+                    <canvas class="signature-canvas" id="signature-canvas" aria-label="Signature pad"></canvas>
+                    <div class="signature-guide" aria-hidden="true"></div>
+                    <div class="signature-placeholder" id="signature-placeholder">Sign here</div>
+                </div>
+
+                <div class="signature-actions">
+                    <button class="signature-action" id="clear-signature-button" type="button"
+                        onclick="clearSignature()" disabled>Clear</button>
+                    <button class="signature-action primary" id="confirm-signature-button" type="button"
+                        onclick="confirmSignature()" disabled>Confirm</button>
+                </div>
+            </section>
+
+            <section class="receipt-options" aria-label="Customer receipt options">
+                <button class="receipt-option email-option" type="button" onclick="openEmailPanel()">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">mail</span>
+                    </span>
+                    <span>Email</span>
+                </button>
+
+                <button class="receipt-option print-option" type="button" onclick="printCustomerCopy()">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">print</span>
+                    </span>
+                    <span>Print</span>
+                </button>
+
+                <button class="receipt-option no-receipt-option" type="button" onclick="skipCustomerCopy()">
+                    <span class="material-symbols-rounded" aria-hidden="true">block</span>
+                    <span>No Receipt</span>
+                </button>
+            </section>
+
+            <section class="email-panel" aria-label="Email customer receipt">
+                <div class="email-heading">
+                    <span class="option-icon" aria-hidden="true">
+                        <span class="material-symbols-rounded">mail</span>
+                    </span>
+                    <div>
+                        <h2 class="email-title">Email Receipt</h2>
+                    </div>
+                </div>
+
+                <div class="email-form">
+                    <label class="email-label" for="email-input">Email Address</label>
+                    <input class="email-input" id="email-input" type="email" inputmode="email"
+                        autocomplete="email" placeholder="customer@example.com">
+                    <div class="email-error" id="email-error" aria-live="polite"></div>
+                </div>
+
+                <div class="email-actions">
+                    <button class="email-action" type="button" onclick="closeEmailPanel()">Back</button>
+                    <button class="email-action primary" type="button" onclick="sendEmailReceipt()">Send Receipt</button>
+                </div>
+            </section>
+        </main>
+
+        <section class="android-keyboard" id="android-keyboard" aria-label="Android on-screen keyboard"
+            aria-hidden="true">
+            <div class="keyboard-toolbar">
+                <span class="keyboard-language">English (US)</span>
+                <button class="keyboard-hide" type="button" tabindex="-1" onclick="hideSimulatedKeyboard()"
+                    aria-label="Hide keyboard">
+                    <span class="material-symbols-rounded" aria-hidden="true">keyboard_hide</span>
+                </button>
+            </div>
+
+            <div class="keyboard-rows">
+                <div class="keyboard-row">
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="q">q</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="w">w</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="e">e</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="r">r</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="t">t</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="y">y</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="u">u</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="i">i</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="o">o</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="p">p</button>
+                </div>
+
+                <div class="keyboard-row row-home">
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="a">a</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="s">s</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="d">d</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="f">f</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="g">g</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="h">h</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="j">j</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="k">k</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="l">l</button>
+                </div>
+
+                <div class="keyboard-row">
+                    <button class="ime-key function-key" id="ime-shift" type="button" tabindex="-1"
+                        data-ime-key="SHIFT" aria-label="Shift">
+                        <span class="material-symbols-rounded" aria-hidden="true">shift</span>
+                    </button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="z">z</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="x">x</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="c">c</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="v">v</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="b">b</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="n">n</button>
+                    <button class="ime-key ime-letter" type="button" tabindex="-1" data-ime-key="m">m</button>
+                    <button class="ime-key function-key" type="button" tabindex="-1" data-ime-key="BACKSPACE"
+                        aria-label="Backspace">
+                        <span class="material-symbols-rounded" aria-hidden="true">backspace</span>
+                    </button>
+                </div>
+
+                <div class="keyboard-row">
+                    <button class="ime-key compact-key function-key" type="button" tabindex="-1"
+                        data-ime-key="?123">?123</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1" data-ime-key="@">@</button>
+                    <button class="ime-key space-key" type="button" tabindex="-1"
+                        data-ime-key="SPACE">English (US)</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1" data-ime-key=".">.</button>
+                    <button class="ime-key compact-key" type="button" tabindex="-1"
+                        data-ime-key=".com">.com</button>
+                    <button class="ime-key enter-key" type="button" tabindex="-1" data-ime-key="ENTER"
+                        aria-label="Send receipt">
+                        <span class="material-symbols-rounded" aria-hidden="true">keyboard_return</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="keyboard-navigation" aria-hidden="true"></div>
+        </section>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <section class="print-receipt" id="print-receipt" aria-hidden="true">
+        <strong data-merchant-name>Merchant</strong><br>
+        CUSTOMER COPY
+        <div class="print-rule"></div>
+        <span id="print-method">CARD PAYMENT</span><br>
+        <span id="print-transaction-type">SALE</span><br>
+        <span id="print-payment-reference">VISA •••• 2004</span><br>
+        <span id="print-transaction-sequence">TRANS 000001</span><br>
+        <div class="print-rule"></div>
+        TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
+        APPROVED
+        <div class="print-rule"></div>
+        Thank you for your purchase
+    </section>
+
+    <script src="assets/merchant-context.js"></script>
+    <script>
+        const choiceSheet = document.getElementById("choice-sheet");
+        const phoneFrame = document.getElementById("phone-frame");
+        const statusTime = document.getElementById("status-time");
+        const emailInput = document.getElementById("email-input");
+        const emailError = document.getElementById("email-error");
+        const androidKeyboard = document.getElementById("android-keyboard");
+        const sheetLabel = document.getElementById("sheet-label");
+        const signaturePanel = document.getElementById("signature-panel");
+        const signaturePad = document.getElementById("signature-pad");
+        const signatureCanvas = document.getElementById("signature-canvas");
+        const clearSignatureButton = document.getElementById("clear-signature-button");
+        const confirmSignatureButton = document.getElementById("confirm-signature-button");
+        const imeLetterKeys = Array.from(document.querySelectorAll(".ime-letter"));
+        const imeShiftKey = document.getElementById("ime-shift");
+        const imeModeKey = document.querySelector('[data-ime-key="?123"]');
+        const toast = document.getElementById("toast");
+        const useSimulatedKeyboard = window.matchMedia("(pointer: fine)").matches;
+        const resultRouteParams = new URLSearchParams(window.location.search);
+        const failureEvaluationCents = resolveFailureEvaluationCents(resultRouteParams);
+
+        if (failureEvaluationCents !== null && amountEndsInFour(failureEvaluationCents)) {
+            window.location.replace("6_receipt_failed.html?" + resultRouteParams.toString());
+        }
+
+        const amountCents = resolveAmountCents();
+        const paymentMethod = resolvePaymentMethod();
+        const transactionType = resolveTransactionType();
+        const randomCardIdentity = createRandomCardIdentity();
+        const cardBrand = resolveCardBrand();
+        const maskedCard = resolveMaskedCard();
+        const transactionSequence = resolveTransactionSequence();
+        const signatureRequired = resolveSignatureRequired();
+        let completionPending = false;
+        let imeShiftActive = false;
+        let imeSymbolMode = false;
+        let signatureCaptured = false;
+        let signatureDrawing = false;
+        let signatureLastPoint = null;
+        let signatureContext = null;
+
+        function formatCurrency(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD"
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
+        }
+
+        function resolveFailureEvaluationCents(params) {
+            const centsText = params.get("amountCents");
+            const cents = Number(centsText);
+            if (centsText !== null && centsText !== "" && Number.isFinite(cents) && cents >= 0) {
+                return Math.round(cents);
+            }
+            return parseMoneyToCents(params.get("amount"));
+        }
+
+        function amountEndsInFour(cents) {
+            if (!Number.isFinite(cents) || cents < 0) return false;
+            const normalizedAmount = (Math.round(cents) / 100)
+                .toFixed(2)
+                .replace(/0+$/, "")
+                .replace(/\.$/, "");
+            return normalizedAmount.endsWith("4");
+        }
+
+        function resolveAmountCents() {
+            const params = new URLSearchParams(window.location.search);
+            const centsText = params.get("amountCents");
+            const cents = Number(centsText);
+            if (centsText !== null && centsText !== "" && Number.isFinite(cents) && cents >= 0) {
+                return Math.round(cents);
+            }
+
+            const amount = parseMoneyToCents(params.get("amount"));
+            if (amount !== null) return amount;
+
+            const stored = Number(localStorage.getItem("finalAmountCents"));
+            if (Number.isFinite(stored) && stored >= 0) return Math.round(stored);
+
+            return 10400;
+        }
+
+        function resolvePaymentMethod() {
+            const params = new URLSearchParams(window.location.search);
+            const method = params.get("paymentMethod") || params.get("method") || localStorage.getItem("paymentMethod") || "card";
+            const normalized = method.trim().toLowerCase();
+            if (["cash", "qr", "gift", "card"].includes(normalized)) return normalized;
+            if (["alipay", "wechat", "weixin", "scan"].includes(normalized)) return "qr";
+            return "card";
+        }
+
+        function resolveTransactionType() {
+            const params = new URLSearchParams(window.location.search);
+            const rawType = params.get("transactionType") || params.get("type") || localStorage.getItem("transactionType") || "sale";
+            const normalized = rawType
+                .trim()
+                .replace(/[_\s]+/g, "-")
+                .replace(/-+/g, "-")
+                .toUpperCase();
+            return normalized || "SALE";
+        }
+
+        function resolveSignatureRequired() {
+            const params = new URLSearchParams(window.location.search);
+            const override = params.get("signature");
+            if (override !== null) {
+                return ["1", "true", "on", "yes"].includes(override.trim().toLowerCase());
+            }
+            try {
+                return localStorage.getItem("electronicSignatureEnabled") === "true";
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function randomInteger(maxExclusive) {
+            if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+                const values = new Uint32Array(1);
+                window.crypto.getRandomValues(values);
+                return values[0] % maxExclusive;
+            }
+            return Math.floor(Math.random() * maxExclusive);
+        }
+
+        function createRandomCardIdentity() {
+            const brands = ["visa", "mastercard", "amex", "discover"];
+            return {
+                brand: brands[randomInteger(brands.length)],
+                lastFour: String(randomInteger(10000)).padStart(4, "0")
+            };
+        }
+
+        function resolveCardBrand() {
+            const params = new URLSearchParams(window.location.search);
+            const rawBrand = params.get("cardBrand") || params.get("brand") || randomCardIdentity.brand;
+            const normalized = rawBrand.trim().toLowerCase().replace(/[\s_-]+/g, "");
+            const aliases = {
+                visa: "visa",
+                mastercard: "mastercard",
+                mc: "mastercard",
+                amex: "amex",
+                americanexpress: "amex",
+                discover: "discover"
+            };
+            return aliases[normalized] || "visa";
+        }
+
+        function resolveMaskedCard() {
+            const params = new URLSearchParams(window.location.search);
+            const rawCard = params.get("last4") || params.get("maskedCard") || params.get("cardNumber") || randomCardIdentity.lastFour;
+            const digits = rawCard.replace(/\D/g, "");
+            const lastFour = digits.slice(-4).padStart(4, "0");
+            return "•••• " + lastFour;
+        }
+
+        function resolveTransactionSequence() {
+            const params = new URLSearchParams(window.location.search);
+            const rawSequence = params.get("transactionNo") || params.get("transactionNumber") || params.get("transNo") || params.get("stan");
+            const digits = rawSequence ? rawSequence.replace(/\D/g, "") : "";
+            if (digits) return digits.slice(-6).padStart(6, "0");
+            return String(randomInteger(1000000)).padStart(6, "0");
+        }
+
+        function getCardBrandConfig() {
+            const brands = {
+                visa: { label: "Visa", src: "assets/icon_visa.svg" },
+                mastercard: { label: "Mastercard", src: "assets/icon_mastercard.svg" },
+                amex: { label: "American Express", src: "assets/icon_amex.svg" },
+                discover: { label: "Discover", src: "assets/icon_discover.svg" }
+            };
+            return brands[cardBrand] || brands.visa;
+        }
+
+        function getPaymentMethodLabel() {
+            const labels = {
+                cash: "CASH PAYMENT",
+                card: "CARD PAYMENT",
+                qr: "QR PAYMENT",
+                gift: "GIFT PAYMENT"
+            };
+            return labels[paymentMethod] || "CARD PAYMENT";
+        }
+
+        function updateStatusTime() {
+            statusTime.textContent = new Date().toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        function syncPaymentReference() {
+            const detailsEl = document.getElementById("transaction-details");
+            const brandIconEl = document.getElementById("card-brand-icon");
+            const methodSymbolEl = document.getElementById("payment-method-symbol");
+            const accountEl = document.getElementById("payment-account");
+            const sequenceEl = document.getElementById("transaction-sequence");
+            const printReferenceEl = document.getElementById("print-payment-reference");
+            const displaySequence = transactionSequence;
+
+            detailsEl.dataset.method = paymentMethod;
+            detailsEl.classList.toggle("non-card", paymentMethod !== "card");
+            sequenceEl.textContent = displaySequence;
+            document.getElementById("print-transaction-sequence").textContent = "TRANS " + displaySequence;
+
+            if (paymentMethod === "card") {
+                const brand = getCardBrandConfig();
+                brandIconEl.src = brand.src;
+                brandIconEl.alt = brand.label;
+                accountEl.textContent = maskedCard;
+                detailsEl.setAttribute("aria-label", brand.label + " card " + maskedCard + ", transaction " + transactionSequence);
+                printReferenceEl.textContent = brand.label.toUpperCase() + " " + maskedCard;
+                return;
+            }
+
+            const methodDetails = {
+                cash: { symbol: "payments", account: "CASH", label: "Cash payment" },
+                qr: { symbol: "qr_code_2", account: "QR", label: "QR payment" },
+                gift: { symbol: "redeem", account: "GIFT", label: "Gift payment" }
+            };
+            const detail = methodDetails[paymentMethod] || methodDetails.cash;
+            methodSymbolEl.textContent = detail.symbol;
+            accountEl.textContent = detail.account;
+            detailsEl.setAttribute("aria-label", detail.label + ", transaction " + transactionSequence);
+            printReferenceEl.textContent = detail.account;
+        }
+
+        function getReceiptPayload(deliveryMethod, extra = {}) {
+            return {
+                deliveryMethod: deliveryMethod,
+                amountCents: amountCents,
+                paymentMethod: paymentMethod,
+                transactionType: transactionType.toLowerCase(),
+                cardBrand: paymentMethod === "card" ? cardBrand : null,
+                maskedCard: paymentMethod === "card" ? maskedCard : null,
+                transactionSequence: transactionSequence,
+                signatureCaptured: signatureCaptured,
+                ...extra
+            };
+        }
+
+        function syncTransactionDetails() {
+            const amountText = formatCurrency(amountCents);
+            const transactionTypeEl = document.getElementById("transaction-type");
+            phoneFrame.dataset.theme = paymentMethod;
+            phoneFrame.classList.toggle("is-refund", transactionType.includes("REFUND"));
+            transactionTypeEl.textContent = transactionType;
+            transactionTypeEl.classList.toggle("long-type", transactionType.length > 12);
+            document.getElementById("amount-display").textContent = amountText;
+            document.getElementById("print-method").textContent = getPaymentMethodLabel();
+            document.getElementById("print-transaction-type").textContent = transactionType;
+            document.getElementById("print-amount").textContent = amountText;
+            syncPaymentReference();
+        }
+
+        function updateSignatureActions() {
+            signaturePanel.classList.toggle("has-signature", signatureCaptured);
+            clearSignatureButton.disabled = !signatureCaptured;
+            confirmSignatureButton.disabled = !signatureCaptured;
+        }
+
+        function prepareSignatureCanvas() {
+            if (!signatureRequired) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            signatureCanvas.width = Math.round(rect.width * pixelRatio);
+            signatureCanvas.height = Math.round(rect.height * pixelRatio);
+            signatureContext = signatureCanvas.getContext("2d");
+            signatureContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            signatureContext.lineWidth = 3;
+            signatureContext.lineCap = "round";
+            signatureContext.lineJoin = "round";
+            signatureContext.strokeStyle = "#24456D";
+            signatureContext.fillStyle = "#24456D";
+            signatureCaptured = false;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            updateSignatureActions();
+        }
+
+        function getSignaturePoint(event) {
+            const rect = signatureCanvas.getBoundingClientRect();
+            return {
+                x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)),
+                y: Math.max(0, Math.min(rect.height, event.clientY - rect.top))
+            };
+        }
+
+        function beginSignature(event) {
+            if (!signatureRequired || !signatureContext) return;
+            event.preventDefault();
+            signatureCanvas.setPointerCapture(event.pointerId);
+            signatureDrawing = true;
+            signatureLastPoint = getSignaturePoint(event);
+            signatureContext.beginPath();
+            signatureContext.arc(signatureLastPoint.x, signatureLastPoint.y, 1.5, 0, Math.PI * 2);
+            signatureContext.fill();
+            signatureCaptured = true;
+            updateSignatureActions();
+        }
+
+        function drawSignature(event) {
+            if (!signatureDrawing || !signatureContext || !signatureLastPoint) return;
+            event.preventDefault();
+            const events = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [event];
+            events.forEach((sample) => {
+                const nextPoint = getSignaturePoint(sample);
+                signatureContext.beginPath();
+                signatureContext.moveTo(signatureLastPoint.x, signatureLastPoint.y);
+                signatureContext.lineTo(nextPoint.x, nextPoint.y);
+                signatureContext.stroke();
+                signatureLastPoint = nextPoint;
+            });
+        }
+
+        function endSignature(event) {
+            if (!signatureDrawing) return;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            if (event && signatureCanvas.hasPointerCapture(event.pointerId)) {
+                signatureCanvas.releasePointerCapture(event.pointerId);
+            }
+        }
+
+        function clearSignature() {
+            if (!signatureContext) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            signatureContext.clearRect(0, 0, rect.width, rect.height);
+            signatureCaptured = false;
+            signatureDrawing = false;
+            signatureLastPoint = null;
+            updateSignatureActions();
+        }
+
+        function confirmSignature() {
+            if (!signatureCaptured) return;
+            choiceSheet.classList.remove("signature-mode");
+            sheetLabel.textContent = "CUSTOMER COPY";
+            showToast("Signature captured");
+        }
+
+        function initializeSignatureStep() {
+            if (!signatureRequired) return;
+            choiceSheet.classList.add("signature-mode");
+            sheetLabel.textContent = "SIGNATURE";
+            window.requestAnimationFrame(prepareSignatureCanvas);
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("show");
+            window.setTimeout(() => toast.classList.remove("show"), 1200);
+        }
+
+        function openEmailPanel() {
+            choiceSheet.classList.add("email-mode");
+            phoneFrame.classList.add("email-mode");
+            emailError.textContent = "";
+            window.setTimeout(() => emailInput.focus(), 80);
+        }
+
+        function closeEmailPanel() {
+            hideSimulatedKeyboard(false);
+            choiceSheet.classList.remove("email-mode");
+            phoneFrame.classList.remove("email-mode");
+            emailError.textContent = "";
+            emailInput.blur();
+        }
+
+        function showSimulatedKeyboard() {
+            if (!useSimulatedKeyboard || !choiceSheet.classList.contains("email-mode")) return;
+            phoneFrame.classList.add("keyboard-visible");
+            androidKeyboard.setAttribute("aria-hidden", "false");
+        }
+
+        function hideSimulatedKeyboard(blurInput = true) {
+            phoneFrame.classList.remove("keyboard-visible");
+            androidKeyboard.setAttribute("aria-hidden", "true");
+            if (blurInput) emailInput.blur();
+        }
+
+        function renderImeLayout() {
+            const letterValues = "qwertyuiopasdfghjklzxcvbnm".split("");
+            const symbolValues = [
+                "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+                "@", "#", "$", "_", "&", "-", "+", "(", ")",
+                "*", "\"", "'", ";", ":", "!", "?"
+            ];
+            const values = imeSymbolMode ? symbolValues : letterValues;
+
+            imeLetterKeys.forEach((keyElement, index) => {
+                const value = values[index];
+                const displayValue = !imeSymbolMode && imeShiftActive ? value.toUpperCase() : value;
+                keyElement.dataset.imeKey = displayValue;
+                keyElement.textContent = displayValue;
+            });
+
+            imeModeKey.textContent = imeSymbolMode ? "ABC" : "?123";
+            imeShiftKey.classList.toggle("is-active", imeShiftActive && !imeSymbolMode);
+        }
+
+        function insertImeText(text) {
+            if (typeof emailInput.selectionStart === "number") {
+                const start = emailInput.selectionStart;
+                const end = emailInput.selectionEnd ?? start;
+                emailInput.setRangeText(text, start, end, "end");
+            } else {
+                emailInput.value += text;
+            }
+            emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        function deleteImeText() {
+            if (typeof emailInput.selectionStart === "number") {
+                const start = emailInput.selectionStart;
+                const end = emailInput.selectionEnd ?? start;
+                if (start !== end) {
+                    emailInput.setRangeText("", start, end, "end");
+                } else if (start > 0) {
+                    emailInput.setRangeText("", start - 1, start, "end");
+                }
+            } else {
+                emailInput.value = emailInput.value.slice(0, -1);
+            }
+            emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        function typeImeKey(key) {
+            if (key === "SHIFT") {
+                if (!imeSymbolMode) {
+                    imeShiftActive = !imeShiftActive;
+                    renderImeLayout();
+                }
+                return;
+            }
+            if (key === "?123") {
+                imeSymbolMode = !imeSymbolMode;
+                imeShiftActive = false;
+                renderImeLayout();
+                return;
+            }
+            if (key === "BACKSPACE") {
+                deleteImeText();
+                return;
+            }
+            if (key === "SPACE") {
+                insertImeText(" ");
+                return;
+            }
+            if (key === "ENTER") {
+                sendEmailReceipt();
+                return;
+            }
+
+            insertImeText(key);
+            if (imeShiftActive && !imeSymbolMode) {
+                imeShiftActive = false;
+                renderImeLayout();
+            }
+        }
+
+        function finishReceiptChoice(deliveryMethod, extra = {}) {
+            if (completionPending) return;
+            completionPending = true;
+            const payload = getReceiptPayload(deliveryMethod, extra);
+            localStorage.setItem("customerReceiptMethod", deliveryMethod);
+            window.dispatchEvent(new CustomEvent("customer-receipt-complete", { detail: payload }));
+
+            if (typeof window.onCustomerReceiptComplete === "function") {
+                window.onCustomerReceiptComplete(payload);
+                return;
+            }
+
+            window.location.href = "index.html";
+        }
+
+        function sendEmailReceipt() {
+            const email = emailInput.value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = "Enter a valid email address.";
+                emailInput.focus();
+                return;
+            }
+
+            const payload = getReceiptPayload("email", { email: email });
+            emailError.textContent = "";
+            if (typeof window.onCustomerReceiptEmail === "function") {
+                window.onCustomerReceiptEmail(payload);
+            }
+            window.dispatchEvent(new CustomEvent("customer-receipt-email", { detail: payload }));
+            showToast("Receipt emailed");
+            window.setTimeout(() => finishReceiptChoice("email", { email: email }), 700);
+        }
+
+        function printCustomerCopy() {
+            const payload = getReceiptPayload("print");
+            if (typeof window.onCustomerReceiptPrint === "function") {
+                window.onCustomerReceiptPrint(payload);
+            } else {
+                window.print();
+            }
+            window.dispatchEvent(new CustomEvent("customer-receipt-print", { detail: payload }));
+            showToast("Customer copy sent to printer");
+            window.setTimeout(() => finishReceiptChoice("print"), 500);
+        }
+
+        function skipCustomerCopy() {
+            finishReceiptChoice("none");
+        }
+
+        emailInput.addEventListener("input", () => {
+            emailError.textContent = "";
+        });
+
+        emailInput.addEventListener("focus", showSimulatedKeyboard);
+        emailInput.addEventListener("blur", () => {
+            window.setTimeout(() => {
+                if (document.activeElement !== emailInput) hideSimulatedKeyboard(false);
+            }, 0);
+        });
+
+        androidKeyboard.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+        });
+
+        document.querySelectorAll("[data-ime-key]").forEach((keyElement) => {
+            keyElement.addEventListener("click", () => typeImeKey(keyElement.dataset.imeKey));
+        });
+
+        emailInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") sendEmailReceipt();
+            if (event.key === "Escape") closeEmailPanel();
+        });
+
+        signatureCanvas.addEventListener("pointerdown", beginSignature);
+        signatureCanvas.addEventListener("pointermove", drawSignature);
+        signatureCanvas.addEventListener("pointerup", endSignature);
+        signatureCanvas.addEventListener("pointercancel", endSignature);
+
+        renderImeLayout();
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 30000);
+        syncTransactionDetails();
+        initializeSignatureStep();
+    </script>
+</body>
+
+</html>

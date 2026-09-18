@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Payment Method</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --text-dark: #111827;
+            --text-grey: #6B7280;
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --line: #D8E0EB;
+            --cash: #0B7A43;
+            --cash-light: #EAF8EF;
+            --cash-border: #9BDAB4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .android-status-bar {
+            position: relative;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
+        .header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 8px 22px 6px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .icon-btn {
+            position: absolute;
+            top: 3px;
+            left: 18px;
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--surface);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .icon-btn:active {
+            transform: scale(0.96);
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.2;
+        }
+
+        .merchant-stage {
+            display: grid;
+            place-items: center;
+            flex: 0 0 226px;
+            height: 226px;
+        }
+
+        .merchant-logo-slot {
+            display: grid;
+            place-items: center;
+            width: var(--merchant-logo-width, 120px);
+            height: var(--merchant-logo-height, 120px);
+            max-width: calc(100% - 40px);
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .merchant-logo-slot[data-shape="round"] {
+            --merchant-logo-width: 128px;
+            --merchant-logo-height: 128px;
+        }
+
+        .merchant-logo-slot[data-shape="wide"] {
+            --merchant-logo-width: 220px;
+            --merchant-logo-height: 110px;
+        }
+
+        .merchant-logo-slot[data-shape="wordmark"] {
+            --merchant-logo-width: 240px;
+            --merchant-logo-height: 105px;
+        }
+
+        .merchant-logo-slot[data-shape="tall"] {
+            --merchant-logo-width: 90px;
+            --merchant-logo-height: 145px;
+        }
+
+        .merchant-logo-slot img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            object-fit: contain;
+        }
+
+        .content-sheet {
+            --flow-divider-offset: 76px;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: var(--flow-divider-offset) 24px 20px;
+            background: var(--bg-body);
+            overflow: hidden;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+            content: "";
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            flex: 1;
+            gap: 10px;
+            min-height: 0;
+        }
+
+        .option-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto auto;
+            align-items: center;
+            align-content: center;
+            justify-items: center;
+            row-gap: 20px;
+            min-width: 0;
+            min-height: 0;
+            padding: 24px 28px;
+            border: 1.5px solid #D8E0EB;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.72);
+            cursor: pointer;
+            text-align: left;
+            box-shadow: 0 3px 10px rgba(31, 55, 89, 0.035);
+            transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+        }
+
+        .option-card:active,
+        .option-card.is-activating {
+            transform: translateY(2px) scale(0.975);
+        }
+
+        .option-card.is-activating {
+            pointer-events: none;
+        }
+
+        .cash-card {
+            --option-accent: var(--cash);
+            --option-accent-soft: var(--cash-light);
+            border-color: var(--cash-border);
+            background: var(--cash-light);
+            box-shadow: 0 5px 14px rgba(11, 122, 67, 0.055);
+        }
+
+        .card-card {
+            --option-accent: var(--primary);
+            --option-accent-soft: var(--primary-light);
+            border-color: #BFD1FF;
+            background: var(--primary-light);
+            box-shadow: 0 5px 14px rgba(10, 91, 255, 0.055);
+        }
+
+        .cash-card:active,
+        .cash-card.is-activating {
+            border-color: var(--cash);
+            background: #DDF3E6;
+            box-shadow: inset 0 0 0 1px var(--cash), 0 8px 18px rgba(11, 122, 67, 0.12);
+        }
+
+        .card-card:active,
+        .card-card.is-activating {
+            border-color: var(--primary);
+            background: #E3EDFF;
+            box-shadow: inset 0 0 0 1px var(--primary), 0 8px 18px rgba(10, 91, 255, 0.12);
+        }
+
+        .option-card:active .option-amount,
+        .option-card.is-activating .option-amount {
+            color: var(--option-accent);
+        }
+
+        .option-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .option-name {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+            color: var(--option-accent);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1.1;
+        }
+
+        .option-name::after {
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+        }
+
+        .option-amount {
+            justify-self: stretch;
+            width: 100%;
+            min-width: 0;
+            color: #24476F;
+            font-size: 38px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.035em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .option-amount.amount-compact {
+            font-size: 32px;
+        }
+
+        .option-amount.amount-tight {
+            font-size: 25px;
+            letter-spacing: -0.025em;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 100 percent">
+                    <span class="status-battery-value">100</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <header class="header">
+            <button class="icon-btn" type="button" onclick="handleBack()" aria-label="Back">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <div class="merchant-name" data-merchant-name>Merchant</div>
+        </header>
+
+        <section class="merchant-stage" aria-label="Merchant identity">
+            <div class="merchant-logo-slot" data-merchant-logo-slot data-shape="round">
+                <img data-merchant-logo src="assets/merchant-default.svg" alt="Default merchant logo">
+            </div>
+        </section>
+
+        <main class="content-sheet">
+            <h1 class="section-title">SELECT PAYMENT METHOD</h1>
+            <section class="payment-options" aria-label="Payment methods">
+                <button class="option-card cash-card" id="cash-card" type="button" onclick="choosePayment('cash', this)" aria-label="Pay cash">
+                    <span class="option-copy">
+                        <span class="option-name">CASH</span>
+                    </span>
+                    <strong class="option-amount" id="cash-amount">$100.00</strong>
+                </button>
+
+                <button class="option-card card-card" id="card-card" type="button" onclick="choosePayment('card', this)" aria-label="Pay by card">
+                    <span class="option-copy">
+                        <span class="option-name">CARD</span>
+                    </span>
+                    <strong class="option-amount" id="card-amount">$104.00</strong>
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <script src="assets/merchant-context.js"></script>
+    <script>
+        const DISCOUNT_RATE = 0.04;
+        const cashAmountEl = document.getElementById("cash-amount");
+        const cardAmountEl = document.getElementById("card-amount");
+        const statusTime = document.getElementById("status-time");
+        let cashAmountCents = resolveIncomingCashAmount();
+        let paymentNavigationPending = false;
+
+        function formatMoney(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
+        }
+
+        function resolveIncomingCashAmount() {
+            const params = new URLSearchParams(window.location.search);
+            const queryCashCentsText = params.get("cashAmountCents");
+            const queryCashCents = Number(queryCashCentsText);
+            if (queryCashCentsText !== null && queryCashCentsText !== "" && Number.isFinite(queryCashCents) && queryCashCents > 0) {
+                return Math.round(queryCashCents);
+            }
+
+            const queryCentsText = params.get("amountCents");
+            const queryCents = Number(queryCentsText);
+            if (queryCentsText !== null && queryCentsText !== "" && Number.isFinite(queryCents) && queryCents > 0) {
+                return Math.round(queryCents);
+            }
+
+            const queryAmount = parseMoneyToCents(params.get("amount"));
+            if (queryAmount !== null && queryAmount > 0) return queryAmount;
+
+            if (Number.isFinite(window.cashTransactionAmountCents) && window.cashTransactionAmountCents > 0) {
+                return Math.round(window.cashTransactionAmountCents);
+            }
+
+            if (Number.isFinite(window.transactionAmountCents) && window.transactionAmountCents > 0) {
+                return Math.round(window.transactionAmountCents);
+            }
+
+            const globalCashAmount = parseMoneyToCents(window.cashTransactionAmount);
+            if (globalCashAmount !== null && globalCashAmount > 0) return globalCashAmount;
+
+            const globalAmount = parseMoneyToCents(window.transactionAmount);
+            if (globalAmount !== null && globalAmount > 0) return globalAmount;
+
+            return 10000;
+        }
+
+        function getCardAmountCents() {
+            return Math.round(cashAmountCents * (1 + DISCOUNT_RATE));
+        }
+
+        function syncView() {
+            const cardAmountCents = getCardAmountCents();
+            setOptionAmount(cashAmountEl, cashAmountCents);
+            setOptionAmount(cardAmountEl, cardAmountCents);
+            document.getElementById("cash-card").setAttribute(
+                "aria-label",
+                "Pay cash " + cashAmountEl.textContent
+            );
+            document.getElementById("card-card").setAttribute(
+                "aria-label",
+                "Pay by card " + cardAmountEl.textContent
+            );
+        }
+
+        function setOptionAmount(element, cents) {
+            const amountText = "$" + formatMoney(cents);
+            element.textContent = amountText;
+            element.setAttribute("aria-label", amountText);
+            element.classList.toggle("amount-compact", amountText.length >= 11);
+            element.classList.toggle("amount-tight", amountText.length >= 14);
+        }
+
+        function handleBack() {
+            if (typeof window.onCashDiscountBack === "function") {
+                window.onCashDiscountBack();
+                return;
+            }
+            if (window.history.length > 1) window.history.back();
+        }
+
+        function proceedToPayment(method) {
+            const selectedMethod = method === "cash" ? "cash" : "card";
+            const cardAmountCents = getCardAmountCents();
+            const payload = {
+                method: selectedMethod,
+                pricingBasis: "cash_price",
+                cardAmountCents: cardAmountCents,
+                cashAmountCents: cashAmountCents,
+                priceDifferenceCents: cardAmountCents - cashAmountCents,
+                cardRate: DISCOUNT_RATE,
+                finalAmountCents: selectedMethod === "cash" ? cashAmountCents : cardAmountCents
+            };
+
+            localStorage.setItem("paymentMethod", selectedMethod);
+            localStorage.setItem("finalAmountCents", String(payload.finalAmountCents));
+            window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
+
+            if (selectedMethod === "cash") {
+                const cashParams = new URLSearchParams({ dueCents: String(cashAmountCents) });
+                if (window.MerchantContext) window.MerchantContext.appendTo(cashParams);
+                window.location.href = "cash_change.html?" + cashParams.toString();
+                return;
+            }
+
+            const receiptParams = new URLSearchParams({
+                amount: (cardAmountCents / 100).toFixed(2),
+                amountCents: String(cardAmountCents),
+                paymentMethod: "card",
+                transactionType: "sale",
+                currency: "USD"
+            });
+            if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);
+            window.location.href = "receipt.html?" + receiptParams.toString();
+        }
+
+        function choosePayment(method, cardElement) {
+            if (paymentNavigationPending) return;
+            paymentNavigationPending = true;
+            cardElement.classList.add("is-activating");
+            window.setTimeout(() => proceedToPayment(method), 160);
+        }
+
+        window.setTransactionAmountCents = function (cents) {
+            if (!Number.isFinite(cents) || cents <= 0) return;
+            cashAmountCents = Math.round(cents);
+            syncView();
+        };
+
+        window.setTransactionAmount = function (amount) {
+            const cents = parseMoneyToCents(amount);
+            if (cents === null || cents <= 0) return;
+            cashAmountCents = cents;
+            syncView();
+        };
+
+        window.setCashAmountCents = window.setTransactionAmountCents;
+        window.setCashAmount = window.setTransactionAmount;
+
+        function updateStatusTime() {
+            statusTime.textContent = new Intl.DateTimeFormat("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            }).format(new Date());
+        }
+
+        syncView();
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 1000);
+    </script>
+</body>
+
+</html>

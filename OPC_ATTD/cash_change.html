@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,600,0,0" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --text-dark: #111827;
+            --text-grey: #667085;
+            --line: #D8E0EB;
+            --cash: #0B7A43;
+            --cash-strong: #086638;
+            --cash-light: #EAF8EF;
+            --cash-border: #A9DFC0;
+            --warning: #C45F00;
+            --warning-bg: #FFF7E6;
+            --danger: #D92D20;
+            --danger-bg: #FFF1F2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .material-symbols-rounded {
+            font-family: "Material Symbols Rounded";
+            font-weight: 600;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: "liga";
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga";
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .screen {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: 22px 18px 16px;
+        }
+
+        .top-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 48px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--surface);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .back-btn:active {
+            transform: scale(0.96);
+            background: #F8FAFC;
+        }
+
+        .back-btn .material-symbols-rounded {
+            font-size: 24px;
+        }
+
+        .content {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .cash-summary {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+            padding: 2px 0 10px;
+            transform: translateY(20px);
+        }
+
+        .workflow-title {
+            position: relative;
+            align-self: center;
+            padding-bottom: 9px;
+            color: var(--cash);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+
+        .workflow-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 34px;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--cash);
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .due-block {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .due-label {
+            color: var(--text-grey);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .due-amount {
+            display: block;
+            margin-top: 7px;
+            color: var(--cash-strong);
+            font-size: 44px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 34px;
+            transform: translateY(12px);
+        }
+
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            height: 82px;
+            padding: 12px 14px;
+            border: 1.5px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .metric-card.received {
+            border-color: var(--line);
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .metric-card.change {
+            border-color: #8FD6AC;
+            background: var(--cash-light);
+            box-shadow: 0 6px 16px rgba(11, 122, 67, 0.1);
+        }
+
+        .metric-label {
+            overflow: hidden;
+            color: var(--text-grey);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .metric-value {
+            overflow: hidden;
+            margin-top: 9px;
+            color: var(--text-dark);
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .metric-card.received .metric-value {
+            color: var(--text-dark);
+        }
+
+        .metric-card.change .metric-label {
+            color: #347655;
+        }
+
+        .metric-card.change .metric-value {
+            color: var(--cash-strong);
+            font-size: 27px;
+        }
+
+        .status {
+            min-height: 19px;
+            margin-top: 9px;
+            color: var(--text-grey);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.3;
+            text-align: center;
+            transform: translateY(12px);
+        }
+
+        .status:empty {
+            visibility: hidden;
+        }
+
+        .status.warn {
+            color: var(--warning);
+        }
+
+        .keypad-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 0 0 auto;
+            margin-bottom: 9px;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .keypad-label::before,
+        .keypad-label::after {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+            content: "";
+        }
+
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            grid-template-areas:
+                "k7   k8   k9   del"
+                "k4   k5   k6   clr"
+                "k1   k2   k3   ok"
+                "k0   k00  k00  ok";
+            flex: 0 0 340px;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .key {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            min-height: 0;
+            border: 1px solid #DFE5EF;
+            border-radius: 15px;
+            background: var(--surface);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .key:active {
+            transform: scale(0.97);
+            background: #F2F5FA;
+        }
+
+        .key-delete {
+            grid-area: del;
+            color: var(--warning);
+            border-color: #F3C766;
+            background: var(--warning-bg);
+            box-shadow: 0 3px 10px rgba(196, 95, 0, 0.09);
+        }
+
+        .key-delete .material-symbols-rounded {
+            font-size: 25px;
+        }
+
+        .key-clear {
+            grid-area: clr;
+            color: var(--danger);
+            border-color: #FDA4AF;
+            background: var(--danger-bg);
+            box-shadow: 0 3px 10px rgba(217, 45, 32, 0.08);
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .key-ok {
+            grid-area: ok;
+            border: none;
+            background: var(--cash);
+            box-shadow: 0 9px 22px rgba(11, 122, 67, 0.2);
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .key-ok:active {
+            background: var(--cash-strong);
+        }
+
+        .key-00 {
+            grid-area: k00;
+            background: var(--surface);
+        }
+
+        .key-7 { grid-area: k7; }
+        .key-8 { grid-area: k8; }
+        .key-9 { grid-area: k9; }
+        .key-4 { grid-area: k4; }
+        .key-5 { grid-area: k5; }
+        .key-6 { grid-area: k6; }
+        .key-1 { grid-area: k1; }
+        .key-2 { grid-area: k2; }
+        .key-3 { grid-area: k3; }
+        .key-0 { grid-area: k0; }
+
+        .metric-card.pulse {
+            animation: pulse-card 0.26s ease;
+        }
+
+        @keyframes pulse-card {
+            50% {
+                transform: scale(0.98);
+                border-color: var(--warning);
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        @media (max-height: 760px) {
+            .screen {
+                padding-top: 14px;
+            }
+
+            .cash-summary {
+                padding-top: 0;
+            }
+
+            .key-grid {
+                flex-basis: 316px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <div class="screen">
+            <header class="top-bar">
+                <button class="back-btn" type="button" onclick="handleBack()" aria-label="Back">
+                    <span class="material-symbols-rounded" aria-hidden="true">arrow_back_ios_new</span>
+                </button>
+                <div class="merchant-name" data-merchant-name>Merchant</div>
+            </header>
+
+            <main class="content">
+                <section class="cash-summary" aria-label="Cash payment summary">
+                    <h1 class="workflow-title">CASH SALE</h1>
+
+                    <div class="due-block">
+                        <span class="due-label">Amount Due</span>
+                        <strong class="due-amount" id="due-amount">$100.00</strong>
+                    </div>
+
+                    <div class="metrics">
+                        <div class="metric-card received" id="received-card">
+                            <span class="metric-label">Cash IN</span>
+                            <strong class="metric-value" id="paid-amount">$0.00</strong>
+                        </div>
+                        <div class="metric-card change">
+                            <span class="metric-label">Change</span>
+                            <strong class="metric-value" id="change-amount">$0.00</strong>
+                        </div>
+                    </div>
+
+                    <p class="status" id="status-text" aria-live="polite"></p>
+                </section>
+
+                <div class="keypad-label">CASH IN</div>
+
+                <section class="key-grid" aria-label="Cash received keypad">
+                    <button class="key key-7" type="button" onclick="press('7')">7</button>
+                    <button class="key key-8" type="button" onclick="press('8')">8</button>
+                    <button class="key key-9" type="button" onclick="press('9')">9</button>
+                    <button class="key key-delete" type="button" onclick="press('BS')" aria-label="Delete last digit">
+                        <span class="material-symbols-rounded" aria-hidden="true">backspace</span>
+                    </button>
+                    <button class="key key-4" type="button" onclick="press('4')">4</button>
+                    <button class="key key-5" type="button" onclick="press('5')">5</button>
+                    <button class="key key-6" type="button" onclick="press('6')">6</button>
+                    <button class="key key-clear" type="button" onclick="press('C')">C</button>
+                    <button class="key key-1" type="button" onclick="press('1')">1</button>
+                    <button class="key key-2" type="button" onclick="press('2')">2</button>
+                    <button class="key key-3" type="button" onclick="press('3')">3</button>
+                    <button class="key key-ok" type="button" onclick="handleComplete()">OK</button>
+                    <button class="key key-0" type="button" onclick="press('0')">0</button>
+                    <button class="key key-00" type="button" onclick="press('00')">00</button>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="assets/merchant-context.js"></script>
+    <script>
+        const dueAmountEl = document.getElementById("due-amount");
+        const paidAmountEl = document.getElementById("paid-amount");
+        const changeAmountEl = document.getElementById("change-amount");
+        const statusTextEl = document.getElementById("status-text");
+        const receivedCardEl = document.getElementById("received-card");
+
+        let rawAmount = "0";
+        let paidCents = 0;
+        let dueCents = resolveDueCents();
+
+        function formatMoney(cents) {
+            return (Math.max(0, parseInt(cents, 10) || 0) / 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
+        }
+
+        function resolveDueCents() {
+            const params = new URLSearchParams(window.location.search);
+            const dueParam = params.get("dueCents");
+            const dueFromCents = Number(dueParam);
+            if (dueParam !== null && dueParam !== "" && Number.isFinite(dueFromCents) && dueFromCents >= 0) {
+                return Math.round(dueFromCents);
+            }
+
+            const dueFromAmount = parseMoneyToCents(params.get("due"));
+            if (dueFromAmount !== null) return dueFromAmount;
+
+            const fallbackFromAmount = parseMoneyToCents(params.get("amount"));
+            if (fallbackFromAmount !== null) return fallbackFromAmount;
+
+            if (Number.isFinite(window.cashDueCents) && window.cashDueCents >= 0) {
+                return Math.round(window.cashDueCents);
+            }
+
+            const globalAmount = parseMoneyToCents(window.cashDueAmount);
+            if (globalAmount !== null) return globalAmount;
+
+            return 10000;
+        }
+
+        function syncSummary() {
+            const changeCents = Math.max(0, paidCents - dueCents);
+            const shortfallCents = Math.max(0, dueCents - paidCents);
+
+            dueAmountEl.textContent = "$" + formatMoney(dueCents);
+            paidAmountEl.textContent = "$" + formatMoney(paidCents);
+            changeAmountEl.textContent = "$" + formatMoney(changeCents);
+
+            statusTextEl.classList.remove("warn");
+            if (paidCents === 0) {
+                statusTextEl.textContent = "";
+            } else if (shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(shortfallCents);
+                statusTextEl.classList.add("warn");
+            } else {
+                statusTextEl.textContent = "";
+            }
+        }
+
+        function updatePaidAmount() {
+            paidCents = Math.max(0, parseInt(rawAmount, 10) || 0);
+            syncSummary();
+        }
+
+        function press(key) {
+            if (key === "C") {
+                rawAmount = "0";
+            } else if (key === "BS") {
+                rawAmount = rawAmount.length > 1 ? rawAmount.slice(0, -1) : "0";
+            } else if (key === "00") {
+                if (rawAmount !== "0" && rawAmount.length < 9) rawAmount += "00";
+            } else if (/^\d$/.test(key)) {
+                rawAmount = rawAmount === "0" ? key : rawAmount + key;
+                rawAmount = rawAmount.slice(0, 10);
+            }
+            updatePaidAmount();
+        }
+
+        function getPayload() {
+            return {
+                dueCents: dueCents,
+                paidCents: paidCents,
+                changeCents: Math.max(0, paidCents - dueCents),
+                shortfallCents: Math.max(0, dueCents - paidCents)
+            };
+        }
+
+        function handleComplete() {
+            const payload = getPayload();
+            if (payload.shortfallCents > 0) {
+                statusTextEl.textContent = "Still due $" + formatMoney(payload.shortfallCents);
+                statusTextEl.classList.add("warn");
+                receivedCardEl.classList.remove("pulse");
+                void receivedCardEl.offsetWidth;
+                receivedCardEl.classList.add("pulse");
+                return;
+            }
+
+            localStorage.setItem("cashPaidCents", String(paidCents));
+            localStorage.setItem("cashChangeCents", String(payload.changeCents));
+
+            if (typeof window.onCashChangeComplete === "function") {
+                window.onCashChangeComplete(payload);
+                return;
+            }
+
+            statusTextEl.textContent = "";
+            statusTextEl.classList.remove("warn");
+            window.dispatchEvent(new CustomEvent("cash-change-complete", { detail: payload }));
+            const receiptParams = new URLSearchParams({
+                amountCents: String(dueCents),
+                paymentMethod: "cash",
+                changeCents: String(payload.changeCents)
+            });
+            if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);
+            window.location.href = "receipt.html?" + receiptParams.toString();
+        }
+
+        function handleBack() {
+            if (typeof window.onCashChangeBack === "function") {
+                window.onCashChangeBack();
+                return;
+            }
+            if (window.history.length > 1) window.history.back();
+        }
+
+        window.setCashDueCents = function (cents) {
+            if (!Number.isFinite(cents) || cents < 0) return;
+            dueCents = Math.round(cents);
+            syncSummary();
+        };
+
+        window.setCashDueAmount = function (amount) {
+            const cents = parseMoneyToCents(amount);
+            if (cents === null) return;
+            dueCents = cents;
+            syncSummary();
+        };
+
+        syncSummary();
+    </script>
+</body>
+
+</html>

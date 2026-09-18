@@ -1,0 +1,240 @@
+:root {
+            --primary: #0A5BFF;
+            --primary-light: #EFF6FF;
+            --text-dark: #111827;
+            --text-grey: #6B7280;
+            --bg-body: #F3F4F6;
+            --card-bg: #FFFFFF;
+
+            /* Action Colors */
+            --color-sale-bg: #EFF6FF;
+            --color-sale-text: #0A5BFF;
+            --color-warn-bg: #FFF7ED;
+            --color-warn-text: #F59E0B;
+            --color-danger-bg: #FEF2F2;
+            --color-danger-text: #EF4444;
+            --color-success-bg: #D4F7E5;
+            --color-success-text: #00A86B;
+            --color-purple-bg: #F5F3FF;
+            --color-purple-text: #7C3AED;
+            --color-teal-bg: #F0FDFA;
+            --color-teal-text: #0D9488;
+
+            --radius-md: 16px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+            /* Tab active theme (per tab) */
+            --tab-active-color: #0A5BFF;
+            --tab-active-shadow: rgba(10, 91, 255, 0.3);
+
+            /* Amount theme (sync with tab) */
+            --amount-color: var(--color-sale-text);
+
+            /* Fixed amount-entry theme (set by the selected transaction channel) */
+            --entry-color: #0A5BFF;
+            --entry-shadow: rgba(10, 91, 255, 0.22);
+            --entry-label-color: #667085;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background: #222;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--bg-body);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 0 12px #1a1a1a, 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- App-owned Android Status Bar --- */
+        .android-status-bar {
+            height: 28px;
+            flex: 0 0 28px;
+            padding: 0 14px 0 16px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            color: var(--text-dark);
+            background: var(--bg-body);
+            position: relative;
+            z-index: 200;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.01em;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .status-icon {
+            width: 15px;
+            height: 15px;
+            display: block;
+            fill: currentColor;
+        }
+
+        .status-wifi.offline,
+        .status-network-label.offline {
+            color: #EF4444;
+            opacity: 0.8;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            text-align: right;
+            font-size: 9px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-battery-icon {
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+            position: relative;
+        }
+
+        .status-battery-icon::after {
+            content: "";
+            position: absolute;
+            right: -3.5px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .status-battery.low {
+            color: #EF4444;
+        }
+
+        
+
+        .material-symbols-rounded {
+            font-family: 'Material Symbols Rounded';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: 'liga';
+        }
+
+.bottom-nav {
+            flex: 0 0 64px;
+            height: 64px;
+            padding: 6px 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            align-items: stretch;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.97);
+            border-top: 1px solid #E3E8F1;
+            box-shadow: 0 -8px 26px rgba(15, 23, 42, 0.05);
+            position: relative;
+            z-index: 150;
+            overflow: hidden;
+            transition: opacity 0.16s ease, transform 0.2s ease, border-color 0.16s ease,
+                background 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .bottom-nav.amount-input-hidden {
+            border-top-color: transparent;
+            background: transparent;
+            box-shadow: none;
+            opacity: 0;
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+
+        .bottom-nav-item {
+            appearance: none;
+            border: none;
+            width: 52px;
+            height: 52px;
+            justify-self: center;
+            border-radius: 18px;
+            background: transparent;
+            color: #8A94A6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+        }
+
+        .bottom-nav-item:active {
+            transform: scale(0.96);
+        }
+
+        .bottom-nav-item.active {
+            color: #344054;
+            background: #F0F2F5;
+            box-shadow: inset 0 0 0 1px #E1E6ED, 0 2px 7px rgba(15, 23, 42, 0.045);
+        }
+
+        .bottom-nav-item .material-symbols-rounded {
+            font-size: 27px;
+        }

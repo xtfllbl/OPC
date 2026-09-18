@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPC Attended POS - Unified POS Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pos_home.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+
+<body>
+
+<div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label" id="status-network-label">4G</span>
+                <svg class="status-icon status-wifi" id="status-wifi" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22h-6l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Zm0-6c5.82 0 11.13 2.12 15.22 5.64l-2.09 2.43A19.97 19.97 0 0 0 12 4.2c-5.01 0-9.59 1.83-13.13 4.87l-2.09-2.43A23.18 23.18 0 0 1 12 1Z" transform="scale(.72) translate(4.65 2.2)"></path>
+                </svg>
+                <span class="status-battery" id="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value" id="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level" id="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <header class="header">
+            <div class="header-left">
+                <div class="merchant-name" id="merchant-name" data-merchant-name>Merchant</div>
+            </div>
+        </header>
+
+        <div class="entry-stage" id="entry-stage">
+            <div class="merchant-brand-section entry-state" id="merchant-brand-state" aria-hidden="false">
+                <div class="merchant-logo-slot" id="merchant-logo-slot" data-merchant-logo-slot data-shape="round" aria-label="Default merchant logo">
+                    <img id="merchant-logo" data-merchant-logo src="assets/merchant-default.svg" alt="Default merchant logo">
+                </div>
+            </div>
+
+            <div class="amount-section entry-state" id="amount-entry-state" aria-hidden="true">
+                <div class="amount-context" id="amount-context">SALE</div>
+                <div class="amount-label" id="amount-label">TRANSACTION AMOUNT</div>
+                <div class="amount-display"><span class="currency">$</span><span class="amount-value" id="main-amount">0.00</span></div>
+                <div class="amount-error" id="amount-error" aria-live="polite"></div>
+            </div>
+        </div>
+
+        <div class="content-sheet transactions-view" id="transactions-view" aria-hidden="true" inert>
+            <div class="tabs">
+                <div class="tab-bg" id="tab-pill"></div>
+                <div class="tab-item active" data-group="card" onclick="switchTab(0)">
+                    <svg class="tab-icon" viewBox="0 0 1225 1024">
+                        <path d="M1090.265844 738.389458c-37.481698-2.998536-67.467057-18.740849-88.456809-47.976574-8.245974-11.994143-17.241581-12.743777-29.985358-12.743777-26.237189 0.749634-43.47877 14.243045-62.21962 30.734993-70.465593 62.969253-155.174231 100.450952-247.379209 119.1918-143.180088 29.985359-283.36164 20.240117-419.045388-37.481698-78.711567-33.733529-146.928258-82.459736-194.904832-155.174231-76.462665-115.443631-60.720351-255.625183 37.481699-357.575403 77.212299-80.210835 173.165447-125.188873 280.363104-146.928258 147.677892-29.985359 291.607613-17.991215 429.540263 46.477306 88.456808 41.229868 161.171303 101.200586 203.90044 191.906296 2.248902 4.497804 8.995608 8.995608 14.243045 10.494876 28.486091 6.746706 49.475842 23.238653 65.218155 47.22694 47.976574 72.714495 95.953148 146.178624 143.180088 219.642752 3.74817 5.997072 1.499268 14.992679 2.248902 22.489019m-314.096633 2.248902c-21.739385-9.745242-39.7306-17.241581-58.471449-25.487555-20.989751-9.745242-27.736457-29.235725-17.241581-48.726208 2.998536-5.247438 6.746706-10.494876 11.244509-17.241581-28.486091-14.992679-44.978038-41.229868-26.986823-74.963397-28.486091-5.997072-53.973646-10.494876-79.4612-15.742313-14.243045-2.248902-21.739385-10.494876-18.740849-26.237189 6.746706-40.480234 14.992679-80.210835 23.238653-119.941435 4.497804-17.241581 8.245974-29.985359 26.986822-26.986823 37.481698 5.997072 96.702782 17.991215 133.434847 24.737921 28.486091 5.247438 28.486091 17.991215 25.487555 38.231333h41.229868c-2.998536-6.746706-3.74817-8.245974-5.997072-12.743778-47.22694-88.456808-123.689605-142.430454-213.645681-179.162518-111.695461-44.978038-227.888726-56.972182-345.581259-37.481698-111.695461 17.991215-213.645681 59.970717-294.606149 142.430453C11.542564 390.559297 1.797322 527.742313 85.756327 640.187408c49.475842 65.967789 116.193265 108.696925 191.906296 137.183017 137.183016 51.724744 276.614934 56.972182 417.54612 16.491947 80.960469-22.489019 152.925329-60.720351 215.144948-122.939971z m-5.997071-251.127379c2.998536-15.742313 5.247438-27.736457 8.995607-39.7306 4.497804-15.742313-0.749634-22.489019-17.241581-25.487555-38.980966-6.746706-77.961933-13.493411-116.193265-21.739385-11.994143-2.248902-17.241581 0.749634-19.490483 11.994143-6.746706 37.481698-14.243045 74.963397-20.240117 112.445095-0.749634 5.247438 1.499268 14.992679 7.496339 17.241582 20.989751 5.247438 42.729136 8.995608 63.718888 12.743777-3.74817-8.245974-8.995608-12.743777-14.243046-17.991215-22.489019-20.240117-26.237189-46.477306-10.494875-68.216691 14.992679-20.240117 41.979502-24.737921 67.467057-10.494876 15.742313 8.995608 31.484627 17.991215 50.225476 29.235725z" fill="currentColor"></path>
+                        <path d="M668.971554 485.013177c-1.499268 77.961933-19.490483 151.426061-56.222548 219.642753-10.494876 18.740849-23.988287 23.988287-38.980966 15.742313-14.243045-7.49634-17.241581-20.240117-6.746706-39.7306 67.467057-130.43631 68.216691-260.872621 0-391.308931-8.995608-17.991215-5.997072-32.983895 7.49634-40.480235 14.243045-7.49634 28.486091-1.499268 38.231332 15.742314 37.481698 68.966325 54.72328 143.180088 56.222548 220.392386z" fill="currentColor"></path>
+                        <path d="M564.772432 483.513909c0.749634 64.468521-14.243045 120.691069-43.47877 173.915081-9.745242 17.991215-23.238653 23.988287-37.481698 16.491947-14.243045-6.746706-17.991215-22.489019-8.245974-40.480234 52.474378-99.701318 52.474378-198.653001-0.749634-298.354319-8.995608-16.491947-5.247438-31.484627 8.245974-38.980967 14.243045-7.49634 28.486091-2.248902 37.481698 13.493412 29.985359 56.222548 45.727672 114.693997 44.228404 173.91508zM462.822213 484.263543c0.749634 44.228404-11.24451 85.458272-31.484627 124.439239-11.24451 20.989751-25.487555 26.237189-40.480234 17.241581-14.243045-8.995608-15.742313-22.489019-5.247438-41.979502 33.733529-63.718887 34.483163-128.187408 2.248902-192.65593-2.248902-4.497804-5.247438-8.995608-6.746706-13.493411-5.247438-13.493411-2.248902-26.237189 10.494876-30.734993 8.995608-2.998536 23.238653-1.499268 30.734992 4.497804 8.245974 5.247438 12.743777 17.241581 17.241582 26.986823 14.992679 32.983895 23.988287 68.216691 23.238653 105.698389zM366.119431 488.761347c-1.499268 28.486091-8.995608 56.222548-26.986823 81.710102-9.745242 13.493411-21.739385 17.991215-36.732065 9.745242-13.493411-7.49634-16.491947-22.489019-7.496339-36.732064 25.487555-38.980966 25.487555-77.212299 0.749634-116.193265-9.745242-14.992679-6.746706-29.985359 5.997072-36.732065 14.992679-8.995608 26.986823-4.497804 36.732064 8.995608 19.490483 26.237189 27.736457 55.472914 27.736457 89.206442z" fill="currentColor"></path>
+                    </svg> CARD
+                </div>
+                <div class="tab-item" data-group="qr" onclick="switchTab(1)">
+                    <svg class="tab-icon" viewBox="0 0 1024 1024">
+                     <path d="M419.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM899.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM419.2 608v256h-256v-256h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64v-256c0-35.2-28.8-64-64-64zM611.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM768 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM931.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32z" fill="currentColor"></path>
+                    </svg>  QR
+                </div>
+                <div class="tab-item" data-group="loyalty" onclick="switchTab(2)">
+                    <svg class="tab-icon" viewBox="0 0 1024 1024">
+                     <path d="M938.666667 853.333333h-853.333334C37.546667 853.333333 0 815.786667 0 768v-512C0 208.213333 37.546667 170.666667 85.333333 170.666667h853.333334C986.453333 170.666667 1024 208.213333 1024 256v512c0 47.786667-37.546667 85.333333-85.333333 85.333333zM85.333333 204.8C58.026667 204.8 34.133333 228.693333 34.133333 256v512c0 27.306667 23.893333 51.2 51.2 51.2h853.333334c27.306667 0 51.2-23.893333 51.2-51.2v-512c0-27.306667-23.893333-51.2-51.2-51.2h-853.333334z" fill="" p-id="15372"></path><path d="M324.266667 648.533333h-170.666667c-10.24 0-17.066667-6.826667-17.066667-17.066666s6.826667-17.066667 17.066667-17.066667h170.666667c10.24 0 17.066667 6.826667 17.066666 17.066667s-6.826667 17.066667-17.066666 17.066666zM460.8 716.8h-307.2c-10.24 0-17.066667-6.826667-17.066667-17.066667s6.826667-17.066667 17.066667-17.066666h307.2c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667zM631.466667 512c-102.4 0-191.146667-64.853333-218.453334-163.84-6.826667-20.48 0-44.373333 13.653334-58.026667 17.066667-17.066667 37.546667-20.48 58.026666-13.653333 98.986667 27.306667 163.84 116.053333 163.84 218.453333 0 10.24-6.826667 17.066667-17.066666 17.066667zM443.733333 337.92c23.893333 78.506667 88.746667 129.706667 167.253334 136.533333-6.826667-81.92-58.026667-146.773333-136.533334-167.253333-10.24-3.413333-17.066667 0-23.893333 6.826667-6.826667 6.826667-6.826667 17.066667-6.826667 23.893333z" fill="" p-id="15373"></path><path d="M631.466667 512c-10.24 0-17.066667-6.826667-17.066667-17.066667 0-102.4 64.853333-191.146667 163.84-218.453333 20.48-6.826667 44.373333 0 58.026667 13.653333 17.066667 17.066667 20.48 37.546667 13.653333 58.026667-27.306667 98.986667-116.053333 163.84-218.453333 163.84z m163.84-204.8h-6.826667c-78.506667 23.893333-129.706667 88.746667-136.533333 167.253333 81.92-6.826667 146.773333-58.026667 167.253333-136.533333 3.413333-10.24 0-17.066667-6.826667-23.893333-6.826667-3.413333-13.653333-6.826667-17.066666-6.826667z" fill="" p-id="15374"></path><path d="M631.466667 853.333333c-10.24 0-17.066667-6.826667-17.066667-17.066666v-648.533334c0-10.24 6.826667-17.066667 17.066667-17.066666s17.066667 6.826667 17.066666 17.066666v648.533334c0 10.24-6.826667 17.066667-17.066666 17.066666z" fill="" p-id="15375"></path><path d="M494.933333 648.533333c-3.413333 0-10.24 0-13.653333-3.413333-6.826667-6.826667-6.826667-17.066667 0-23.893333l136.533333-136.533334c6.826667-6.826667 17.066667-6.826667 23.893334 0s6.826667 17.066667 0 23.893334l-136.533334 136.533333c0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="" p-id="15376"></path><path d="M768 648.533333c-3.413333 0-10.24 0-13.653333-3.413333l-136.533334-136.533333c-6.826667-6.826667-6.826667-17.066667 0-23.893334s17.066667-6.826667 23.893334 0l136.533333 136.533334c6.826667 6.826667 6.826667 17.066667 0 23.893333 0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="" p-id="15377"></path><path d="M1006.933333 512H34.133333c-10.24 0-17.066667-6.826667-17.066666-17.066667s6.826667-17.066667 17.066666-17.066666h972.8c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667z" fill="currentColor"></path>
+                    </svg> GIFT
+                </div>
+            </div>
+
+            <div class="grid-container active" id="grid-card">
+                <div class="action-card" onclick="doAction('Sale')">
+                    <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
+                    <div class="card-label">Credit Sale</div>
+                </div>
+                    <div class="action-card" onclick="doAction('Sale')">
+                    <div class="icon-box v-blue"><svg t="1764656063377" class="icon" viewBox="0 0 1028 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6584" width="200" height="200"><path d="M332.8 790.528q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM758.784 792.576q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM930.816 210.944q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.84t-38.4 14.336l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-12.288l103.424 0q20.48 0 32.768 6.144t19.456 15.36 10.24 18.944 5.12 16.896q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM892.928 302.08l-641.024-2.048 35.84 185.344 535.552 1.024z" p-id="6585"></path></svg></div>
+                    <div class="card-label">Debit Sale</div>
+                </div>
+                <div class="action-card priority-auth" onclick="doAction('Auth')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                        </svg></div>
+                    <div class="card-label">Auth</div>
+                </div>
+                     <div class="action-card" onclick="doAction('Auth-Incremental')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 0H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                            <path d="M12 12v2H10v2h2v2h2v-2h2v-2h-2v-2z" />
+                        </svg></div>
+                    <div class="card-label">Auth-Incremental</div>
+                </div>
+                <div class="action-card" onclick="doAction('Capture')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg></div>
+                    <div class="card-label">Capture</div>
+                </div>
+                <div class="action-card priority-void" onclick="doAction('Void')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                        </svg></div>
+                    <div class="card-label">Void</div>
+                </div>
+                <div class="action-card priority-refund" onclick="doAction('Refund')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                        </svg></div>
+                    <div class="card-label">Refund</div>
+                </div>
+                    <div class="action-card" onclick="doAction('Refund')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                        </svg></div>
+                    <div class="card-label">Debit Refund</div>
+                </div>
+                   <div class="action-card" onclick="doAction('Tip Adjust')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.4 2.35h-1v-1l8.66-8.66 1 1-8.66 8.66zM20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z" />
+                        </svg></div>
+                    <div class="card-label">Tip Adjust</div>
+                </div>
+                <div class="transaction-section-heading management-heading" aria-hidden="true"></div>
+                <div class="action-card management-card" onclick="doAction('Close Batch')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="5.2" r="1.7" fill="currentColor" stroke="none"></circle>
+                            <path d="M10.9 6.6 6.9 10.1M13.1 6.6 17.1 10.1"></path>
+                            <rect x="4" y="10" width="16" height="10" rx="2.2" fill="var(--color-sale-bg)" stroke-width="1.5"></rect>
+                            <text x="12" y="16.4" text-anchor="middle" fill="currentColor" stroke="none"
+                                font-size="4" font-weight="700" letter-spacing="0.2">CLOSE</text>
+                        </svg></div>
+                    <div class="card-label">Close Batch</div>
+                </div>
+                <div class="action-card management-card" onclick="doAction('Reports')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="3" width="16" height="18" rx="2.5" fill="var(--color-sale-bg)" stroke-width="1.5"></rect>
+                            <path d="M8 8h8M8 12h8M8 16h4"></path>
+                            <path d="M15.5 15.5 17 17l2.8-3.2"></path>
+                        </svg></div>
+                    <div class="card-label">Reports</div>
+                </div>
+                <div class="action-card management-card" onclick="doAction('Reprint')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M18 8V3H6v5H4c-1.1 0-2 .9-2 2v5h4v4h12v-4h4v-5c0-1.1-.9-2-2-2h-2zm-10-3h8v3H8V5zm8 12H8v-5h8v5zm2-4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg></div>
+                    <div class="card-label">Reprint</div>
+                </div>
+                <div class="action-card management-card" onclick="doAction('Transaction')">
+                    <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                            <path d="M7 8h10v2H7zm0 4h6v2H7zm0 4h4v2H7z" />
+                            <path d="M15.5 12l-1.41 1.41L15.67 15H13v2h2.67l-1.58 1.59L15.5 20 20 15.5z" />
+                        </svg></div>
+                    <div class="card-label">Transaction</div>
+                </div>
+        
+            </div>
+
+            <div class="grid-container" id="grid-scan">
+                  <div class="action-card" onclick="doAction('Scan QR')">
+                    <div class="icon-box v-success">
+                   <svg t="1764727022792" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5297" width="200" height="200"><path d="M136 384h56c4.4 0 8-3.6 8-8V200h176c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H196c-37.6 0-68 30.4-68 68v180c0 4.4 3.6 8 8 8zM648 200h176v176c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V196c0-37.6-30.4-68-68-68H648c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zM376 824H200V648c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v180c0 37.6 30.4 68 68 68h180c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM888 640h-56c-4.4 0-8 3.6-8 8v176H648c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h180c37.6 0 68-30.4 68-68V648c0-4.4-3.6-8-8-8zM904 476H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8z" p-id="5298" fill="currentColor"></path></svg>
+
+
+                    </div>
+                    <div class="card-label">Scan</div>
+                </div>
+         
+                            <div class="action-card" onclick="doAction('Show Code')">
+                    <div class="icon-box v-success">
+                <svg t="1764727317856" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6349" width="200" height="200"><path d="M262.4 262.4l115.2 0 0 115.2-115.2 0 0-115.2Z" fill="currentColor" p-id="6350"></path><path d="M262.4 646.4l115.2 0 0 115.2-115.2 0 0-115.2Z" fill="currentColor" p-id="6351"></path><path d="M646.4 262.4l115.2 0 0 115.2-115.2 0 0-115.2Z" fill="currentColor" p-id="6352"></path><path d="M806.4 806.4l-115.2 0 0 57.6 115.2 0c32 0 57.6-25.6 57.6-57.6l0-57.6-57.6 0L806.4 806.4z" fill="currentColor" p-id="6353"></path><path d="M160 217.6l0 262.4 320 0 0-320L217.6 160C185.6 160 160 185.6 160 217.6zM422.4 422.4 217.6 422.4 217.6 217.6l204.8 0L422.4 422.4z" fill="currentColor" p-id="6354"></path><path d="M160 806.4c0 32 25.6 57.6 57.6 57.6l262.4 0 0-320-320 0L160 806.4zM217.6 601.6l204.8 0 0 204.8L217.6 806.4 217.6 601.6z" fill="currentColor" p-id="6355"></path><path d="M544 544l204.8 0 0 57.6-204.8 0 0-57.6Z" fill="currentColor" p-id="6356"></path><path d="M691.2 627.2 627.2 627.2 627.2 691.2 691.2 691.2 691.2 748.8 748.8 748.8 748.8 691.2 864 691.2 864 627.2 748.8 627.2Z" fill="currentColor" p-id="6357"></path><path d="M544 748.8l57.6 0 0 115.2-57.6 0 0-115.2Z" fill="currentColor" p-id="6358"></path><path d="M627.2 748.8l57.6 0 0 57.6-57.6 0 0-57.6Z" fill="currentColor" p-id="6359"></path><path d="M544 627.2l57.6 0 0 57.6-57.6 0 0-57.6Z" fill="currentColor" p-id="6360"></path><path d="M806.4 544l57.6 0 0 57.6-57.6 0 0-57.6Z" fill="currentColor" p-id="6361"></path><path d="M806.4 160 544 160l0 320 320 0L864 217.6C864 185.6 838.4 160 806.4 160zM806.4 422.4 601.6 422.4 601.6 217.6l204.8 0L806.4 422.4z" fill="currentColor" p-id="6362"></path></svg>
+                    </div>
+                    <div class="card-label">Show Code</div>
+                </div>
+                <div class="action-card" onclick="doAction('Scan Refund')">
+                    <div class="icon-box v-success">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                        </svg>
+                    </div>
+                    <div class="card-label">Refund</div>
+                </div>
+                <div class="action-card" onclick="doAction('Query')">
+                    <div class="icon-box v-success"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg></div>
+                    <div class="card-label">Query</div>
+                </div>
+            </div>
+
+            <div class="grid-container" id="grid-loyalty">
+                <div class="action-card" onclick="doAction('Pay')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1.5 6.5l-7.15 7.15a.5.5 0 0 1-.7 0L6.5 13.5l1.4-1.4 2.1 2.09 6.45-6.44 1.05 1.25z" />
+                        </svg></div>
+                    <div class="card-label">Pay</div>
+                </div>
+                <div class="action-card" onclick="doAction('Void')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                        </svg></div>
+                    <div class="card-label">Void</div>
+                </div>
+                <div class="action-card" onclick="doAction('Activate')">
+                    <div class="icon-box v-purple gift-icon"><svg t="1764728236310" class="icon" viewBox="0 0 1171 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7681" width="200" height="200"><path d="M0 512q0-74.313143 29.110857-141.970286t77.970286-116.589714 116.589714-77.970286 141.970286-29.110857l438.857143 0q74.313143 0 141.970286 29.110857t116.589714 77.970286 77.970286 116.589714 29.110857 141.970286-29.110857 141.970286-77.970286 116.589714-116.589714 77.970286-141.970286 29.110857l-438.857143 0q-74.313143 0-141.970286-29.110857t-116.589714-77.970286-77.970286-116.589714-29.110857-141.970286zM804.571429 804.571429q59.465143 0 113.444571-23.113143t93.403429-62.537143 62.537143-93.403429 23.113143-113.444571-23.113143-113.444571-62.537143-93.403429-93.403429-62.537143-113.444571-23.113143-113.444571 23.113143-93.403429 62.537143-62.537143 93.403429-23.113143 113.444571 23.113143 113.444571 62.537143 93.403429 93.403429 62.537143 113.444571 23.113143z" fill="#7C3AED" p-id="7682"></path></svg></div>
+                    <div class="card-label">Activate</div>
+                </div>
+                <div class="action-card" onclick="doAction('Query')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        </svg></div>
+                    <div class="card-label">Query</div>
+                </div>
+                <div class="action-card" onclick="doAction('Top-up')">
+                    <div class="icon-box v-purple gift-icon"><svg fill="#7C3AED" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4,5A1,1,0,0,0,5,6H21a1,1,0,0,1,1,1V21a1,1,0,0,1-1,1H16a1,1,0,0,1,0-2h4V8H5a2.966,2.966,0,0,1-1-.184V19a1,1,0,0,0,1,1h5a1,1,0,0,0,1-1V14.414L9.707,15.707a1,1,0,0,1-1.414-1.414l3-3a.99.99,0,0,1,.326-.217,1,1,0,0,1,.764,0,.99.99,0,0,1,.326.217l3,3a1,1,0,0,1-1.414,1.414L13,14.414V19a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H21a1,1,0,0,1,0,2H5A1,1,0,0,0,4,5Z"></path></g></svg></div>
+                    <div class="card-label">Top-up</div>
+                </div>
+                   <div class="action-card" onclick="doAction('Add Tip')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M8.10627 18.2468C5.29819 16.0833 2 13.5422 2 9.1371C2 4.27416 7.50016 0.825464 12 5.50063L14 7.49928C14.2929 7.79212 14.7678 7.79203 15.0607 7.49908C15.3535 7.20614 15.3534 6.73127 15.0605 6.43843L13.1285 4.50712C17.3685 1.40309 22 4.67465 22 9.1371C22 13.5422 18.7018 16.0833 15.8937 18.2468C15.6019 18.4717 15.3153 18.6925 15.0383 18.9109C14 19.7294 13 20.5 12 20.5C11 20.5 10 19.7294 8.96173 18.9109C8.68471 18.6925 8.39814 18.4717 8.10627 18.2468Z" fill="#7C3AED"></path> </g></svg></div>
+                    <div class="card-label">Add Tip</div>
+                </div>
+                <div class="action-card" onclick="doAction('Issue Points')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
+                        </svg></div>
+                    <div class="card-label">Issue Points</div>
+                </div>
+                <div class="action-card" onclick="doAction('Redeem Points')">
+                    <div class="icon-box v-purple gift-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z" />
+                        </svg></div>
+                    <div class="card-label">Redeem Points</div>
+                </div>
+             
+            </div>
+            <div class="print-submenu-sheet" id="print-submenu-sheet">
+                <div class="print-submenu-header">
+                    <button class="settings-back-btn" onclick="closePrintMenu(event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="print-submenu-title">Reprint</div>
+                    <div style="width:28px;height:28px;"></div>
+                </div>
+                <div class="print-submenu-grid">
+                    <div class="action-card" onclick="doAction('Reprint Last')">
+                        <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M18 8V3H6v5H4c-1.1 0-2 .9-2 2v5h4v4h12v-4h4v-5c0-1.1-.9-2-2-2h-2zm-10-3h8v3H8V5zm8 12H8v-5h8v5zm2-4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                            </svg></div>
+                        <div class="card-label">Reprint Last</div>
+                    </div>
+                    <div class="action-card" onclick="openReceiptReprint(event)">
+                        <div class="icon-box v-blue"><svg viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9v-2H5V5h14v6h2V5c0-1.1-.9-2-2-2z" />
+                                <path d="M7 8h10v2H7zm0 4h6v2H7z" />
+                                <path d="M17 12v2h-2v2h2v2h2v-2h2v-2h-2v-2z" />
+                            </svg></div>
+                        <div class="card-label">Reprint By<br>Receipt No.</div>
+                    </div>
+                </div>
+                <div class="receipt-reprint-view" id="receipt-reprint-view" aria-hidden="true">
+                    <div class="print-submenu-header">
+                        <button class="settings-back-btn" type="button" onclick="closeReceiptReprint(event)"
+                            aria-label="Back to Reprint">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <div class="print-submenu-title">Reprint By Receipt No.</div>
+                        <div style="width:28px;height:28px;"></div>
+                    </div>
+                    <div class="receipt-entry-stage">
+                        <label class="receipt-entry-label" for="receipt-entry-input">Receipt No.</label>
+                        <input class="receipt-entry-input" id="receipt-entry-input" type="text" inputmode="numeric"
+                            pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="32"
+                            aria-label="Receipt number"
+                            oninput="handleReceiptInput(event)" onkeydown="handleReceiptKeydown(event)">
+                        <div class="receipt-entry-error" id="receipt-entry-error" aria-live="polite"></div>
+                        <button class="receipt-reprint-submit" type="button" onclick="submitReceiptReprint(event)">
+                            <span class="material-symbols-rounded">print</span>
+                            Reprint Receipt
+                        </button>
+                    </div>
+                    <div class="receipt-divider" aria-hidden="true"></div>
+                    <div class="receipt-keyboard-reserve" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-overlay" id="settings-overlay" onclick="closeSettings(event)" aria-hidden="true" inert>
+            <div class="settings-panel" onclick="event.stopPropagation()">
+                <div class="settings-header-bar">
+                    <button class="settings-back-btn" onclick="closeSettings(event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <div class="settings-header-title">Settings</div>
+                    <div style="width:28px;height:28px;"></div>
+                </div>
+                <div class="settings-list">
+                    <div class="settings-section-title">Payments</div>
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon card">
+                                    <svg class="filled" viewBox="0 0 1225 1024">
+                                        <path d="M1090.265844 738.389458c-37.481698-2.998536-67.467057-18.740849-88.456809-47.976574-8.245974-11.994143-17.241581-12.743777-29.985358-12.743777-26.237189 0.749634-43.47877 14.243045-62.21962 30.734993-70.465593 62.969253-155.174231 100.450952-247.379209 119.1918-143.180088 29.985359-283.36164 20.240117-419.045388-37.481698-78.711567-33.733529-146.928258-82.459736-194.904832-155.174231-76.462665-115.443631-60.720351-255.625183 37.481699-357.575403 77.212299-80.210835 173.165447-125.188873 280.363104-146.928258 147.677892-29.985359 291.607613-17.991215 429.540263 46.477306 88.456808 41.229868 161.171303 101.200586 203.90044 191.906296 2.248902 4.497804 8.995608 8.995608 14.243045 10.494876 28.486091 6.746706 49.475842 23.238653 65.218155 47.22694 47.976574 72.714495 95.953148 146.178624 143.180088 219.642752 3.74817 5.997072 1.499268 14.992679 2.248902 22.489019m-314.096633 2.248902c-21.739385-9.745242-39.7306-17.241581-58.471449-25.487555-20.989751-9.745242-27.736457-29.235725-17.241581-48.726208 2.998536-5.247438 6.746706-10.494876 11.244509-17.241581-28.486091-14.992679-44.978038-41.229868-26.986823-74.963397-28.486091-5.997072-53.973646-10.494876-79.4612-15.742313-14.243045-2.248902-21.739385-10.494876-18.740849-26.237189 6.746706-40.480234 14.992679-80.210835 23.238653-119.941435 4.497804-17.241581 8.245974-29.985359 26.986822-26.986823 37.481698 5.997072 96.702782 17.991215 133.434847 24.737921 28.486091 5.247438 28.486091 17.991215 25.487555 38.231333h41.229868c-2.998536-6.746706-3.74817-8.245974-5.997072-12.743778-47.22694-88.456808-123.689605-142.430454-213.645681-179.162518-111.695461-44.978038-227.888726-56.972182-345.581259-37.481698-111.695461 17.991215-213.645681 59.970717-294.606149 142.430453C11.542564 390.559297 1.797322 527.742313 85.756327 640.187408c49.475842 65.967789 116.193265 108.696925 191.906296 137.183017 137.183016 51.724744 276.614934 56.972182 417.54612 16.491947 80.960469-22.489019 152.925329-60.720351 215.144948-122.939971z m-5.997071-251.127379c2.998536-15.742313 5.247438-27.736457 8.995607-39.7306 4.497804-15.742313-0.749634-22.489019-17.241581-25.487555-38.980966-6.746706-77.961933-13.493411-116.193265-21.739385-11.994143-2.248902-17.241581 0.749634-19.490483 11.994143-6.746706 37.481698-14.243045 74.963397-20.240117 112.445095-0.749634 5.247438 1.499268 14.992679 7.496339 17.241582 20.989751 5.247438 42.729136 8.995608 63.718888 12.743777-3.74817-8.245974-8.995608-12.743777-14.243046-17.991215-22.489019-20.240117-26.237189-46.477306-10.494875-68.216691 14.992679-20.240117 41.979502-24.737921 67.467057-10.494876 15.742313 8.995608 31.484627 17.991215 50.225476 29.235725z" fill="currentColor"></path>
+                                        <path d="M668.971554 485.013177c-1.499268 77.961933-19.490483 151.426061-56.222548 219.642753-10.494876 18.740849-23.988287 23.988287-38.980966 15.742313-14.243045-7.49634-17.241581-20.240117-6.746706-39.7306 67.467057-130.43631 68.216691-260.872621 0-391.308931-8.995608-17.991215-5.997072-32.983895 7.49634-40.480235 14.243045-7.49634 28.486091-1.499268 38.231332 15.742314 37.481698 68.966325 54.72328 143.180088 56.222548 220.392386z" fill="currentColor"></path>
+                                        <path d="M564.772432 483.513909c0.749634 64.468521-14.243045 120.691069-43.47877 173.915081-9.745242 17.991215-23.238653 23.988287-37.481698 16.491947-14.243045-6.746706-17.991215-22.489019-8.245974-40.480234 52.474378-99.701318 52.474378-198.653001-0.749634-298.354319-8.995608-16.491947-5.247438-31.484627 8.245974-38.980967 14.243045-7.49634 28.486091-2.248902 37.481698 13.493412 29.985359 56.222548 45.727672 114.693997 44.228404 173.91508zM462.822213 484.263543c0.749634 44.228404-11.24451 85.458272-31.484627 124.439239-11.24451 20.989751-25.487555 26.237189-40.480234 17.241581-14.243045-8.995608-15.742313-22.489019-5.247438-41.979502 33.733529-63.718887 34.483163-128.187408 2.248902-192.65593-2.248902-4.497804-5.247438-8.995608-6.746706-13.493411-5.247438-13.493411-2.248902-26.237189 10.494876-30.734993 8.995608-2.998536 23.238653-1.499268 30.734992 4.497804 8.245974 5.247438 12.743777 17.241581 17.241582 26.986823 14.992679 32.983895 23.988287 68.216691 23.238653 105.698389zM366.119431 488.761347c-1.499268 28.486091-8.995608 56.222548-26.986823 81.710102-9.745242 13.493411-21.739385 17.991215-36.732065 9.745242-13.493411-7.49634-16.491947-22.489019-7.496339-36.732064 25.487555-38.980966 25.487555-77.212299 0.749634-116.193265-9.745242-14.992679-6.746706-29.985359 5.997072-36.732065 14.992679-8.995608 26.986823-4.497804 36.732064 8.995608 19.490483 26.237189 27.736457 55.472914 27.736457 89.206442z" fill="currentColor"></path>
+                                    </svg>
+                                </div>
+                                <span>CARD</span>
+                            </div>
+                            <div class="settings-toggle on" data-group="card" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon qr">
+                                    <svg class="filled" viewBox="0 0 1024 1024">
+                                        <path d="M419.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM899.2 160v256h-256V160h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64V160c0-35.2-28.8-64-64-64zM419.2 608v256h-256v-256h256m0-64h-256c-35.2 0-64 28.8-64 64v256c0 35.2 28.8 64 64 64h256c35.2 0 64-28.8 64-64v-256c0-35.2-28.8-64-64-64zM611.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM768 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32zM931.2 896c-19.2 0-32-12.8-32-32v-256c0-19.2 12.8-32 32-32s32 12.8 32 32v256c0 16-16 32-32 32z" fill="currentColor"></path>
+                                    </svg>
+                                </div>
+                                <span>QR</span>
+                            </div>
+                            <div class="settings-toggle" data-group="qr" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon gift">
+                                    <svg class="filled" viewBox="0 0 1024 1024">
+                                        <path d="M938.666667 853.333333h-853.333334C37.546667 853.333333 0 815.786667 0 768v-512C0 208.213333 37.546667 170.666667 85.333333 170.666667h853.333334C986.453333 170.666667 1024 208.213333 1024 256v512c0 47.786667-37.546667 85.333333-85.333333 85.333333zM85.333333 204.8C58.026667 204.8 34.133333 228.693333 34.133333 256v512c0 27.306667 23.893333 51.2 51.2 51.2h853.333334c27.306667 0 51.2-23.893333 51.2-51.2v-512c0-27.306667-23.893333-51.2-51.2-51.2h-853.333334z" fill="currentColor"></path><path d="M324.266667 648.533333h-170.666667c-10.24 0-17.066667-6.826667-17.066667-17.066666s6.826667-17.066667 17.066667-17.066667h170.666667c10.24 0 17.066667 6.826667 17.066666 17.066667s-6.826667 17.066667-17.066666 17.066666zM460.8 716.8h-307.2c-10.24 0-17.066667-6.826667-17.066667-17.066667s6.826667-17.066667 17.066667-17.066666h307.2c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667zM631.466667 512c-102.4 0-191.146667-64.853333-218.453334-163.84-6.826667-20.48 0-44.373333 13.653334-58.026667 17.066667-17.066667 37.546667-20.48 58.026666-13.653333 98.986667 27.306667 163.84 116.053333 163.84 218.453333 0 10.24-6.826667 17.066667-17.066666 17.066667zM443.733333 337.92c23.893333 78.506667 88.746667 129.706667 167.253334 136.533333-6.826667-81.92-58.026667-146.773333-136.533334-167.253333-10.24-3.413333-17.066667 0-23.893333 6.826667-6.826667 6.826667-6.826667 17.066667-6.826667 23.893333z" fill="currentColor"></path><path d="M631.466667 512c-10.24 0-17.066667-6.826667-17.066667-17.066667 0-102.4 64.853333-191.146667 163.84-218.453333 20.48-6.826667 44.373333 0 58.026667 13.653333 17.066667 17.066667 20.48 37.546667 13.653333 58.026667-27.306667 98.986667-116.053333 163.84-218.453333 163.84z m163.84-204.8h-6.826667c-78.506667 23.893333-129.706667 88.746667-136.533333 167.253333 81.92-6.826667 146.773333-58.026667 167.253333-136.533333 3.413333-10.24 0-17.066667-6.826667-23.893333-6.826667-3.413333-13.653333-6.826667-17.066666-6.826667z" fill="currentColor"></path><path d="M631.466667 853.333333c-10.24 0-17.066667-6.826667-17.066667-17.066666v-648.533334c0-10.24 6.826667-17.066667 17.066667-17.066666s17.066667 6.826667 17.066666 17.066666v648.533334c0 10.24-6.826667 17.066667-17.066666 17.066666z" fill="currentColor"></path><path d="M494.933333 648.533333c-3.413333 0-10.24 0-13.653333-3.413333-6.826667-6.826667-6.826667-17.066667 0-23.893333l136.533333-136.533334c6.826667-6.826667 17.066667-6.826667 23.893334 0s6.826667 17.066667 0 23.893334l-136.533334 136.533333c0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="currentColor"></path><path d="M768 648.533333c-3.413333 0-10.24 0-13.653333-3.413333l-136.533334-136.533333c-6.826667-6.826667-6.826667-17.066667 0-23.893334s17.066667-6.826667 23.893334 0l136.533333 136.533334c6.826667 6.826667 6.826667 17.066667 0 23.893333 0 3.413333-6.826667 3.413333-10.24 3.413333z" fill="currentColor"></path><path d="M1006.933333 512H34.133333c-10.24 0-17.066667-6.826667-17.066666-17.066667s6.826667-17.066667 17.066666-17.066666h972.8c10.24 0 17.066667 6.826667 17.066667 17.066666s-6.826667 17.066667-17.066667 17.066667z" fill="currentColor"></path>
+                                    </svg>
+                                </div>
+                                <span>GIFT</span>
+                            </div>
+                            <div class="settings-toggle" data-group="loyalty" onclick="toggleSetting(this)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section-title">General</div>
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M3 12h18" />
+                                        <path d="M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z" />
+                                    </svg>
+                                </div>
+                                <span>Language</span>
+                            </div>
+                            <div class="settings-chevron">></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4.5 9.5c4.2-3.2 10.8-3.2 15 0" />
+                                        <path d="M7.5 12.5c2.6-2 6.4-2 9 0" />
+                                        <path d="M10.5 15.5c1.4-1.1 3.6-1.1 5 0" />
+                                        <path d="M12 18.5h.01" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <span>Wifi Setting</span>
+                            </div>
+                            <div class="settings-chevron">></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="8" />
+                                        <path d="M12 7v5l3 2" />
+                                        <path d="M16.5 5.5l-1.8 1.8" />
+                                    </svg>
+                                </div>
+                                <span>Timezone</span>
+                            </div>
+                            <div class="settings-chevron">></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section-title">Features</div>
+                    <div class="settings-group">
+                        <div class="settings-row settings-row-link" onclick="openCashDiscountPage()">
+                            <div class="settings-row-left">
+                                <div class="settings-icon cash">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M7 7h.01" stroke-linecap="round" />
+                                        <path d="M17 17h.01" stroke-linecap="round" />
+                                        <path d="M8 16l8-8" />
+                                        <circle cx="7" cy="7" r="3" />
+                                        <circle cx="17" cy="17" r="3" />
+                                    </svg>
+                                </div>
+                                <span>Cash Discount</span>
+                            </div>
+                            <div class="settings-row-right">
+                                <span class="settings-meta" id="cash-discount-summary">OFF</span>
+                                <div class="settings-chevron">></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon cash">
+                                    <span class="material-symbols-rounded" aria-hidden="true">currency_exchange</span>
+                                </div>
+                                <span>Cash Refund</span>
+                            </div>
+                            <div class="settings-toggle" id="cash-refund-toggle"
+                                role="switch" aria-checked="false"
+                                onclick="toggleCashRefundSwitch(event)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-left">
+                                <div class="settings-icon">
+                                    <span class="material-symbols-rounded" aria-hidden="true">draw</span>
+                                </div>
+                                <span>Electronic Signature</span>
+                            </div>
+                            <div class="settings-toggle" id="electronic-signature-toggle"
+                                role="switch" aria-checked="false"
+                                onclick="toggleElectronicSignatureSwitch(event)">
+                                <div class="settings-toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-footer">
+                    <button class="settings-exit-btn" onclick="requestSettingsExit(event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 17l5-5-5-5" />
+                            <path d="M15 12H3" />
+                            <path d="M14 4h4c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2h-4" />
+                        </svg>
+                        <span>Exit</span>
+                    </button>
+                </div>
+
+                <div class="settings-subpage" id="cash-discount-page">
+                    <div class="settings-header-bar">
+                        <button class="settings-back-btn" onclick="closeCashDiscountPage(event)">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <div class="settings-header-title">Cash Discount</div>
+                        <div style="width:28px;height:28px;"></div>
+                    </div>
+                    <div class="settings-subpage-list">
+                        <div class="settings-group">
+                            <div class="settings-row">
+                                <div class="settings-row-left no-icon">
+                                    <span>Enable Cash Discount</span>
+                                </div>
+                                <div class="settings-toggle" id="cash-discount-toggle" onclick="toggleCashDiscountSwitch(event)">
+                                    <div class="settings-toggle-knob"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group cash-discount-rate-group hidden" id="cash-discount-rate-group">
+                            <div class="settings-row settings-row-stack">
+                                <div class="settings-row-left no-icon">
+                                    <span>Discount Percentage</span>
+                                </div>
+                                <div class="settings-note">Required when cash discount is enabled.</div>
+                                <div class="settings-input-wrap">
+                                    <input class="settings-percent-input" id="cash-discount-input" type="number"
+                                        inputmode="decimal" min="0.01" max="100" step="0.01" placeholder="e.g. 4"
+                                        oninput="handleCashDiscountInput(event)" onblur="normalizeCashDiscountInput()">
+                                    <span class="settings-percent-suffix">%</span>
+                                </div>
+                                <div class="settings-input-error" id="cash-discount-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-password-modal" id="settings-exit-modal" onclick="closeExitPasswordModal(event)">
+                    <div class="settings-password-card" onclick="event.stopPropagation()">
+                        <div class="settings-password-title">Exit</div>
+                        <label class="settings-password-label" for="settings-exit-password">Password</label>
+                        <input class="settings-password-input" id="settings-exit-password" type="password"
+                            inputmode="numeric" maxlength="8" autocomplete="off" oninput="clearExitPasswordError()"
+                            onkeydown="handleExitPasswordKey(event)">
+                        <div class="settings-password-error" id="settings-exit-password-error">Incorrect password.</div>
+                        <div class="settings-password-actions">
+                            <button class="settings-password-btn" onclick="closeExitPasswordModal(event)">Cancel</button>
+                            <button class="settings-password-btn confirm" onclick="confirmSettingsExit(event)">Exit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="keypad-overlay" id="keypad-overlay">
+            <div class="keypad-panel">
+                <div class="enter-amount-prompt">Enter Amount</div>
+                <div class="key-grid">
+                    <button type="button" class="key key-7" onclick="press('7')">7</button>
+                    <button type="button" class="key key-8" onclick="press('8')">8</button>
+                    <button type="button" class="key key-9" onclick="press('9')">9</button>
+                    <button type="button" class="key key-func key-delete key-del" onclick="press('BS')" aria-label="Delete last digit">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                            <line x1="18" y1="9" x2="12" y2="15" />
+                            <line x1="12" y1="9" x2="18" y2="15" />
+                        </svg>
+                    </button>
+                    <button type="button" class="key key-4" onclick="press('4')">4</button>
+                    <button type="button" class="key key-5" onclick="press('5')">5</button>
+                    <button type="button" class="key key-6" onclick="press('6')">6</button>
+                    <button type="button" class="key key-func key-clear" onclick="clearAmount(event)" aria-label="Clear amount">C</button>
+                    <button type="button" class="key key-1" onclick="press('1')">1</button>
+                    <button type="button" class="key key-2" onclick="press('2')">2</button>
+                    <button type="button" class="key key-3" onclick="press('3')">3</button>
+                    <button type="button" class="key key-done key-ok" onclick="confirmAmount(event)">OK</button>
+                    <button type="button" class="key key-0" onclick="press('0')">0</button>
+                    <button type="button" class="key key-func key-00" onclick="press('00')">00</button>
+                </div>
+            </div>
+        </div>
+        <nav class="bottom-nav" aria-label="Primary navigation">
+            <button type="button" class="bottom-nav-item active" data-view="home" onclick="showSaleHome(event)" aria-label="Sale" aria-current="page">
+                <span class="material-symbols-rounded" aria-hidden="true">point_of_sale</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-view="transactions" onclick="showAppView('transactions', event)" aria-label="Transactions">
+                <span class="material-symbols-rounded" aria-hidden="true">apps</span>
+            </button>
+            <button type="button" class="bottom-nav-item" data-view="settings" onclick="showAppView('settings', event)" aria-label="Settings">
+                <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="assets/merchant-context.js"></script>
+    <script src="js/status_bar.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/keypad.js"></script>
+    <script src="js/pos_main.js"></script>
+</body>
+
+</html>

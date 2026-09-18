@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255 67" role="img" aria-labelledby="title">
+  <title id="title">RuPay</title>
+  <g transform="skewX(-9)">
+    <text x="8" y="50" fill="#1b3281" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700" letter-spacing="-3">RuPay</text>
+  </g>
+  <path fill="#f7941d" d="m205 9 22 24-22 24h13l22-24-22-24z"/>
+  <path fill="#008c44" d="m190 9 22 24-22 24h13l22-24-22-24z"/>
+</svg>
