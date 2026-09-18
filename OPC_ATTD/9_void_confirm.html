@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Void Confirmation - OPC Attended POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <style>
+        .void-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px;
+            background: #FFFFFF;
+        }
+        .void-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .void-back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #111827;
+        }
+        .void-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .void-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+        }
+        .void-icon-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #FEF2F2;
+            color: #EF4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .void-icon-wrap .material-symbols-rounded {
+            font-size: 38px;
+        }
+        .void-heading {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+        }
+        .void-desc {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+            max-width: 280px;
+        }
+        .void-details {
+            width: 100%;
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        .void-label { color: #6B7280; }
+        .void-val { font-weight: 700; color: #111827; }
+        .void-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-top: auto;
+        }
+        .btn-confirm {
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            background: #EF4444;
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+        }
+        .btn-cancel {
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid #D1D5DB;
+            background: #FFFFFF;
+            color: #374151;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label" id="status-network-label">4G</span>
+                <svg class="status-icon status-wifi" id="status-wifi" viewBox="0 0 24 24"><path d="M12 18.5 15 22h-6l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Zm0-6c5.82 0 11.13 2.12 15.22 5.64l-2.09 2.43A19.97 19.97 0 0 0 12 4.2c-5.01 0-9.59 1.83-13.13 4.87l-2.09-2.43A23.18 23.18 0 0 1 12 1Z" transform="scale(.72) translate(4.65 2.2)"></path></svg>
+                <span class="status-battery" id="status-battery"><span class="status-battery-value">87</span><span class="status-battery-icon"><span class="status-battery-level"></span></span></span>
+            </div>
+        </div>
+        <div class="void-card">
+            <div class="void-header">
+                <button class="void-back-btn" onclick="window.location.href='transactions.html'"><span class="material-symbols-rounded">arrow_back</span></button>
+                <div class="void-title">Void Transaction</div>
+            </div>
+            <div class="void-body">
+                <div class="void-icon-wrap"><span class="material-symbols-rounded">cancel</span></div>
+                <div class="void-heading">Confirm Void?</div>
+                <div class="void-desc">Are you sure you want to void this transaction? This action will reverse the transaction and cannot be undone.</div>
+                <div class="void-details">
+                    <span class="void-label">Transaction / TID:</span>
+                    <span class="void-val" id="tid-val">-</span>
+                </div>
+            </div>
+            <div class="void-actions">
+                <button class="btn-confirm" onclick="handleConfirmVoid()">Confirm Void</button>
+                <button class="btn-cancel" onclick="window.location.href='transactions.html'">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="assets/merchant-context.js"></script>
+    <script src="js/status_bar.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const tid = params.get('tid') || 'TXN-000427';
+        document.getElementById('tid-val').textContent = tid;
+        function handleConfirmVoid() {
+            alert('Transaction ' + tid + ' has been voided successfully.');
+            window.location.href = 'transactions.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Failed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --error: #E5484D;
+            --error-dark: #C9343A;
+            --error-light: #FFF1F2;
+            --text-dark: #111827;
+            --text-grey: #667085;
+            --result-ink: #24456D;
+            --bg-body: #F5F7FB;
+            --surface: #FFFFFF;
+            --line: #DCE3ED;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #222222;
+            color: var(--text-dark);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .phone-frame {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 375px;
+            height: 812px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: var(--bg-body);
+            box-shadow: 0 0 0 12px #1A1A1A, 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .android-status-bar {
+            position: relative;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            flex: 0 0 28px;
+            height: 28px;
+            padding: 0 14px 0 16px;
+            background: var(--bg-body);
+            color: var(--text-dark);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1;
+        }
+
+        .status-time {
+            justify-self: start;
+            min-width: 34px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            justify-self: end;
+            gap: 5px;
+            height: 100%;
+        }
+
+        .status-network-label {
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .status-icon {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        .status-battery {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-battery-value {
+            min-width: 17px;
+            font-size: 9px;
+            text-align: right;
+        }
+
+        .status-battery-icon {
+            position: relative;
+            width: 20px;
+            height: 10px;
+            padding: 1px;
+            border: 1.4px solid currentColor;
+            border-radius: 2.5px;
+        }
+
+        .status-battery-icon::after {
+            position: absolute;
+            top: 2px;
+            right: -3.5px;
+            width: 2px;
+            height: 4px;
+            border-radius: 0 1px 1px 0;
+            background: currentColor;
+            content: "";
+        }
+
+        .status-battery-level {
+            display: block;
+            width: 87%;
+            height: 100%;
+            border-radius: 1px;
+            background: currentColor;
+        }
+
+        .top-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            min-height: 46px;
+            padding: 8px 22px 6px;
+        }
+
+        .merchant-name {
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .result-area {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            flex: 0 0 226px;
+            flex-direction: column;
+            min-height: 0;
+            padding: 80px 0 18px;
+            text-align: center;
+        }
+
+        .failure-summary {
+            display: flex;
+            flex-shrink: 0;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .failure-x {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 13px;
+            color: var(--error);
+            animation: failure-pop 0.42s cubic-bezier(0.2, 0.85, 0.35, 1.25) both;
+        }
+
+        .failure-x svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .failure-x-circle,
+        .failure-x-mark {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.8;
+        }
+
+        .failure-x-circle {
+            stroke-dasharray: 126;
+            stroke-dashoffset: 126;
+            animation: draw-failure-circle 0.5s ease-out 0.08s forwards;
+        }
+
+        .failure-x-mark {
+            stroke-dasharray: 42;
+            stroke-dashoffset: 42;
+            animation: draw-failure-mark 0.36s ease-out 0.46s forwards;
+        }
+
+        .transaction-type {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 0 11px;
+            color: var(--result-ink);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            line-height: 1.1;
+        }
+
+        .transaction-type::after {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 36px;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
+            transform: translateX(-50%);
+        }
+
+        .transaction-type.long-type {
+            font-size: 16px;
+            letter-spacing: 0.06em;
+        }
+
+        .amount {
+            max-width: 330px;
+            overflow: hidden;
+            margin-top: 16px;
+            color: var(--result-ink);
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.05;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @keyframes failure-pop {
+            0% {
+                opacity: 0;
+                transform: scale(0.72);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes draw-failure-circle {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes draw-failure-mark {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .failure-panel {
+            position: relative;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: 76px 24px 20px;
+            overflow: hidden;
+            background: var(--bg-body);
+        }
+
+        .panel-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-grey);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .panel-label::before,
+        .panel-label::after {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+            content: "";
+        }
+
+        .failure-copy {
+            max-width: 290px;
+            margin: 44px auto 0;
+            text-align: center;
+        }
+
+        .failure-title {
+            color: var(--text-dark);
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .failure-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            margin-top: 17px;
+            color: var(--error-dark);
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .failure-code,
+        .failure-status {
+            max-width: 260px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.015em;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .failure-actions {
+            display: block;
+            margin-top: auto;
+        }
+
+        .failure-action {
+            width: 100%;
+            height: 54px;
+            border: 1.5px solid var(--error);
+            border-radius: 16px;
+            background: var(--error);
+            box-shadow: 0 8px 20px rgba(229, 72, 77, 0.2);
+            color: #FFFFFF;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            transition: transform 0.14s ease, filter 0.14s ease;
+        }
+
+        .failure-action:active {
+            transform: translateY(2px) scale(0.98);
+            filter: brightness(0.96);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .failure-x,
+            .failure-x-circle,
+            .failure-x-mark {
+                animation-duration: 0.01ms;
+                animation-delay: 0ms;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                background: var(--bg-body);
+            }
+
+            .phone-frame {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="phone-frame">
+        <div class="android-status-bar" role="status" aria-label="Device status">
+            <time class="status-time" id="status-time">09:41</time>
+            <div class="status-icons">
+                <span class="status-network-label">4G</span>
+                <svg class="status-icon" viewBox="0 0 24 24" aria-label="Wi-Fi connected">
+                    <path d="M12 18.5 15 22H9l3-3.5Zm0-5.5c2.34 0 4.47.86 6.11 2.28l-2.08 2.43A6.15 6.15 0 0 0 12 16.2a6.15 6.15 0 0 0-4.03 1.51l-2.08-2.43A9.34 9.34 0 0 1 12 13Zm0-6c4.08 0 7.8 1.49 10.66 3.96l-2.08 2.43A13.04 13.04 0 0 0 12 10.2c-3.28 0-6.28 1.2-8.58 3.19l-2.08-2.43A16.26 16.26 0 0 1 12 7Z"></path>
+                </svg>
+                <span class="status-battery" aria-label="Battery 87 percent">
+                    <span class="status-battery-value">87</span>
+                    <span class="status-battery-icon" aria-hidden="true">
+                        <span class="status-battery-level"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <header class="top-bar">
+            <div class="merchant-name" data-merchant-name>Merchant</div>
+        </header>
+
+        <section class="result-area" aria-label="Failed transaction result">
+            <div class="failure-summary">
+                <span class="failure-x" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                        <circle class="failure-x-circle" cx="24" cy="24" r="20"></circle>
+                        <path class="failure-x-mark" d="m17 17 14 14 M31 17 17 31"></path>
+                    </svg>
+                </span>
+                <h1 class="transaction-type" id="transaction-type">SALE</h1>
+                <div class="amount" id="amount-display">$104.00</div>
+            </div>
+        </section>
+
+        <main class="failure-panel">
+            <div class="panel-label"></div>
+
+            <section class="failure-copy" aria-live="polite">
+                <h2 class="failure-title">Transaction Failed</h2>
+                <p class="failure-message">
+                    <span class="failure-code" id="failure-code">Code 51</span>
+                    <span class="failure-status" id="failure-status">NSF</span>
+                </p>
+            </section>
+
+            <div class="failure-actions">
+                <button class="failure-action" type="button" onclick="returnToSale()">OK</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/merchant-context.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const statusTime = document.getElementById("status-time");
+        const amountCents = resolveAmountCents();
+        const transactionType = resolveTransactionType();
+        const failureResponses = [
+            {
+                code: "12",
+                status: "Invalid Trans"
+            },
+            {
+                code: "14",
+                status: "Invalid Card"
+            },
+            {
+                code: "25",
+                status: "No Record Found"
+            },
+            {
+                code: "51",
+                status: "NSF"
+            },
+            {
+                code: "54",
+                status: "Suspended"
+            },
+            {
+                code: "57",
+                status: "Currency Error"
+            },
+            {
+                code: "58",
+                status: "Unauthorized Term"
+            },
+            {
+                code: "61",
+                status: "Exceeds Limit"
+            },
+            {
+                code: "64",
+                status: "Refund Exceeds"
+            },
+            {
+                code: "94",
+                status: "Duplicate Request"
+            },
+            {
+                code: "96",
+                status: "System Malfunction"
+            }
+        ];
+        const failureResponse = resolveFailureResponse();
+
+        function formatCurrency(cents) {
+            return (Math.max(0, cents) / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: params.get("currency") || "USD"
+            });
+        }
+
+        function parseMoneyToCents(value) {
+            if (value === null || value === undefined || value === "") return null;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0) return null;
+            return Math.round(amount * 100);
+        }
+
+        function resolveAmountCents() {
+            const centsText = params.get("amountCents");
+            const cents = Number(centsText);
+            if (centsText !== null && centsText !== "" && Number.isFinite(cents) && cents >= 0) {
+                return Math.round(cents);
+            }
+
+            const amount = parseMoneyToCents(params.get("amount"));
+            if (amount !== null) return amount;
+
+            const stored = Number(localStorage.getItem("finalAmountCents"));
+            if (Number.isFinite(stored) && stored >= 0) return Math.round(stored);
+            return 10400;
+        }
+
+        function resolveTransactionType() {
+            const rawType = params.get("transactionType") || params.get("type") || localStorage.getItem("transactionType") || "sale";
+            const normalized = rawType
+                .trim()
+                .replace(/[_\s]+/g, "-")
+                .replace(/-+/g, "-")
+                .toUpperCase();
+            return normalized || "SALE";
+        }
+
+        function randomIndex(length) {
+            if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+                const values = new Uint32Array(1);
+                window.crypto.getRandomValues(values);
+                return values[0] % length;
+            }
+            return Math.floor(Math.random() * length);
+        }
+
+        function resolveFailureResponse() {
+            const requestedCode = params.get("responseCode") || params.get("errorCode") || params.get("code");
+            const requestedResponse = requestedCode
+                ? failureResponses.find((response) => response.code === requestedCode.trim())
+                : null;
+            if (requestedResponse) return requestedResponse;
+
+            let previousCode = "";
+            try {
+                previousCode = sessionStorage.getItem("lastFailureCode") || "";
+            } catch (error) {
+                previousCode = "";
+            }
+
+            const candidates = failureResponses.filter((response) => response.code !== previousCode);
+            const selectedResponse = candidates[randomIndex(candidates.length)] || failureResponses[0];
+            try {
+                sessionStorage.setItem("lastFailureCode", selectedResponse.code);
+            } catch (error) {
+                // Storage may be unavailable in embedded or private contexts.
+            }
+            return selectedResponse;
+        }
+
+        function syncFailureDetails() {
+            const typeElement = document.getElementById("transaction-type");
+
+            typeElement.textContent = transactionType;
+            typeElement.classList.toggle("long-type", transactionType.length > 12);
+            document.getElementById("amount-display").textContent = formatCurrency(amountCents);
+            document.getElementById("failure-code").textContent = "Code " + failureResponse.code;
+            document.getElementById("failure-status").textContent = failureResponse.status;
+        }
+
+        function updateStatusTime() {
+            statusTime.textContent = new Date().toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        function returnToSale() {
+            const homeParams = new URLSearchParams();
+            if (window.MerchantContext) window.MerchantContext.appendTo(homeParams);
+            const query = homeParams.toString();
+            window.location.href = "index.html" + (query ? "?" + query : "");
+        }
+
+        syncFailureDetails();
+        updateStatusTime();
+        window.setInterval(updateStatusTime, 30000);
+    </script>
+</body>
+
+</html>

@@ -1281,7 +1281,7 @@
         const failureEvaluationCents = resolveFailureEvaluationCents(resultRouteParams);
 
         if (failureEvaluationCents !== null && amountEndsInFour(failureEvaluationCents)) {
-            window.location.replace("6_receipt_failed.html?" + resultRouteParams.toString());
+            window.location.replace("receipt_failed.html?" + resultRouteParams.toString());
         }
 
         const amountCents = resolveAmountCents();

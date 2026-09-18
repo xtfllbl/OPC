@@ -27,3 +27,11 @@ _Avoid_: Daily report, settlement list, batch info
 **Reprint**:
 The administrative capability to re-issue printed receipts for the last completed transaction or by specific receipt number.
 _Avoid_: Print again, duplicate receipt, print copy
+
+**Failure Receipt**:
+The terminal outcome interface displayed when an authorization fails, declines, or encounters a processing error, offering a clear decline reason and retry affordance.
+_Avoid_: Error page, decline screen, 6_receipt_failed.html
+
+**Simulation Magic Numbers**:
+Predictable test inputs that trigger deterministic terminal branches: any amount ending in `4` cents (e.g. $0.64, $1.04) simulates a declined transaction routed to Failure Receipt.
+_Avoid_: Hardcoded bugs, mock triggers
