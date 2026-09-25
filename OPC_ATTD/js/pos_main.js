@@ -220,6 +220,7 @@ const paymentGroups = [
 
         function showAppView(viewName, e) {
             if (e) e.stopPropagation();
+            window.AttendedFlows?.removeFlow();
             const activeView = ['home', 'transactions', 'settings'].includes(viewName) ? viewName : 'home';
 
             const batchOverlayEl = document.getElementById('batch-overlay');
@@ -395,6 +396,7 @@ const paymentGroups = [
         }
 
         function getActionLabel(actionName) {
+            if (actionName === 'Auth') return 'PreAuth';
             if (actionName === 'Scan QR') return 'Scan';
             return actionName;
         }
@@ -404,6 +406,7 @@ const paymentGroups = [
                 ? null
                 : Math.max(0, parseInt(amountCents, 10) || 0);
 
+            if (window.AttendedFlows?.submit(actionName, normalizedAmount)) return;
             if (actionName === 'Sale') {
                 const saleAmount = normalizedAmount === null ? 0 : normalizedAmount;
                 localStorage.setItem('cashAmountCents', String(saleAmount));
@@ -449,7 +452,17 @@ const paymentGroups = [
             resetHomeAfterCompletedTransaction();
         }
 
-        function doAction(actionName) {
+        function doAction(actionName, pinChecked = false) {
+            if (!pinChecked && ['Void', 'Refund', 'Close Batch'].includes(actionName)) {
+                AttendedUI.pin(actionName, () => doAction(actionName, true));
+                return;
+            }
+            if (['Void', 'Auth-Incremental', 'Capture', 'Reprint'].includes(actionName)) {
+                AttendedFlows.begin(actionName); return;
+            }
+            if (actionName === 'Close Batch') {
+                window.location.href = 'batch_reports.html?mode=close'; return;
+            }
             closePrintMenu(null, true);
 
             if (actionsRequireFreshAmount.has(actionName)) {

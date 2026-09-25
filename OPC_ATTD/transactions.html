@@ -406,6 +406,14 @@
         }
 
     </style>
+<link rel="stylesheet" href="css/attended.css">
+<style>
+.table-head,.tx-row {grid-template-columns:96px minmax(0,1fr) 82px;gap:10px;padding-left:16px;padding-right:16px;}
+.tx-amount {font-size:17px;}.tx-method {font-size:16px;}.tx-tender {gap:6px;}.tx-sub {font-size:10px;}.tx-time {font-size:15px;}.tx-id {font-size:11px;}
+.brand-chip {width:34px;min-width:34px;}.table-head {font-size:10px;}.tx-amount-wrap {align-self:center;}
+.attd-search-keyboard {flex-shrink:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#EAF0F3;padding:8px;}.attd-search-keyboard button {border:0;background:transparent;min-height:40px;font-size:24px;color:#34454C;cursor:pointer;}
+@media(max-width:360px){.table-head,.tx-row {grid-template-columns:80px minmax(0,1fr) 74px;padding:10px;gap:7px;}.tx-method {font-size:14px;}.tx-amount {font-size:15px;}}
+</style>
 </head>
 <body>
     <div class="phone-frame">
@@ -427,10 +435,12 @@
                         <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm3 6h12v2H6v-2zm4 6h4v2h-4v-2z"></path></svg>
                     </button>
                     <div id="filter-menu" class="filter-menu" role="menu" aria-label="Transaction filter">
-                        <button class="filter-item active" type="button" data-filter="all">All Transactions</button>
-                        <button class="filter-item" type="button" data-filter="card">Card Payments</button>
-                        <button class="filter-item" type="button" data-filter="cash">Cash Payments</button>
+                        <button class="filter-item active" type="button" data-filter="all">All Types</button>
+                        <button class="filter-item" type="button" data-filter="card">Sales / Completed</button>
+                        <button class="filter-item" type="button" data-filter="preauth">Pre-Auths (Open)</button>
                         <button class="filter-item" type="button" data-filter="refund">Refunds</button>
+                        <button class="filter-item" type="button" data-filter="void">Voids</button>
+                        <button class="filter-item" type="button" data-filter="cash">Cash Payments</button>
                     </div>
                 </div>
                 <button id="search-btn" class="icon-btn" type="button" aria-label="Search transactions">
@@ -441,18 +451,18 @@
 
         <div class="content">
             <div class="toolbar">
-                <div id="filter-label" class="filter-chip">All Transactions</div>
+                <div id="filter-label" class="filter-chip">All Types</div>
                 <div id="count-text" class="count-text">0 transactions</div>
             </div>
 
             <div id="search-wrap" class="search-wrap">
-                <input id="search-input" class="search-input" type="text" placeholder="Search by invoice, tender, amount">
+                <input id="search-input" class="search-input" type="text" inputmode="decimal" placeholder="Search by invoice, amount, receipt No.">
             </div>
 
             <div class="table-head">
                 <span>Date &amp; Time</span>
-                <span>Total</span>
-                <span>Card details</span>
+                <span>Transaction Details</span>
+                <span>Amount</span>
             </div>
 
             <div id="tx-list" class="tx-list"></div>
@@ -461,6 +471,8 @@
         </div>
     </div>
 
+    <script src="js/attended_demo.js"></script>
+    <script src="js/attended_ui.js"></script>
     <script>
         const transactions = [
             {
@@ -582,6 +594,11 @@
             }
         ];
 
+        const lookupParams = new URLSearchParams(location.search);
+        const lookupAction = lookupParams.get('action');
+        const demoTransactions = AttendedDemo.rows();
+        const originalTransactions = transactions.slice();
+        transactions.splice(0, transactions.length, ...demoTransactions, ...(!lookupAction ? originalTransactions : []));
         const state = {
             filter: 'all',
             query: ''
@@ -604,8 +621,8 @@
         };
 
         const filterLabelMap = {
-            all: 'All Transactions',
-            card: 'Card Payments',
+            all: 'All Types',
+            card: 'Sales / Completed', preauth: 'Pre-Auths (Open)', void: 'Voids',
             cash: 'Cash Payments',
             refund: 'Refunds'
         };
@@ -655,6 +672,7 @@
 
         function transactionTypeLabel(tx) {
             const kind = String(tx && tx.kind ? tx.kind : '').trim().toLowerCase();
+            if (kind === 'preauth') return 'PreAuth';
             if (kind === 'refund') return 'Refund';
             if (kind === 'capture') return 'Capture';
             if (kind === 'payment' || kind === 'sale') return 'Sale';
@@ -681,10 +699,14 @@
         }
 
         function matchesFilter(tx) {
+            if (lookupParams.get('batch') && tx.batchId !== lookupParams.get('batch')) return false;
+            if (lookupAction && !AttendedDemo.eligible(lookupAction).some(t=>t.id===tx.id)) return false;
+            if (state.filter === 'preauth') return tx.kind === 'preauth' && tx.status === 'OPEN AUTH';
+            if (state.filter === 'void') return tx.status === 'VOIDED';
             if (state.filter === 'all') return true;
-            if (state.filter === 'card') return tx.tenderType === 'card' && tx.kind !== 'refund';
+            if (state.filter === 'card') return ['payment','sale','capture'].includes(tx.kind) && tx.status !== 'VOIDED';
             if (state.filter === 'cash') return tx.tenderType === 'cash';
-            if (state.filter === 'refund') return tx.kind === 'refund';
+            if (state.filter === 'refund') return tx.kind === 'refund' && tx.status !== 'VOIDED';
             return true;
         }
 
@@ -725,13 +747,12 @@
                 const meta = transactionMeta(tx);
                 const tenderMeta = meta ? `<div class="tx-sub">${meta}</div>` : '';
                 return `
-                    <a class="tx-row" href="transaction_detail.html?id=${encodeURIComponent(tx.id)}">
+                    <a class="tx-row" data-tx-id="${tx.id}" href="${lookupAction && lookupAction!=='review' ? 'index.html?'+new URLSearchParams({action:lookupAction,selected:tx.id}) : 'transaction_detail.html?id='+encodeURIComponent(tx.id)}">
                         <div>
                             <div class="tx-date">${formatTransactionDate(tx.tranTime)}</div>
                             <div class="tx-time">${formatTransactionTime(tx.tranTime)}</div>
                             <div class="tx-id">#${tx.invoice}</div>
                         </div>
-                        <div class="${amountClass}">${formatAmount(tx.amount)}</div>
                         <div class="tx-tender">
                             ${tenderIconMarkup(tx)}
                             <div style="min-width:0;">
@@ -739,6 +760,7 @@
                                 ${tenderMeta}
                             </div>
                         </div>
+                        <div class="tx-amount-wrap"><div class="${amountClass}">${formatAmount(tx.amount)}</div><span class="attd-status ${tx.status==='OPEN AUTH'?'open':tx.status==='VOIDED'?'voided':''}">${tx.status||'APPROVED'}</span></div>
                     </a>
                 `;
             }).join('');
@@ -802,6 +824,29 @@
             renderRows();
         });
 
+
+        const backLink=document.querySelector('.back-btn');
+        if(lookupAction) backLink.href=lookupAction==='review'?'batch_reports.html?mode=close':'index.html?'+new URLSearchParams({action:lookupAction});
+        if(['Auth-Incremental','Capture','review'].includes(lookupAction)) document.querySelector('.filter-wrap').hidden=true;
+        listEl.addEventListener('click',event=>{
+            const link=event.target.closest('[data-tx-id]');
+            if(!link || (lookupAction&&lookupAction!=='review'))return;
+            const tx=AttendedDemo.find(link.dataset.txId);if(!tx)return;
+            event.preventDefault();
+            const actions=[{label:'Close'}];
+            if(tx.kind==='preauth'&&tx.status==='OPEN AUTH'){
+                actions.push({label:'Capture',primary:true,run:()=>location.href='index.html?'+new URLSearchParams({action:'Capture',selected:tx.id})});
+            }
+            actions.push({label:'Reprint',run:()=>location.href='index.html?'+new URLSearchParams({action:'Reprint',selected:tx.id})});
+            AttendedUI.modal({title:transactionTypeLabel(tx),body:AttendedUI.details(tx),actions});
+        });
+        const keyboard=document.createElement('div');keyboard.className='attd-search-keyboard';keyboard.hidden=true;keyboard.setAttribute('aria-label','Search keypad');
+        keyboard.innerHTML=['1','2','3','4','5','6','7','8','9','.','0','⌫','Done'].map(k=>`<button type="button">${k}</button>`).join('');
+        document.querySelector('.phone-frame').append(keyboard);
+        keyboard.addEventListener('pointerdown',e=>e.preventDefault());
+        keyboard.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')return;const k=e.target.textContent;if(k==='Done'){keyboard.hidden=true;searchInput.blur();return;}searchInput.value=k==='⌫'?searchInput.value.slice(0,-1):searchInput.value+k;state.query=searchInput.value.trim().toLowerCase();renderRows();});
+        searchInput.addEventListener('focus',()=>keyboard.hidden=false);
+        searchBtn.addEventListener('click',()=>{if(!searchWrap.classList.contains('open'))keyboard.hidden=true;});
         renderRows();
     </script>
 </body>

@@ -1052,6 +1052,7 @@
             }
         }
     </style>
+<link rel="stylesheet" href="css/attended.css">
 </head>
 
 <body>
@@ -1608,6 +1609,7 @@
             choiceSheet.classList.remove("signature-mode");
             sheetLabel.textContent = "CUSTOMER COPY";
             showToast("Signature captured");
+            window.AttendedReceipt?.merchant();
         }
 
         function initializeSignatureStep() {
@@ -1624,6 +1626,7 @@
         }
 
         function openEmailPanel() {
+            window.AttendedReceipt?.stop();
             choiceSheet.classList.add("email-mode");
             phoneFrame.classList.add("email-mode");
             emailError.textContent = "";
@@ -1631,6 +1634,7 @@
         }
 
         function closeEmailPanel() {
+            window.AttendedReceipt?.start();
             hideSimulatedKeyboard(false);
             choiceSheet.classList.remove("email-mode");
             phoneFrame.classList.remove("email-mode");
@@ -1733,6 +1737,7 @@
         function finishReceiptChoice(deliveryMethod, extra = {}) {
             if (completionPending) return;
             completionPending = true;
+            window.AttendedReceipt?.stop();
             const payload = getReceiptPayload(deliveryMethod, extra);
             localStorage.setItem("customerReceiptMethod", deliveryMethod);
             window.dispatchEvent(new CustomEvent("customer-receipt-complete", { detail: payload }));
@@ -1764,6 +1769,7 @@
         }
 
         function printCustomerCopy() {
+            window.AttendedReceipt?.stop();
             const payload = getReceiptPayload("print");
             if (typeof window.onCustomerReceiptPrint === "function") {
                 window.onCustomerReceiptPrint(payload);
@@ -1814,6 +1820,8 @@
         syncTransactionDetails();
         initializeSignatureStep();
     </script>
+    <script src="js/attended_demo.js"></script>
+    <script src="js/attended_receipt.js"></script>
 </body>
 
 </html>

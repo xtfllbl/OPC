@@ -347,6 +347,7 @@ function setElementText(element, value) {
                 showBatchHistoryView();
                 return;
             }
+            if (new URLSearchParams(location.search).get('mode') === 'close') { location.href='index.html?view=transactions'; return; }
             if (activeBatchKind) {
                 showBatchHome();
                 return;
@@ -691,7 +692,7 @@ function setElementText(element, value) {
             await new Promise(resolve => setTimeout(resolve, 350));
             const fallback = kind === 'history'
                 ? getDemoHistoricalBatchInfo(batchId)
-                : demoBatchInfo[kind];
+                : AttendedDemo.toBatch(kind);
             return normalizeBatchInfoPayload(JSON.parse(JSON.stringify(fallback)));
         }
 
@@ -770,6 +771,10 @@ function setElementText(element, value) {
                     settleStatus: summary.settleStatus || ''
                 },
                 settlementList: settlementList.map((item) => ({
+                    status: item.status || "",
+                    cashEquivalentCents: toBatchNumber(item.cashEquivalentCents),
+                    feeCents: toBatchNumber(item.feeCents),
+                    tipCents: toBatchNumber(item.tipCents),
                     amount: toBatchNumber(item && item.amount),
                     transId: item && item.transId ? String(item.transId) : '',
                     receiptNo: item && (item.receiptNo || item.localReceiptNo)
@@ -866,8 +871,9 @@ function setElementText(element, value) {
             const isAuthOnly = rawType.includes('AUTH') && !isCompletion && !isIncremental;
             const isDebit = rawType.includes('DEBIT');
 
-            if (isRefund) return { key: 'REFUND', settlement: 'negative' };
             if (isVoid) return { key: 'VOID', settlement: 'excluded' };
+            if (rawType === 'AUTH COMPLETED') return { key: 'AUTH', settlement: 'excluded' };
+            if (isRefund) return { key: 'REFUND', settlement: 'negative' };
             if (isTip) return { key: 'TIP', settlement: 'positive' };
             if (isCompletion) return { key: 'CAPTURE', settlement: 'positive' };
             if (isIncremental) return { key: 'AUTH-INCREMENTAL', settlement: 'excluded' };
@@ -951,7 +957,7 @@ function setElementText(element, value) {
         }
 
         function summarizeBatchCardTransactions(transactions) {
-            const included = new Map();
+            const included = new Map(['SALE', 'REFUND', 'CAPTURE'].map(type => [type, { type, count: 0, amount: 0, settlement: type === 'REFUND' ? 'negative' : 'positive' }]));
             let cardNet = 0;
 
             transactions.forEach((transaction) => {
@@ -1077,7 +1083,7 @@ function setElementText(element, value) {
         }
 
         function summarizeBatchCash(transactions) {
-            const cashTransactions = transactions.filter((transaction) => normalizeBatchPaymentType(transaction) === 'CASH');
+            const cashTransactions = transactions.filter((transaction) => normalizeBatchPaymentType(transaction) === 'CASH' && getBatchTransactionKind(transaction).settlement !== 'excluded');
             const saleTransactions = cashTransactions.filter((transaction) => !getBatchTransactionKind(transaction).key.includes('REFUND'));
             const refundTransactions = cashTransactions.filter((transaction) => getBatchTransactionKind(transaction).key.includes('REFUND'));
             const saleAmount = saleTransactions.reduce(
@@ -1234,6 +1240,7 @@ function setElementText(element, value) {
             renderBatchReconciliation(data.settlementList, summary.currencyCode);
             renderBatchTransactions(data.settlementList, summary.currencyCode);
             setBatchTransactionsExpanded(false);
+            window.AttendedBatch?.render(data, kind);
         }
 
         function renderBatchTransactions(transactions, currencyCode) {

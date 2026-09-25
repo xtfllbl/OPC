@@ -25,8 +25,24 @@ Terminal settlement summaries and historical transaction records used for end-of
 _Avoid_: Daily report, settlement list, batch info
 
 **Reprint**:
-The administrative capability to re-issue printed receipts for the last completed transaction or by specific receipt number.
+The administrative capability to re-issue a receipt for a recorded transaction, selected as the latest transaction or located by receipt number, card lookup, card last four digits, or transaction list.
 _Avoid_: Print again, duplicate receipt, print copy
+
+**PreAuth**:
+A pre-authorization transaction that establishes a hold amount for a later Capture or Void. The attended terminal labels an outstanding pre-authorization as OPEN AUTH.
+_Avoid_: Auth when naming the attended transaction action
+
+**Auth-Incremental**:
+An action against an existing PreAuth to add to its current hold amount; its amount-entry view distinguishes the added amount from the new total hold amount.
+_Avoid_: New PreAuth, Capture
+
+**Capture**:
+An action against an existing PreAuth to complete payment for a specified amount.
+_Avoid_: Auth-Incremental, Close Batch
+
+**Manager PIN**:
+An operation-specific password check used when configured for Void, Refund, or Close Batch, with independent passwords for those three operations.
+_Avoid_: Settings Exit password, shared operation password
 
 **Failure Receipt**:
 The terminal outcome interface displayed when an authorization fails, declines, or encounters a processing error, offering a clear decline reason and retry affordance.

@@ -103,6 +103,7 @@ function formatMoney(cents) {
                 isRefundEntry ? refundEntryTheme.shadow : entryShadows[safeThemeIndex]
             );
 
+            if (document.getElementById('attd-hold')) window.AttendedFlows?.refreshAmount();
             if (amountLabel) {
                 amountLabel.textContent = 'TRANSACTION AMOUNT';
             }
@@ -163,8 +164,6 @@ function openKeypad() {
             }
 
             const actionToRun = pendingAction;
-            pendingAction = null;
-            updateAmountContext();
             if (actionToRun) {
                 startAction(actionToRun, rawAmount);
             } else {
