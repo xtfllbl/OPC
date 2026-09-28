@@ -1,8 +1,8 @@
-# OPC_ATTD Tip Adjust 交互草稿（待用户评议）
+# OPC_ATTD Tip Adjust：方案 A 与现有设计语言
 
 回答的问题：在现有 375 × 812 终端界面内，哪种编辑布局更适合逐笔保存，以及如何从关批提醒进入调整并返回关批？
 
-这是独立研究分支中的可丢弃 UI 草稿，不是正式功能。它遵循已确认的[金额与批次规则](https://github.com/xtfllbl/OPC/issues/3#issuecomment-5865236468)，交互选择在[交互议题](https://github.com/xtfllbl/OPC/issues/4)中评议。当前无用户选定的最终布局。
+这是独立研究分支中的可丢弃 UI 草稿，不是正式功能。它遵循已确认的[金额与批次规则](https://github.com/xtfllbl/OPC/issues/3#issuecomment-5865236468)，交互选择在[交互议题](https://github.com/xtfllbl/OPC/issues/4)中评议。用户已选择方案 A，并明确要求沿用现有项目的金额输入、键盘及整体设计语言。此前自定义输入框、三列键盘和卡片列表不作为最终设计依据。
 
 ## 运行
 
@@ -14,12 +14,12 @@ python3 -m http.server 8768 --bind 127.0.0.1
 
 打开 [A：独立编辑页](http://127.0.0.1:8768/OPC_ATTD/index.html?tipPrototype=1&variant=A)。
 
-- 同一 index.html 路由；底部箭头或键盘左右键切换 `variant=A/B/C`。
+- 同一 index.html 路由；当前固定展示已选定的 A，隐藏方案切换器。最初 B/C 探索保存在上一提交中。
 - 只有本地地址且带 `tipPrototype=1` 时挂载草稿，其他地址不启用。
 - 右侧说明/状态/情景按钮属于评议工具，终端产品不会包含它们。
 - 调整数据只存在内存；刷新即可重置。无支付、打印或结算 API 调用。
 
-## 三种布局
+## 初轮布局探索（历史记录）
 
 | 方案 | 差异 | 需要评议的取舍 |
 | --- | --- | --- |
@@ -27,16 +27,20 @@ python3 -m http.server 8768 --bind 127.0.0.1
 | B 底部编辑面板 | 保留列表背景，面板内编辑与保存 | 上下文可见，但屏幕更拥挤 |
 | C 列表内展开 | 选中行下方展开金额与键盘 | 可上下对照，编辑与列表共用滚动，保存按钮可能需要滚动 |
 
-![A 独立编辑页](a-editor.jpg)
+![A 修正版：现有键盘与金额样式](a-native-editor.jpg)
+
+[修正版列表](a-native-list.jpg) · [修正版关批提醒](a-native-close-batch.jpg)
+
+初轮草稿仅作历史记录：
 
 [B 编辑面板截图](b-editor.jpg) · [C 列表内展开截图](c-editor.jpg) · [列表截图](a-list.jpg) · [关批提醒截图](close-batch.jpg)
 
-## 本稿提出的交互细节（待反馈）
+## 方案 A 的交互及风格约束
 
 - 列表默认所有符合条件的交易，最新在前；支持票据号/卡尾号搜索、All / Not adjusted / Adjusted 筛选。
 - 每行强调固定交易金额，展示已保存小费、总额、卡尾号和调整确认状态。
 - 编辑页展示固定交易金额、Final tip 和实时 Total；展示 Saved tip 便于核对。
-- Save & return 回列表；Save & next 沿进入编辑时当前筛选/搜索结果的顺序继续；最后一笔使用 Save & finish 回列表。All 中的已调整交易仍可再次编辑。
+- 键盘沿用现有 7/8/9 在上排的四列布局，橙色退格、红色 C、00 和纵向蓝色 OK；OK 保存并继续下一笔（Next），最后一笔显示 Finish；独立 Save & return to list 按钮保存并回列表。All 中已调整交易可再次编辑。
 - 从关批提醒选择 Adjust Tips First 默认进入 Not adjusted，显示 Return to Close Batch；返回后由用户再次点击 Close Batch，不自动结算。
 - 关批有未调整记录时展示数量与两个出口；没有时保留普通关批确认。继续结算仍经过现有 OPEN AUTH 检查。
 - 独立 PIN 演示使用 1234，仅进入时验证；连续下一笔不重复验证。
@@ -58,4 +62,13 @@ python3 -m http.server 8768 --bind 127.0.0.1
 - OPEN AUTH 的 Review 出口只给出衔接说明，未复制原来的 Capture 流程。
 - 关批页仅汇总草稿的六笔符合条件的演示交易；不代表正式全批次报表。
 - 正式实现时需要接入共享交易数据、独立 PIN 配置、真实的保存结果和已有报表/小票。
-- 所有布局与路径均为本轮待评议建议；确认结论以交互议题的 resolution comment 为准。
+- 选定 A；确认结论及风格约束以交互议题的 resolution comment 为准。
+
+## 与既有项目的复用对应
+
+- 金额与键盘：直接加载现有 `css/pos_home.css`，克隆 `index.html` 的 `.key-grid` 和全部按键 class/SVG，只将操作绑定改为本演示的小费保存。金额采用 `.amount-context`、`.amount-label`、`.amount-display`、`.currency`、`.amount-value`；不使用初稿蓝色描边金额输入框。
+- 返回与操作按钮：使用 `css/attended.css` 的 `.attd-back`、`.attd-button`，弹窗和提示使用现有 `.attd-modal` / `.attd-dialog` / `.attd-toast` 样式。
+- 列表：按 `transactions.html` 的表头、三列分隔行、卡品牌 SVG、搜索/筛选入口构建；原 CSS 在临时研究文件中添加作用域，以免影响同页其他已有组件。正式实现应复用/抽取这些既有样式，不维护一套独立的 Tip Adjust 视觉主题。
+- 原型修正仍在独立分支，未合入主工作区或部署。
+
+修正版浏览器检查：C → 5 → 00 显示最终小费 $5.00、总额 $109.00，OK 进入下一笔；搜索/筛选与关批提醒仍可操作。原页与修正版数字键的实测背景、边框、圆角、字号、字重一致（白色、1px #DFE5EF、15px、23px、700）。
