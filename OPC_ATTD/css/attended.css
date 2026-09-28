@@ -39,13 +39,32 @@
 #grid-card > .action-card {order:0;}#grid-card > .action-card.priority-void {order:1;}#grid-card > .action-card.priority-refund {order:2;}#grid-card > .action-card.priority-auth {order:3;}#grid-card > .action-card.attd-incremental {order:4;}#grid-card > .action-card.attd-capture {order:5;}#grid-card > .management-heading {order:6;}#grid-card > .action-card.management-card {order:7;}
 .attd-pin-settings {display:grid;gap:10px;padding:12px 18px;}.attd-pin-settings label {display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#475467;gap:12px;}.attd-pin-settings input {width:130px;height:36px;font-size:13px;}.attd-pin-settings small {color:#667085;font-size:11px;}
 .attd-status {display:inline-block;margin-top:6px;padding:4px 6px;border-radius:5px;background:#E7F4E9;color:#267D36;font-size:9px;font-weight:800;white-space:nowrap;}.attd-status.open {background:#F1E4FF;color:#8539BA;}.attd-status.voided {background:#FEE9EA;color:#B3454E;}
-.attd-report-card {background:white;border:1px solid #DFE5EF;border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 6px #1018280a;}.attd-report-row {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:16px;align-items:center;padding:12px;border-top:1px solid #E1E7F0;font-size:10px;font-weight:700;}.attd-report-row strong {font-size:15px;}.attd-report-row span:nth-child(2){color:#667085;}.attd-report-row:last-child {background:#F8FAFD;}
+.attd-report-card {background:white;border:1px solid #DFE5EF;border-radius:18px;overflow:hidden;box-shadow:0 2px 6px #1018280a;}.attd-report-row {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:16px;align-items:center;padding:12px;border-top:1px solid #E1E7F0;font-size:10px;font-weight:700;}.attd-report-row strong {font-size:15px;}.attd-report-row span:nth-child(2){color:#667085;}.attd-report-row:last-child {background:#F8FAFD;}
 .attd-close-batch {padding:7px;font-size:11px;border-radius:9px;color:#0A5BFF;border-color:#0A5BFF;white-space:nowrap;}
-.attd-settlement {position:absolute;inset:28px 0 0;background:#F5F7FB;z-index:180;padding:30px 22px;display:flex;flex-direction:column;text-align:center;gap:20px;overflow:auto;}.attd-settlement .success {font-size:58px;color:#00A86B;margin-top:36px;}.attd-settlement h2 {color:#24476B;font-size:24px;}.attd-settlement .total {color:#24476B;font-size:48px;font-weight:800;}.attd-settlement p {font-size:13px;color:#24476B;}.attd-settlement .attd-choice-grid {margin-top:auto;}
+/* Settlement layout follows the terminal reference; keep receipt controls together. */
+.attd-settlement {position:absolute;inset:28px 0 0;background:#F3F4F6;z-index:180;padding:14px 22px 28px;display:flex;flex-direction:column;text-align:center;overflow:auto;}
+.attd-settlement > * {flex-shrink:0;}
+.attd-settlement .merchant-name {font-size:20px;line-height:1.3;font-weight:700;color:#111827;}
+.attd-settlement .success {font-size:56px;line-height:1;color:#00A86B;margin:38px 0 22px;}
+.attd-settlement h2 {color:#24476B;font-size:22px;line-height:1.25;}
+.attd-settlement h2::after {content:'';display:block;width:32px;height:2px;background:currentColor;margin:8px auto 0;}
+.attd-settlement .total {color:#24476B;font-size:48px;line-height:1.15;font-weight:800;margin:14px 0 28px;overflow-wrap:anywhere;}
+.attd-settlement-meta {display:flex;align-items:center;justify-content:space-between;gap:12px;color:#24476B;margin-bottom:30px;text-align:left;}
+.attd-settlement-meta p {font-size:12px;line-height:1.4;font-weight:700;}
+.attd-settlement-batch {font-size:12px;font-weight:700;white-space:nowrap;}
+.attd-settlement-batch small {font-size:10px;color:#6B7280;margin-right:4px;}
+.attd-settlement .attd-divider {margin:0 0 18px;}
+.attd-settlement .attd-choice-grid {gap:10px;margin:0;}
+.attd-settlement .attd-choice {aspect-ratio:1;min-height:0;padding:18px 8px;background:#FFFFFF;border-color:#D5E1FF;border-radius:16px;box-shadow:none;gap:14px;font-size:16px;}
+.attd-settlement .attd-choice .material-symbols-rounded {display:grid;place-items:center;width:54px;height:54px;border-radius:16px;background:#E9F0FF;color:#0A5BFF;font-size:28px;}
+.attd-settlement .attd-choice[data-print="details"] {border-color:#E6D9FF;}
+.attd-settlement .attd-choice[data-print="details"] .material-symbols-rounded {background:#F3ECFF;color:#7C3AED;}
+.attd-settlement #settlement-skip {display:flex;align-items:center;justify-content:center;gap:10px;min-height:60px;margin-top:10px;background:#F8FAFC;border-color:#D8E0EC;border-radius:16px;color:#526171;font-size:15px;}
+.attd-settlement #settlement-skip .material-symbols-rounded {font-size:24px;}
+.attd-close-batch {margin-left:auto;}
+
 .attd-printing .receipt-options {visibility:hidden;}.attd-merchant-print {position:absolute;bottom:0;left:0;right:0;padding:18px;background:#D6EFE5;color:#087D46;text-align:center;font-weight:700;font-size:14px;z-index:100;}
 @media(max-width:420px) {body {min-height:100dvh;} .phone-frame {width:100vw!important;height:100dvh!important;border-radius:0!important;box-shadow:none!important;}}
 @media(max-height:700px) {.attd-flow .key-grid{flex-basis:240px;max-height:240px;}.attd-lookup-label{margin-top:12px;}.attd-hold{margin-top:6px;font-size:11px;}.attd-dialog{padding:16px;}}
 
 #grid-card .attd-incremental .card-label {font-size:12px;max-width:100%;word-break:normal;overflow-wrap:normal;}
-.attd-pin-keypad {display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px;background:#EDF1F4;padding:8px;border-radius:12px;}
-.attd-pin-keypad button {min-height:38px;border:0;background:transparent;color:#34454C;font:500 22px Inter,sans-serif;cursor:pointer;}

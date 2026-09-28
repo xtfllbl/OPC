@@ -41,7 +41,7 @@
 | 27 | print确认弹窗.png | Print Last Transaction?；交易类型、金额、卡、Trace & Time；Cancel / Print | Reprint 确认 |
 | 28 | print寻单方式选择.png | 最近交易快捷打印及摘要；刷卡、手输、交易列表寻单 | index.html / js/pos_main.js |
 | 29 | refund首页.png | REFUND 红色负金额及负金额 OK | index.html / js/keypad.js |
-| 30 | void、refund、closebatch配置了密码校验（三者独立密码）.png | 三项操作独立配置密码；配置后出现 Manager PIN 弹窗及数字键盘 | 操作入口及设置 |
+| 30 | void、refund、closebatch配置了密码校验（三者独立密码）.png | 三项操作独立配置密码；配置后出现 Manager PIN 弹窗；按 2026-09-28 修订使用设备数字输入法 | 操作入口及设置 |
 | 31 | void前确认弹窗.png | Void 确认交易类型/金额/卡/Trace & Time；NO / YES | Void 寻单确认 |
 | 32 | void寻单.png | 手输小票号/卡尾号，Quick Void Last 快捷入口 | Void 寻单 |
 
@@ -86,7 +86,7 @@
 - 操作菜单：Sale / Void / Refund；PreAuth / Auth-Incremental / Capture；Close Batch / Reports；Reprint / Transaction。
 - 寻单：小票号、卡尾四位、模拟呈卡、匹配多笔选择、交易列表选择、选单确认。Void 支持 Quick Void Last；Reprint 支持最近交易快捷打印。
 - 追加授权/Capture：先选择原预授权，展示持有金额；追加金额与 New Total Hold 同步；超额 Capture 可取消保留金额或确认继续。
-- PIN：Settings → Operation PINs 分别配置 Void、Refund、Close Batch，空值关闭对应校验；新增数字键盘、取消和错误反馈。
+- PIN：Settings → Operation PINs 分别配置 Void、Refund、Close Batch，空值关闭对应校验；保留取消和错误反馈，按 2026-09-28 修订移除自绘键盘，通过密码输入框的数字输入类型请求设备输入法。
 - 交易列表：日期/交易详情/金额三列、状态徽标、六种筛选、可操作数字搜索键盘；追加授权与 Capture 寻单只显示 OPEN AUTH。
 - 批次：增加 Dual Pricing & Fee Savings、Audit & Risk；有现金显示 Cash Summary，无现金隐藏；保留品牌与明细展开、历史批次、三种打印范围。
 - 结算：操作入口进入带 Close Batch 按钮的当前批次；普通确认 → 若有未完成预授权则提示数量/金额 → 检查预授权或继续 → 成功及汇总/明细打印选项。
@@ -129,3 +129,21 @@ node --test OPC_ATTD/tests/attended-prototype.test.cjs
 ```
 
 验收截图：[菜单](validation/menu.png)、[Void 确认](validation/void-confirm.png)、[无现金批次](validation/last-batch-no-cash.png)、[交易搜索](validation/transactions-search.png)。
+
+
+## 2026-09-28 批次界面修订
+
+用户已确认按本轮图 1 对齐结算成功页；商户、金额、批次号仍使用当前原型数据。
+
+- 结算成功页：删除打印区域上方的自动填充空白；补齐标题短横线、右侧批次号；打印卡片改为白底，汇总为蓝色图标底、明细为紫色图标底；No Receipt 使用浅灰底、灰色图标和文字。保留现有 10 秒倒计时及两种打印行为。
+- Batch Reports：所有可见模块由共同容器控制 `8px` 间距，现金模块隐藏时不保留空位。
+- Manager PIN：Void、Refund、Close Batch 共用密码弹窗移除自绘数字键盘；保留 `type="password"`、`inputmode="numeric"`、自动聚焦、Cancel / Confirm、错误提示和回车确认。
+- 打印入口：`batch_reports.html?mode=close` 隐藏整个右上打印入口，Close Batch 按钮靠右；普通 Reports 入口保留当前批次、最近批次及历史批次的打印菜单；成功页仍可打印汇总或明细。
+
+这些是可逆的界面修订，沿用既有架构，无需新增 ADR。
+
+验证记录：桌面浏览器中有现金报表六处、无现金报表五处模块间距均为 `8px`；Close Batch 入口无右上打印，Reports 当前批次保留三种打印范围并可显示汇总打印反馈；成功页两个打印操作均显示原型反馈。Manager PIN 无数字按钮、输入框自动聚焦，错误密码提示和正确密码回车继续均通过，临时测试 PIN 已清空。375×812 默认终端和 375×667 短屏下成功页无横向溢出，打印选项和 No Receipt 均完整显示；倒计时结束返回首页。三个修改脚本语法检查、4 项现有数据回归测试通过。
+
+设备数字输入法通过输入类型请求；本次桌面浏览器验证不代表已在真实终端验证输入法或硬件打印。
+
+截图：[结算成功页](validation/settlement-ui-2026-09-28.png)、[Manager PIN](validation/manager-pin-2026-09-28.png)。

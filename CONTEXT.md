@@ -24,6 +24,14 @@ _Avoid_: Home screen, main page, 1.unified_pos.html
 Terminal settlement summaries and historical transaction records used for end-of-day closure and accounting audit.
 _Avoid_: Daily report, settlement list, batch info
 
+**Close Batch**:
+The attended settlement action that closes the current batch and presents its settlement result.
+_Avoid_: Batch Reports, Capture
+
+**Settlement Copy**:
+A receipt for a closed batch, available as a batch summary or transaction details.
+_Avoid_: Transaction receipt, Customer Copy
+
 **Reprint**:
 The administrative capability to re-issue a receipt for a recorded transaction, selected as the latest transaction or located by receipt number, card lookup, card last four digits, or transaction list.
 _Avoid_: Print again, duplicate receipt, print copy

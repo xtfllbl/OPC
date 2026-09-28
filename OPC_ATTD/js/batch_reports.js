@@ -209,6 +209,9 @@ function setElementText(element, value) {
 
         function setBatchPrintAvailable(available) {
             if (!batchPrintButton) return;
+            const closeMode = new URLSearchParams(location.search).get('mode') === 'close';
+            if (batchHeaderActions) batchHeaderActions.hidden = closeMode;
+            available = available && !closeMode;
             batchPrintButton.classList.toggle('hidden', !available);
             if (!available) closeBatchPrintMenu();
         }

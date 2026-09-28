@@ -515,7 +515,6 @@
 
         .batch-summary-card {
             padding: 11px 14px 0;
-            margin-bottom: 8px;
             overflow: hidden;
         }
 
@@ -588,7 +587,6 @@
 
         .batch-overview-card {
             overflow: hidden;
-            margin-bottom: 8px;
         }
 
         .batch-report-heading {
@@ -776,7 +774,6 @@
 
         .batch-payment-section {
             overflow: hidden;
-            margin-bottom: 8px;
         }
 
         .batch-payment-list {
@@ -979,7 +976,6 @@
 
         .batch-cash-section {
             overflow: hidden;
-            margin-bottom: 8px;
         }
 
         .batch-cash-list {
@@ -1038,7 +1034,6 @@
 
         .batch-transaction-section {
             overflow: hidden;
-            margin-bottom: 8px;
         }
 
         .batch-transactions-toggle {
@@ -1281,3 +1276,7 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* One spacing rule for every visible report module, including optional sections. */
+        .batch-detail-content {display:flex;flex-direction:column;gap:8px;}
+        .batch-detail-content > * {margin:0;flex-shrink:0;}

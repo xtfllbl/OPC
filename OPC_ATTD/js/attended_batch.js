@@ -26,12 +26,12 @@
     function complete(){
         const amount=document.getElementById('batch-card-net').textContent;
         const batchId=AttendedDemo.closeBatch();
-        const screen=document.createElement('section');screen.className='attd-settlement';screen.innerHTML=`<div class="merchant-name" data-merchant-name>Merchant</div><span class="material-symbols-rounded success">check_circle</span><h2>CLOSE BATCH</h2><div class="total">${ui.escape(amount)}</div><p>Batch #${batchId} Closed Successfully</p><div class="attd-divider">SETTLEMENT COPY</div><div class="attd-choice-grid"><button class="attd-choice" data-print="summary">${ui.icon('print')}Print Summary</button><button class="attd-choice" data-print="details">${ui.icon('print')}Print Details</button></div><button class="attd-button" id="settlement-skip">No Receipt (10s)</button>`;
+        const screen=document.createElement('section');screen.className='attd-settlement';screen.innerHTML=`<div class="merchant-name" data-merchant-name>Merchant</div><span class="material-symbols-rounded success">check_circle</span><h2>CLOSE BATCH</h2><div class="total">${ui.escape(amount)}</div><div class="attd-settlement-meta"><p>Batch #${ui.escape(batchId)} Closed Successfully</p><span class="attd-settlement-batch"><small>BATCH</small>${ui.escape(batchId)}</span></div><div class="attd-divider">SETTLEMENT COPY</div><div class="attd-choice-grid"><button class="attd-choice" data-print="summary">${ui.icon('print')}Print Summary</button><button class="attd-choice" data-print="details">${ui.icon('print')}Print Details</button></div><button class="attd-button" id="settlement-skip">${ui.icon('block')}<span data-skip-label>No Receipt (10s)</span></button>`;
         document.querySelector('.phone-frame').append(screen);
         window.MerchantContext?.apply(screen);
-        let remaining=10;const timer=setInterval(()=>{remaining--;screen.querySelector('#settlement-skip').textContent=`No Receipt (${remaining}s)`;if(remaining<=0){clearInterval(timer);location.href='index.html';}},1000);
+        let remaining=10;const timer=setInterval(()=>{remaining--;screen.querySelector('[data-skip-label]').textContent=`No Receipt (${remaining}s)`;if(remaining<=0){clearInterval(timer);location.href='index.html';}},1000);
         screen.querySelector('#settlement-skip').onclick=()=>{clearInterval(timer);location.href='index.html';};
-        screen.querySelectorAll('[data-print]').forEach(b=>b.onclick=async()=>{clearInterval(timer);activeBatchKind='last';activeHistoricalBatchId=batchId;await handleBatchReportPrint(b.dataset.print);ui.toast(batchPrintToast.textContent);screen.querySelector('#settlement-skip').textContent='Done';});
+        screen.querySelectorAll('[data-print]').forEach(b=>b.onclick=async()=>{clearInterval(timer);activeBatchKind='last';activeHistoricalBatchId=batchId;await handleBatchReportPrint(b.dataset.print);ui.toast(batchPrintToast.textContent);screen.querySelector('[data-skip-label]').textContent='Done';});
     }
     window.AttendedBatch={render};
     document.addEventListener('DOMContentLoaded',()=>{
