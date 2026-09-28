@@ -1,0 +1,297 @@
+/* Shared with the existing Transactions screen. */
+.attd-transaction-list {--bg:#F2F4F7;--card:#fff;--blue:#0A5BFF;--text:#0F172A;--muted:#64748B;--border:#E6EAF0;--line:#EDF2F7;--danger:#C62828;}
+.attd-transaction-list .app-header {
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+.attd-transaction-list .app-header .left {
+            width: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+.attd-transaction-list .app-header .title {
+            flex: 1;
+            text-align: center;
+            font-weight: 800;
+            color: var(--text);
+            font-size: 18px;
+            letter-spacing: 0.2px;
+        }
+.attd-transaction-list .app-header .right {
+            width: 84px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+.attd-transaction-list .filter-wrap {
+            position: relative;
+        }
+.attd-transaction-list .back-btn,
+.attd-transaction-list .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #FFFFFF;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+.attd-transaction-list .back-btn svg,
+.attd-transaction-list .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+.attd-transaction-list .filter-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            min-width: 170px;
+            padding: 6px;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+            display: none;
+            z-index: 40;
+        }
+.attd-transaction-list .filter-menu.open {
+            display: block;
+        }
+.attd-transaction-list .filter-item {
+            width: 100%;
+            height: 34px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: #0F172A;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+.attd-transaction-list .filter-item:hover {
+            background: #F1F5FF;
+        }
+.attd-transaction-list .filter-item.active {
+            background: #EAF1FF;
+            color: #1D4ED8;
+            font-weight: 700;
+        }
+.attd-transaction-list .toolbar {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #F8FAFE;
+            border-bottom: 1px solid var(--border);
+        }
+.attd-transaction-list .filter-chip {
+            height: 30px;
+            border-radius: 999px;
+            background: #EAF1FF;
+            border: 1px solid #CFDFFF;
+            color: #1D4ED8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 0 12px;
+            display: inline-flex;
+            align-items: center;
+        }
+.attd-transaction-list .count-text {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+.attd-transaction-list .search-wrap {
+            display: none;
+            padding: 8px 16px 10px;
+            background: #F8FAFE;
+            border-bottom: 1px solid var(--border);
+        }
+.attd-transaction-list .search-wrap.open {
+            display: block;
+        }
+.attd-transaction-list .search-input {
+            width: 100%;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 12px;
+            font-size: 14px;
+            color: var(--text);
+            background: #FFFFFF;
+            outline: none;
+        }
+.attd-transaction-list .table-head {
+            display: grid;
+            grid-template-columns: 76px 90px minmax(0, 1fr);
+            gap: 10px;
+            padding: 10px 16px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--line);
+            color: #8190A7;
+            font-size: 12px;
+            font-weight: 700;
+        }
+.attd-transaction-list .tx-list {
+            flex: 1;
+            overflow: auto;
+            background: #FFFFFF;
+        }
+.attd-transaction-list .tx-row {
+            display: grid;
+            grid-template-columns: 76px 90px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            min-height: 68px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text);
+            border-bottom: 1px solid var(--line);
+            transition: background 0.15s ease;
+        }
+.attd-transaction-list .tx-row:active {
+            background: #F4F8FF;
+        }
+.attd-transaction-list .tx-date {
+            color: #667085;
+            font-size: 9px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+.attd-transaction-list .tx-time {
+            margin-top: 2px;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+.attd-transaction-list .tx-id {
+            margin-top: 3px;
+            font-size: 9px;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+.attd-transaction-list .tx-amount {
+            text-align: left;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.1px;
+        }
+.attd-transaction-list .tx-amount.negative {
+            color: var(--danger);
+        }
+.attd-transaction-list .tx-tender {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+.attd-transaction-list .brand-chip {
+            width: 34px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1px solid #D9E2EF;
+            flex-shrink: 0;
+            background: #FFFFFF;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+.attd-transaction-list .brand-chip-logo {
+            display: block;
+            width: 27px;
+            height: 16px;
+            object-fit: contain;
+        }
+.attd-transaction-list .brand-chip-logo.brand-mastercard,
+.attd-transaction-list .brand-chip-logo.brand-maestro {
+            width: 24px;
+            height: 16px;
+        }
+.attd-transaction-list .brand-chip-logo.brand-amex,
+.attd-transaction-list .brand-chip-logo.brand-unionpay,
+.attd-transaction-list .brand-chip-logo.brand-interac {
+            width: 20px;
+            height: 17px;
+        }
+.attd-transaction-list .brand-chip-logo.brand-jcb {
+            width: 23px;
+            height: 18px;
+        }
+.attd-transaction-list .brand-chip-logo.brand-discover,
+.attd-transaction-list .brand-chip-logo.brand-rupay,
+.attd-transaction-list .brand-chip-logo.brand-eftpos,
+.attd-transaction-list .brand-chip-logo.brand-mir {
+            width: 28px;
+            height: 12px;
+        }
+.attd-transaction-list .brand-chip-logo.brand-diners,
+.attd-transaction-list .brand-chip-logo.brand-elo {
+            width: 24px;
+            height: 16px;
+        }
+.attd-transaction-list .brand-fallback {
+            color: #475569;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+.attd-transaction-list .cash-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #7FC242;
+            border-color: #6FAF39;
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+.attd-transaction-list .tx-method {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+.attd-transaction-list .tx-sub {
+            margin-top: 2px;
+            color: #94A3B8;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+.attd-transaction-list .table-head, .attd-transaction-list .tx-row {grid-template-columns:96px minmax(0,1fr) 82px;gap:10px;padding-left:16px;padding-right:16px;}
+.attd-transaction-list .tx-amount {font-size:17px;}
+.attd-transaction-list .tx-method {font-size:16px;}
+.attd-transaction-list .tx-tender {gap:6px;}
+.attd-transaction-list .tx-sub {font-size:10px;}
+.attd-transaction-list .tx-time {font-size:15px;}
+.attd-transaction-list .tx-id {font-size:11px;}
+.attd-transaction-list .brand-chip {width:34px;min-width:34px;}
+.attd-transaction-list .table-head {font-size:10px;}
+.attd-transaction-list .tx-amount-wrap {align-self:center;}
+
+
+@media(max-width:360px){.attd-transaction-list .table-head, .attd-transaction-list .tx-row {grid-template-columns:80px minmax(0,1fr) 74px;padding:10px;gap:7px;}
+.attd-transaction-list .tx-method {font-size:14px;}
+.attd-transaction-list .tx-amount {font-size:15px;}
+}

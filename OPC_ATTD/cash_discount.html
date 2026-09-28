@@ -566,7 +566,7 @@
             window.dispatchEvent(new CustomEvent("cash-discount-continue", { detail: payload }));
 
             if (selectedMethod === "cash") {
-                const cashParams = new URLSearchParams({ dueCents: String(cashAmountCents) });
+                const cashParams = new URLSearchParams({ dueCents: String(cashAmountCents), tipCents: new URLSearchParams(location.search).get("tipCents") || "0" });
                 if (window.MerchantContext) window.MerchantContext.appendTo(cashParams);
                 window.location.href = "cash_change.html?" + cashParams.toString();
                 return;
@@ -577,6 +577,10 @@
                 amountCents: String(cardAmountCents),
                 paymentMethod: "card",
                 transactionType: "sale",
+                tipCents: new URLSearchParams(location.search).get("tipCents") || "0",
+                feeCents: String(cardAmountCents - cashAmountCents),
+                cashEquivalentCents: String(cashAmountCents - Number(new URLSearchParams(location.search).get("tipCents") || 0)),
+                tipAdjustSupported: "true",
                 currency: "USD"
             });
             if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);

@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/transaction_list.css">
     <title>POS - Transactions</title>
     <style>
         :root {
@@ -59,328 +60,11 @@
             z-index: 10;
         }
 
-        .app-header {
-            height: 56px;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 8px;
-        }
-
-        .app-header .left {
-            width: 84px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .app-header .title {
-            flex: 1;
-            text-align: center;
-            font-weight: 800;
-            color: var(--text);
-            font-size: 18px;
-            letter-spacing: 0.2px;
-        }
-
-        .app-header .right {
-            width: 84px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-
-        .filter-wrap {
-            position: relative;
-        }
-
-        .back-btn,
-        .icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            background: #FFFFFF;
-            color: #475569;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .back-btn svg,
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        .filter-menu {
-            position: absolute;
-            top: 40px;
-            right: 0;
-            min-width: 170px;
-            padding: 6px;
-            background: #FFFFFF;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-            display: none;
-            z-index: 40;
-        }
-
-        .filter-menu.open {
-            display: block;
-        }
-
-        .filter-item {
-            width: 100%;
-            height: 34px;
-            border: 0;
-            border-radius: 8px;
-            background: transparent;
-            color: #0F172A;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: left;
-            padding: 0 10px;
-            cursor: pointer;
-        }
-
-        .filter-item:hover {
-            background: #F1F5FF;
-        }
-
-        .filter-item.active {
-            background: #EAF1FF;
-            color: #1D4ED8;
-            font-weight: 700;
-        }
-
         .content {
             flex: 1;
             min-height: 0;
             display: flex;
             flex-direction: column;
-        }
-
-        .toolbar {
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            background: #F8FAFE;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .filter-chip {
-            height: 30px;
-            border-radius: 999px;
-            background: #EAF1FF;
-            border: 1px solid #CFDFFF;
-            color: #1D4ED8;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 0 12px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .count-text {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .search-wrap {
-            display: none;
-            padding: 8px 16px 10px;
-            background: #F8FAFE;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .search-wrap.open {
-            display: block;
-        }
-
-        .search-input {
-            width: 100%;
-            height: 36px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0 12px;
-            font-size: 14px;
-            color: var(--text);
-            background: #FFFFFF;
-            outline: none;
-        }
-
-        .table-head {
-            display: grid;
-            grid-template-columns: 76px 90px minmax(0, 1fr);
-            gap: 10px;
-            padding: 10px 16px;
-            background: #FFFFFF;
-            border-bottom: 1px solid var(--line);
-            color: #8190A7;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .tx-list {
-            flex: 1;
-            overflow: auto;
-            background: #FFFFFF;
-        }
-
-        .tx-row {
-            display: grid;
-            grid-template-columns: 76px 90px minmax(0, 1fr);
-            gap: 10px;
-            align-items: center;
-            min-height: 68px;
-            padding: 8px 16px;
-            text-decoration: none;
-            color: var(--text);
-            border-bottom: 1px solid var(--line);
-            transition: background 0.15s ease;
-        }
-
-        .tx-row:active {
-            background: #F4F8FF;
-        }
-
-        .tx-date {
-            color: #667085;
-            font-size: 9px;
-            font-weight: 700;
-            line-height: 1.2;
-            white-space: nowrap;
-        }
-
-        .tx-time {
-            margin-top: 2px;
-            font-size: 12px;
-            font-weight: 800;
-            line-height: 1.2;
-            white-space: nowrap;
-        }
-
-        .tx-id {
-            margin-top: 3px;
-            font-size: 9px;
-            color: #94A3B8;
-            font-weight: 600;
-        }
-
-        .tx-amount {
-            text-align: left;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.1px;
-        }
-
-        .tx-amount.negative {
-            color: var(--danger);
-        }
-
-        .tx-tender {
-            min-width: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-chip {
-            width: 34px;
-            height: 22px;
-            border-radius: 6px;
-            border: 1px solid #D9E2EF;
-            flex-shrink: 0;
-            background: #FFFFFF;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .brand-chip-logo {
-            display: block;
-            width: 27px;
-            height: 16px;
-            object-fit: contain;
-        }
-
-        .brand-chip-logo.brand-mastercard,
-        .brand-chip-logo.brand-maestro {
-            width: 24px;
-            height: 16px;
-        }
-
-        .brand-chip-logo.brand-amex,
-        .brand-chip-logo.brand-unionpay,
-        .brand-chip-logo.brand-interac {
-            width: 20px;
-            height: 17px;
-        }
-
-        .brand-chip-logo.brand-jcb {
-            width: 23px;
-            height: 18px;
-        }
-
-        .brand-chip-logo.brand-discover,
-        .brand-chip-logo.brand-rupay,
-        .brand-chip-logo.brand-eftpos,
-        .brand-chip-logo.brand-mir {
-            width: 28px;
-            height: 12px;
-        }
-
-        .brand-chip-logo.brand-diners,
-        .brand-chip-logo.brand-elo {
-            width: 24px;
-            height: 16px;
-        }
-
-        .brand-fallback {
-            color: #475569;
-            font-size: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .cash-chip {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #7FC242;
-            border-color: #6FAF39;
-            color: #FFFFFF;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.2px;
-        }
-
-        .tx-method {
-            font-size: 16px;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tx-sub {
-            margin-top: 2px;
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .empty-state {
@@ -408,15 +92,12 @@
     </style>
 <link rel="stylesheet" href="css/attended.css">
 <style>
-.table-head,.tx-row {grid-template-columns:96px minmax(0,1fr) 82px;gap:10px;padding-left:16px;padding-right:16px;}
-.tx-amount {font-size:17px;}.tx-method {font-size:16px;}.tx-tender {gap:6px;}.tx-sub {font-size:10px;}.tx-time {font-size:15px;}.tx-id {font-size:11px;}
-.brand-chip {width:34px;min-width:34px;}.table-head {font-size:10px;}.tx-amount-wrap {align-self:center;}
 .attd-search-keyboard {flex-shrink:0;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#EAF0F3;padding:8px;}.attd-search-keyboard button {border:0;background:transparent;min-height:40px;font-size:24px;color:#34454C;cursor:pointer;}
-@media(max-width:360px){.table-head,.tx-row {grid-template-columns:80px minmax(0,1fr) 74px;padding:10px;gap:7px;}.tx-method {font-size:14px;}.tx-amount {font-size:15px;}}
+
 </style>
 </head>
 <body>
-    <div class="phone-frame">
+    <div class="phone-frame attd-transaction-list">
         <div class="status-bar">
             <span>9:41</span>
             <span>Wi-Fi 100%</span>
@@ -604,21 +285,7 @@
             query: ''
         };
 
-        const cardBrandAssets = {
-            VISA: { src: 'assets/visa.svg', className: 'brand-visa', shortName: 'VISA' },
-            MASTERCARD: { src: 'assets/mastercard.svg', className: 'brand-mastercard', shortName: 'MC' },
-            AMEX: { src: 'assets/amex.svg', className: 'brand-amex', shortName: 'AMEX' },
-            DISCOVER: { src: 'assets/discover.svg', className: 'brand-discover', shortName: 'DISC' },
-            JCB: { src: 'assets/jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
-            UNIONPAY: { src: 'assets/unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' },
-            DINERS: { src: 'assets/diners.svg', className: 'brand-diners', shortName: 'DINERS' },
-            MAESTRO: { src: 'assets/maestro-mark.svg', className: 'brand-maestro', shortName: 'MAESTRO' },
-            RUPAY: { src: 'assets/rupay.svg', className: 'brand-rupay', shortName: 'RUPAY' },
-            INTERAC: { src: 'assets/Interac.png', className: 'brand-interac', shortName: 'INTERAC' },
-            ELO: { src: 'assets/elo.svg', className: 'brand-elo', shortName: 'ELO' },
-            EFTPOS: { src: 'assets/eftpos.svg', className: 'brand-eftpos', shortName: 'EFTPOS' },
-            MIR: { src: 'assets/mir.svg', className: 'brand-mir', shortName: 'MIR' }
-        };
+        const cardBrandAssets = AttendedUI.cardBrandAssets;
 
         const filterLabelMap = {
             all: 'All Types',

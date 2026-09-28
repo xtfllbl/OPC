@@ -14,7 +14,11 @@
     let operationId=p.get('operationId');
     if(!operationId){operationId=crypto.randomUUID();p.set('operationId',operationId);history.replaceState(null,'',location.pathname+'?'+p);}
     const action=({'PREAUTH':'PreAuth','AUTH':'PreAuth','AUTH-INCREMENTAL':'Auth-Incremental','CAPTURE':'Capture','VOID':'Void','REFUND':'Refund'})[transactionType]||'Sale';
-    AttendedDemo.record({operationId,action,amountCents,sourceId:p.get('sourceId'),invoice:transactionSequence,cardType:cardBrand.toUpperCase(),lastFour:maskedCard.replace(/\D/g,'').slice(-4),paymentMethod});
+    AttendedDemo.record({operationId,action,amountCents,sourceId:p.get('sourceId'),invoice:transactionSequence,cardType:cardBrand.toUpperCase(),lastFour:maskedCard.replace(/\D/g,'').slice(-4),paymentMethod,
+        tipCents:Number(p.get('tipCents'))||0,feeCents:Number(p.get('feeCents'))||0,
+        cashEquivalentCents:Number(p.get('cashEquivalentCents'))||0,tipAdjustSupported:p.get('tipAdjustSupported')==='true'});
+    window.AttendedReceipt.transaction=()=>AttendedDemo.receipt(`attd_${operationId}`);
+    syncTransactionDetails();
     if(!signatureRequired)merchant();
     window.addEventListener('pagehide',()=>{stop();clearTimeout(printingTimer);});
 })();

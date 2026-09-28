@@ -453,6 +453,7 @@ const paymentGroups = [
         }
 
         function doAction(actionName, pinChecked = false) {
+            if (actionName === 'Tip Adjust') { AttendedTip.begin(); return; }
             if (!pinChecked && ['Void', 'Refund', 'Close Batch'].includes(actionName)) {
                 AttendedUI.pin(actionName, () => doAction(actionName, true));
                 return;

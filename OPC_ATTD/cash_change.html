@@ -601,6 +601,7 @@
             const receiptParams = new URLSearchParams({
                 amountCents: String(dueCents),
                 paymentMethod: "cash",
+                tipCents: new URLSearchParams(location.search).get("tipCents") || "0",
                 changeCents: String(payload.changeCents)
             });
             if (window.MerchantContext) window.MerchantContext.appendTo(receiptParams);

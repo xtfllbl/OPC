@@ -6,6 +6,10 @@
 
 在此目录执行 `python3 -m http.server 8765 --bind 127.0.0.1`，访问 <http://127.0.0.1:8765/>。
 
+## 当前批次 Tip Adjust
+
+操作菜单 → Tip Adjust。采用现有列表与金额键盘，支持逐笔保存、保存后下一笔、独立 PIN、未调整笔数关批提醒。实现说明与验收记录见 [Tip Adjust 实现](../docs/design/tip-adjust-implementation/README.md)。
+
 ## 发布到 Vercel
 
 - 项目：`xtfllbls-projects/opc-attd`

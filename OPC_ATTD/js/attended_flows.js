@@ -24,7 +24,7 @@
                 for(const name of methods){if(typeof bridge[name]==='function'){await bridge[name](t.invoice);handled=true;break;}}
                 if(handled)break;
             }
-            window.dispatchEvent(new CustomEvent('attended-reprint',{detail:{...t}}));
+            window.dispatchEvent(new CustomEvent('attended-reprint',{detail:demo.receipt(t.id)}));
             ui.toast('Receipt sent to printer');
         } catch(error) { ui.toast(error.message||'Unable to print this receipt.'); }
     }
@@ -68,6 +68,7 @@
     function finish(name,cents){
         const p=new URLSearchParams({transactionType:name,amountCents:String(cents),paymentMethod:selected?.tenderType||'card',cardBrand:selected?.cardType||'VISA',last4:selected?.lastFour||'0100',transactionNo:String(Date.now()).slice(-6),operationId:crypto.randomUUID()});
         if(selected)p.set('sourceId',selected.id);
+        if(name==='PreAuth')p.set('tipAdjustSupported','true');
         if(name==='Void'||name==='Auth-Incremental')p.set('signature','false');
         window.MerchantContext?.appendTo(p);location.href='receipt.html?'+p;
     }
@@ -98,12 +99,12 @@
             if(label.textContent.trim()==='Auth')label.textContent='PreAuth';
             if(card.getAttribute('onclick').includes('Auth-Incremental'))card.classList.add('attd-incremental');
             if(card.getAttribute('onclick').includes("'Capture'"))card.classList.add('attd-capture');
-            if(/Debit|Tip Adjust/.test(label.textContent))extras.lastElementChild.append(card);
+            if(/Debit/.test(label.textContent))extras.lastElementChild.append(card);
         });grid.append(extras);
         const back=document.createElement('button');back.id='attd-entry-back';back.className='attd-back attd-entry-back';back.setAttribute('aria-label','Back to operations');back.innerHTML=ui.icon('chevron_left');back.onclick=()=>{resetTransactionAmount(null);showAppView('transactions');};document.querySelector('.header').append(back);
         const hold=document.createElement('div');hold.id='attd-hold';hold.className='attd-hold';document.getElementById('amount-entry-state').append(hold);
         const section=document.createElement('section');section.className='attd-pin-settings';
-        section.innerHTML='<strong>Operation PINs</strong><small>Leave blank to disable a PIN.</small>'+['Void','Refund','Close Batch'].map(n=>`<label>${n}<input type="password" inputmode="numeric" class="attd-input" data-pin="${n}" aria-label="${n} PIN" autocomplete="off"></label>`).join('');
+        section.innerHTML='<strong>Operation PINs</strong><small>Leave blank to disable a PIN.</small>'+['Void','Refund','Close Batch','Tip Adjust'].map(n=>`<label>${n}<input type="password" inputmode="numeric" class="attd-input" data-pin="${n}" aria-label="${n} PIN" autocomplete="off"></label>`).join('');
         const config=JSON.parse(localStorage.getItem('opc-operation-pins')||'{}');section.querySelectorAll('input').forEach(input=>{input.value=config[input.dataset.pin]||'';input.oninput=()=>{input.value=input.value.replace(/\D/g,'');config[input.dataset.pin]=input.value;localStorage.setItem('opc-operation-pins',JSON.stringify(config));};});document.querySelector('.settings-list').append(section);
         refreshAmount();
         const returning=params.get('action');

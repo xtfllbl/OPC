@@ -36,6 +36,18 @@ _Avoid_: 商品折扣（指代支付方式价差时）
 顾客在商品交易金额之外自愿选择的附加金额；与商品折扣、税额和双价差额分别展示。
 _Avoid_: Card Price Adjustment
 
+**Tip Adjust（小费调整）**:
+对当前未结算批次中符合条件的已完成交易修改最终小费；收银员从批次交易列表中分别录入，每次保存覆盖该笔小费，允许增加、减少、清零及再次修改。
+_Avoid_: 向所有交易统一加收小费、Auth-Incremental
+
+**Transaction Amount（小费调整中的交易金额）**:
+一笔已完成交易中不含小费的固定金额；不随小费调整次数变化，交易总额等于该金额加上最终小费。
+_Avoid_: 含小费总额、上一次调整后的总额
+
+**Unadjusted Transactions（未调整小费的交易）**:
+当前未结算批次中符合 Tip Adjust 条件、但尚未成功完成过调整确认的交易；确认零小费或原小费也算已处理，仅已有小费不代表已处理。
+_Avoid_: 零小费交易、所有未结算交易
+
 **Cash Register Simulator（收银机模拟页）**:
 代表收银员发起交易、确认现金收款和取消未完成交易的独立原型界面。
 _Avoid_: 顾客支付屏、顾客操作面板
@@ -85,7 +97,7 @@ An action against an existing PreAuth to complete payment for a specified amount
 _Avoid_: Auth-Incremental, Close Batch
 
 **Manager PIN**:
-An operation-specific password check used when configured for Void, Refund, or Close Batch, with independent passwords for those three operations.
+按操作独立配置的管理密码，适用于 Void、Refund、Close Batch 和 Tip Adjust；留空表示该操作不校验管理密码。
 _Avoid_: Settings Exit password, shared operation password
 
 **Failure Receipt**:

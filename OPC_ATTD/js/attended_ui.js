@@ -3,6 +3,21 @@
     const escape = value => String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const money = cents => '$'+(Math.abs(cents)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     const icon = name => `<span class="material-symbols-rounded" aria-hidden="true">${name}</span>`;
+    const cardBrandAssets = {
+            VISA: { src: 'assets/visa.svg', className: 'brand-visa', shortName: 'VISA' },
+            MASTERCARD: { src: 'assets/mastercard.svg', className: 'brand-mastercard', shortName: 'MC' },
+            AMEX: { src: 'assets/amex.svg', className: 'brand-amex', shortName: 'AMEX' },
+            DISCOVER: { src: 'assets/discover.svg', className: 'brand-discover', shortName: 'DISC' },
+            JCB: { src: 'assets/jcb.svg', className: 'brand-jcb', shortName: 'JCB' },
+            UNIONPAY: { src: 'assets/unionpay.svg', className: 'brand-unionpay', shortName: 'CUP' },
+            DINERS: { src: 'assets/diners.svg', className: 'brand-diners', shortName: 'DINERS' },
+            MAESTRO: { src: 'assets/maestro-mark.svg', className: 'brand-maestro', shortName: 'MAESTRO' },
+            RUPAY: { src: 'assets/rupay.svg', className: 'brand-rupay', shortName: 'RUPAY' },
+            INTERAC: { src: 'assets/Interac.png', className: 'brand-interac', shortName: 'INTERAC' },
+            ELO: { src: 'assets/elo.svg', className: 'brand-elo', shortName: 'ELO' },
+            EFTPOS: { src: 'assets/eftpos.svg', className: 'brand-eftpos', shortName: 'EFTPOS' },
+            MIR: { src: 'assets/mir.svg', className: 'brand-mir', shortName: 'MIR' }
+        };
     let closeCurrent;
     function modal({title,body='',actions=[],wide=false}) {
         if(closeCurrent) closeCurrent();
@@ -31,6 +46,6 @@
         const input=panel.element.querySelector('input');
         input.addEventListener('keydown',e=>{if(e.key==='Enter')panel.element.querySelector('.attd-dialog-actions button:last-child').click();});
     }
-    function details(t,hold=false){return `<dl class="attd-details"><dt>Type</dt><dd>${escape(t.kind==='preauth'?'PreAuth':t.kind==='payment'?'Sale':t.kind)}</dd><dt>${hold?'Current Hold Amount':'Amount'}</dt><dd>${money(Math.round(t.amount*100))}</dd><dt>${t.tenderType==='cash'?'Payment':'Card'}</dt><dd>${t.tenderType==='cash'?'Cash':escape(t.cardType+' ****'+t.lastFour)}</dd><dt>Trace &amp; Time</dt><dd>${escape(t.invoice)} | ${new Date(t.tranTime.replace(' ','T')).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</dd></dl>`;}
-    window.AttendedUI={escape,money,icon,modal,toast,pin,details};
+    function details(t,hold=false){return `<dl class="attd-details"><dt>Type</dt><dd>${escape(t.kind==='preauth'?'PreAuth':t.kind==='payment'?'Sale':t.kind)}</dd><dt>${hold?'Current Hold Amount':'Amount'}</dt><dd>${money(Math.round(t.amount*100))}</dd>${!hold&&['payment','capture'].includes(t.kind)&&Number.isSafeInteger(t.transactionAmountCents)?`<dt>Transaction Amount</dt><dd>${money(t.transactionAmountCents)}</dd><dt>Tip</dt><dd>${money(t.tipCents||0)}</dd>`:''}<dt>${t.tenderType==='cash'?'Payment':'Card'}</dt><dd>${t.tenderType==='cash'?'Cash':escape(t.cardType+' ****'+t.lastFour)}</dd><dt>Trace &amp; Time</dt><dd>${escape(t.invoice)} | ${new Date(t.tranTime.replace(' ','T')).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</dd></dl>`;}
+    window.AttendedUI={escape,money,icon,modal,toast,pin,details,cardBrandAssets};
 })();

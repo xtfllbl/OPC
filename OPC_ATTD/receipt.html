@@ -1253,6 +1253,7 @@
         <span id="print-payment-reference">VISA •••• 2004</span><br>
         <span id="print-transaction-sequence">TRANS 000001</span><br>
         <div class="print-rule"></div>
+        <span id="print-breakdown"></span>
         TOTAL&nbsp;&nbsp;<strong id="print-amount">$104.00</strong><br>
         APPROVED
         <div class="print-rule"></div>
@@ -1496,9 +1497,12 @@
         }
 
         function getReceiptPayload(deliveryMethod, extra = {}) {
+            const recorded = window.AttendedReceipt?.transaction?.();
             return {
                 deliveryMethod: deliveryMethod,
-                amountCents: amountCents,
+                amountCents: recorded?.amountCents ?? amountCents,
+                transactionAmountCents: recorded?.transactionAmountCents ?? amountCents,
+                tipCents: recorded?.tipCents ?? 0,
                 paymentMethod: paymentMethod,
                 transactionType: transactionType.toLowerCase(),
                 cardBrand: paymentMethod === "card" ? cardBrand : null,
@@ -1510,7 +1514,10 @@
         }
 
         function syncTransactionDetails() {
-            const amountText = formatCurrency(amountCents);
+            const recorded = window.AttendedReceipt?.transaction?.();
+            const amountText = formatCurrency(recorded?.amountCents ?? amountCents);
+            const breakdown = document.getElementById("print-breakdown");
+            if (recorded && ["payment", "capture"].includes(recorded.kind)) breakdown.innerHTML = "AMOUNT&nbsp;&nbsp;" + formatCurrency(recorded.transactionAmountCents) + "<br>TIP&nbsp;&nbsp;" + formatCurrency(recorded.tipCents) + "<br>";
             const transactionTypeEl = document.getElementById("transaction-type");
             phoneFrame.dataset.theme = paymentMethod;
             phoneFrame.classList.toggle("is-refund", transactionType.includes("REFUND"));

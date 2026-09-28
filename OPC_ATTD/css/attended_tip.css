@@ -1,0 +1,22 @@
+/* Layout only: amount, keypad, buttons and list visuals use existing OPC_ATTD classes. */
+.attd-tip {position:absolute;inset:28px 0 0;z-index:180;display:flex;flex-direction:column;min-height:0;background:#F8FAFD;--entry-color:#0A5BFF;}
+.attd-tip .app-header {flex-shrink:0;}
+.attd-tip button.tx-row {width:100%;border:0;border-bottom:1px solid var(--line);background:white;text-align:left;cursor:pointer;}
+.attd-tip .tx-tender {gap:6px;}.attd-tip .tx-tender>div {min-width:0;}
+.attd-tip .tx-amount {overflow-wrap:anywhere;}
+.attd-tip-summary {display:flex;justify-content:space-between;gap:8px;padding:10px 16px;font-size:11px;color:#667085;background:#F8FAFE;}
+.attd-tip-summary strong {color:#111827;}
+.attd-tip-footer {padding:8px 18px 18px;flex-shrink:0;}.attd-tip-footer button {width:100%;}
+.attd-tip-empty {padding:28px 18px;text-align:center;font-size:14px;color:#667085;}
+.attd-tip-progress {font-size:11px;color:#667085;}
+.attd-tip-reference {display:flex;justify-content:space-between;margin:12px 18px 0;font-size:11px;color:#667085;}
+.attd-tip-amount {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:200px;}
+.attd-tip-amount .amount-label {margin-top:14px;}
+.attd-tip-amount .amount-display {max-width:100%;}
+.attd-tip-saved {font-size:11px;color:#667085;margin-top:8px;}
+.attd-tip-math {margin:12px 0 0;gap:8px 16px;}.attd-tip-math dd:last-child {color:var(--entry-color);}
+.attd-tip>.attd-error {padding:0 18px;min-height:20px;font-size:12px;}
+.attd-tip-keypad {flex:0 0 auto;}.attd-tip .keypad-panel {padding:4px 18px 8px;}
+.attd-tip-editor {overflow:auto;}
+.attd-tip .key-ok small {font-size:10px;}
+@media(max-height:760px) {.attd-tip-amount{min-height:185px;}}

@@ -16,7 +16,7 @@
 .attd-error {color:#B42318 !important;font-size:12px;min-height:20px;padding-top:8px;}
 .attd-details {display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 10px;font-size:12px;margin:0;}
 .attd-details dt {color:#667085;font-weight:600;}.attd-details dd {text-align:right;font-weight:700;margin:0;}
-.attd-toast {position:absolute;bottom:22px;left:20px;right:20px;padding:14px;z-index:450;background:#24476B;color:white;border-radius:14px;text-align:center;font-size:13px;}
+.attd-toast {pointer-events:none;position:absolute;bottom:22px;left:20px;right:20px;padding:14px;z-index:450;background:#24476B;color:white;border-radius:14px;text-align:center;font-size:13px;}
 .attd-flow {position:absolute;inset:28px 0 64px;z-index:150;background:white;display:flex;flex-direction:column;padding:18px;overflow:auto;}
 .attd-flow-header {display:flex;align-items:center;gap:10px;min-height:48px;flex-shrink:0;margin-bottom:12px;}
 .attd-flow-header h2 {flex:1;text-align:center;font-size:18px;}
@@ -68,3 +68,7 @@
 @media(max-height:700px) {.attd-flow .key-grid{flex-basis:240px;max-height:240px;}.attd-lookup-label{margin-top:12px;}.attd-hold{margin-top:6px;font-size:11px;}.attd-dialog{padding:16px;}}
 
 #grid-card .attd-incremental .card-label {font-size:12px;max-width:100%;word-break:normal;overflow-wrap:normal;}
+
+.attd-dialog-actions:has(>button:nth-child(3)) {flex-wrap:wrap;}
+.attd-dialog-actions:has(>button:nth-child(3))>button {flex-basis:calc(50% - 5px);}
+.attd-dialog-actions>button:nth-child(3):last-child {flex-basis:100%;}

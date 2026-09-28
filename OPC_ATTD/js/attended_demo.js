@@ -23,15 +23,46 @@
     let state;
     try { state = JSON.parse(sessionStorage.getItem(KEY)); } catch (_) {}
     if (!state || !Array.isArray(state.rows)) state = {rows:seed, last, batchId:'2071', lastBatchId:'2041', operations:[]};
-    function persist() { sessionStorage.setItem(KEY, JSON.stringify(state)); }
+    // Known fixtures model credit cards; unknown imported tenders do not acquire capability.
+    const fixtureIds=new Set([...seed,...last].filter(t=>t.tenderType==='card').map(t=>t.id));
+    [...state.rows,...state.last].forEach(t=>{
+        if(t.tipAdjustSupported===undefined)t.tipAdjustSupported=fixtureIds.has(t.id);
+        if(['payment','capture'].includes(t.kind)){
+            t.tipCents=Number.isSafeInteger(t.tipCents)?t.tipCents:0;
+            t.transactionAmountCents??=Math.round(t.amount*100)-t.tipCents;
+        }
+    });
+    function persist(next=state) { sessionStorage.setItem(KEY, JSON.stringify(next)); }
+    function canAdjust(t){return t.batchId===state.batchId && t.status==='APPROVED' &&
+        ['payment','capture'].includes(t.kind) && t.tenderType==='card' && t.tipAdjustSupported===true;}
+    function adjustTip({id,tipCents,batchId,revision}){
+        const current=state.rows.find(t=>t.id===id);
+        if(!current||!canAdjust(current)||current.batchId!==batchId)throw new Error('This transaction is no longer available for tip adjustment. Return to the list.');
+        if((current.tipRevision||0)!==revision)throw new Error('This transaction changed. Return to the list and reopen it.');
+        if(!Number.isSafeInteger(tipCents)||tipCents<0||tipCents>99999999)throw new Error('Enter a tip between $0.00 and $999,999.99.');
+        if(current.tipConfirmedAt && current.tipCents===tipCents)return current;
+        const now=new Date().toISOString();
+        const updated={...current,tipCents,amount:(current.transactionAmountCents+tipCents)/100,
+            tipConfirmedAt:now,tipRevision:(current.tipRevision||0)+1};
+        const changed=tipCents!==current.tipCents;
+        const next={...state,rows:state.rows.map(t=>t===current?updated:t),
+            tipAdjustments:[...(state.tipAdjustments||[]),{id,batchId,at:now,previousTipCents:current.tipCents,tipCents,financialChange:changed}]};
+        // Commit only after storage succeeds, retaining both the old amounts and the UI draft on failure.
+        try{persist(next);}catch(_){throw new Error('Unable to save the tip. Please try again.');}
+        state=next;return updated;
+    }
+    const pendingTips=()=>eligible('Tip Adjust').filter(t=>!t.tipConfirmedAt);
+    function receipt(id){const t=find(id);return t?{...t,amountCents:Math.round(Math.abs(t.amount)*100)}:null;}
+
     const rows = () => state.rows;
     const find = id => [...state.rows,...state.last].find(t=>t.id===id);
     const eligible = action => rows().filter(t => {
         if (action === 'Auth-Incremental' || action === 'Capture' || action === 'review') return t.kind==='preauth' && t.status==='OPEN AUTH';
+        if (action === 'Tip Adjust') return canAdjust(t);
         if (action === 'Void') return t.status!=='VOIDED' && t.status!=='CAPTURED' && t.batchId===state.batchId;
         return true;
     });
-    function record({operationId,action,amountCents,sourceId,invoice,cardType='VISA',lastFour='0100',paymentMethod='card'}) {
+    function record({operationId,action,amountCents,sourceId,invoice,cardType='VISA',lastFour='0100',paymentMethod='card',tipCents=0,feeCents=0,cashEquivalentCents=0,tipAdjustSupported=false}) {
         if (state.operations.includes(operationId)) return;
         const source=find(sourceId);
         if (action==='Void' && source) source.status='VOIDED';
@@ -41,7 +72,8 @@
             const kind=action==='PreAuth'?'preauth':action==='Capture'?'capture':action==='Refund'?'refund':'payment';
             state.rows.unshift(make(invoice, (kind==='refund'?-1:1)*amountCents/100,kind,'00:00:00',{
                 tranTime:new Date().toLocaleString('sv-SE'), batchId:state.batchId, cardType, lastFour,
-                tenderType:paymentMethod, ...(paymentMethod==='cash'?{cardType:'CASH',lastFour:''}:{}), id:`attd_${operationId}`}));
+                tenderType:paymentMethod, tipCents,feeCents,cashEquivalentCents,transactionAmountCents:amountCents-tipCents,
+                tipAdjustSupported:paymentMethod==='card'&&(action==='Capture'?source?.tipAdjustSupported===true:tipAdjustSupported), ...(paymentMethod==='cash'?{cardType:'CASH',lastFour:''}:{}), id:`attd_${operationId}`}));
         }
         state.operations.push(operationId); persist();
     }
@@ -58,5 +90,5 @@
         // Open authorizations remain discoverable after the settlement warning.
         persist(); return state.lastBatchId;
     }
-    window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch};
+    window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch,adjustTip,pendingTips,receipt};
 })();

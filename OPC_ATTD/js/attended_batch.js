@@ -16,6 +16,12 @@
         document.getElementById('attd-audit').innerHTML='<div class="batch-report-heading">Audit &amp; Risk Summary</div>'+groups.map(([label,test])=>{const rows=list.filter(test);return row(label,rows.reduce((n,t)=>n+Math.abs(t.amount),0),rows.length);}).join('');
     }
     function closeConfirmation(){
+        const pending=AttendedDemo.pendingTips().length;
+        if(pending){
+            ui.modal({title:`${pending} Unadjusted Transaction${pending===1?'':'s'}`,body:`<p>You have ${pending} transaction${pending===1?'':'s'} with unconfirmed tips. Adjust tips first, or close this batch now?</p>`,actions:[{label:'Adjust Tips First',primary:true,run:()=>location.href='index.html?action=Tip+Adjust&from=close-batch'},{label:'Close Batch Anyway',run:checkOpen},{label:'Cancel'}]});
+            return;
+        }
+
         ui.modal({title:'Close Current Batch?',body:'<p>Your current batch is ready to be closed. Do you want to close now?</p>',actions:[{label:'Later'},{label:'Close Now',primary:true,run:checkOpen}]});
     }
     function checkOpen(){
