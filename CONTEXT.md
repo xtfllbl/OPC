@@ -37,7 +37,7 @@ _Avoid_: 商品折扣（指代支付方式价差时）
 _Avoid_: Card Price Adjustment
 
 **Tip Adjust（小费调整）**:
-对当前未结算批次中支持小费后调的已完成银行卡 Sale 修改小费；当前范围不包含 Capture。每次保存覆盖该笔小费，允许增加、减少、清零及再次修改。
+对当前未结算批次中支持小费后调的已完成银行卡 Sale 修改小费；当前范围不包含 Capture。保存形成待执行的小费值，可在执行成功前增加、减少、清零或再次修改；执行成功后更新已生效小费，该笔不再出现在 Tip Adjust 中。
 _Avoid_: 向所有交易统一加收小费、Auth-Incremental
 
 **Tip Amount（小费金额）**:
@@ -49,8 +49,20 @@ _Avoid_: Final Tip Amount（界面名称）、追加小费金额
 _Avoid_: 含小费总额、上一次调整后的总额
 
 **Unadjusted Transactions（未调整小费的交易）**:
-当前未结算批次中符合 Tip Adjust 条件、但尚未成功完成过调整确认的交易；确认零小费或原小费也算已处理，仅已有小费不代表已处理。
+当前未结算批次中仍可在 Tip Adjust 中处理、尚未保存小费调整值的交易。零小费或原小费也允许保存并执行，仅已有小费不代表已调整。
 _Avoid_: 零小费交易、所有未结算交易
+
+**Adjusted Transactions（已调整小费的交易）**:
+已保存小费调整值、等待执行的交易。离开 Tip Adjust 后保留其已保存值及 ADJUSTED 状态，同一笔再次保存会替换待执行值。
+_Avoid_: 已执行成功、SAVED（独立界面状态）、有小费的交易
+
+**Successfully Processed Tip Adjustment（已执行成功的小费调整）**:
+已经执行成功并更新交易已生效金额的小费调整；对应交易从 Tip Adjust 工作列表中移除，交易记录仍保留。
+_Avoid_: ADJUSTED（本界面指已保存待执行）、删除交易、已结算批次
+
+**Tip Summary（小费调整汇总）**:
+执行前供操作员核对已保存小费调整的汇总，包含待执行交易及其拟生效金额。
+_Avoid_: 批次结算报告、已生效小费合计
 
 **Cash Register Simulator（收银机模拟页）**:
 代表收银员发起交易、确认现金收款和取消未完成交易的独立原型界面。
@@ -77,7 +89,7 @@ Terminal settlement summaries and historical transaction records used for end-of
 _Avoid_: Daily report, settlement list, batch info
 
 **Close Batch**:
-The attended settlement action that closes the current batch and presents its settlement result.
+独立的终端批次结算操作，关闭当前批次并呈现结算结果；已保存的小费调整在批次结算前自动执行，未设置调整金额的交易会在关批前提示数量。
 _Avoid_: Batch Reports, Capture
 
 **Settlement Copy**:

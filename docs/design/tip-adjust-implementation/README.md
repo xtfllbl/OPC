@@ -2,7 +2,7 @@
 
 2026-09-28，本地静态原型实现，未发布生产。
 
-当前版本见 [第三轮实现与验收](revision-3.md)：移除 Done、补齐 20 笔 mock（初始 10 已调整 / 10 未调整）；编辑器沿用 [第二轮方案](revision-2.md)。下文保留第一版历史验收记录。
+当前版本见 [第四轮实现与验收](revision-4-review.md)：A 单行导航、展开筛选、SAVE 保存后显示 Adjusted、Tip Summary 统一执行并移出成功交易，Close Batch 自动执行调整后再结算。初始仍为 20 笔 mock（10 Adjusted / 10 Unadjusted），本轮仅模拟执行成功。下文保留第一版历史验收记录。
 
 决策来源：[当前批次小费调整](https://github.com/xtfllbl/OPC/issues/1)、[业务规则](https://github.com/xtfllbl/OPC/issues/3)、[方案 A 与原生样式](https://github.com/xtfllbl/OPC/issues/4)。
 

@@ -34,24 +34,38 @@
     });
     function persist(next=state) { sessionStorage.setItem(KEY, JSON.stringify(next)); }
     function canAdjust(t){return t.batchId===state.batchId && t.status==='APPROVED' &&
-        t.kind==='payment' && t.tenderType==='card' && t.tipAdjustSupported===true;}
+        t.kind==='payment' && t.tenderType==='card' && t.tipAdjustSupported===true && !t.tipProcessedAt;}
     function adjustTip({id,tipCents,batchId,revision}){
         const current=state.rows.find(t=>t.id===id);
         if(!current||!canAdjust(current)||current.batchId!==batchId)throw new Error('This transaction is no longer available for tip adjustment. Return to the list.');
         if((current.tipRevision||0)!==revision)throw new Error('This transaction changed. Return to the list and reopen it.');
         if(!Number.isSafeInteger(tipCents)||tipCents<0||tipCents>99999999)throw new Error('Enter a tip between $0.00 and $999,999.99.');
-        if(current.tipConfirmedAt && current.tipCents===tipCents)return current;
+        if(current.tipSavedAt && current.tipDraftCents===tipCents)return current;
         const now=new Date().toISOString();
-        const updated={...current,tipCents,amount:(current.transactionAmountCents+tipCents)/100,
-            tipConfirmedAt:now,tipRevision:(current.tipRevision||0)+1};
-        const changed=tipCents!==current.tipCents;
-        const next={...state,rows:state.rows.map(t=>t===current?updated:t),
-            tipAdjustments:[...(state.tipAdjustments||[]),{id,batchId,at:now,previousTipCents:current.tipCents,tipCents,financialChange:changed}]};
+        const updated={...current,tipDraftCents:tipCents,tipSavedAt:now,tipRevision:(current.tipRevision||0)+1};
+        const next={...state,rows:state.rows.map(t=>t===current?updated:t)};
         // Commit only after storage succeeds, retaining both the old amounts and the UI draft on failure.
         try{persist(next);}catch(_){throw new Error('Unable to save the tip. Please try again.');}
         state=next;return updated;
     }
-    const pendingTips=()=>eligible('Tip Adjust').filter(t=>!t.tipConfirmedAt);
+    const pendingTips=()=>eligible('Tip Adjust').filter(t=>!t.tipSavedAt);
+    const adjustedTips=()=>eligible('Tip Adjust').filter(t=>t.tipSavedAt);
+    function processTips(){
+        // Prototype execution always succeeds. Only processing changes effective financial amounts.
+        const ready=adjustedTips();
+        if(!ready.length)return [];
+        const now=new Date().toISOString(),updates=new Map(),entries=[];
+        ready.forEach(t=>{
+            const tipCents=t.tipDraftCents;
+            const updated={...t,tipCents,amount:(t.transactionAmountCents+tipCents)/100,
+                tipConfirmedAt:now,tipProcessedAt:now,tipRevision:(t.tipRevision||0)+1};
+            delete updated.tipDraftCents;delete updated.tipSavedAt;
+            updates.set(t.id,updated);
+            entries.push({id:t.id,batchId:t.batchId,at:now,previousTipCents:t.tipCents,tipCents,financialChange:tipCents!==t.tipCents});
+        });
+        const next={...state,rows:state.rows.map(t=>updates.get(t.id)||t),tipAdjustments:[...(state.tipAdjustments||[]),...entries]};
+        persist(next);state=next;return [...updates.values()];
+    }
     function receipt(id){const t=find(id);return t?{...t,amountCents:Math.round(Math.abs(t.amount)*100)}:null;}
 
     const rows = () => state.rows;
@@ -84,6 +98,7 @@
                 transType:t.status==='VOIDED'?'VOID '+t.kind.toUpperCase():t.status==='CAPTURED'?'AUTH COMPLETED':t.kind==='preauth'?'AUTH':t.kind==='payment'?(t.tenderType==='cash'?'CASH SALE':'SALE'):t.kind.toUpperCase()}))};
     }
     function closeBatch() {
+        processTips();
         state.last=state.rows.filter(t=>t.batchId===state.batchId).map(t=>({...t}));
         state.lastBatchId=state.batchId;
         state.batchId=String(Number(state.batchId)+1);
@@ -120,5 +135,14 @@
         try{persist(next);state=next;}catch(_){/* Retain the existing demo if storage is unavailable. */}
     }
     expandTipSamples();
-    window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch,adjustTip,pendingTips,receipt};
+    function upgradeTipWorkflow(){
+        if(state.tipWorkflowVersion===1)return;
+        // Preserve previously effective amounts and history. Existing ADJUSTED entries
+        // become saved work, without undoing what an older version already recorded.
+        const next={...state,tipWorkflowVersion:1,rows:state.rows.map(t=>canAdjust(t)&&t.tipConfirmedAt&&!t.tipSavedAt?
+            {...t,tipDraftCents:t.tipCents,tipSavedAt:t.tipConfirmedAt}:t)};
+        persist(next);state=next;
+    }
+    upgradeTipWorkflow();
+    window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch,adjustTip,pendingTips,adjustedTips,processTips,receipt};
 })();

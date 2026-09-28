@@ -16,13 +16,9 @@
         document.getElementById('attd-audit').innerHTML='<div class="batch-report-heading">Audit &amp; Risk Summary</div>'+groups.map(([label,test])=>{const rows=list.filter(test);return row(label,rows.reduce((n,t)=>n+Math.abs(t.amount),0),rows.length);}).join('');
     }
     function closeConfirmation(){
-        const pending=AttendedDemo.pendingTips().length;
-        if(pending){
-            ui.modal({title:`${pending} Unadjusted Transaction${pending===1?'':'s'}`,body:`<p>You have ${pending} transaction${pending===1?'':'s'} with unconfirmed tips. Adjust tips first, or close this batch now?</p>`,actions:[{label:'Adjust Tips First',primary:true,run:()=>location.href='index.html?action=Tip+Adjust&from=close-batch'},{label:'Close Batch Anyway',run:checkOpen},{label:'Cancel'}]});
-            return;
-        }
-
-        ui.modal({title:'Close Current Batch?',body:'<p>Your current batch is ready to be closed. Do you want to close now?</p>',actions:[{label:'Later'},{label:'Close Now',primary:true,run:checkOpen}]});
+        const pending=AttendedDemo.pendingTips().length,adjusted=AttendedDemo.adjustedTips().length;
+        const body=`<p><strong>${adjusted}</strong> adjusted transaction${adjusted===1?'':'s'} will be processed automatically before closing.</p><p><strong>${pending}</strong> transaction${pending===1?' has':'s have'} no tip adjustment amount set.</p><p>Transactions without a saved adjustment will keep their existing amounts.</p>`;
+        ui.modal({title:'Close Current Batch?',body,actions:[{label:'Cancel'},{label:adjusted?'Adjust & Close Batch':'Close Now',primary:true,run:checkOpen}]});
     }
     function checkOpen(){
         const open=AttendedDemo.eligible('review').filter(t=>t.batchId===currentData.summary.batchId);
@@ -30,8 +26,10 @@
         ui.modal({title:`⚠ ${open.length} Uncaptured Pre-Auths Found`,body:`<p><strong>You have ${open.length} open pre-auths (${ui.money(open.reduce((n,t)=>n+Math.round(t.amount*100),0))}) not yet completed.</strong></p><p>Closing the batch now will require manual capture later.</p>`,actions:[{label:'Review Pre-Auths',run:()=>location.href='transactions.html?'+new URLSearchParams({action:'review',batch:currentData.summary.batchId})},{label:'Proceed Anyway',danger:true,run:complete}]});
     }
     function complete(){
-        const amount=document.getElementById('batch-card-net').textContent;
         const batchId=AttendedDemo.closeBatch();
+        // Read the settled snapshot after automatic tip processing, not the stale report display.
+        const settled=AttendedDemo.toBatch('last');
+        const amount=formatBatchAmount(summarizeBatchCardTransactions(settled.settlementList).cardNet,settled.summary.currencyCode);
         const screen=document.createElement('section');screen.className='attd-settlement';screen.innerHTML=`<div class="merchant-name" data-merchant-name>Merchant</div><span class="material-symbols-rounded success">check_circle</span><h2>CLOSE BATCH</h2><div class="total">${ui.escape(amount)}</div><div class="attd-settlement-meta"><p>Batch #${ui.escape(batchId)} Closed Successfully</p><span class="attd-settlement-batch"><small>BATCH</small>${ui.escape(batchId)}</span></div><div class="attd-divider">SETTLEMENT COPY</div><div class="attd-choice-grid"><button class="attd-choice" data-print="summary">${ui.icon('print')}Print Summary</button><button class="attd-choice" data-print="details">${ui.icon('print')}Print Details</button></div><button class="attd-button" id="settlement-skip">${ui.icon('block')}<span data-skip-label>No Receipt (10s)</span></button>`;
         document.querySelector('.phone-frame').append(screen);
         window.MerchantContext?.apply(screen);

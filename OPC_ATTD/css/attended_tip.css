@@ -1,25 +1,55 @@
-/* Layout only: amount, keypad, buttons and list visuals use existing OPC_ATTD classes. */
+/* Tip Adjust uses the existing terminal list, keypad, typography and palette. */
 .attd-tip {position:absolute;inset:28px 0 0;z-index:180;display:flex;flex-direction:column;min-height:0;background:#F8FAFD;--entry-color:#0A5BFF;}
-.attd-tip .app-header {flex-shrink:0;}
+.attd-tip .app-header {flex-shrink:0;gap:8px;}
+.attd-tip .app-header .left,.attd-tip .app-header .right {width:auto;flex-shrink:0;}
+.attd-tip .app-header .right:empty {width:32px;}
+.attd-tip .app-header .title {min-width:0;margin:0;}
+.attd-tip button:disabled {opacity:.4;cursor:default;}
+.attd-tip .attd-tip-review {padding:8px 10px;font-size:12px;border-radius:10px;white-space:nowrap;}
+.attd-tip .attd-tip-filters {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:10px 12px;flex-shrink:0;}
+.attd-tip .attd-tip-filters .filter-item {text-align:center;padding:0 4px;}
 .attd-tip button.tx-row {width:100%;border:0;border-bottom:1px solid var(--line);background:white;text-align:left;cursor:pointer;}
 .attd-tip .tx-tender {gap:6px;}.attd-tip .tx-tender>div {min-width:0;}
 .attd-tip .tx-amount {overflow-wrap:anywhere;}
-.attd-tip-summary {display:flex;justify-content:space-between;gap:8px;padding:10px 16px;font-size:11px;color:#667085;background:#F8FAFE;}
-.attd-tip-summary strong {color:#111827;}
+.attd-tip .tx-list {min-height:0;}
+.attd-tip-summary {display:flex;justify-content:space-between;gap:8px;padding:10px 16px;font-size:11px;color:#667085;background:#F8FAFE;flex-shrink:0;}
 .attd-tip-empty {padding:28px 18px;text-align:center;font-size:14px;color:#667085;}
-.attd-tip-switcher {display:flex;align-items:center;justify-content:space-between;margin:12px 18px 0;padding-bottom:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.attd-tip .attd-tip-editor-header {justify-content:space-between;padding:0 14px;}
+.attd-tip-list-back {display:flex;align-items:center;gap:4px;border:0;background:transparent;color:#475569;font:600 14px Inter,sans-serif;padding:8px 0;cursor:pointer;}
+.attd-tip-switcher {display:flex;align-items:center;gap:16px;flex-shrink:0;}
 .attd-tip-switcher .back-btn {width:36px;height:36px;}
-.attd-tip-switcher .back-btn:disabled {opacity:.3;cursor:default;}
-.attd-tip-progress {font-size:13px;font-weight:700;color:#667085;}
+.attd-tip-progress {min-width:42px;text-align:center;font-size:13px;font-weight:700;color:#667085;}
+.attd-tip-context {margin:14px 18px 0;font-size:11px;color:#667085;}
 .attd-tip .attd-status.unadjusted {background:#FFF3D6;color:#975A08;}
-.attd-tip .app-header .attd-status {margin-top:0;}
-.attd-tip-reference {display:flex;justify-content:space-between;margin:12px 18px 0;font-size:11px;color:#667085;}
-.attd-tip-amount {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:200px;}
-.attd-tip-amount .amount-label {margin-top:14px;}
+.attd-tip-reference {display:flex;flex-direction:column;gap:7px;margin:12px 18px 0;padding-bottom:14px;border-bottom:1px solid var(--border);font-size:11px;color:#667085;flex-shrink:0;}
+.attd-tip-reference-top {display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.attd-tip-reference-top strong {color:#111827;font-size:13px;}
+.attd-tip-reference .attd-status {margin-top:0;}
+.attd-tip-amount {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:180px;}
+.attd-tip-amount .amount-label {margin-top:10px;}
 .attd-tip-amount .amount-display {max-width:100%;}
-.attd-tip-math {margin:18px 0 0;gap:10px 16px;}
+.attd-tip-math {margin:14px 0 0;gap:10px 16px;}
 .attd-tip-math .attd-tip-total {color:var(--color-purple-text);font-size:16px;font-weight:800;}
-.attd-tip>.attd-error {padding:0 18px;min-height:20px;font-size:12px;}
+.attd-tip>.attd-error {padding:0 18px;min-height:20px;font-size:12px;flex-shrink:0;}
 .attd-tip-keypad {flex:0 0 auto;}.attd-tip .keypad-panel {padding:4px 18px 18px;}
 .attd-tip-editor {overflow:auto;}
-@media(max-height:760px) {.attd-tip-amount{min-height:185px;}}
+.attd-tip-review-totals {padding:16px;background:#F8FAFE;flex-shrink:0;}
+.attd-tip-review-totals>div {display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:10px;color:#475569;}
+.attd-tip-review-totals strong {color:#111827;}
+.attd-tip-review-totals p {margin:0;color:#667085;font-size:11px;}
+.attd-tip-review-head {display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:white;color:#8190A7;font-size:11px;font-weight:700;flex-shrink:0;}
+.attd-tip-review-row {display:flex;justify-content:space-between;align-items:center;width:100%;gap:12px;padding:14px 16px;text-align:left;border:0;border-bottom:1px solid var(--line);background:white;font:600 12px Inter,sans-serif;cursor:pointer;color:#111827;}
+.attd-tip-review-row>div {display:flex;flex-direction:column;gap:6px;min-width:0;}
+.attd-tip-review-row>div:last-child {text-align:right;}
+.attd-tip-review-row span {color:#667085;font-size:10px;}
+.attd-tip-review-row .attd-tip-change {white-space:nowrap;font-size:11px;}
+.attd-tip-review-row .attd-tip-change strong {color:#111827;}
+.attd-tip-new-total {color:var(--color-purple-text);font-size:16px;}
+.attd-tip-review-footer {padding:12px 16px 18px;border-top:1px solid var(--line);background:#F8FAFD;flex-shrink:0;}
+.attd-tip-review-footer button {width:100%;}
+.attd-tip-result {display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;}
+.attd-tip-result>.material-symbols-rounded {font-size:56px;color:#00A86B;}
+.attd-tip-result h3 {font-size:20px;margin:0;}.attd-tip-result p {font-size:13px;color:#667085;margin:0;}
+.attd-tip-result button {align-self:stretch;}
+@media(max-width:360px) {.attd-tip .app-header{gap:5px;}.attd-tip .app-header .title{font-size:17px;}.attd-tip .attd-tip-review{padding:8px;font-size:11px;}.attd-tip-switcher{gap:10px;}}
+@media(max-height:760px) {.attd-tip-amount{min-height:175px;}}
