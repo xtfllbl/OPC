@@ -4,6 +4,30 @@ The payment terminal and user experience prototype ecosystem for Paywizard POS d
 
 ## Language
 
+**Payment Pane（支付区）**:
+横屏 OPC 中展示支付应用、供用户选择支付方式的区域；区域名称不随左右位置变化。
+_Avoid_: 左屏（作为固定业务名称）
+
+**Advertising Pane（广告区）**:
+横屏 OPC 中空闲时展示广告轮播图、交易期间改为展示商品明细的区域；区域名称不随左右位置变化。
+_Avoid_: 右屏（作为固定业务名称）
+
+**Customer Payment Display（顾客支付屏）**:
+供顾客查看收银机下发交易的商品信息并选择支付方式的横屏 OPC 界面；收银员通过独立收银机操作。
+_Avoid_: Unified POS（指代顾客支付屏时）
+
+**Item Details（商品明细）**:
+收银机下发交易时，供用户查看的本次交易商品信息。
+_Avoid_: 交易记录（指代本次商品信息时）
+
+**CASH（横屏顾客支付）**:
+顾客选择后向收银员交付现金、由收银员确认收款的支付方式。
+_Avoid_: 顾客确认收款
+
+**WALLET（横屏顾客支付）**:
+顾客支付屏中独立于 DEBIT SALE 与 CREDIT SALE 的钱包支付方式，目前服务商未定，原型仅模拟其支付过程。
+_Avoid_: 银行卡支付、特定钱包品牌（未确定服务商时）
+
 **Attended POS**:
 A terminal operating mode operated by a clerk or cashier at a checkout counter, featuring active channel switching and administrative tools.
 _Avoid_: Clerk terminal, counter POS, manned POS
