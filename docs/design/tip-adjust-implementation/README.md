@@ -2,6 +2,8 @@
 
 2026-09-28，本地静态原型实现，未发布生产。
 
+当前版本见 [第三轮实现与验收](revision-3.md)：移除 Done、补齐 20 笔 mock（初始 10 已调整 / 10 未调整）；编辑器沿用 [第二轮方案](revision-2.md)。下文保留第一版历史验收记录。
+
 决策来源：[当前批次小费调整](https://github.com/xtfllbl/OPC/issues/1)、[业务规则](https://github.com/xtfllbl/OPC/issues/3)、[方案 A 与原生样式](https://github.com/xtfllbl/OPC/issues/4)。
 
 ## 入口与实现

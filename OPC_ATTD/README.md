@@ -8,7 +8,7 @@
 
 ## 当前批次 Tip Adjust
 
-操作菜单 → Tip Adjust。采用现有列表与金额键盘，支持逐笔保存、保存后下一笔、独立 PIN、未调整笔数关批提醒。实现说明与验收记录见 [Tip Adjust 实现](../docs/design/tip-adjust-implementation/README.md)。
+操作菜单 → Tip Adjust。采用现有列表与金额键盘，仅支持 Sale 小费调整，支持逐笔 SAVE、左右切换交易、独立 PIN、未调整笔数关批提醒。实现说明与验收记录见 [Tip Adjust 实现](../docs/design/tip-adjust-implementation/README.md)。
 
 ## 发布到 Vercel
 

@@ -34,7 +34,7 @@
     });
     function persist(next=state) { sessionStorage.setItem(KEY, JSON.stringify(next)); }
     function canAdjust(t){return t.batchId===state.batchId && t.status==='APPROVED' &&
-        ['payment','capture'].includes(t.kind) && t.tenderType==='card' && t.tipAdjustSupported===true;}
+        t.kind==='payment' && t.tenderType==='card' && t.tipAdjustSupported===true;}
     function adjustTip({id,tipCents,batchId,revision}){
         const current=state.rows.find(t=>t.id===id);
         if(!current||!canAdjust(current)||current.batchId!==batchId)throw new Error('This transaction is no longer available for tip adjustment. Return to the list.');
@@ -73,7 +73,7 @@
             state.rows.unshift(make(invoice, (kind==='refund'?-1:1)*amountCents/100,kind,'00:00:00',{
                 tranTime:new Date().toLocaleString('sv-SE'), batchId:state.batchId, cardType, lastFour,
                 tenderType:paymentMethod, tipCents,feeCents,cashEquivalentCents,transactionAmountCents:amountCents-tipCents,
-                tipAdjustSupported:paymentMethod==='card'&&(action==='Capture'?source?.tipAdjustSupported===true:tipAdjustSupported), ...(paymentMethod==='cash'?{cardType:'CASH',lastFour:''}:{}), id:`attd_${operationId}`}));
+                tipAdjustSupported:paymentMethod==='card'&&kind==='payment'&&tipAdjustSupported, ...(paymentMethod==='cash'?{cardType:'CASH',lastFour:''}:{}), id:`attd_${operationId}`}));
         }
         state.operations.push(operationId); persist();
     }
@@ -90,5 +90,35 @@
         // Open authorizations remain discoverable after the settlement warning.
         persist(); return state.lastBatchId;
     }
+    function expandTipSamples(){
+        // One-time expansion of the original demo batch. Never repopulate a closed batch
+        // or reset a cashier's saved amounts, confirmation states, or later transactions.
+        if(state.tipSamplesVersion===1 || state.batchId!=='2071')return;
+        const current=state.rows.filter(canAdjust);
+        const confirmed=current.filter(t=>t.tipConfirmedAt).length;
+        const counts=[Math.max(0,10-confirmed),Math.max(0,10-(current.length-confirmed))];
+        const additions=[];
+        const cashPrices=[1850,2475,3290,4560,5800,6725,7990,8850,9625,11250];
+        const confirmedTips=[0,150,275,350,420,500,650,800,950,1200];
+        const originalTips=[0,0,125,0,240,0,375,0,600,0];
+        const cards=['VISA','MASTERCARD','AMEX','DISCOVER'];
+        const lastDigits=['4242','0198','2004','4407'];
+        for(let group=0;group<2;group++)for(let i=0;i<counts[group];i++){
+            const slot=i*2+group,invoice=String(1100+slot).padStart(6,'0');
+            if(state.rows.some(t=>t.id===`attd_${invoice}`))continue;
+            const cashEquivalentCents=cashPrices[i],feeCents=Math.round(cashEquivalentCents*.04);
+            const transactionAmountCents=cashEquivalentCents+feeCents;
+            const tipCents=group===0?confirmedTips[i]:originalTips[i];
+            const time=`17:${String(30-slot).padStart(2,'0')}:00`;
+            additions.push(make(invoice,(transactionAmountCents+tipCents)/100,'payment',time,{
+                cardType:cards[slot%cards.length],lastFour:lastDigits[slot%lastDigits.length],
+                cashEquivalentCents,feeCents,transactionAmountCents,tipCents,tipAdjustSupported:true,
+                ...(group===0?{tipConfirmedAt:`2026-09-16T${time}+08:00`,tipRevision:1}:{})
+            }));
+        }
+        const next={...state,tipSamplesVersion:1,rows:[...state.rows,...additions].sort((a,b)=>b.tranTime.localeCompare(a.tranTime)||b.invoice.localeCompare(a.invoice))};
+        try{persist(next);state=next;}catch(_){/* Retain the existing demo if storage is unavailable. */}
+    }
+    expandTipSamples();
     window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch,adjustTip,pendingTips,receipt};
 })();
