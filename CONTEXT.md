@@ -28,6 +28,18 @@ _Avoid_: 顾客确认收款
 顾客支付屏中独立于 DEBIT SALE 与 CREDIT SALE 的钱包支付方式，目前服务商未定，原型仅模拟其支付过程。
 _Avoid_: 银行卡支付、特定钱包品牌（未确定服务商时）
 
+**Dual Pricing（双价）**:
+同一交易按现金与银行卡支付展示不同应付价格；价格差异在顾客选择支付方式之前可见。
+_Avoid_: 商品折扣（指代支付方式价差时）
+
+**Tip（小费）**:
+顾客在商品交易金额之外自愿选择的附加金额；与商品折扣、税额和双价差额分别展示。
+_Avoid_: Card Price Adjustment
+
+**Cash Register Simulator（收银机模拟页）**:
+代表收银员发起交易、确认现金收款和取消未完成交易的独立原型界面。
+_Avoid_: 顾客支付屏、顾客操作面板
+
 **Attended POS**:
 A terminal operating mode operated by a clerk or cashier at a checkout counter, featuring active channel switching and administrative tools.
 _Avoid_: Clerk terminal, counter POS, manned POS

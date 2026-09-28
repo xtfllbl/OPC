@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>OPC PAD · Customer display</title><link rel="icon" href="assets/merchant-default.svg"><link rel="stylesheet" href="css/app.css"><script defer src="js/model.js"></script><script defer src="js/store.js"></script><script defer src="js/app.js"></script></head>
+<body class="preview">
+  <div class="device-wrap" id="device-wrap"><main class="device" id="device" aria-label="OPC PAD device">
+    <section class="payment-pane" id="payment-pane" aria-label="Payment"><div id="payment-content" class="payment-content" aria-live="polite"></div></section>
+    <section class="content-pane" id="content-pane" aria-label="Advertising and order details">
+      <div class="advertising" id="advertising" aria-label="Store advertising"><img id="ad-image" src="assets/market.jpg" alt="Store advertising"><div class="ad-dots" aria-hidden="true"><i class="active"></i><i></i><i></i></div></div>
+      <div class="order" id="order" hidden><h2 class="section-title">ORDER DETAILS</h2><div class="order-reference" id="order-reference"></div><div class="item-heading"><span>ITEM</span><span>QTY</span><span>PRICE</span><span>AMOUNT</span></div><div class="items" id="items" role="region" aria-label="Order items" tabindex="0"></div><div class="order-summary" id="order-summary"></div></div>
+    </section>
+    <div class="device-toast" id="toast" role="status" hidden></div>
+  </main></div>
+</body></html>
