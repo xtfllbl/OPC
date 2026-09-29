@@ -17,7 +17,7 @@
     }
     function closeConfirmation(){
         const pending=AttendedDemo.pendingTips().length,adjusted=AttendedDemo.adjustedTips().length;
-        const body=`<p><strong>${adjusted}</strong> adjusted transaction${adjusted===1?'':'s'} will be processed automatically before closing.</p><p><strong>${pending}</strong> transaction${pending===1?' has':'s have'} no tip adjustment amount set.</p><p>Transactions without a saved adjustment will keep their existing amounts.</p>`;
+        const body=`<p><strong>${adjusted}</strong> tipped transaction${adjusted===1?'':'s'} will be processed automatically before closing.</p><p><strong>${pending}</strong> transaction${pending===1?' has':'s have'} no tip adjustment amount set.</p><p>Transactions without a saved adjustment will keep their existing amounts.</p>`;
         ui.modal({title:'Close Current Batch?',body,actions:[{label:'Cancel'},{label:adjusted?'Adjust & Close Batch':'Close Now',primary:true,run:checkOpen}]});
     }
     function checkOpen(){

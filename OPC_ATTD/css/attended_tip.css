@@ -6,45 +6,78 @@
 .attd-tip .app-header .title {min-width:0;margin:0;}
 .attd-tip button:disabled {opacity:.4;cursor:default;}
 .attd-tip .attd-tip-review {padding:8px 10px;font-size:12px;border-radius:10px;white-space:nowrap;}
-.attd-tip .attd-tip-filters {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:10px 12px;flex-shrink:0;}
-.attd-tip .attd-tip-filters .filter-item {text-align:center;padding:0 4px;}
-.attd-tip button.tx-row {width:100%;border:0;border-bottom:1px solid var(--line);background:white;text-align:left;cursor:pointer;}
-.attd-tip .tx-tender {gap:6px;}.attd-tip .tx-tender>div {min-width:0;}
-.attd-tip .tx-amount {overflow-wrap:anywhere;}
+.attd-tip .attd-tip-filters {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:10px 12px;padding:0;border:1px solid #C5D2E5;border-radius:10px;background:white;flex-shrink:0;}
+.attd-tip .attd-tip-filters .filter-item {height:38px;text-align:center;padding:0 4px;border-radius:0;background:white;}
+.attd-tip .attd-tip-filters .filter-item + .filter-item {border-left:1px solid #C5D2E5;}
+.attd-tip .attd-tip-filters .filter-item:first-child {border-radius:9px 0 0 9px;}
+.attd-tip .attd-tip-filters .filter-item:last-child {border-radius:0 9px 9px 0;}
+.attd-tip .attd-tip-filters .filter-item:hover {background:#F1F5FF;}
+.attd-tip .attd-tip-filters .filter-item.active {background:#0A5BFF;color:white;}
+.attd-tip .attd-tip-filters .filter-item:focus-visible {outline:2px solid #0A5BFF;outline-offset:3px;position:relative;z-index:1;}
+.attd-tip button.tx-row {width:100%;border:0;border-bottom:1px solid var(--line);background:white;text-align:left;cursor:pointer;font-family:Inter,sans-serif;}
+/* The outer columns share three tracks; card details remain a centered group. */
+.attd-tip .tx-row {grid-template-rows:16px 22px 16px;row-gap:4px;align-items:baseline;}
+.attd-tip .tx-row>div:not(.tx-tender) {grid-row:1 / 4;display:grid;grid-template-rows:subgrid;align-items:baseline;min-width:0;}
+.attd-tip .tx-row>div:first-child {grid-column:1;}
+.attd-tip .tx-date,.attd-tip .tx-id {margin:0;font-size:11px;line-height:16px;font-weight:600;}
+.attd-tip .tx-time {margin:0;font-size:16px;line-height:22px;font-weight:800;}
+.attd-tip .tx-tender {grid-column:2;grid-row:1 / 4;align-self:center;gap:6px;}
+.attd-tip .tx-tender>div {min-width:0;}
+/* Reserve room for three aligned amounts without changing other transaction lists. */
+.attd-tip .table-head,.attd-tip .tx-row {grid-template-columns:90px minmax(0,1fr) max-content;column-gap:10px;}
+.attd-tip .table-head {grid-template-columns:90px minmax(0,1fr) 108px;}
+.attd-tip .table-head>span:last-child {text-align:right;}
+.attd-tip .attd-tip-list-amounts {grid-column:3;grid-template-columns:max-content max-content;justify-content:end;column-gap:8px;min-width:108px;text-align:right;white-space:nowrap;font-size:11px;line-height:16px;font-variant-numeric:tabular-nums;}
+.attd-tip-list-amounts>span {color:#667085;font-weight:600;}
+.attd-tip-list-amounts>strong {font-weight:800;}
+.attd-tip-list-amounts>.attd-tip-list-value {font-size:16px;line-height:22px;}
+.attd-tip-list-value.is-untipped {color:#975A08;}
+.attd-tip-list-value.is-tipped {color:var(--color-purple-text);}
 .attd-tip .tx-list {min-height:0;}
 .attd-tip-summary {display:flex;justify-content:space-between;gap:8px;padding:10px 16px;font-size:11px;color:#667085;background:#F8FAFE;flex-shrink:0;}
 .attd-tip-empty {padding:28px 18px;text-align:center;font-size:14px;color:#667085;}
-.attd-tip .attd-tip-editor-header {justify-content:space-between;padding:0 14px;}
-.attd-tip-list-back {display:flex;align-items:center;gap:4px;border:0;background:transparent;color:#475569;font:600 14px Inter,sans-serif;padding:8px 0;cursor:pointer;}
+.attd-tip .attd-tip-editor-header {justify-content:space-between;}
 .attd-tip-switcher {display:flex;align-items:center;gap:16px;flex-shrink:0;}
 .attd-tip-switcher .back-btn {width:36px;height:36px;}
 .attd-tip-progress {min-width:42px;text-align:center;font-size:13px;font-weight:700;color:#667085;}
-.attd-tip-context {margin:14px 18px 0;font-size:11px;color:#667085;}
 .attd-tip .attd-status.unadjusted {background:#FFF3D6;color:#975A08;}
 .attd-tip-reference {display:flex;flex-direction:column;gap:7px;margin:12px 18px 0;padding-bottom:14px;border-bottom:1px solid var(--border);font-size:11px;color:#667085;flex-shrink:0;}
 .attd-tip-reference-top {display:flex;justify-content:space-between;align-items:center;gap:8px;}
 .attd-tip-reference-top strong {color:#111827;font-size:13px;}
 .attd-tip-reference .attd-status {margin-top:0;}
-.attd-tip-amount {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:180px;}
-.attd-tip-amount .amount-label {margin-top:10px;}
+.attd-tip-reference-status {display:inline-grid;perspective:500px;flex-shrink:0;}
+.attd-tip-status-card {display:grid;transform-style:preserve-3d;transition:transform 560ms cubic-bezier(.22,.7,.2,1);}
+.attd-tip-status-card>.attd-status {grid-area:1/1;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.attd-tip-status-back {transform:rotateX(180deg);}
+.attd-tip-reference-status.is-adjusted .attd-tip-status-card {transform:rotateX(180deg);}
+.attd-tip-status-label,.attd-tip-save-label {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.attd-tip-amount {display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 0 auto;min-height:216px;padding:12px 0;}
 .attd-tip-amount .amount-display {max-width:100%;}
-.attd-tip-math {margin:14px 0 0;gap:10px 16px;}
-.attd-tip-math .attd-tip-total {color:var(--color-purple-text);font-size:16px;font-weight:800;}
-.attd-tip>.attd-error {padding:0 18px;min-height:20px;font-size:12px;flex-shrink:0;}
+.attd-tip-error {max-width:calc(100% - 36px);text-align:center;}
 .attd-tip-keypad {flex:0 0 auto;}.attd-tip .keypad-panel {padding:4px 18px 18px;}
+/* Keep the button hit area fixed while its blue and green faces turn. */
+.attd-tip .key-ok {position:relative;perspective:600px;background:transparent;border:0;box-shadow:none;}
+.attd-tip-save-card {position:absolute;inset:0;border-radius:inherit;transform-style:preserve-3d;transition:transform 420ms cubic-bezier(.22,.7,.2,1);pointer-events:none;}
+.attd-tip-save-face {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border:1px solid #0A5BFF;border-radius:inherit;background:#0A5BFF;color:white;box-shadow:0 9px 22px var(--entry-shadow);backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.attd-tip-save-back {flex-direction:column;gap:6px;background:#218442;border-color:#218442;box-shadow:0 9px 22px rgba(33,132,66,.18);transform:rotateY(180deg);}
+.attd-tip-save-back svg {width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.attd-tip .key-ok.is-saved .attd-tip-save-card {transform:rotateY(180deg);}
+@media(prefers-reduced-motion:reduce) {.attd-tip-status-card,.attd-tip-save-card{transition:none;}}
 .attd-tip-editor {overflow:auto;}
 .attd-tip-review-totals {padding:16px;background:#F8FAFE;flex-shrink:0;}
 .attd-tip-review-totals>div {display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:10px;color:#475569;}
 .attd-tip-review-totals strong {color:#111827;}
 .attd-tip-review-totals p {margin:0;color:#667085;font-size:11px;}
 .attd-tip-review-head {display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:white;color:#8190A7;font-size:11px;font-weight:700;flex-shrink:0;}
-.attd-tip-review-row {display:flex;justify-content:space-between;align-items:center;width:100%;gap:12px;padding:14px 16px;text-align:left;border:0;border-bottom:1px solid var(--line);background:white;font:600 12px Inter,sans-serif;cursor:pointer;color:#111827;}
-.attd-tip-review-row>div {display:flex;flex-direction:column;gap:6px;min-width:0;}
+.attd-tip-review-row {display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:16px 22px 16px;align-items:baseline;width:100%;gap:4px 12px;padding:14px 16px;text-align:left;border:0;border-bottom:1px solid var(--line);background:white;font:600 11px/16px Inter,sans-serif;cursor:pointer;color:#111827;}
+.attd-tip-review-row>div {grid-row:1 / 4;display:grid;grid-template-rows:subgrid;align-items:baseline;min-width:0;}
 .attd-tip-review-row>div:last-child {text-align:right;}
-.attd-tip-review-row span {color:#667085;font-size:10px;}
-.attd-tip-review-row .attd-tip-change {white-space:nowrap;font-size:11px;}
-.attd-tip-review-row .attd-tip-change strong {color:#111827;}
-.attd-tip-new-total {color:var(--color-purple-text);font-size:16px;}
+.attd-tip-review-row span {color:#667085;font-size:11px;}
+.attd-tip-review-row>div:first-child {grid-column:1;}
+.attd-tip-review-row strong {font-weight:800;}
+.attd-tip-review-row>.attd-tip-review-amounts {grid-column:2;grid-template-columns:max-content max-content;column-gap:8px;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.attd-tip-review-amounts>span {font-size:11px;}
+.attd-tip-review-value {color:var(--color-purple-text);font-size:16px;line-height:22px;}
 .attd-tip-review-footer {padding:12px 16px 18px;border-top:1px solid var(--line);background:#F8FAFD;flex-shrink:0;}
 .attd-tip-review-footer button {width:100%;}
 .attd-tip-result {display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;}
@@ -52,4 +85,5 @@
 .attd-tip-result h3 {font-size:20px;margin:0;}.attd-tip-result p {font-size:13px;color:#667085;margin:0;}
 .attd-tip-result button {align-self:stretch;}
 @media(max-width:360px) {.attd-tip .app-header{gap:5px;}.attd-tip .app-header .title{font-size:17px;}.attd-tip .attd-tip-review{padding:8px;font-size:11px;}.attd-tip-switcher{gap:10px;}}
-@media(max-height:760px) {.attd-tip-amount{min-height:175px;}}
+
+@media(max-width:360px) {.attd-tip .table-head,.attd-tip .tx-row{grid-template-columns:76px minmax(0,1fr) 104px;column-gap:7px;}.attd-tip .attd-tip-list-amounts{min-width:0;column-gap:6px;font-size:10px;}.attd-tip .tx-date,.attd-tip .tx-id{font-size:10px;}.attd-tip .tx-tender{gap:4px;}.attd-tip-review-row{padding-left:12px;padding-right:12px;column-gap:8px;}.attd-tip-review-row>div:first-child>span{font-size:10px;}}

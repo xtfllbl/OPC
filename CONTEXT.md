@@ -48,21 +48,29 @@ _Avoid_: Final Tip Amount（界面名称）、追加小费金额
 一笔已完成交易中不含小费的固定金额；不随小费调整次数变化，交易总额等于该金额加上最终小费。
 _Avoid_: 含小费总额、上一次调整后的总额
 
-**Unadjusted Transactions（未调整小费的交易）**:
-当前未结算批次中仍可在 Tip Adjust 中处理、尚未保存小费调整值的交易。零小费或原小费也允许保存并执行，仅已有小费不代表已调整。
-_Avoid_: 零小费交易、所有未结算交易
+**Un-tipped Transactions（未添加小费的交易）**:
+当前未结算批次中仍可在 Tip Adjust 中处理、尚未保存小费调整的交易；当前演示中这些交易的小费金额统一为零。保存零小费后也归入 Tipped。
+_Avoid_: Unadjusted、UNADJUSTED、所有零小费交易、所有未结算交易
 
-**Adjusted Transactions（已调整小费的交易）**:
-已保存小费调整值、等待执行的交易。离开 Tip Adjust 后保留其已保存值及 ADJUSTED 状态，同一笔再次保存会替换待执行值。
-_Avoid_: 已执行成功、SAVED（独立界面状态）、有小费的交易
+**Tipped Transactions（已保存小费调整的交易）**:
+已保存小费调整值、等待执行的交易。离开 Tip Adjust 后保留其已保存值及 TIPPED 状态，同一笔再次保存会替换待执行值。
+_Avoid_: Adjusted、ADJUSTED、已执行成功、SAVED（独立界面状态）、有小费的交易
 
 **Successfully Processed Tip Adjustment（已执行成功的小费调整）**:
 已经执行成功并更新交易已生效金额的小费调整；对应交易从 Tip Adjust 工作列表中移除，交易记录仍保留。
-_Avoid_: ADJUSTED（本界面指已保存待执行）、删除交易、已结算批次
+_Avoid_: TIPPED（本界面指已保存待执行）、删除交易、已结算批次
 
 **Tip Summary（小费调整汇总）**:
-执行前供操作员核对已保存小费调整的汇总，包含待执行交易及其拟生效金额。
+执行前供操作员核对已保存小费调整的汇总，包含待执行交易、不含小费的交易金额（Amount）、拟生效小费（Tip）及两者相加的交易总额（Total）。
 _Avoid_: 批次结算报告、已生效小费合计
+
+**Tip Adjust Count（待执行小费调整笔数）**:
+Tip Summary 中已保存、等待执行的小费调整交易笔数；同一交易多次保存仍计为一笔。
+_Avoid_: Adjusted transactions（界面名称）、已执行成功笔数
+
+**Tip Adjust Total（待执行小费合计）**:
+Tip Summary 中全部待执行交易保存后的小费总金额之和；每笔使用拟生效的小费金额。
+_Avoid_: New tips（界面名称）、小费增量合计、整个批次的小费合计
 
 **Cash Register Simulator（收银机模拟页）**:
 代表收银员发起交易、确认现金收款和取消未完成交易的独立原型界面。

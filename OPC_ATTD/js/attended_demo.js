@@ -6,8 +6,8 @@
         tenderType: 'card', status: kind === 'preauth' ? 'OPEN AUTH' : 'APPROVED', batchId: '2071', ...extra});
     const seed = [
         make('001053',30,'preauth','17:34:00'), make('001052',20,'preauth','16:18:00'),
-        make('001051',104.65,'payment','16:03:00',{cashEquivalentCents:10000, feeCents:400, tipCents:65}),
-        make('001048',140,'payment','15:51:00',{cashEquivalentCents:12500, feeCents:500, tipCents:1000}),
+        make('001051',104,'payment','16:03:00',{cashEquivalentCents:10000, feeCents:400, tipCents:0}),
+        make('001048',130,'payment','15:51:00',{cashEquivalentCents:12500, feeCents:500, tipCents:0}),
         make('C000007',0.15,'payment','14:33:00',{tenderType:'cash',cardType:'CASH',lastFour:''}),
         make('001039',36,'preauth','10:53:00'), make('001038',35,'preauth','10:50:00'),
         make('001037',30,'preauth','10:32:00'),
@@ -115,7 +115,6 @@
         const additions=[];
         const cashPrices=[1850,2475,3290,4560,5800,6725,7990,8850,9625,11250];
         const confirmedTips=[0,150,275,350,420,500,650,800,950,1200];
-        const originalTips=[0,0,125,0,240,0,375,0,600,0];
         const cards=['VISA','MASTERCARD','AMEX','DISCOVER'];
         const lastDigits=['4242','0198','2004','4407'];
         for(let group=0;group<2;group++)for(let i=0;i<counts[group];i++){
@@ -123,7 +122,7 @@
             if(state.rows.some(t=>t.id===`attd_${invoice}`))continue;
             const cashEquivalentCents=cashPrices[i],feeCents=Math.round(cashEquivalentCents*.04);
             const transactionAmountCents=cashEquivalentCents+feeCents;
-            const tipCents=group===0?confirmedTips[i]:originalTips[i];
+            const tipCents=group===0?confirmedTips[i]:0;
             const time=`17:${String(30-slot).padStart(2,'0')}:00`;
             additions.push(make(invoice,(transactionAmountCents+tipCents)/100,'payment',time,{
                 cardType:cards[slot%cards.length],lastFour:lastDigits[slot%lastDigits.length],
@@ -144,5 +143,19 @@
         persist(next);state=next;
     }
     upgradeTipWorkflow();
+    function correctUntippedSamples(){
+        if(state.untippedSamplesVersion===1)return;
+        // Correct untouched fixtures from older sessions without changing saved work,
+        // processed adjustments, historical batches, or newly recorded transactions.
+        const sampleIds=new Set(['attd_001051','attd_001048',
+            ...Array.from({length:20},(_,i)=>`attd_${String(1100+i).padStart(6,'0')}`)]);
+        const adjustedIds=new Set((state.tipAdjustments||[]).map(t=>t.id));
+        const next={...state,untippedSamplesVersion:1,rows:state.rows.map(t=>
+            sampleIds.has(t.id)&&canAdjust(t)&&!t.tipSavedAt&&!t.tipConfirmedAt&&
+            !t.tipRevision&&!adjustedIds.has(t.id)&&t.tipCents!==0?
+                {...t,tipCents:0,amount:t.transactionAmountCents/100}:t)};
+        persist(next);state=next;
+    }
+    correctUntippedSamples();
     window.AttendedDemo={rows,find,eligible,record,toBatch,closeBatch,adjustTip,pendingTips,adjustedTips,processTips,receipt};
 })();

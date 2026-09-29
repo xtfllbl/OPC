@@ -82,6 +82,16 @@ function formatMoney(cents) {
             showAppView('home');
         }
 
+        function setTransactionTypeLabel(element, transactionType) {
+            element.textContent = transactionType;
+            const typeLength = transactionType.length;
+            const typeSize = typeLength <= 8 ? 20 : typeLength <= 13 ? 18 : typeLength <= 18 ? 16 : 14;
+            const typeTracking = typeLength <= 8 ? '0.10em' : typeLength <= 13 ? '0.06em' : '0.025em';
+            element.style.setProperty('--transaction-type-size', `${typeSize}px`);
+            element.style.setProperty('--transaction-type-tracking', typeTracking);
+            element.setAttribute('aria-label', `Transaction type: ${transactionType}`);
+        }
+
         function updateAmountContext() {
             const showAmountEntry = pendingAction !== null || rawAmount !== "0";
             const transactionType = pendingAction
@@ -109,13 +119,7 @@ function formatMoney(cents) {
             }
             if (amountContext) {
                 amountContext.classList.remove('error');
-                amountContext.textContent = transactionType;
-                const typeLength = transactionType.length;
-                const typeSize = typeLength <= 8 ? 20 : typeLength <= 13 ? 18 : typeLength <= 18 ? 16 : 14;
-                const typeTracking = typeLength <= 8 ? '0.10em' : typeLength <= 13 ? '0.06em' : '0.025em';
-                amountContext.style.setProperty('--transaction-type-size', `${typeSize}px`);
-                amountContext.style.setProperty('--transaction-type-tracking', typeTracking);
-                amountContext.setAttribute('aria-label', `Transaction type: ${transactionType}`);
+                setTransactionTypeLabel(amountContext, transactionType);
             }
             if (amountError) {
                 amountError.textContent = '';
@@ -170,5 +174,3 @@ function openKeypad() {
                 startAction('Sale', rawAmount);
             }
         }
-
-        

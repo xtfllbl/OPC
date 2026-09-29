@@ -61,23 +61,24 @@ test('Tip Adjust 仅包含当前批次支持后调的银行卡 Sale，排除 Cap
 });
 test('保存小费允许覆盖、降低和零，执行前不改变交易、报表或小票金额',()=>{
     const {demo,context}=environment();
+    demo.record({operationId:'existing-tip',action:'Sale',amountCents:10465,tipCents:65,invoice:'EX1',tipAdjustSupported:true});
     const before=context.summarizeBatchCardTransactions(demo.toBatch('current').settlementList).cardNet;
-    function set(tipCents){const t=demo.find('attd_001051');return demo.adjustTip({id:t.id,batchId:t.batchId,revision:t.tipRevision||0,tipCents});}
-    assert.equal(demo.pendingTips().length,10);
-    set(65);assert.equal(demo.pendingTips().length,9);
+    function set(tipCents){const t=demo.find('attd_existing-tip');return demo.adjustTip({id:t.id,batchId:t.batchId,revision:t.tipRevision||0,tipCents});}
+    assert.equal(demo.pendingTips().length,11);
+    set(65);assert.equal(demo.pendingTips().length,10);
     assert.equal(set(65).tipRevision,1);
     assert.equal(set(1000).tipDraftCents,1000);
     assert.equal(set(500).tipDraftCents,500);
     assert.equal(set(0).tipDraftCents,0);
-    assert.equal(demo.find('attd_001051').amount,104.65);
-    assert.equal(demo.receipt('attd_001051').tipCents,65);
+    assert.equal(demo.find('attd_existing-tip').amount,104.65);
+    assert.equal(demo.receipt('attd_existing-tip').tipCents,65);
     assert.equal(context.summarizeBatchCardTransactions(demo.toBatch('current').settlementList).cardNet,before);
     assert.equal(demo.adjustedTips().length,11);
     assert.equal(demo.processTips().length,11);
-    const receipt=demo.receipt('attd_001051');
+    const receipt=demo.receipt('attd_existing-tip');
     assert.equal(receipt.transactionAmountCents,10400);assert.equal(receipt.tipCents,0);assert.equal(receipt.amountCents,10400);
     assert.equal(context.summarizeBatchCardTransactions(demo.toBatch('current').settlementList).cardNet,before-65);
-    const row=demo.toBatch('current').settlementList.find(t=>t.receiptNo==='001051');
+    const row=demo.toBatch('current').settlementList.find(t=>t.receiptNo==='EX1');
     assert.equal(row.tipCents,0);assert.equal(row.amount,10400);
 });
 test('存储失败保留金额/待处理状态，重试只提交一次',()=>{
@@ -85,9 +86,9 @@ test('存储失败保留金额/待处理状态，重试只提交一次',()=>{
     const original=context.sessionStorage.setItem;context.sessionStorage.setItem=()=>{throw Error('disk full');};
     const request={id:'attd_001048',batchId:'2071',revision:0,tipCents:500};
     assert.throws(()=>demo.adjustTip(request),/Unable to save/);
-    assert.equal(demo.find(request.id).amount,140);assert.equal(demo.pendingTips().length,10);
+    assert.equal(demo.find(request.id).amount,130);assert.equal(demo.pendingTips().length,10);
     context.sessionStorage.setItem=original;demo.adjustTip(request);
-    assert.equal(demo.find(request.id).amount,140);assert.equal(demo.find(request.id).tipDraftCents,500);
+    assert.equal(demo.find(request.id).amount,130);assert.equal(demo.find(request.id).tipDraftCents,500);
     assert.equal(demo.pendingTips().length,9);
     demo.processTips();assert.equal(demo.find(request.id).amount,135);
 });
@@ -130,7 +131,7 @@ function oldSession(){
     state.rows.forEach(t=>{delete t.tipDraftCents;delete t.tipSavedAt;});
     return state;
 }
-test('新版演示为20笔Sale、10笔Adjusted和10笔Unadjusted，已保存零小费也算Adjusted',()=>{
+test('新版演示为20笔Sale、10笔Tipped和10笔Un-tipped，已保存零小费也算Tipped',()=>{
     const {demo}=environment();
     const eligible=demo.eligible('Tip Adjust');
     assert.equal(eligible.length,20);
@@ -138,8 +139,36 @@ test('新版演示为20笔Sale、10笔Adjusted和10笔Unadjusted，已保存零�
     assert.equal(demo.pendingTips().length,10);
     assert.equal(new Set(eligible.map(t=>t.id)).size,20);
     assert(eligible.some(t=>t.tipSavedAt&&t.tipDraftCents===0));
-    assert(eligible.some(t=>!t.tipSavedAt&&t.tipCents>0));
+    assert(demo.pendingTips().every(t=>t.tipCents===0&&Math.round(t.amount*100)===t.transactionAmountCents));
     assert.equal(demo.eligible('Capture').length,12);
+});
+test('旧示例的未保存小费归零并同步总额，保留已保存、已执行、新交易和历史金额',()=>{
+    const {demo,storage}=environment();
+    demo.record({operationId:'keep-tip',action:'Sale',amountCents:1200,tipCents:200,invoice:'NEW',tipAdjustSupported:true});
+    const old=JSON.parse(storage.get(demoKey));
+    delete old.untippedSamplesVersion;
+    for(const [id,tip] of [['attd_001105',125],['attd_001113',375],['attd_001051',65],['attd_001048',1000]]){
+        const row=old.rows.find(t=>t.id===id);
+        row.tipCents=tip;row.amount=(row.transactionAmountCents+tip)/100;
+    }
+    const saved=old.rows.find(t=>t.id==='attd_001051');
+    saved.tipDraftCents=300;saved.tipSavedAt='2026-09-29T00:00:00Z';saved.tipRevision=1;
+    const processed=old.rows.find(t=>t.id==='attd_001048');
+    processed.tipProcessedAt='2026-09-29T00:00:00Z';
+    old.tipAdjustments=[{id:processed.id,tipCents:1000}];
+    storage.set(demoKey,JSON.stringify(old));
+    const updated=environment(storage).demo;
+    for(const id of ['attd_001105','attd_001113']){
+        const row=updated.find(id);
+        assert.equal(row.tipCents,0);assert.equal(Math.round(row.amount*100),row.transactionAmountCents);
+    }
+    const after=JSON.parse(storage.get(demoKey));
+    for(const before of old.rows.filter(t=>!['attd_001105','attd_001113'].includes(t.id)))
+        assert.deepEqual(after.rows.find(t=>t.id===before.id),before);
+    assert.deepEqual(after.last,old.last);
+    assert.deepEqual(after.tipAdjustments,old.tipAdjustments);
+    environment(storage);
+    assert.deepEqual(JSON.parse(storage.get(demoKey)),after);
 });
 test('旧会话保留两笔已调整金额及历史，补8笔已调整+10笔未调整，刷新不重复补数',()=>{
     const old=oldSession();
@@ -173,7 +202,7 @@ test('旧会话保留两笔已调整金额及历史，补8笔已调整+10笔未�
     assert.equal(demo.toBatch('current').settlementList.length,0);
 });
 
-test('全部Adjusted执行后移出工作列表，刷新不回填，不重复处理且原交易仍保留',()=>{
+test('全部Tipped执行后移出工作列表，刷新不回填，不重复处理且原交易仍保留',()=>{
     const {demo,storage}=environment();
     const existingCount=demo.rows().length;
     const target=demo.pendingTips().find(t=>t.tipCents===0);
@@ -194,7 +223,7 @@ test('全部Adjusted执行后移出工作列表，刷新不回填，不重复处
     assert.equal(JSON.parse(storage.get(demoKey)).tipAdjustments.length,11);
 });
 
-test('Close Batch自动执行已保存调整后快照，Unadjusted保留原金额且不带入新批次',()=>{
+test('Close Batch自动执行已保存调整后快照，Un-tipped保留原金额且不带入新批次',()=>{
     const {demo,context}=environment();
     const originalNet=context.summarizeBatchCardTransactions(demo.toBatch('current').settlementList).cardNet;
     const target=demo.find('attd_001051'),untouched=demo.find('attd_001048');
@@ -206,9 +235,9 @@ test('Close Batch自动执行已保存调整后快照，Unadjusted保留原金�
     assert.equal(batchId,'2071');
     assert.equal(last.settlementList.find(t=>t.id===target.id).amount,11200);
     assert.equal(last.settlementList.find(t=>t.id===target.id).tipCents,800);
-    assert.equal(last.settlementList.find(t=>t.id===untouched.id).amount,14000);
-    assert.equal(last.settlementList.find(t=>t.id===untouched.id).tipCents,1000);
-    assert.equal(context.summarizeBatchCardTransactions(last.settlementList).cardNet,originalNet+735);
+    assert.equal(last.settlementList.find(t=>t.id===untouched.id).amount,13000);
+    assert.equal(last.settlementList.find(t=>t.id===untouched.id).tipCents,0);
+    assert.equal(context.summarizeBatchCardTransactions(last.settlementList).cardNet,originalNet+800);
     assert.equal(demo.eligible('Tip Adjust').length,0);
     assert.equal(demo.adjustedTips().length,0);
     assert.equal(demo.toBatch('current').summary.batchId,'2072');
