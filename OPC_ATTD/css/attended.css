@@ -33,7 +33,7 @@
 .attd-match small {display:block;color:#8A96A8;font-size:11px;margin:4px 0;}
 .attd-hold {margin-top:12px;display:grid;gap:6px;text-align:center;font-size:12px;font-weight:700;color:#566473;}.attd-hold div:last-child {color:#7C3AED;}
 .attd-entry-back {position:absolute;left:18px;top:6px;}
-.key-done {display:flex;flex-direction:column;gap:3px;}.key-done small {font-size:14px;}.key-done:disabled {background:#F3F4F6;color:#777;box-shadow:0 2px 8px #10182812;cursor:default;}
+.key-done {display:flex;flex-direction:column;gap:3px;}.key-done small {font-size:14px;line-height:1.25;white-space:nowrap;flex:0 0 auto;}.key-done:disabled {background:#F3F4F6;color:#777;box-shadow:0 2px 8px #10182812;cursor:default;}
 #grid-card > .attd-extra {grid-column:1/-1;order:9;border-top:1px solid #D8E0EC;margin-top:4px;padding-top:12px;color:#667085;font-size:12px;font-weight:600;}
 .attd-extra summary {cursor:pointer;padding:6px;}.attd-extra-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:10px;}
 #grid-card > .action-card {order:0;}#grid-card > .action-card.priority-void {order:1;}#grid-card > .action-card.priority-refund {order:2;}#grid-card > .action-card.priority-auth {order:3;}#grid-card > .action-card.attd-incremental {order:4;}#grid-card > .action-card.attd-capture {order:5;}#grid-card > .management-heading {order:6;}#grid-card > .action-card.management-card {order:7;}

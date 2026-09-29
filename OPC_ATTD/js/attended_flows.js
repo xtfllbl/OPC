@@ -80,10 +80,35 @@
         }else finish(name,cents);
         return true;
     }
+    // Measure at the original CSS size each time so shorter amounts grow back.
+    function fitAmountLine(container, selector, inset=0){
+        const parts=[...container.querySelectorAll(selector)];
+        parts.forEach(part=>part.style.removeProperty('font-size'));
+        const available=container.clientWidth-inset;
+        if(available<=0)return;
+        const metrics=parts.map(part=>{
+            const style=getComputedStyle(part);
+            return {part,size:parseFloat(style.fontSize),width:part.getBoundingClientRect().width,
+                margin:parseFloat(style.marginLeft)+parseFloat(style.marginRight)};
+        });
+        const width=metrics.reduce((sum,item)=>sum+item.width,0);
+        const margins=metrics.reduce((sum,item)=>sum+item.margin,0);
+        const scale=Math.min(1,Math.max(0,available-margins)/width);
+        if(scale<1)metrics.forEach(({part,size})=>part.style.fontSize=`${Math.floor(size*scale*10)/10}px`);
+    }
+    let amountFitFrame;
+    function scheduleAmountFit(){
+        cancelAnimationFrame(amountFitFrame);
+        amountFitFrame=requestAnimationFrame(()=>{
+            fitAmountLine(document.querySelector('#keypad-overlay .key-ok'),'small',8);
+            fitAmountLine(document.querySelector('.amount-display'),'.currency, .amount-value',2);
+        });
+    }
     function refreshAmount(){
         const isRefund=pendingAction==='Refund',cents=Number(rawAmount)||0;
         document.querySelector('.amount-display .currency').textContent=isRefund?'- $':'$';
-        const ok=document.querySelector('#keypad-overlay .key-ok');ok.disabled=cents===0;ok.innerHTML=`OK<small>(${isRefund?'- ':''}${ui.money(cents)})</small>`;
+        const ok=document.querySelector('#keypad-overlay .key-ok');ok.disabled=cents===0;ok.innerHTML=`OK<small>${isRefund?'- ':''}${ui.money(cents)}</small>`;
+        scheduleAmountFit();
         const hold=document.getElementById('attd-hold');
         const hasHold=selected&&['Auth-Incremental','Capture'].includes(pendingAction);hold.hidden=!hasHold;
         if(hasHold){const current=Math.round(selected.amount*100);hold.innerHTML=pendingAction==='Capture'?`<div>Original Hold Amount: ${ui.money(current)}</div><div>Max Allowed Capture: ${ui.money(current)}</div>`:`<div>Current Hold Amount: ${ui.money(current)}</div><div>New Total Hold Amount: ${ui.money(current+cents)}</div>`;}
@@ -107,6 +132,9 @@
         section.innerHTML='<strong>Operation PINs</strong><small>Leave blank to disable a PIN.</small>'+['Void','Refund','Close Batch','Tip Adjust'].map(n=>`<label>${n}<input type="password" inputmode="numeric" class="attd-input" data-pin="${n}" aria-label="${n} PIN" autocomplete="off"></label>`).join('');
         const config=JSON.parse(localStorage.getItem('opc-operation-pins')||'{}');section.querySelectorAll('input').forEach(input=>{input.value=config[input.dataset.pin]||'';input.oninput=()=>{input.value=input.value.replace(/\D/g,'');config[input.dataset.pin]=input.value;localStorage.setItem('opc-operation-pins',JSON.stringify(config));};});document.querySelector('.settings-list').append(section);
         refreshAmount();
+        new ResizeObserver(scheduleAmountFit).observe(document.querySelector('#keypad-overlay .key-grid'));
+        window.addEventListener('resize',scheduleAmountFit);
+        document.fonts.ready.then(scheduleAmountFit);
         const returning=params.get('action');
         if(returning&&['Auth-Incremental','Capture','Reprint','Void'].includes(returning)){
             begin(returning);const t=demo.find(params.get('selected'));if(t)select(t);

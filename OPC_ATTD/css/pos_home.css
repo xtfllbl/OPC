@@ -600,7 +600,7 @@
 
         .key-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             grid-template-rows: repeat(4, 60px);
             grid-template-areas:
                 "k7   k8   k9   del"
@@ -611,6 +611,7 @@
         }
 
         .key {
+            min-width: 0;
             height: 100%;
             min-height: 56px;
             border-radius: 16px;
@@ -719,6 +720,7 @@
             flex: 1 1 auto;
             min-height: 150px;
             display: grid;
+            grid-template-columns: minmax(0, 1fr);
             place-items: center;
             padding: 0 20px;
         }
@@ -726,6 +728,7 @@
         .entry-state {
             grid-area: 1 / 1;
             width: 100%;
+            min-width: 0;
             height: 270px;
             transition: opacity 0.18s ease, transform 0.22s ease, visibility 0.18s ease;
         }
@@ -818,6 +821,7 @@
 
         .amount-display {
             display: flex;
+            width: 100%;
             align-items: baseline;
             justify-content: center;
             min-width: 0;
@@ -825,6 +829,8 @@
 
         .currency,
         .amount-value {
+            flex: 0 0 auto;
+            white-space: nowrap;
             color: var(--entry-color);
             font-size: 52px;
             line-height: 1.05;
