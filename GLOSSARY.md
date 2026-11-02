@@ -4,6 +4,34 @@ The payment terminal and user experience prototype ecosystem for Paywizard POS d
 
 ## Language
 
+### Paywizard Configure
+
+**TCI（终端配置标识）**:
+标识一份终端应用与参数配置的唯一编号，格式为 TC 加 8 位数字。
+_Avoid_: S/N、终端硬件编号
+
+**Terminal Binding（终端绑定）**:
+某台终端的 S/N 与 TCI 之间的当前有效关联；该关联可以在终端启动前由后台建立。
+_Avoid_: 已配置完成、已安装应用
+
+**Initial Setup（首次配置）**:
+终端针对当前有效绑定，首次完成所需应用安装和全部参数应用的配置过程。
+_Avoid_: 仅绑定 TCI、仅下载文件
+
+**Initial Setup Completed（已完成首次配置）**:
+当前有效绑定下，终端已经成功完成首次配置的事实；后续某次维护任务失败不抹去这一事实。
+_Avoid_: 最近一次任务成功、已绑定
+
+**Maintenance Task（维护任务）**:
+首次配置完成后，用户单独发起的应用下载或参数更新。
+_Avoid_: 重新绑定、重新执行首次配置
+
+**Configure Exit（退出配置应用）**:
+离开 Paywizard Configure 应用的操作；不表示解除 TCI 绑定或注销账号。
+_Avoid_: Settings Exit、Sign out、下一步
+
+### OPC payment
+
 **Payment Pane（支付区）**:
 横屏 OPC 中展示支付应用、供用户选择支付方式的区域；区域名称不随左右位置变化。
 _Avoid_: 左屏（作为固定业务名称）

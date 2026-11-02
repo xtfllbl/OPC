@@ -15,19 +15,24 @@
     constructor({ wait = ms => new Promise(resolve => setTimeout(resolve, ms)), storage = null } = {}) {
       this.wait = wait;
       this.storage = storage;
-      this.record = { scenario: 'unbound', binding: null, installed: {}, results: null, consumed: {}, reads: { apps: 0, parameters: 0 } };
+      this.record = { scenario: 'unbound', binding: null, installed: {}, jobs: {}, setupScope: null, bindingRevision: 1, consumed: {}, reads: { apps: 0, parameters: 0 } };
       try {
-        const saved = JSON.parse(storage?.getItem('paywizard-configure-v2') || 'null');
-        if (saved && saved.version === 2) this.record = saved.record;
+        const saved = JSON.parse(storage?.getItem('paywizard-configure-v3') || 'null');
+        if (saved && saved.version === 3) this.record = saved.record;
       } catch (_) { /* Storage unavailable: keep the demo in memory. */ }
     }
     persist() {
-      try { this.storage?.setItem('paywizard-configure-v2', JSON.stringify({ version: 2, record: this.record })); } catch (_) { /* In-memory fallback. */ }
+      try { this.storage?.setItem('paywizard-configure-v3', JSON.stringify({ version: 3, record: this.record })); } catch (_) { /* In-memory fallback. */ }
     }
     reset(scenario) {
-      this.record = { scenario, binding: ['bound', 'swap', 'app-failure', 'parameter-failure'].includes(scenario) ? (scenario === 'swap' ? 'TC00004321' : 'TC12345678') : null, installed: {}, results: null, consumed: {}, reads: { apps: 0, parameters: 0 } };
+      this.record = { scenario, binding: ['bound', 'configured', 'maintenance-failure', 'swap', 'app-failure', 'parameter-failure'].includes(scenario) ? (scenario === 'swap' ? 'TC00004321' : 'TC12345678') : null, installed: {}, jobs: {}, setupScope: null, bindingRevision: 1, consumed: {}, reads: { apps: 0, parameters: 0 } };
+      if (['configured', 'maintenance-failure'].includes(scenario)) {
+        this.record.setupScope = this.scope;
+        this.record.installed = { 'paywizard-app': '2.9.1', 'payment-app': '1.2.8' };
+      }
       this.persist();
     }
+    get scope() { return this.record.binding ? this.record.binding + ':' + this.record.bindingRevision : null; }
     async lookup() {
       await this.wait(600);
       if (this.record.scenario === 'query-failure') throw new Error('Couldn’t check this terminal. Check the connection and try again.');
@@ -61,7 +66,7 @@
     }
     shouldFail(type, item, index) {
       const scenario = this.record.scenario;
-      const active = type === 'apps' ? ['swap', 'app-failure'].includes(scenario) : scenario === 'parameter-failure';
+      const active = type === 'apps' ? ['swap', 'app-failure'].includes(scenario) : ['parameter-failure', 'maintenance-failure'].includes(scenario);
       if (active && item.id.startsWith('payment-') && index === 2 && !this.record.consumed[type]) {
         this.record.consumed[type] = true;
         this.persist();
@@ -70,7 +75,10 @@
       return false;
     }
     checkpoint(state) {
-      if (state.tci) this.record.results = { tci: state.tci, apps: clone(state.apps), parameters: clone(state.parameters), pendingParameters: state.pendingParameters };
+      if (state.operation && state.scope === this.scope) {
+        this.record.jobs[state.operation] = { scope: state.scope, apps: clone(state.apps), parameters: clone(state.parameters), stage: state.stage, status: state.taskStatus, error: state.error };
+        if (state.initialSetupCompleted) this.record.setupScope = state.scope;
+      }
       this.persist();
     }
   }
@@ -80,26 +88,31 @@
       this.gateway = gateway;
       this.onChange = onChange;
       this.generation = 0;
-      this.state = { binding: 'loading', tci: '', busy: false, message: '', error: '', apps: [], parameters: [], pendingParameters: false, closed: false };
+      this.state = {};
     }
     emit() { this.gateway.checkpoint(this.state); this.onChange(this.state); }
     current(token) { return token === this.generation && !this.state.closed; }
-    get complete() { return this.state.parameters.length > 0 && this.state.parameters.every(item => item.status === 'success'); }
+    get complete() { return Boolean(this.state.initialSetupCompleted); }
     get failures() { return [...this.state.apps, ...this.state.parameters].some(item => item.status === 'error'); }
+    pending(operation) {
+      const job = this.gateway.record.jobs[operation];
+      return job?.scope === this.state.scope && job.status !== 'success' ? job : null;
+    }
     async enter() {
+      if (this.state.busy && !this.state.closed) return;
       const token = ++this.generation;
-      Object.assign(this.state, { binding: 'loading', tci: '', busy: false, message: 'Checking this terminal…', error: '', apps: [], parameters: [], pendingParameters: false, closed: false });
+      Object.assign(this.state, { binding: 'loading', scope: null, tci: '', busy: false, message: 'Checking this terminal…', error: '', apps: [], parameters: [], closed: false, page: 'home', operation: null, stage: '', taskStatus: '', initialSetupCompleted: false });
       this.onChange(this.state);
       try {
         const tci = await this.gateway.lookup();
         if (!this.current(token)) return;
-        const saved = this.gateway.record.results;
-        Object.assign(this.state, { binding: tci ? 'bound' : 'unbound', tci: tci || '', message: '' });
-        if (tci && saved?.tci === tci) {
-          this.state.apps = clone(saved.apps);
-          this.state.parameters = clone(saved.parameters);
-          this.state.pendingParameters = saved.pendingParameters;
-          for (const item of [...this.state.apps, ...this.state.parameters]) {
+        const scope = this.gateway.scope;
+        Object.assign(this.state, { binding: tci ? 'bound' : 'unbound', scope, tci: tci || '', message: '', initialSetupCompleted: Boolean(scope && this.gateway.record.setupScope === scope) });
+        // In this local simulation page exit stops jobs. Real adapters must query live jobs.
+        for (const job of Object.values(this.gateway.record.jobs)) {
+          if (job.scope !== scope || job.status !== 'running') continue;
+          job.status = 'failed';
+          for (const item of [...job.apps, ...job.parameters]) {
             if (['working', 'queued'].includes(item.status)) Object.assign(item, { status: 'error', phase: 'Interrupted. Retry to continue.' });
           }
         }
@@ -109,52 +122,66 @@
       }
       this.emit();
     }
+    goHome() {
+      if (this.state.busy || this.state.closed) return false;
+      this.state.page = 'home'; this.emit(); return true;
+    }
     async start(operation, input = '') {
-      if (this.state.busy || this.state.closed || !['bound', 'unbound'].includes(this.state.binding)) return;
-      if (operation !== 'setup' && this.state.binding !== 'bound') return;
+      if (!['setup', 'apps', 'parameters'].includes(operation) || this.state.busy || this.state.closed || !['bound', 'unbound'].includes(this.state.binding)) return;
+      if (operation !== 'setup' && !this.complete) return;
+      if (operation === 'setup' && this.complete) return;
       if (this.state.binding === 'unbound' && !validTci(input)) {
-        this.state.error = 'Enter 8 digits after TC.';
-        this.emit(); return;
+        this.state.error = 'Enter 8 digits after TC.'; this.emit(); return;
       }
       const token = ++this.generation;
-      Object.assign(this.state, { busy: true, error: '', message: this.state.tci ? 'Checking applications…' : 'Checking TCI…' });
-      this.emit();
+      this.state.busy = true; this.state.error = ''; this.state.message = 'Checking TCI…'; this.emit();
       try {
         if (!this.state.tci) {
           const tci = await this.gateway.bind('TC' + normalizeTci(input));
           if (!this.current(token)) return;
-          Object.assign(this.state, { tci, binding: 'bound' });
-          this.emit();
+          Object.assign(this.state, { tci, scope: this.gateway.scope, binding: 'bound' });
         }
+        const saved = this.pending(operation);
+        Object.assign(this.state, { page: 'task', operation, apps: saved ? clone(saved.apps) : [], parameters: saved ? clone(saved.parameters) : [], stage: saved?.stage || 'appManifest', taskStatus: 'running', message: '' });
+        this.emit();
+        await this.pipeline(token);
+      } catch (error) { if (this.current(token)) this.state.error = error.message; }
+      finally { this.finish(token); }
+    }
+    async pipeline(token) {
+      if (this.state.stage === 'appManifest') {
+        this.state.message = 'Checking applications…'; this.emit();
         const manifest = await this.gateway.manifest('apps');
         if (!this.current(token)) return;
-        this.state.apps = manifest.map(item => {
-          const next = task(item);
-          if (this.gateway.record.installed[item.id] === item.version) Object.assign(next, { progress: 100, phase: 'Installed', status: 'success' });
-          return next;
-        });
-        this.state.pendingParameters = operation !== 'apps';
-        // A new parameter request invalidates the previous Applied result immediately.
-        if (operation !== 'apps') this.state.parameters = [];
-        this.state.message = '';
-        this.emit();
+        this.state.apps = manifest.map(item => this.gateway.record.installed[item.id] === item.version ? { ...item, progress: 100, phase: 'Installed', status: 'success' } : task(item));
+        this.state.stage = 'apps'; this.state.message = ''; this.emit();
+      }
+      if (this.state.stage === 'apps') {
         await this.run('apps', this.state.apps.filter(item => item.status !== 'success'), token);
+        if (!this.current(token) || this.failures) return;
+        this.state.stage = this.state.operation === 'apps' ? 'done' : 'parameterManifest'; this.emit();
+      }
+      if (this.state.stage === 'parameterManifest') {
+        this.state.message = 'Checking latest parameters…'; this.emit();
+        const manifest = await this.gateway.manifest('parameters');
         if (!this.current(token)) return;
-        if (!this.state.apps.some(item => item.status === 'error') && this.state.pendingParameters) await this.beginParameters(token);
-      } catch (error) {
-        if (this.current(token)) this.state.error = error.message;
-      } finally {
-        if (this.current(token)) { this.state.busy = false; this.state.message = ''; this.emit(); }
+        this.state.parameters = manifest.map(task);
+        this.state.stage = 'parameters'; this.state.message = ''; this.emit();
+      }
+      if (this.state.stage === 'parameters') {
+        await this.run('parameters', this.state.parameters.filter(item => item.status !== 'success'), token);
+        if (!this.current(token) || this.failures) return;
+        this.state.stage = 'done';
       }
     }
-    async beginParameters(token) {
-      this.state.message = 'Checking latest parameters…'; this.emit();
-      const manifest = await this.gateway.manifest('parameters');
+    finish(token) {
       if (!this.current(token)) return;
-      this.state.parameters = manifest.map(task);
-      this.state.pendingParameters = false;
-      this.state.message = ''; this.emit();
-      await this.run('parameters', this.state.parameters, token);
+      this.state.busy = false; this.state.message = '';
+      if (this.state.operation) {
+        this.state.taskStatus = this.state.stage === 'done' && !this.state.error ? 'success' : 'failed';
+        if (this.state.operation === 'setup' && this.state.taskStatus === 'success') this.state.initialSetupCompleted = true;
+      }
+      this.emit();
     }
     async run(type, items, token) {
       await Promise.all(items.map(async item => {
@@ -177,16 +204,17 @@
       const item = this.state[type]?.find(entry => entry.id === id);
       if (!item || item.status !== 'error' || this.state.busy || this.state.closed || this.state.binding !== 'bound') return;
       const token = ++this.generation;
-      this.state.busy = true; this.state.error = ''; this.emit();
+      this.state.busy = true; this.state.error = ''; this.state.taskStatus = 'running'; this.emit();
       try {
         await this.run(type, [item], token);
-        if (!this.current(token)) return;
-        if (type === 'apps' && this.state.pendingParameters && this.state.apps.every(entry => entry.status === 'success')) await this.beginParameters(token);
+        if (!this.current(token) || this.failures) return;
+        await this.pipeline(token);
       } catch (error) { if (this.current(token)) this.state.error = error.message; }
-      finally { if (this.current(token)) { this.state.busy = false; this.state.message = ''; this.emit(); } }
+      finally { this.finish(token); }
     }
     close() {
       ++this.generation;
+      if (this.state.busy && this.state.operation) this.state.taskStatus = 'failed';
       for (const item of [...this.state.apps, ...this.state.parameters]) {
         if (['working', 'queued'].includes(item.status)) Object.assign(item, { status: 'error', phase: 'Interrupted. Retry to continue.' });
       }

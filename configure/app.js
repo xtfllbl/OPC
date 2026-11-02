@@ -5,7 +5,7 @@
     let storage = null;
     try { storage = window.sessionStorage; } catch (_) { /* File/private browsing fallback. */ }
     const gateway = new DemoGateway({ storage });
-    const scenarios = ['unbound', 'bound', 'swap', 'query-failure', 'app-failure', 'parameter-failure'];
+    const scenarios = ['unbound', 'bound', 'configured', 'maintenance-failure', 'swap', 'query-failure', 'app-failure', 'parameter-failure'];
     const requestedScenario = new URLSearchParams(location.search).get('scenario');
     if (scenarios.includes(requestedScenario)) gateway.reset(requestedScenario);
     const input = $('tcid-input');
@@ -50,42 +50,61 @@
         }
     }
 
+    let previousPage = 'home';
     function render(state) {
         const bound = state.binding === 'bound';
-        const hasResults = state.apps.length + state.parameters.length > 0;
-        const complete = controller?.complete || false;
-        const failures = controller?.failures || false;
-        $('terminal-app').classList.toggle('has-results', hasResults);
+        const taskPage = state.page === 'task';
+        const home = !taskPage;
+        const maintenance = controller.complete;
+        const changedPage = previousPage !== state.page;
+        if (changedPage && taskPage) history.pushState({ configureTask: true }, '');
+        previousPage = state.page;
+        $('terminal-app').classList.toggle('task-page', taskPage);
         $('app-content').hidden = state.closed;
         $('exit-screen').hidden = !state.closed;
-        if (hasResults) $('page-title').textContent = 'Your terminal';
+        const titles = { setup: 'Set up terminal', apps: 'Download apps', parameters: 'Update parameters' };
+        if (taskPage) $('page-title').textContent = titles[state.operation];
+        else if (maintenance) $('page-title').textContent = 'Your terminal';
         else $('page-title').innerHTML = 'Set up your<br>terminal';
-        input.disabled = !['unbound', 'bound'].includes(state.binding);
+        $('terminal-footer').hidden = taskPage;
+        $('setup-form').hidden = taskPage;
+        $('editable-tci').hidden = bound;
+        $('bound-tci').hidden = !bound;
+        $('tci-value').textContent = state.tci;
+        input.disabled = state.binding !== 'unbound' || state.busy;
         input.readOnly = bound || state.busy;
-        if (bound) input.value = state.tci.slice(2);
-        input.setAttribute('aria-readonly', String(input.readOnly));
         input.setAttribute('aria-invalid', String(Boolean(state.error && !bound)));
         input.closest('.input-wrap').classList.toggle('invalid', Boolean(state.error && !bound));
+        $('setup-help').hidden = maintenance;
         $('tcid-error').textContent = state.error;
-        $('tcid-error').hidden = !state.error;
-        // Initial lookup uses the primary control, preserving the approved first-use layout.
+        $('tcid-error').hidden = !state.error || maintenance;
         $('binding-message').textContent = state.message;
         $('binding-message').hidden = !state.message || state.binding === 'loading' || state.busy;
         $('query-retry').hidden = state.binding !== 'error';
-        $('setup-button').hidden = state.binding === 'error' || failures;
+        $('setup-button').hidden = state.binding === 'error' || maintenance;
         $('setup-button').disabled = state.busy || !['bound', 'unbound'].includes(state.binding);
         $('setup-button').setAttribute('aria-busy', String(state.busy || state.binding === 'loading'));
-        $('setup-label').textContent = state.binding === 'loading' ? 'Checking terminal…' : state.busy ? (state.message || 'Setting up…') : complete ? 'Update Parameters' : 'Set up terminal';
+        $('setup-label').textContent = state.binding === 'loading' ? 'Checking terminal…' : state.busy ? (state.message || 'Setting up…') : controller.pending('setup') ? 'Continue setup' : 'Set up terminal';
         $('setup-button').querySelector('.button-spinner').hidden = !state.busy && state.binding !== 'loading';
         $('setup-button').querySelector('.button-arrow').toggleAttribute('hidden', state.busy || state.binding === 'loading');
-        $('results-area').hidden = !hasResults;
-        renderTasks('apps', 'app-task-list', 'app-results', state.apps, state.busy);
-        renderTasks('parameters', 'parameter-task-list', 'parameter-results', state.parameters, state.busy);
-        $('individual-actions').hidden = !bound;
-        $('download-app').disabled = state.busy || failures;
-        $('download-parameters').disabled = state.busy || failures;
-        // Once configured, the primary Update Parameters control is the parameter action.
-        $('download-parameters').hidden = complete;
+        $('results-area').hidden = home;
+        renderTasks('apps', 'app-task-list', 'app-results', taskPage ? state.apps : [], state.busy);
+        renderTasks('parameters', 'parameter-task-list', 'parameter-results', taskPage ? state.parameters : [], state.busy);
+        $('task-status').textContent = state.busy ? (state.message || 'Keep this app open while the task runs.') : '';
+        $('task-error').textContent = state.error;
+        $('task-error').hidden = !state.error;
+        $('task-retry').hidden = !taskPage || state.busy || !state.error;
+        $('task-done').hidden = home || state.busy;
+        $('task-done').textContent = state.taskStatus === 'success' ? 'Done' : 'Back to home';
+        $('individual-actions').hidden = !home || !maintenance;
+        $('download-app').disabled = state.busy;
+        $('download-parameters').disabled = state.busy;
+        $('apps-pending').hidden = !controller.pending('apps');
+        $('parameters-pending').hidden = !controller.pending('parameters');
+        if (changedPage && !state.closed) {
+            $('main-content').scrollTop = 0;
+            $('page-title').focus({ preventScroll: true });
+        }
         const announcement = [...state.apps, ...state.parameters].filter(item => ['success', 'error'].includes(item.status)).map(item => item.name + ': ' + item.phase).join('. ');
         if (announcement !== lastAnnouncement) { $('task-announcement').textContent = announcement; lastAnnouncement = announcement; }
     }
@@ -93,8 +112,19 @@
     controller = new Configuration(gateway, render);
     $('setup-form').addEventListener('submit', async event => {
         event.preventDefault();
-        await controller.start(controller.complete ? 'parameters' : 'setup', input.value);
+        await controller.start('setup', input.value);
         if (controller.state.error && controller.state.binding === 'unbound') input.focus();
+    });
+    function returnHome() {
+        if (controller.goHome() && history.state?.configureTask) history.back();
+    }
+    $('task-done').addEventListener('click', returnHome);
+    $('task-retry').addEventListener('click', () => controller.start(controller.state.operation));
+    // Browser Back follows the same task guard. Native shells must wire their Back action here.
+    window.addEventListener('popstate', () => {
+        if (controller.state.page !== 'task' || controller.state.closed) return;
+        if (controller.state.busy) history.pushState({ configureTask: true }, '');
+        else controller.goHome();
     });
     input.addEventListener('input', () => {
         const normalized = normalizeTci(input.value);
@@ -123,7 +153,7 @@
     });
     $('exit-app-button').addEventListener('click', () => {
         if (!controller.state.busy) { controller.close(); $('reopen-app').focus(); return; }
-        $('exit-message').textContent = 'Setup is still in progress. Exiting may interrupt the current task. Continue setup or exit?';
+        $('exit-message').textContent = 'A task is still running. Exiting may interrupt it. Exit application?';
         $('exit-modal').showModal();
         $('exit-cancel').focus();
     });

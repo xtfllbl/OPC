@@ -109,9 +109,9 @@ components:
     padding: "8px 18px"
   button-icon:
     textColor: "{colors.ink}"
-    backgroundColor: "transparent"
-    rounded: "{rounded.control}"
-    size: "48px"
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.compact}"
+    minHeight: "44px"
   tci-field:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -139,7 +139,7 @@ components:
 
 用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。
 
-这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.device_manager.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。
+这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.device_manager.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`、`07-maintenance-home.png` 和 `08-prebound-setup.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。
 
 **Key Characteristics:**
 - 系统字体与近黑主操作。
@@ -175,7 +175,7 @@ components:
 
 全界面使用前置 Apple 系统字体、随后 Segoe UI / Roboto / Helvetica / Arial 的系统无衬线栈。没有独立展示字体或等宽字体。数字通过 tabular-nums 对齐。
 
-- **Headline**：初始两行标题；结果出现后切换为较小的 headline-results 单行标题。
+- **Headline**：初始两行标题；独立任务页使用较小的 headline-results 标题，首页保持 34px 标题。
 - **Title**：Applications、Parameters 与对话框标题。
 - **Body**：简短说明；对话框正文在同样字号下使用更宽松行高（1.5）。
 - **Label**：字段标签。任务阶段、版本与底部标签也使用小字号，但权重与行高按各自用途处理。
@@ -189,7 +189,7 @@ components:
 
 桌面将终端画布居中，基准尺寸为（390 × 844px），受视口宽度与高度限制。界面纵向分为模拟状态栏、品牌与退出入口、可滚动主区、底部终端身份。主区常规水平内边距为（24px）；底部通过分隔线与主区区分，保留在滚动区之外。
 
-首屏直接排布两行标题、TCI 标签与输入、一行说明、全宽主操作，不包外围卡片。输入高（62px），主操作最小高（52px）；标题上间距与主操作前间距均为（32px）。任务出现后标题缩小，结果区与独立操作区分别使用（28px）上间距。任务区之间为（24px），任务行上下内边距为（16px）。
+首屏直接排布两行标题、TCI 标签与输入、一行说明、全宽主操作，不包外围卡片。输入高（62px），主操作最小高（52px）；标题上间距与主操作前间距均为（32px）。独立任务页标题缩小，结果区使用（28px）上间距；首页双入口使用（32px）上间距、（14px）按钮间距与浅边框。任务区之间为（24px），任务行上下内边距为（16px）。
 
 - 宽度不超过（440px）：画布占满视口宽度与 100svh。
 - 高度不超过（700px）：缩减状态栏、页头和页脚垂直占用，主区继续滚动。
@@ -216,13 +216,13 @@ components:
 
 ### Inputs / Fields
 
-白色 TCI 输入带固定 TC 前缀和数字区。聚焦时边框变近黑并增加（1px）外描边；错误边框与错误说明使用 negative。禁用数字区透明度为（0.55）。已绑定与执行时只读状态保留可读数字，不伪装成可编辑字段。
+白色 TCI 输入带固定 TC 前缀和数字区。聚焦时边框变近黑并增加（1px）外描边；错误边框与错误说明使用 negative。禁用数字区透明度为（0.55）。已绑定时以静态完整 TC 值与锁图标替换输入，不显示数字键盘；身份值可选择复制。
 
 绑定查询失败显示 Retry，不把失败当作未绑定。输入错误通过文字和 aria-invalid 表达，不能仅依赖红色。原生场景选择框只用于隐藏的原型演示对话框。
 
 ### Navigation
 
-页头只有双行品牌入口与右侧箭头退出入口，没有标签导航或侧边栏。退出入口为（48 × 48px），内部箭头为（28px），悬停显示浅灰底。品牌默认无底色与边框，保留键盘焦点；长按或 Shift+Enter 打开演示场景。
+页头是双行品牌与「退出图标 + Exit」浅边白底按钮，最小高 44px、圆角 12px、图标 19px。独立任务页不显示顶部 Back 和底部 S/N；任务结束后通过列表末尾 Done（失败时 Back to home）回首页。浏览器 Back 使用同一执行中限制，原生壳需接入该规则。品牌默认无底色与边框，保留键盘焦点；长按或 Shift+Enter 打开演示场景。
 
 ### Task rows
 
@@ -232,11 +232,11 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 
 ### Dialogs
 
-原生 dialog 承载退出风险确认和原型场景选择。白底、细边线、较大圆角与（24px）内边距；操作纵向排列，间距（10px）。退出确认保留 Continue setup 与 Exit 两个清晰选择。组件预览只展示结构；真实模态焦点与遮罩由页面的原生 dialog 实现。
+原生 dialog 承载退出风险确认和原型场景选择。白底、细边线、较大圆角与（24px）内边距；操作纵向排列，间距（10px）。退出确认保留 Stay here 与 Exit 两个清晰选择。组件预览只展示结构；真实模态焦点与遮罩由页面的原生 dialog 实现。
 
 ### Terminal identity footer
 
-底部左对齐显示 This terminal 和加重 S/N，细线在上方分隔。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
+仅首页底部左对齐显示 This terminal 和加重 S/N，细线在上方分隔。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
 
 ## Do's and Don'ts
 
@@ -249,6 +249,6 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 ### Don't:
 - Don't 将本文件中的 Configure 构图推广成 OPC_ATTD、OPC_PAD 或整个仓库的规则。
 - Don't 给批准首屏补上外围表单卡片，或将 S/N 移到输入框下方。
-- Don't 在绑定成功前显示 Download apps only 或 Download parameters。
+- Don't 在首次配置完成前显示 Download apps 或 Update parameters；Don't 在首页展开旧任务进度。
 - Don't 用蓝色主按钮、装饰阴影、总进度或汇总完成徽章替代当前实现。
 - Don't 把模拟任务结果或文档组件预览描述成真实终端执行凭据。

@@ -13,6 +13,8 @@
 <body>
     <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
+        <symbol id="logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5M10 12h11m-4-4 4 4-4 4"/></symbol>
+        <symbol id="lock" viewBox="0 0 24 24"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
         <symbol id="wifi" viewBox="0 0 24 24"><path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0M12 20h.01"/></symbol>
         <symbol id="signal" viewBox="0 0 24 24"><path d="M4 20v-4m5 4v-8m5 8V8m5 12V4"/></symbol>
         <symbol id="battery" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M10 2h4M8 9h8v9H8z"/></symbol>
@@ -27,16 +29,18 @@
                 <button class="brand" id="app-title" type="button" aria-label="Paywizard Configure">
                     <span class="wordmark">PAYwizard</span><span class="product-name">Configure</span>
                 </button>
-                <button class="icon-button" id="exit-app-button" type="button" aria-label="Exit application"><svg><use href="#arrow"/></svg></button>
+                <button class="exit-button" id="exit-app-button" type="button" aria-label="Exit application"><svg aria-hidden="true"><use href="#logout"/></svg><span>Exit</span></button>
             </header>
             <main id="main-content">
-                <h1 id="page-title">Set up your<br>terminal</h1>
+                <h1 id="page-title" tabindex="-1">Set up your<br>terminal</h1>
                 <form id="setup-form" novalidate>
-                    <label class="input-label" for="tcid-input">TCI</label>
+                    <div id="editable-tci"><label class="input-label" for="tcid-input">TCI</label>
                     <div class="input-wrap">
                         <span class="tci-prefix" aria-hidden="true">TC</span>
                         <input id="tcid-input" type="text" inputmode="numeric" pattern="[0-9]{8}" autocomplete="off" spellcheck="false" placeholder="12345678" aria-label="TCI number, 8 digits after TC" aria-describedby="setup-help tcid-error" disabled>
                     </div>
+                    </div>
+                    <div id="bound-tci" hidden><span class="input-label">TCI</span><div class="tci-identity"><span id="tci-value"></span><svg aria-label="Read only" role="img"><use href="#lock"/></svg></div></div>
                     <p id="setup-help" class="helper">Apps and parameters, in one step.</p>
                     <p id="tcid-error" class="error-message" role="alert" hidden></p>
                     <p id="binding-message" class="binding-message" role="status" hidden></p>
@@ -47,6 +51,9 @@
                     </button>
                 </form>
                 <div id="results-area" hidden>
+                    <p id="task-status" class="binding-message" role="status"></p>
+                    <p id="task-error" class="error-message" role="alert" hidden></p>
+                    <button id="task-retry" class="secondary-button" type="button" hidden>Retry</button>
                     <section id="app-results" class="workflow-section" aria-labelledby="app-results-title" hidden>
                         <h2 id="app-results-title">Applications</h2><div id="app-task-list" class="task-list"></div>
                     </section>
@@ -55,12 +62,13 @@
                     </section>
                 </div>
                 <div class="individual-actions" id="individual-actions" aria-label="Individual downloads" hidden>
-                    <button class="secondary-button" id="download-app" type="button">Download apps only</button>
-                    <button class="secondary-button" id="download-parameters" type="button">Download parameters</button>
+                    <button class="secondary-button" id="download-app" type="button"><span>Download apps</span><small id="apps-pending" hidden>Not finished · Continue</small></button>
+                    <button class="secondary-button" id="download-parameters" type="button"><span>Update parameters</span><small id="parameters-pending" hidden>Not finished · Continue</small></button>
                 </div>
+                <button id="task-done" class="primary-button" type="button" hidden>Done</button>
                 <p id="task-announcement" class="sr-only" role="status" aria-live="polite"></p>
             </main>
-            <footer class="terminal-footer"><span>This terminal</span><strong>S/N WP6170PQ23000060</strong></footer>
+            <footer class="terminal-footer" id="terminal-footer"><span>This terminal</span><strong>S/N WP6170PQ23000060</strong></footer>
         </div>
         <section class="exit-screen" id="exit-screen" aria-labelledby="exit-screen-title" hidden>
             <h1 id="exit-screen-title">Application closed</h1>
@@ -68,14 +76,14 @@
         </section>
         <dialog id="exit-modal" aria-labelledby="exit-title" aria-describedby="exit-message">
             <h2 id="exit-title">Exit application?</h2><p id="exit-message"></p>
-            <div class="dialog-actions"><button class="secondary-button" id="exit-cancel" type="button">Continue setup</button><button class="primary-button" id="exit-confirm" type="button">Exit</button></div>
+            <div class="dialog-actions"><button class="secondary-button" id="exit-cancel" type="button">Stay here</button><button class="primary-button" id="exit-confirm" type="button">Exit</button></div>
         </dialog>
         <dialog id="demo-modal" aria-labelledby="demo-title" aria-describedby="demo-description">
             <h2 id="demo-title">Prototype scenarios</h2>
             <p id="demo-description">Simulated binding and delivery. No live terminal is changed.</p>
             <label for="demo-state">Startup state</label>
             <select id="demo-state">
-                <option value="unbound">Unbound terminal</option><option value="bound">Bound · TC12345678</option>
+                <option value="unbound">Unbound terminal</option><option value="bound">Prebound · TC12345678</option><option value="configured">Setup completed</option><option value="maintenance-failure">Configured · parameter update fails</option>
                 <option value="query-failure">Binding query fails</option><option value="app-failure">One application fails</option>
                 <option value="parameter-failure">One parameter group fails</option><option value="swap">SWAP · TC00004321</option>
             </select>

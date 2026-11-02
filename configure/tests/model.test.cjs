@@ -68,14 +68,17 @@ test('parameter retry never repeats the successful group, updates fetch a fresh 
     assert.equal(gateway.record.reads.parameters, 2);
     assert.notEqual(model.state.parameters[0], successful); assert.equal(model.complete, true);
 });
-test('installed apps are skipped and app-only operation never starts parameter tasks', async () => {
+test('prebound terminals cannot run maintenance until setup finishes; app-only never applies parameters', async () => {
     const { model, gateway } = await fixture('bound');
-    await model.start('apps');
-    assert.equal(model.complete, false); assert.equal(gateway.record.reads.parameters, 0);
+    await model.start('apps'); await model.start('parameters');
+    assert.deepEqual(gateway.record.reads, { apps: 0, parameters: 0 });
+    await model.start('setup');
+    const before = gateway.record.reads.parameters;
     let appExecution = 0;
     model.onChange = state => { appExecution += state.apps.filter(item => item.status === 'working').length; };
-    await model.start('parameters');
-    assert.equal(appExecution, 0); assert.equal(model.complete, true);
+    await model.start('apps');
+    assert.equal(appExecution, 0); assert.equal(gateway.record.reads.parameters, before);
+    assert.deepEqual(model.state.parameters, []); assert.equal(model.complete, true);
 });
 test('exit during binding cannot resurrect the closed UI; re-entry queries adapter binding', async () => {
     const { model, gateway } = await fixture();
@@ -98,8 +101,8 @@ test('interrupted application jobs restore as retryable, never as complete', asy
     model.onChange = () => {};
     await model.enter();
     assert.equal(model.complete, false); assert.equal(model.state.parameters.length, 0);
-    assert.ok(model.state.apps.every(item => item.status === 'error'));
-    for (const item of model.state.apps.filter(item => item.status === 'error')) await model.retry('apps', item.id);
+    assert.ok(model.pending('setup'));
+    await model.start('setup');
     assert.equal(model.complete, true); assert.equal(gateway.record.reads.parameters, 1);
 });
 test('saved state survives a new controller; SWAP clears previous task scope', async () => {
@@ -113,4 +116,59 @@ test('repeated clicks during provisioning do not start duplicate manifests', asy
     const { model, gateway } = await fixture();
     await Promise.all([model.start('setup', '12345678'), model.start('setup', '12345678')]);
     assert.deepEqual(gateway.record.reads, { apps: 1, parameters: 1 });
+});
+
+test('maintenance failure preserves initial completion and resumes only unsuccessful items', async () => {
+    const { model, gateway } = await fixture('maintenance-failure');
+    assert.equal(model.complete, true);
+    await model.start('parameters');
+    assert.equal(model.state.taskStatus, 'failed'); assert.equal(model.complete, true);
+    const successful = JSON.stringify(model.state.parameters[0]);
+    model.close(); await model.enter();
+    assert.equal(model.state.page, 'home'); assert.equal(model.complete, true);
+    assert.ok(model.pending('parameters'));
+    await model.start('parameters');
+    assert.equal(JSON.stringify(model.state.parameters[0]), successful);
+    assert.equal(gateway.record.reads.parameters, 1); assert.equal(model.pending('parameters'), null);
+});
+test('another maintenance operation does not erase pending parameter work', async () => {
+    const { model, gateway } = await fixture('maintenance-failure');
+    await model.start('parameters'); model.goHome();
+    await model.start('apps'); assert.ok(model.pending('parameters'));
+    await model.start('parameters'); assert.equal(gateway.record.reads.parameters, 1);
+    assert.equal(model.pending('parameters'), null);
+});
+test('return is blocked while running and completion stays on task page until Done', async () => {
+    let attempted = false;
+    const { model } = await fixture('bound');
+    model.onChange = state => {
+        if (state.page === 'task' && state.busy && !attempted) {
+            attempted = true; assert.equal(model.goHome(), false); assert.equal(state.page, 'task');
+        }
+    };
+    await model.start('setup'); assert.equal(attempted, true);
+    assert.equal(model.state.page, 'task'); assert.equal(model.goHome(), true);
+    assert.equal(model.state.page, 'home');
+});
+test('binding revision invalidates completion and pending records even for the same TCI', async () => {
+    const { model, gateway } = await fixture('configured');
+    gateway.record.bindingRevision++;
+    await model.enter(); assert.equal(model.complete, false); assert.equal(model.pending('setup'), null);
+});
+test('interruption before app manifest returns retains a resumable setup', async () => {
+    const { model, gateway } = await fixture('bound');
+    let release; gateway.wait = () => new Promise(resolve => { release = resolve; });
+    const work = model.start('setup'); model.close(); release(); await work;
+    gateway.wait = fast; await model.enter(); assert.ok(model.pending('setup'));
+    await model.start('setup'); assert.equal(model.complete, true);
+});
+test('manifest failures can resume without repeating installed apps', async () => {
+    const { model, gateway } = await fixture('bound');
+    const manifest = gateway.manifest.bind(gateway);
+    let failed = false;
+    gateway.manifest = async type => { if (type === 'parameters' && !failed) { failed = true; throw new Error('Manifest unavailable'); } return manifest(type); };
+    await model.start('setup'); assert.match(model.state.error, /unavailable/);
+    assert.ok(model.state.apps.every(item => item.status === 'success'));
+    await model.start('setup'); assert.equal(model.complete, true);
+    assert.equal(gateway.record.reads.apps, 1);
 });
