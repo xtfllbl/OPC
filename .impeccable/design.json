@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T08:45:46.067351+00:00",
+  "title": "Design System: Paywizard Configure",
+  "extensions": {
+    "scope": {
+      "include": [
+        "27.device_manager.html",
+        "configure/"
+      ],
+      "exclude": [
+        "OPC_ATTD/",
+        "OPC_PAD/",
+        "Other root prototypes"
+      ],
+      "sources": [
+        "configure/app.css",
+        "configure/app.js",
+        "27.device_manager.html"
+      ],
+      "validationBoundary": "Static-prototype documentation; no live terminal or physical-device acceptance implied."
+    },
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "ink",
+        "tonalRamp": [
+          "oklch(15% 0.00752 285.83)",
+          "oklch(26% 0.00752 285.83)",
+          "oklch(38% 0.00752 285.83)",
+          "oklch(49% 0.00752 285.83)",
+          "oklch(61% 0.00752 285.83)",
+          "oklch(72% 0.00752 285.83)",
+          "oklch(84% 0.00752 285.83)",
+          "oklch(95% 0.00752 285.83)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "muted",
+        "tonalRamp": [
+          "oklch(15% 0.01878 262.69)",
+          "oklch(26% 0.01878 262.69)",
+          "oklch(38% 0.01878 262.69)",
+          "oklch(49% 0.01878 262.69)",
+          "oklch(61% 0.01878 262.69)",
+          "oklch(72% 0.01878 262.69)",
+          "oklch(84% 0.01878 262.69)",
+          "oklch(95% 0.01878 262.69)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "canvas",
+        "tonalRamp": [
+          "oklch(15% 0.00287 264.54)",
+          "oklch(26% 0.00287 264.54)",
+          "oklch(38% 0.00287 264.54)",
+          "oklch(49% 0.00287 264.54)",
+          "oklch(61% 0.00287 264.54)",
+          "oklch(72% 0.00287 264.54)",
+          "oklch(84% 0.00287 264.54)",
+          "oklch(95% 0.00287 264.54)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "line",
+        "tonalRamp": [
+          "oklch(15% 0.00290 264.54)",
+          "oklch(26% 0.00290 264.54)",
+          "oklch(38% 0.00290 264.54)",
+          "oklch(49% 0.00290 264.54)",
+          "oklch(61% 0.00290 264.54)",
+          "oklch(72% 0.00290 264.54)",
+          "oklch(84% 0.00290 264.54)",
+          "oklch(95% 0.00290 264.54)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "positive": {
+        "role": "state",
+        "displayName": "positive",
+        "tonalRamp": [
+          "oklch(15% 0.09766 164.29)",
+          "oklch(26% 0.09766 164.29)",
+          "oklch(38% 0.09766 164.29)",
+          "oklch(49% 0.09766 164.29)",
+          "oklch(61% 0.09766 164.29)",
+          "oklch(72% 0.09766 164.29)",
+          "oklch(84% 0.09766 164.29)",
+          "oklch(95% 0.09766 164.29)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "negative": {
+        "role": "state",
+        "displayName": "negative",
+        "tonalRamp": [
+          "oklch(15% 0.15368 27.52)",
+          "oklch(26% 0.15368 27.52)",
+          "oklch(38% 0.15368 27.52)",
+          "oklch(49% 0.15368 27.52)",
+          "oklch(61% 0.15368 27.52)",
+          "oklch(72% 0.15368 27.52)",
+          "oklch(84% 0.15368 27.52)",
+          "oklch(95% 0.15368 27.52)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "surface",
+        "tonalRamp": [
+          "oklch(15% 0.00000 89.88)",
+          "oklch(26% 0.00000 89.88)",
+          "oklch(38% 0.00000 89.88)",
+          "oklch(49% 0.00000 89.88)",
+          "oklch(61% 0.00000 89.88)",
+          "oklch(72% 0.00000 89.88)",
+          "oklch(84% 0.00000 89.88)",
+          "oklch(95% 0.00000 89.88)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "configure-ochre": {
+        "role": "secondary",
+        "displayName": "configure-ochre",
+        "tonalRamp": [
+          "oklch(15% 0.10977 68.80)",
+          "oklch(26% 0.10977 68.80)",
+          "oklch(38% 0.10977 68.80)",
+          "oklch(49% 0.10977 68.80)",
+          "oklch(61% 0.10977 68.80)",
+          "oklch(72% 0.10977 68.80)",
+          "oklch(84% 0.10977 68.80)",
+          "oklch(95% 0.10977 68.80)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "input-border": {
+        "role": "neutral",
+        "displayName": "input-border",
+        "tonalRamp": [
+          "oklch(15% 0.00847 271.32)",
+          "oklch(26% 0.00847 271.32)",
+          "oklch(38% 0.00847 271.32)",
+          "oklch(49% 0.00847 271.32)",
+          "oklch(61% 0.00847 271.32)",
+          "oklch(72% 0.00847 271.32)",
+          "oklch(84% 0.00847 271.32)",
+          "oklch(95% 0.00847 271.32)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "placeholder": {
+        "role": "neutral",
+        "displayName": "placeholder",
+        "tonalRamp": [
+          "oklch(15% 0.01463 266.62)",
+          "oklch(26% 0.01463 266.62)",
+          "oklch(38% 0.01463 266.62)",
+          "oklch(49% 0.01463 266.62)",
+          "oklch(61% 0.01463 266.62)",
+          "oklch(72% 0.01463 266.62)",
+          "oklch(84% 0.01463 266.62)",
+          "oklch(95% 0.01463 266.62)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "primary-hover": {
+        "role": "neutral",
+        "displayName": "primary-hover",
+        "tonalRamp": [
+          "oklch(15% 0.01218 285.72)",
+          "oklch(26% 0.01218 285.72)",
+          "oklch(38% 0.01218 285.72)",
+          "oklch(49% 0.01218 285.72)",
+          "oklch(61% 0.01218 285.72)",
+          "oklch(72% 0.01218 285.72)",
+          "oklch(84% 0.01218 285.72)",
+          "oklch(95% 0.01218 285.72)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "secondary-hover": {
+        "role": "neutral",
+        "displayName": "secondary-hover",
+        "tonalRamp": [
+          "oklch(15% 0.00416 271.37)",
+          "oklch(26% 0.00416 271.37)",
+          "oklch(38% 0.00416 271.37)",
+          "oklch(49% 0.00416 271.37)",
+          "oklch(61% 0.00416 271.37)",
+          "oklch(72% 0.00416 271.37)",
+          "oklch(84% 0.00416 271.37)",
+          "oklch(95% 0.00416 271.37)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "icon-hover": {
+        "role": "neutral",
+        "displayName": "icon-hover",
+        "tonalRamp": [
+          "oklch(15% 0.00417 271.37)",
+          "oklch(26% 0.00417 271.37)",
+          "oklch(38% 0.00417 271.37)",
+          "oklch(49% 0.00417 271.37)",
+          "oklch(61% 0.00417 271.37)",
+          "oklch(72% 0.00417 271.37)",
+          "oklch(84% 0.00417 271.37)",
+          "oklch(95% 0.00417 271.37)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "disabled-text": {
+        "role": "neutral",
+        "displayName": "disabled-text",
+        "tonalRamp": [
+          "oklch(15% 0.01935 267.67)",
+          "oklch(26% 0.01935 267.67)",
+          "oklch(38% 0.01935 267.67)",
+          "oklch(49% 0.01935 267.67)",
+          "oklch(61% 0.01935 267.67)",
+          "oklch(72% 0.01935 267.67)",
+          "oklch(84% 0.01935 267.67)",
+          "oklch(95% 0.01935 267.67)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "progress-track": {
+        "role": "neutral",
+        "displayName": "progress-track",
+        "tonalRamp": [
+          "oklch(15% 0.00553 274.96)",
+          "oklch(26% 0.00553 274.96)",
+          "oklch(38% 0.00553 274.96)",
+          "oklch(49% 0.00553 274.96)",
+          "oklch(61% 0.00553 274.96)",
+          "oklch(72% 0.00553 274.96)",
+          "oklch(84% 0.00553 274.96)",
+          "oklch(95% 0.00553 274.96)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Initial headline",
+        "purpose": "Initial two-line terminal setup heading."
+      },
+      "headline-results": {
+        "displayName": "Results headline",
+        "purpose": "Smaller heading once task results appear."
+      }
+    },
+    "shadows": [],
+    "depth": {
+      "strategy": "Flat surfaces and borders; no box-shadow.",
+      "dialogBackdrop": "rgb(20 22 28 / 42%)"
+    },
+    "motion": [
+      {
+        "name": "button-state",
+        "value": "background-color 160ms, color 160ms",
+        "purpose": "Primary and secondary button feedback."
+      },
+      {
+        "name": "task-progress",
+        "value": "transform 400ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "Per-item progress fill."
+      },
+      {
+        "name": "button-spinner",
+        "value": "spin .8s linear infinite",
+        "purpose": "Pending control indicator."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none !important; transition: none !important; scroll-behavior: auto !important;",
+        "purpose": "Applied to all elements and pseudo-elements under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "full-width",
+        "value": "(max-width: 440px)"
+      },
+      {
+        "name": "short-height",
+        "value": "(max-height: 700px)"
+      },
+      {
+        "name": "narrow-width",
+        "value": "(max-width: 350px)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "实际 Configure 按钮；保持来源中的悬停、焦点与禁用规则。",
+      "html": "<button class=\"ds-primary\" type=\"button\">Set up terminal<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h15M13 5l7 7-7 7\"/></svg></button>",
+      "css": ".ds-primary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: var(--ink, #202024); color: white; border: 1px solid var(--ink, #202024);  }.ds-primary:hover:not(:disabled) { background: #36363d; } .ds-primary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-primary:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-primary svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-primary { transition:none; } }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "实际 Configure 按钮；保持来源中的悬停、焦点与禁用规则。",
+      "html": "<button class=\"ds-secondary\" type=\"button\">Download apps only</button>",
+      "css": ".ds-secondary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500;  }.ds-secondary:hover:not(:disabled) { background: #ecedf0; } .ds-secondary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-secondary:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-secondary svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-secondary { transition:none; } }"
+    },
+    {
+      "name": "Task Retry",
+      "kind": "button",
+      "refersTo": "button-retry",
+      "description": "实际 Configure 按钮；保持来源中的悬停、焦点与禁用规则。",
+      "html": "<button class=\"ds-retry\" type=\"button\">Retry</button>",
+      "css": ".ds-retry { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500; margin-top: 12px; width: auto; min-height: 44px; font-size: 14px; border-radius: 12px; padding: 8px 18px; }.ds-retry:hover:not(:disabled) { background: #ecedf0; } .ds-retry:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-retry:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-retry svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-retry { transition:none; } }"
+    },
+    {
+      "name": "TCI Field",
+      "kind": "input",
+      "refersTo": "tci-field",
+      "description": "固定 TC 前缀与八位数字输入；预览沿用实际聚焦、错误与禁用样式。",
+      "html": "<label class=\"ds-label\" for=\"ds-tci\">TCI</label><div class=\"ds-input-wrap\"><span class=\"ds-prefix\" aria-hidden=\"true\">TC</span><input id=\"ds-tci\" class=\"ds-input\" type=\"text\" inputmode=\"numeric\" pattern=\"[0-9]{8}\" placeholder=\"12345678\" aria-label=\"TCI number, 8 digits after TC\"></div>",
+      "css": ".ds-label { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display: block; color: var(--muted, #656b76); font-size: 13px; font-weight: 600; line-height: 18px; margin-bottom: 12px; } .ds-input-wrap { position: relative; display: flex; align-items: center; height: 62px; background: white; border: 1px solid #d7d9df; border-radius: 16px; } .ds-input-wrap:focus-within { border-color: var(--ink, #202024); outline: 1px solid var(--ink, #202024); } .ds-input-wrap.ds-invalid { border-color: var(--negative, #b23d35); outline-color: var(--negative, #b23d35); } .ds-prefix { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; color:var(--ink,#202024); padding: 0 17px; border-right: 1px solid #d7d9df; font-size: 23px; font-weight: 650; line-height: 30px; } .ds-input { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; width: 100%; min-width: 0; height: 100%; padding: 0 16px; border: 0; outline: 0; background: transparent; color: var(--ink, #202024); font-size: 23px; font-weight: 600; letter-spacing: .8px; caret-color: var(--ink, #202024); border-radius: 0 16px 16px 0; font-variant-numeric: tabular-nums; } .ds-input::placeholder { color: #737780; opacity: 1; } .ds-input:disabled { opacity: .55; } .ds-input[readonly] { cursor:default; }"
+    },
+    {
+      "name": "Header and Exit",
+      "kind": "nav",
+      "refersTo": "button-icon",
+      "description": "实际品牌与退出入口，无标签栏或侧边栏。",
+      "html": "<header class=\"ds-header\"><button class=\"ds-brand\" type=\"button\" aria-label=\"Paywizard Configure\"><span class=\"ds-wordmark\">PAYwizard</span><span class=\"ds-product\">Configure</span></button><button class=\"ds-icon\" type=\"button\" aria-label=\"Exit application\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h15M13 5l7 7-7 7\"/></svg></button></header>",
+      "css": ".ds-header { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display: flex; flex: 0 0 76px; padding: 14px 16px 12px 24px; align-items: flex-start; justify-content: space-between; } .ds-brand { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; padding: 0; background: none; border: 0; text-align: left; color: var(--ink, #202024); line-height: 1.1; user-select: none; } .ds-wordmark { display: block; font-size: 21px; font-weight: 800; letter-spacing: .1px; } .ds-product { display: block; margin-top: 3px; color: #a16a22; font-size: 15px; font-weight: 650; } .ds-icon { cursor:pointer; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 16px; background: transparent; color: var(--ink, #202024); } .ds-icon svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; width: 28px; height: 28px; } .ds-icon:hover { background: #e9eaed; } .ds-brand:focus-visible,.ds-icon:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; }"
+    },
+    {
+      "name": "Task Progress Row",
+      "kind": "custom",
+      "refersTo": "task-row",
+      "description": "实际生成任务行结构。示例名称与百分比仅用于文档预览，不是终端数据。",
+      "html": "<article class=\"ds-task\"><div class=\"ds-task-head\"><span class=\"ds-task-name\">Application</span><span class=\"ds-task-version\">1.0</span></div><div class=\"ds-task-progress\" role=\"progressbar\" aria-label=\"Application progress\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"64\" aria-valuetext=\"Downloading, 64%\"><div class=\"ds-task-fill\"></div></div><div class=\"ds-task-meta\"><span class=\"ds-task-phase\">Downloading</span><span class=\"ds-task-percent\">64%</span></div></article>",
+      "css": ".ds-task { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; color:var(--ink,#202024); padding: 16px 0; border-bottom: 1px solid var(--line, #e6e7e9); }.ds-task-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 15px; line-height: 1.35; font-weight: 600; }.ds-task-name {  min-width: 0; overflow-wrap: anywhere; }.ds-task-version {  font-size: 13px; color: var(--muted, #656b76); font-weight: 400; flex-shrink: 0; }.ds-task-progress {  height: 4px; background: #dedfe3; border-radius: 4px; overflow: hidden; margin-top: 12px; }.ds-task-fill {  height: 100%; background: var(--ink, #202024); width: 100%; transform: scaleX(0); transform-origin: left; transition: transform 400ms cubic-bezier(.16,1,.3,1); }.ds-task-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; line-height: 1.4; color: var(--muted, #656b76); }.ds-task-percent {  flex-shrink: 0; font-variant-numeric: tabular-nums; }.ds-task-fill { transform:scaleX(.64); } .ds-task.ds-success .ds-task-fill { background:var(--positive,#187454); } .ds-task.ds-success .ds-task-meta { color:var(--positive,#187454); } .ds-task.ds-error .ds-task-fill { background:var(--negative,#b23d35); } .ds-task.ds-error .ds-task-phase { color:var(--negative,#b23d35); } @media (prefers-reduced-motion:reduce) { .ds-task-fill { transition:none; } }"
+    },
+    {
+      "name": "Exit Dialog",
+      "kind": "custom",
+      "refersTo": "dialog",
+      "description": "真实退出对话框内容与样式；预览用普通容器展示，未模拟原生模态行为。",
+      "html": "<section class=\"ds-dialog\" aria-labelledby=\"ds-exit-title\"><h2 id=\"ds-exit-title\">Exit application?</h2><p>Setup is still in progress. Exiting may interrupt the current task. Continue setup or exit?</p><div class=\"ds-dialog-actions\"><button class=\"ds-dialog-secondary\" type=\"button\">Continue setup</button><button class=\"ds-dialog-primary\" type=\"button\">Exit</button></div></section>",
+      "css": ".ds-dialog { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; width: min(350px, calc(100vw - 32px)); max-height: calc(100svh - 32px); border: 1px solid var(--line, #e6e7e9); border-radius: 24px; padding: 24px; color: var(--ink, #202024); background: white; overflow-y: auto; } .ds-dialog h2 { margin: 0; font-size: 19px; letter-spacing: -.3px; line-height: 1.3; } .ds-dialog p { color: var(--muted, #656b76); font-size: 14px; line-height: 1.5; margin: 14px 0 20px; } .ds-dialog-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; } .ds-dialog-primary,.ds-dialog-secondary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; } .ds-dialog-primary { background: var(--ink, #202024); color: white; border: 1px solid var(--ink, #202024); } .ds-dialog-secondary { background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500; } .ds-dialog-primary:hover:not(:disabled) { background: #36363d; } .ds-dialog-secondary:hover:not(:disabled) { background: #ecedf0; } .ds-dialog-primary:focus-visible,.ds-dialog-secondary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } @media (prefers-reduced-motion:reduce) { .ds-dialog-primary,.ds-dialog-secondary { transition:none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "GO 中性原生系统风格",
+    "overview": "**范围：本文件只适用于 `27.device_manager.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**\n\n用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。\n\n这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.device_manager.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。",
+    "keyCharacteristics": [
+      "系统字体与近黑主操作。",
+      "平面中性画布、白色输入和稀疏辅助文案。",
+      "进度及结果按任务呈现，颜色只辅助文字表达状态。",
+      "控制内反馈与减少动态效果支持。"
+    ],
+    "rules": [],
+    "dos": [
+      "Do 仅在 Configure 范围内应用这些规则；其他原型遵循各自规范。",
+      "Do 保持批准 A 首屏：独立输入、唯一 Set up terminal 主操作、底部 S/N WP6170PQ23000060。",
+      "Do 保留加载、只读、禁用、错误、逐项成功与重试的可见差别，以及键盘焦点。",
+      "Do 用任务文字和百分比伴随状态色；在减少动态效果设置下保留全部信息。"
+    ],
+    "donts": [
+      "Don't 将本文件中的 Configure 构图推广成 OPC_ATTD、OPC_PAD 或整个仓库的规则。",
+      "Don't 给批准首屏补上外围表单卡片，或将 S/N 移到输入框下方。",
+      "Don't 在绑定成功前显示 Download apps only 或 Download parameters。",
+      "Don't 用蓝色主按钮、装饰阴影、总进度或汇总完成徽章替代当前实现。",
+      "Don't 把模拟任务结果或文档组件预览描述成真实终端执行凭据。"
+    ]
+  }
+}
