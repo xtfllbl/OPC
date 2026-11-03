@@ -1,5 +1,6 @@
 (function () {
     'use strict';
+    if (window.ConfigurePreview?.isShell) return;
     const { DemoGateway, Configuration, normalizeTci } = window.ConfigureModel;
     const $ = id => document.getElementById(id);
     let storage = null;
@@ -13,6 +14,115 @@
     let lastAnnouncement = '';
     let titleHoldTimer;
     let controller;
+
+    const main = $('main-content');
+    let followKey = '';
+    let followFrame = 0;
+    let followTimer = 0;
+    let followPending = false;
+    let followAnimating = false;
+    let manualUntil = 0;
+    const pointers = new Set();
+
+    function followTarget() {
+        const state = controller?.state;
+        if (!state || state.closed || state.page !== 'task' || state.taskStatus === 'unknown') return null;
+        // Work within a stage is concurrent. Keep one stable target in list order.
+        const items = [...state.apps, ...state.parameters];
+        const item = state.busy ? items.find(item => item.status === 'working') : items.find(item => item.status === 'error');
+        if (item) return { key: item.status + ':' + item.id, element: rows.get(item.id)?.article };
+        if (!state.busy && state.error) return { key: 'error:global', element: $('task-error') };
+        return null;
+    }
+
+    function cancelFollow() {
+        cancelAnimationFrame(followFrame);
+        clearTimeout(followTimer);
+        followFrame = followTimer = 0;
+        followPending = false;
+    }
+
+    function scheduleFollow() {
+        followPending = true;
+        if (followFrame) return;
+        // Coalesce synchronous updates from parallel tasks before measuring layout.
+        followFrame = requestAnimationFrame(() => {
+            followFrame = 0;
+            if (pointers.size) return;
+            if (Date.now() < manualUntil) {
+                clearTimeout(followTimer);
+                followTimer = setTimeout(scheduleFollow, manualUntil - Date.now());
+                return;
+            }
+            followPending = false;
+            const target = followTarget();
+            if (!target?.element || target.key !== followKey) return;
+            const viewport = main.getBoundingClientRect();
+            const rect = target.element.getBoundingClientRect();
+            const top = viewport.top + 8;
+            const bottom = viewport.bottom - 8;
+            let targetBottom = rect.bottom;
+            if (target.key === 'error:global' && main.contains($('task-retry')) && !$('task-retry').hidden) {
+                targetBottom = $('task-retry').getBoundingClientRect().bottom;
+            }
+            // Oversized rows start at their name and remain manually readable.
+            const delta = targetBottom - rect.top > bottom - top || rect.top < top
+                ? rect.top - top : targetBottom > bottom ? targetBottom - bottom : 0;
+            if (Math.abs(delta) > 1) {
+                followAnimating = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+                main.scrollTo({ top: main.scrollTop + delta, behavior: followAnimating ? 'smooth' : 'instant' });
+            }
+        });
+    }
+
+    function updateFollow() {
+        const key = followTarget()?.key || '';
+        if (key === followKey) return;
+        cancelFollow();
+        followKey = key;
+        if (key) scheduleFollow();
+    }
+
+    function manualScroll(interrupt = true) {
+        const pendingNext = followPending && (pointers.size > 0 || Date.now() < manualUntil);
+        cancelFollow();
+        // Interrupt an in-flight animation too; progress updates must not pull back.
+        if (interrupt && followAnimating) {
+            main.scrollTo({ top: main.scrollTop, behavior: 'instant' });
+            followAnimating = false;
+        }
+        manualUntil = Date.now() + 180;
+        if (pendingNext) scheduleFollow();
+    }
+    main.addEventListener('pointerdown', event => { manualScroll(); pointers.add(event.pointerId); }, { passive: true });
+    for (const name of ['pointerup', 'pointercancel']) window.addEventListener(name, event => {
+        pointers.delete(event.pointerId);
+        manualUntil = Date.now() + 180;
+        if (followPending) scheduleFollow();
+    }, { passive: true });
+    main.addEventListener('scrollend', () => { followAnimating = false; });
+    main.addEventListener('wheel', event => {
+        if (event.ctrlKey) return;
+        if (followAnimating && event.deltaY) {
+            // Preserve the first wheel delta when interrupting a native smooth scroll.
+            event.preventDefault();
+            const unit = event.deltaMode === 1 ? parseFloat(getComputedStyle(main).lineHeight) || 16
+                : event.deltaMode === 2 ? main.clientHeight : 1;
+            const top = main.scrollTop + event.deltaY * unit;
+            manualScroll();
+            main.scrollTo({ top, behavior: 'instant' });
+        } else manualScroll(false);
+    }, { passive: false });
+    main.addEventListener('keydown', event => {
+        if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) manualScroll();
+    });
+    main.addEventListener('scroll', () => {
+        if (pointers.size || Date.now() < manualUntil) manualUntil = Date.now() + 180;
+    }, { passive: true });
+    new ResizeObserver(() => {
+        // Covers preview model changes and the fixed Q3MINI action area.
+        if (followKey && followTarget()?.key === followKey) scheduleFollow();
+    }).observe(main);
 
     function renderTasks(type, listId, sectionId, items, busy) {
         const list = $(listId);
@@ -70,7 +180,7 @@
         const titles = { setup: 'Set up terminal', apps: 'Download apps', parameters: 'Update parameters' };
         if (taskPage) $('page-title').textContent = titles[state.operation];
         else if (maintenance) $('page-title').textContent = 'Your terminal';
-        else $('page-title').innerHTML = 'Set up your<br>terminal';
+        else $('page-title').innerHTML = 'Set up your<br> terminal';
         $('terminal-footer').hidden = taskPage;
         $('setup-form').hidden = taskPage;
         $('editable-tci').hidden = bound;
@@ -105,6 +215,7 @@
         $('task-check-status').hidden = home || state.taskStatus !== 'unknown';
         $('task-check-status').disabled = state.checkingTask;
         $('task-check-status').textContent = state.checkingTask ? 'Checking…' : 'Check status';
+        $('task-actions').hidden = $('task-done').hidden && $('task-stalled').hidden && $('task-check-status').hidden;
         $('individual-actions').hidden = !home || !maintenance;
         $('download-app').disabled = state.busy && state.operation !== 'apps';
         $('download-parameters').disabled = state.busy && state.operation !== 'parameters';
@@ -117,6 +228,7 @@
             $('main-content').scrollTop = 0;
             $('page-title').focus({ preventScroll: true });
         }
+        updateFollow();
         const announcement = [...state.apps, ...state.parameters].filter(item => ['success', 'error'].includes(item.status)).map(item => item.name + ': ' + item.phase).join('. ');
         if (announcement !== lastAnnouncement) { $('task-announcement').textContent = announcement; lastAnnouncement = announcement; }
     }

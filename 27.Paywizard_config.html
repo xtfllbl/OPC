@@ -7,10 +7,21 @@
     <title>Paywizard Configure</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="configure/app.css">
+    <script src="configure/preview.js" defer></script>
     <script src="configure/model.js" defer></script>
     <script src="configure/app.js" defer></script>
 </head>
 <body>
+    <section class="preview-workspace" id="preview-workspace" aria-label="Terminal preview" hidden>
+        <div class="preview-toolbar">
+            <label for="preview-model">Display</label>
+            <select id="preview-model">
+                <option value="portrait">Portrait · 390 × 844</option>
+                <option value="q3mini">Q3MINI · 480 × 480</option>
+            </select>
+        </div>
+        <iframe id="terminal-preview" class="preview-screen" title="Paywizard Configure terminal"></iframe>
+    </section>
     <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
         <symbol id="logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5M10 12h11m-4-4 4 4-4 4"/></symbol>
@@ -65,11 +76,13 @@
                     <button class="secondary-button maintenance-action" id="download-app" type="button"><svg aria-hidden="true"><use href="#download-package"/></svg><span class="action-label">Download <span>apps</span></span><small id="apps-pending" hidden>Not finished · Continue</small></button>
                     <button class="secondary-button maintenance-action" id="download-parameters" type="button"><svg aria-hidden="true"><use href="#parameter-sliders"/></svg><span class="action-label">Update <span>parameters</span></span><small id="parameters-pending" hidden>Not finished · Continue</small></button>
                 </div>
-                <button id="task-done" class="primary-button" type="button" hidden>Done</button>
-                <button id="task-check-status" class="secondary-button" type="button" hidden>Check status</button>
-                <div id="task-stalled" hidden>
-                    <p class="helper" role="status">No progress update for 2 minutes. You can return and check this task later.</p>
-                    <button id="task-back" class="secondary-button" type="button">Back to home</button>
+                <div id="task-actions" hidden>
+                    <button id="task-done" class="primary-button" type="button" hidden>Done</button>
+                    <button id="task-check-status" class="secondary-button" type="button" hidden>Check status</button>
+                    <div id="task-stalled" hidden>
+                        <p class="helper" role="status">No progress update for 2 minutes. You can return and check this task later.</p>
+                        <button id="task-back" class="secondary-button" type="button">Back to home</button>
+                    </div>
                 </div>
                 <p id="task-announcement" class="sr-only" role="status" aria-live="polite"></p>
             </main>

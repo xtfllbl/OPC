@@ -3,20 +3,27 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const base = process.env.CONFIGURE_TEST_URL || 'http://127.0.0.1:8765/27.Paywizard_config.html';
-const out = '.impeccable/review/configure-navigation';
+const mini = new URL(base).searchParams.get('model') === 'q3mini';
+const out = '.impeccable/review/configure-navigation' + (mini ? '-q3mini' : '');
 fs.mkdirSync(out, { recursive: true });
 (async () => {
     const browser = await chromium.launch({ headless: true });
     const errors = [], results = [];
-    async function page(scenario = 'unbound', width = 390, height = 844, virtualTime = false) {
+    async function page(scenario = 'unbound', width = mini ? 480 : 390, height = mini ? 480 : 844, virtualTime = false) {
         const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
         const p = await context.newPage();
         if (virtualTime) await p.clock.install();
         p.on('pageerror', e => errors.push(e.message));
         p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-        await p.goto(base + '?scenario=' + scenario);
+        const url = new URL(base);
+        url.searchParams.set('view', 'terminal');
+        url.searchParams.set('scenario', scenario);
+        await p.goto(url.href);
         if (virtualTime) await p.clock.runFor(700);
-        await p.waitForFunction(() => !document.getElementById('setup-label').textContent.includes('Checking terminal'));
+        await p.waitForFunction(() => document.getElementById('setup-button').hasAttribute('aria-busy') && !document.getElementById('setup-label').textContent.includes('Checking terminal')).catch(async error => {
+            console.error('Startup failed', { scenario, width, height, errors, state: await p.evaluate(() => ({ url: location.href, ready: document.readyState, model: Boolean(window.ConfigureModel), preview: window.ConfigurePreview, label: document.getElementById('setup-label')?.textContent })) });
+            throw error;
+        });
         return p;
     }
     async function ended(p) { await p.locator('#task-done').waitFor({ timeout: 25000 }); }
@@ -33,7 +40,7 @@ fs.mkdirSync(out, { recursive: true });
         assert.equal(await p.locator('#tcid-input').isVisible(), false);
     }
     try {
-        for (const [name, width, height] of [['mobile', 390, 844], ['small', 320, 568], ['desktop', 1440, 1000]]) {
+        for (const [name, width, height] of [['mobile', 390, 844], ['small', 320, 568], ['square', 480, 480], ['desktop', 1440, 1000]]) {
             for (const scenario of ['unbound', 'bound', 'configured']) {
                 const p = await page(scenario, width, height);
                 assert.equal(await p.locator('#exit-app-button').innerText(), 'Exit');
@@ -51,7 +58,7 @@ fs.mkdirSync(out, { recursive: true });
                 await p.context().close();
             }
         }
-        results.push('Three viewport sizes: unbound, locked prebound and clean dual-entry home');
+        results.push('Four viewport sizes: unbound, locked prebound and clean dual-entry home');
         const p = await page();
         await p.locator('#tcid-input').fill('123456789'); await p.locator('#setup-button').click();
         await p.locator('#tcid-error').waitFor();
@@ -102,7 +109,11 @@ fs.mkdirSync(out, { recursive: true });
         await m.locator('#task-done').click(); await home(m);
         assert.equal(await m.locator('#parameters-pending').isVisible(), true);
         await m.screenshot({ path: out + '/maintenance-pending.png' });
-        await m.evaluate(() => history.replaceState(null, '', location.pathname));
+        await m.evaluate(() => {
+            const url = new URL(location.href);
+            url.searchParams.delete('scenario');
+            history.replaceState(history.state, '', url);
+        });
         await m.reload(); await m.locator('#individual-actions').waitFor(); await home(m);
         assert.equal(await m.locator('#parameters-pending').isVisible(), true);
         await m.locator('#download-app').click(); await ended(m); await m.locator('#task-done').click();
@@ -116,7 +127,7 @@ fs.mkdirSync(out, { recursive: true });
         results.push('Maintenance failure survives reload and other task; resume keeps dual-entry home');
         await m.context().close();
         for (const [operation, action] of [['setup', 'setup-button'], ['apps', 'download-app'], ['parameters', 'download-parameters']]) {
-            const e = await page('stalled-' + operation, 390, 844, true);
+            const e = await page('stalled-' + operation, mini ? 480 : 390, mini ? 480 : 844, true);
             await e.locator('#' + action).click(); await e.clock.runFor(3000);
             assert.equal(await e.locator('#exit-app-button').isVisible(), false);
             assert.equal(await e.locator('#task-done').isVisible(), false);

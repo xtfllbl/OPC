@@ -61,3 +61,7 @@ The user approved the final A reference and authorized implementation. The exist
 The user approved `docs/design/configure-go-2026-11-03/approved-bound-tci-footer.png`: bound TCI uses a pale sage static block containing only TCI and its value, with no Bound badge, check or lock icon. Unbound input remains editable and white. The later confirmed navigation refinement removes This terminal: Exit and S/N share the home footer row, optically centered and aligned to the content edges. Task pages have no footer or Exit. This supersedes the earlier lock and header Exit appearance only.
 
 Current navigation decisions: `docs/design/configure-navigation-2026-11-03.md`. Repeated/no-change notifications do not reset the inactivity clock. Returning preserves the original execution; unknown historical runs remain blocked until their result is confirmed.
+
+## Approved Q3MINI preview - 2026-11-03
+
+The same Configure entry supports the existing portrait layout and a Q3MINI square layout, selected outside the terminal display. Switching the presentation preserves the simulated terminal identity, input, current page, running work and open dialogs. Q3MINI retains the same setup and maintenance capabilities. Its 480 × 480 canvas follows existing repository prototypes; actual display density and soft-keyboard behavior still require device validation. Decisions: `docs/design/configure-q3mini-2026-11-03.md`.

@@ -1,5 +1,18 @@
 # Configure verification · 2026-11-02
 
+## 2026-11-03 - Q3MINI display adaptation
+
+The user approved a single entry with an external model selector, a 480 × 480 square composition and continuous state across model changes. The persistent terminal iframe preserves input, errors, task execution and native dialogs. Q3MINI task actions occupy a separate bottom region; the existing portrait layout and task lifecycle remain in use.
+
+- Model suite: **31/31 passed**; no workflow model changes.
+- Full Chromium flow suite: **7 groups passed for portrait and 7 for Q3MINI**, covering startup, input validation, setup, maintenance, failures/retry, reload restoration, browser Back, all three stalled workflows, inventory failures and missing/old applications. Layout checks include 390 × 844, 320 × 568, 480 × 480 and 1440 × 1000, plus enlarged controls. Console errors were empty in both completed runs.
+- External preview suite: **6 groups passed**, covering direct square links, startup homes fitting without scrolling, input/errors/running work/closed app surviving switches, modal containment, stalled and unknown tasks, fixed actions, long task labels/version strings/error reasons and narrow 320/390px browsers. No page or console errors.
+- Local `file:` smoke check: entered a TCI, changed from square to portrait, confirmed the same input survived; no page errors. File origins require an opaque-origin postMessage target, with receiving messages still restricted to the parent window.
+- Reviewed actual rendered startup, maintenance, success, failure, stalled, exit-dialog, portrait and narrow-browser captures. Fixed an outer grid overflow found at 320px. Evidence: `.impeccable/review/configure-q3mini/`, `configure-navigation/` and `configure-navigation-q3mini/`.
+- Syntax and whitespace checks passed. Mechanical design scan reported advisory token/documentation differences; square-specific typography and radius are recorded in DESIGN.md. Existing unrelated token differences were retained.
+
+Some earlier regression attempts failed when the local Python server reset concurrent resource connections. The final full suites used a local server with request backlog 128 and both passed. The checks above concern the static browser prototype; no Q3MINI hardware, native keyboard or physical-display acceptance is claimed. No deployment or commit was performed.
+
 Scope: `27.Paywizard_config.html` and `configure/`. User approved A first use (06), maintenance home (07) and prebound setup (08), including Q1/Q2 separation and the explicit Q3 choice to stay on the task page while executing. This record supersedes the earlier behavior that exposed independent downloads immediately after binding.
 
 ## Implemented
@@ -70,3 +83,13 @@ This run supersedes the preceding footer/interaction limitations for the current
 - Browser virtual-clock scenarios verify stalled setup/apps/parameters, return without cancellation, original-entry View progress, disabled competing operation, home Exit confirmation/cancel, re-entry, recovered progress hiding Back, and Done returning home. Fake clock is installed before application timers; recovery advances beyond both parallel items' pause endpoints.
 - Screenshot evidence and JSON results: `.impeccable/review/configure-navigation/`. Browser suite launches its own headless Chromium and does not control the user's Chrome session.
 - Syntax and `git diff --check` passed. Real terminal job lookup/abort and native Android Back wiring remain integration work; the HTML adapter is simulated.
+
+## 2026-11-03 - Follow the executing task
+
+Implemented the confirmed automatic-follow rules in `app.js`. The first working row in list order is revealed only when necessary; progress-only updates do not move the view. Manual scrolling interrupts the animation, and a new target waits for an active gesture to finish. Completion reveals the first failure and Retry, or keeps the position on success. Layout changes recheck visibility; unknown saved jobs do not trigger live-task following.
+
+- `tests/scroll.cjs`: **6 groups passed**, covering actual demo setup and parameter-failure/retry, parallel targets, manual scroll and held pointer gestures, normal-motion wheel interruption, reduced motion, live model/viewport changes, global errors, unknown records, oversized rows and focus preservation. Four layouts: 390×844, 480×480, 320×568 and 320×320. No JavaScript page errors.
+- Existing browser regression: **7 groups passed for portrait and 7 for Q3MINI**, with empty console-error lists. External preview regression: **6 groups passed**.
+- Early regression attempts hit local HTTP connection resets; reruns using a threaded localhost server with a larger request queue passed. This was test infrastructure, not a workflow failure.
+- Reviewed Q3MINI running-task and controlled failure screenshots under `.impeccable/review/configure-task-follow/`. Syntax and whitespace checks passed.
+- Evidence covers browser simulation only; no physical terminal validation or production installation/parameter delivery is claimed.

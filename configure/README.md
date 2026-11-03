@@ -2,6 +2,14 @@
 
 Entry: `../27.Paywizard_config.html`. Approved first-use composition: A, with the app-download link removed and the existing `WP6170PQ23000060` serial in the footer. It is a static prototype: no real TCI binding, installation or parameter application takes place.
 
+## Display preview
+
+The external **Display** selector switches between the existing portrait presentation (390 × 844) and **Q3MINI** (480 × 480). Open `27.Paywizard_config.html?model=q3mini` directly for the square preview, or combine it with a review scenario, for example `?model=q3mini&scenario=configured`.
+
+Both models use one terminal document and workflow. The selector resizes a persistent iframe and sends it the layout choice; it does not reload its URL, reset the scenario or recreate the task controller. Input, errors, open dialogs and running tasks remain intact. Native dialogs and their backdrops belong to the terminal viewport, leaving the external selector available. A narrow browser reduces the square viewport width without distorting its aspect ratio; content reflows and scrolls.
+
+Q3MINI reduces header/section spacing, keeps the sage TCI block and parallel maintenance controls, and puts eligible task-page actions beneath the scrolling content. Existing completion, failure, stalled-return and home-only Exit rules still apply. Add `view=terminal` for a terminal-only presentation without the external selector; a direct 480 × 480 browser viewport with `?view=terminal&model=q3mini` is the full-size square validation target. These are prototype CSS dimensions, not verified physical display density.
+
 ## Interaction
 
 - A fresh browser session starts with an unbound terminal. Enter eight digits, or paste `TC12345678`, then select **Set up terminal**. This validates/binds, installs missing applications, and applies parameter groups.
@@ -9,6 +17,7 @@ Entry: `../27.Paywizard_config.html`. Approved first-use composition: A, with th
 - Each entry opens a separate task page. Task pages have no Exit or terminal footer. While work makes progress, return is blocked. After success or explicit failure, **Done** returns home; failures retain **Retry**. After 120 seconds without meaningful progress, **Back to home** appears. Browser Back uses the same completion/stall guard; native shells must route Android Back through it.
 - First-setup interruption returns to **Continue setup**; a later maintenance failure retains the dual-entry home and marks the affected entry **Not finished · Continue**. Resuming keeps successful items. Pending app and parameter work are retained separately when the other operation runs.
 - Each task has its own phase and progress. Failure exposes Retry in that row and retains successful items. Failed application installation blocks parameter tasks; retry continues the pending setup.
+- Both layouts automatically reveal the first working row in list order, then follow the next working row. Fully visible rows and percentage-only updates do not move the view. Manual scrolling takes priority until the next target or stage; held gestures defer that reveal. When work ends, failures reveal the first failed row and Retry; success keeps the current position. Oversized rows reveal their beginning, and reduced motion uses immediate scrolling without changing focus.
 - Exit is a borderless home-only footer action aligned with S/N; there is no This terminal caption. After a stalled return, Exit requires confirmation while work is unresolved. This simulation interrupts local jobs; re-entry checks its stored binding and task records. This is not a guarantee of the real wizarView agent's cancellation/recovery behavior.
 - Session storage v3 retains simulated binding, installed versions, first-setup completion and per-operation task records within the tab; unavailable storage falls back to memory. The old v2 demo store is not reused because it lacks a historical setup fact. Completion and tasks are scoped to the simulated binding revision, so reassignment (even to the same TCI) must increment that revision. This is a fixture mechanism, not a proposed backend contract.
 
@@ -41,9 +50,12 @@ Validation samples: `00009999` occupied; `00008888` not assigned to a store; `00
 ## Files and validation
 
 - `app.css`: selected GO-style presentation and responsive layout, including reduced motion.
+- `preview.js`: external model selection and persistent terminal viewport; no workflow or gateway logic.
 - `model.js`: isolated workflow plus an explicit demo adapter; no production endpoints.
 - `app.js`: semantic UI, task rows, input normalization, dialogs and event wiring.
 - `tests/model.test.cjs`: `node --test configure/tests/model.test.cjs`.
+- `tests/scroll.cjs`: automatic-follow regression covering parallel tasks, manual gestures, failures/retry, live layout changes and reduced motion; run using the same Playwright environment and local server as the browser suite.
 - `tests/browser.cjs`: local headless-browser flow and layout tests. Serve the repo with `python3 -m http.server 8765 --bind 127.0.0.1`; run with a locally installed Playwright package (`PLAYWRIGHT_MODULE=/absolute/path/to/playwright node configure/tests/browser.cjs`). Chromium must be available to that package. The test launches a separate headless browser and only visits the local prototype.
+- Run that suite again with `CONFIGURE_TEST_URL='http://127.0.0.1:8765/27.Paywizard_config.html?model=q3mini'` for the square layout. `tests/preview.cjs` tests the actual outer selector, state continuity, modal containment, pinned actions and narrow-browser presentation, using the same environment variables.
 
 Application labels/versions are preserved illustrative values from the prior prototype. Integration must replace the demo adapter with authenticated S/N lookup, atomic binding, fresh manifests and actual install/apply receipts. Installation success is distinct from parameter application success; terminal SWAP remains a backend operation.

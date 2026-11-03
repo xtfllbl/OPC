@@ -233,6 +233,8 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 
 失败行显示局部 Retry，执行时禁用冲突操作。进度条具有名称、当前值和阶段说明，成功与失败通过礼貌实时区域播报。没有汇总进度或全局完成徽章。
 
+任务执行时，竖屏与 Q3MINI 均自动跟随列表顺序中的第一项进行中任务。目标已完整可见时保持位置，否则以最小距离滚动任务主区；并行任务不会按百分比更新来回切换。用户手动查看时不拉回，下一个跟随目标或阶段开始后恢复，手势尚未结束则延后定位。全部执行结束后有失败则定位第一项失败及 Retry，全部成功则保持位置。长行先露出行首；减少动态效果时直接定位，不转移键盘焦点。具体规则见 `docs/design/configure-task-follow-2026-11-03.md`。
+
 ### Dialogs
 
 原生 dialog 承载退出风险确认和原型场景选择。白底、细边线、较大圆角与（24px）内边距；操作纵向排列，间距（10px）。退出确认保留 Stay here 与 Exit 两个清晰选择。组件预览只展示结构；真实模态焦点与遮罩由页面的原生 dialog 实现。
@@ -259,3 +261,11 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 ## Approved refinement - 2026-11-03
 
 The user approved `docs/design/configure-go-2026-11-03/approved-bound-tci-footer.png`: bound TCI uses a pale sage static block containing only TCI and its value, with no Bound badge, check or lock icon. Unbound input remains editable and white. The subsequently approved navigation refinement puts S/N and Exit on one centered footer row, removes This terminal, and removes the entire footer from task pages. This supersedes the earlier lock and header Exit appearance only.
+
+## Q3MINI adaptation - 2026-11-03
+
+Approved: one page with an external model selector; preserve current input, workflow and open dialogs when switching. The portrait canvas retains its existing composition. Q3MINI uses a 480 × 480 prototype viewport, reduced proportionally in width and height on narrow browsers while its content reflows without CSS scaling. Display controls stay outside the terminal; dialogs and backdrops stay inside it.
+
+The compact variant uses a 28px title, 20px wordmark, 14px product name and 12px status text. Header height is 60px beneath a 28px status bar; content has 24px side padding, reduced to 16px below 350px. TCI remains a sage identity block; maintenance entries remain equal and side by side. Dialog padding and radius are 20px. These are intentional additions for the square variant, not replacements for the portrait type or shape scale.
+
+Task content scrolls independently above the eligible Done / Check status / Back to home controls. Row-level Retry stays with its failure reason. Home-only SN / Exit and all existing return guards remain unchanged.
