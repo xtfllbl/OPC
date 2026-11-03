@@ -136,11 +136,11 @@ components:
 
 **Creative North Star: "GO 中性原生系统风格"**
 
-**范围：本文件只适用于 `27.device_manager.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**
+**范围：本文件只适用于 `27.Paywizard_config.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**
 
 用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。
 
-这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.device_manager.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`、`07-maintenance-home.png` 、`08-prebound-setup.png` 和 `09-maintenance-parallel.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。
+这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.Paywizard_config.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`、`07-maintenance-home.png` 、`08-prebound-setup.png` 和 `09-maintenance-parallel.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。
 
 **Key Characteristics:**
 - 系统字体与近黑主操作。
@@ -239,7 +239,7 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 
 ### Terminal identity footer
 
-仅首页底部显示同一行的 S/N 和 Exit，二者垂直居中；左右边缘与分隔线及主区卡片对齐。删除 This terminal。S/N 默认 16px，350px 以下为 14px；Exit 保留至少 44px 高的点击区域。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
+仅首页底部显示同一行的 SN 和 Exit，二者垂直居中；左右边缘与分隔线及主区卡片对齐。删除 This terminal，SN 标签不带斜杠。整组贴住终端画布底部，不保留额外底部留白，仅尊重系统安全区；短屏使用同样规则。SN 默认 16px，350px 以下为 14px；Exit 保留至少 44px 高的点击区域。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
 
 ## Do's and Don'ts
 

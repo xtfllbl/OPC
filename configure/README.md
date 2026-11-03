@@ -1,6 +1,6 @@
 # Paywizard Configure prototype
 
-Entry: `../27.device_manager.html`. Approved first-use composition: A, with the app-download link removed and the existing `WP6170PQ23000060` serial in the footer. It is a static prototype: no real TCI binding, installation or parameter application takes place.
+Entry: `../27.Paywizard_config.html`. Approved first-use composition: A, with the app-download link removed and the existing `WP6170PQ23000060` serial in the footer. It is a static prototype: no real TCI binding, installation or parameter application takes place.
 
 ## Interaction
 
@@ -34,7 +34,7 @@ Saved running records without a confirmed outcome remain unknown and block new w
 
 Long-press the PAYwizard wordmark or focus it and press **Shift+Enter**. Choose unbound, prebound, setup completed, maintenance failure, lookup failure, application failure, parameter failure, older installed app, uninstalled app, installed-app query failure, or SWAP. Restarting the demo resets only this prototype's simulated records.
 
-Alternatively open `27.device_manager.html?scenario=unbound` (or `bound`, `configured`, `maintenance-failure`, `apps-outdated`, `app-uninstalled`, `inventory-failure`, `query-failure`, `app-failure`, `parameter-failure`, `swap`). A scenario query intentionally resets that scenario on every page load. Remove it to test session restoration across reloads.
+Alternatively open `27.Paywizard_config.html?scenario=unbound` (or `bound`, `configured`, `maintenance-failure`, `apps-outdated`, `app-uninstalled`, `inventory-failure`, `query-failure`, `app-failure`, `parameter-failure`, `swap`). A scenario query intentionally resets that scenario on every page load. Remove it to test session restoration across reloads.
 
 Validation samples: `00009999` occupied; `00008888` not assigned to a store; `00007777` unauthorized; `00000000` not found. Other valid eight-digit examples bind in the simulation; these are not real backend existence checks. Query-failure mode deliberately continues failing on retry until another scenario is chosen.
 

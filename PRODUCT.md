@@ -8,7 +8,7 @@ web
 
 ## Scope
 
-This record covers the Paywizard Agent / Configure design study for `27.device_manager.html`, a web prototype of a terminal application. It does not redefine other OPC payment screens.
+This record covers the Paywizard Agent / Configure design study for `27.Paywizard_config.html`, a web prototype of a terminal application. It does not redefine other OPC payment screens.
 
 ## Users
 
@@ -41,7 +41,7 @@ Use Paywizard GO as the visual reference. The requested experience is simple, fr
 ## Evidence on Hand
 
 - Feishu requirement revision 47, section 2: https://wizarpos.feishu.cn/docx/SLONdzLpXoRIgAx6k1tclZGMnEc
-- Existing local prototype: `27.device_manager.html`.
+- Existing local prototype: `27.Paywizard_config.html`.
 - GO `app/lib/core/ui/theme.dart`, `design-qa.md`, and 2026-10-31 native account/login captures in `/Users/beaver/Paywizard/代码/paywizard/Paywizard-GO`.
 - Application names, versions, TCI and S/N in concepts are illustrative, not live terminal evidence.
 

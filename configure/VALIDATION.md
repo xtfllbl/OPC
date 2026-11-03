@@ -1,6 +1,6 @@
 # Configure verification · 2026-11-02
 
-Scope: `27.device_manager.html` and `configure/`. User approved A first use (06), maintenance home (07) and prebound setup (08), including Q1/Q2 separation and the explicit Q3 choice to stay on the task page while executing. This record supersedes the earlier behavior that exposed independent downloads immediately after binding.
+Scope: `27.Paywizard_config.html` and `configure/`. User approved A first use (06), maintenance home (07) and prebound setup (08), including Q1/Q2 separation and the explicit Q3 choice to stay on the task page while executing. This record supersedes the earlier behavior that exposed independent downloads immediately after binding.
 
 ## Implemented
 

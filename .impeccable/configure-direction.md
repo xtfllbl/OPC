@@ -1,4 +1,4 @@
-# Configure / 27.device_manager.html
+# Configure / 27.Paywizard_config.html
 
 Mode: Operate. Re-entry references 07-maintenance-home.png / 08-prebound-setup.png also approved with “ok”. Approved: user explicitly selected `docs/design/configure-go-2026-11-02/06-a-original-single-action.png` and authorized implementation. Scope: static terminal prototype, not production provisioning.
 

@@ -64,7 +64,7 @@ h1 { font-size: 34px; font-weight: 700; line-height: 1.14; letter-spacing: -.9px
 #query-retry { margin-top: 18px; }
 .button-spinner { width: 17px; height: 17px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.terminal-footer { flex: 0 0 auto; margin: 0 24px; padding: 8px 0 36px; border-top: 1px solid #d7d9df; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 16px; font-size: 13px; line-height: 20px; color: var(--muted); }
+.terminal-footer { flex: 0 0 auto; margin: 0 24px; padding: 8px 0 env(safe-area-inset-bottom, 0px); border-top: 1px solid #d7d9df; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 16px; font-size: 13px; line-height: 20px; color: var(--muted); }
 .terminal-footer .exit-button { grid-column: 2; grid-row: 1; }
 .terminal-footer strong { min-width: 0; grid-column: 1; grid-row: 1; font-size: 16px; line-height: 1.3; font-weight: 650; color: var(--ink); overflow-wrap: anywhere; }
 .phone-frame.task-page h1 { font-size: 27px; margin: 16px 0 24px; }
@@ -108,7 +108,7 @@ dialog select { margin-top: 8px; width: 100%; padding: 12px 8px; min-height: 48p
 .exit-screen h1 { margin: 0; font-size: 27px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 @media (max-width: 440px) { body { background: var(--canvas); } .phone-frame { width: 100%; height: 100svh; } }
-@media (max-height: 700px) { .android-status-bar { flex-basis: 30px; height: 30px; } .app-header { flex-basis: 68px; padding-top: 8px; } h1 { margin-top: 20px; margin-bottom: 28px; } .terminal-footer { padding-bottom: 16px; } }
+@media (max-height: 700px) { .android-status-bar { flex-basis: 30px; height: 30px; } .app-header { flex-basis: 68px; padding-top: 8px; } h1 { margin-top: 20px; margin-bottom: 28px; } }
 @media (max-width: 350px) { main { padding-right: 20px; padding-left: 20px; } .app-header { padding-left: 20px; } #tcid-input { font-size: 21px; letter-spacing: 0; padding-left: 12px; } .terminal-footer { margin: 0 20px; } }
 @media (max-width: 350px) { .individual-actions { gap: 12px; } .individual-actions .maintenance-action { padding: 18px 14px; font-size: 17px; } }
 @media (max-width: 350px) { .terminal-footer { column-gap: 12px; } .terminal-footer strong { font-size: 14px; } }

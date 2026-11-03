@@ -5,7 +5,7 @@
   "extensions": {
     "scope": {
       "include": [
-        "27.device_manager.html",
+        "27.Paywizard_config.html",
         "configure/"
       ],
       "exclude": [
@@ -16,7 +16,7 @@
       "sources": [
         "configure/app.css",
         "configure/app.js",
-        "27.device_manager.html"
+        "27.Paywizard_config.html"
       ],
       "validationBoundary": "Static-prototype documentation; no live terminal or physical-device acceptance implied."
     },
@@ -359,7 +359,7 @@
   ],
   "narrative": {
     "northStar": "GO 中性原生系统风格",
-    "overview": "**范围：本文件只适用于 `27.device_manager.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**\n\n用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。\n\n这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.device_manager.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。",
+    "overview": "**范围：本文件只适用于 `27.Paywizard_config.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**\n\n用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。\n\n这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.Paywizard_config.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。",
     "keyCharacteristics": [
       "系统字体与近黑主操作。",
       "平面中性画布、白色输入和稀疏辅助文案。",

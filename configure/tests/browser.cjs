@@ -2,7 +2,7 @@
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const base = process.env.CONFIGURE_TEST_URL || 'http://127.0.0.1:8765/27.device_manager.html';
+const base = process.env.CONFIGURE_TEST_URL || 'http://127.0.0.1:8765/27.Paywizard_config.html';
 const out = '.impeccable/review/configure-navigation';
 fs.mkdirSync(out, { recursive: true });
 (async () => {
