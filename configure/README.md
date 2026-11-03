@@ -5,12 +5,14 @@ Entry: `../27.device_manager.html`. Approved first-use composition: A, with the 
 ## Interaction
 
 - A fresh browser session starts with an unbound terminal. Enter eight digits, or paste `TC12345678`, then select **Set up terminal**. This validates/binds, installs missing applications, and applies parameter groups.
-- Backend-prebound terminals show a static, selectable TCI with a lock and **Set up terminal**. Only a successful first setup exposes the home screen with equal **Download apps** / **Update parameters** entries. The home screen does not show old task lists.
+- Backend-prebound terminals show a static, selectable TCI with a lock and **Set up terminal**. Only a successful first setup exposes the home screen with equal side-by-side **Download apps** / **Update parameters** buttons, package/sliders icons and two-line labels. The home screen does not show old task lists.
 - Each entry opens a separate task page. There is no top Back button or S/N footer on task pages. Browser Back is blocked while executing; results remain until **Done** / **Back to home**. Native shells must route Android Back through the same guard.
 - First-setup interruption returns to **Continue setup**; a later maintenance failure retains the dual-entry home and marks the affected entry **Not finished · Continue**. Resuming keeps successful items. Pending app and parameter work are retained separately when the other operation runs.
 - Each task has its own phase and progress. Failure exposes Retry in that row and retains successful items. Failed application installation blocks parameter tasks; retry continues the pending setup.
 - Exit during work requires confirmation. This simulation interrupts local jobs; re-entry checks its stored binding and task records. This is not a guarantee of the real wizarView agent's cancellation/recovery behavior.
 - Session storage v3 retains simulated binding, installed versions, first-setup completion and per-operation task records within the tab; unavailable storage falls back to memory. The old v2 demo store is not reused because it lacks a historical setup fact. Completion and tasks are scoped to the simulated binding revision, so reassignment (even to the same TCI) must increment that revision. This is a fixture mechanism, not a proposed backend contract.
+
+Setup and both maintenance buttons provide a pressed scale/color state. Quick taps and keyboard activation retain 140ms feedback before navigation; duplicate activation is guarded. Reduced-motion mode keeps color feedback without scaling.
 
 ## Review scenarios
 

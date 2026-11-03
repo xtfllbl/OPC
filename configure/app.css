@@ -82,9 +82,12 @@ h2 { margin: 0; font-size: 19px; letter-spacing: -.3px; line-height: 1.3; }
 .task-item.error .task-fill { background: var(--negative); }
 .task-item.error .task-phase { color: var(--negative); }
 .task-retry { margin-top: 12px; width: auto; min-height: 44px; font-size: 14px; border-radius: 12px; padding: 8px 18px; }
-.individual-actions { display: grid; gap: 14px; margin-top: 32px; }
-.individual-actions .secondary-button { flex-direction: column; gap: 4px; border-color: #d7d9df; min-height: 56px; }
-.individual-actions small { color: var(--muted); font-size: 12px; font-weight: 400; }
+.individual-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 32px; }
+.individual-actions .maintenance-action { min-width: 0; min-height: 134px; padding: 20px 18px; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 16px; border-color: #d7d9df; text-align: left; font-size: 18px; font-weight: 650; line-height: 1.2; }
+.maintenance-action > svg { width: 40px; height: 40px; stroke-width: 1.7; }
+.action-label { overflow-wrap: anywhere; }
+.action-label > span { display: block; }
+.individual-actions small { color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.4; margin-top: -8px; overflow-wrap: anywhere; }
 #task-done, #task-retry { margin-top: 24px; }
 #task-status:empty { display: none; }
 dialog { width: min(350px, calc(100vw - 32px)); max-height: calc(100svh - 32px); border: 1px solid var(--line); border-radius: 24px; padding: 24px; color: var(--ink); background: white; overflow-y: auto; }
@@ -100,4 +103,12 @@ dialog select { margin-top: 8px; width: 100%; padding: 12px 8px; min-height: 48p
 @media (max-width: 440px) { body { background: var(--canvas); } .phone-frame { width: 100%; height: 100svh; } }
 @media (max-height: 700px) { .android-status-bar { flex-basis: 30px; height: 30px; } .app-header { flex-basis: 68px; padding-top: 8px; } h1 { margin-top: 20px; margin-bottom: 28px; } .terminal-footer { padding-bottom: 16px; } }
 @media (max-width: 350px) { main { padding-right: 20px; padding-left: 20px; } .app-header { padding-left: 20px; } #tcid-input { font-size: 21px; letter-spacing: 0; padding-left: 12px; } .terminal-footer { margin: 0 20px; } }
+@media (max-width: 350px) { .individual-actions { gap: 12px; } .individual-actions .maintenance-action { padding: 18px 14px; font-size: 17px; } }
+/* Shared press feedback for the three terminal actions. */
+#setup-button, .individual-actions .maintenance-action { touch-action: manipulation; transition: transform 160ms cubic-bezier(.16, 1, .3, 1), background-color 100ms, border-color 100ms, color 100ms; }
+#setup-button:not(:disabled):is(:active, .is-pressed), .individual-actions .maintenance-action:not(:disabled):is(:active, .is-pressed) { transform: scale(.96); transition-duration: 60ms; }
+#setup-button:not(:disabled):is(:active, .is-pressed) { background: #08080a; border-color: #08080a; }
+.individual-actions .maintenance-action:not(:disabled):is(:active, .is-pressed) { background: var(--ink); border-color: var(--ink); color: white; }
+.individual-actions .maintenance-action:is(:active, .is-pressed) small { color: #e6e7e9; }
+@media (prefers-reduced-motion: reduce) { #setup-button, .individual-actions .maintenance-action { transform: none !important; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

@@ -15,6 +15,8 @@
         <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
         <symbol id="logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5M10 12h11m-4-4 4 4-4 4"/></symbol>
         <symbol id="lock" viewBox="0 0 24 24"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+        <symbol id="download-package" viewBox="0 0 32 32"><path d="M3 10 7 3h18l4 7v17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Zm0 0h26M13 3l-1 7m7-7 1 7M16 15v9m-4-4 4 4 4-4"/></symbol>
+        <symbol id="parameter-sliders" viewBox="0 0 32 32"><path d="M2 6h6m6 0h16M2 16h18m6 0h4M2 26h9m6 0h13"/><circle cx="11" cy="6" r="3"/><circle cx="23" cy="16" r="3"/><circle cx="14" cy="26" r="3"/></symbol>
         <symbol id="wifi" viewBox="0 0 24 24"><path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0M12 20h.01"/></symbol>
         <symbol id="signal" viewBox="0 0 24 24"><path d="M4 20v-4m5 4v-8m5 8V8m5 12V4"/></symbol>
         <symbol id="battery" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M10 2h4M8 9h8v9H8z"/></symbol>
@@ -62,8 +64,8 @@
                     </section>
                 </div>
                 <div class="individual-actions" id="individual-actions" aria-label="Individual downloads" hidden>
-                    <button class="secondary-button" id="download-app" type="button"><span>Download apps</span><small id="apps-pending" hidden>Not finished · Continue</small></button>
-                    <button class="secondary-button" id="download-parameters" type="button"><span>Update parameters</span><small id="parameters-pending" hidden>Not finished · Continue</small></button>
+                    <button class="secondary-button maintenance-action" id="download-app" type="button"><svg aria-hidden="true"><use href="#download-package"/></svg><span class="action-label">Download <span>apps</span></span><small id="apps-pending" hidden>Not finished · Continue</small></button>
+                    <button class="secondary-button maintenance-action" id="download-parameters" type="button"><svg aria-hidden="true"><use href="#parameter-sliders"/></svg><span class="action-label">Update <span>parameters</span></span><small id="parameters-pending" hidden>Not finished · Continue</small></button>
                 </div>
                 <button id="task-done" class="primary-button" type="button" hidden>Done</button>
                 <p id="task-announcement" class="sr-only" role="status" aria-live="polite"></p>

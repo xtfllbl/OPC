@@ -33,6 +33,14 @@ Commands:
 
 Removed the top Back button and task-page S/N footer following user screenshot feedback. Targeted Chromium checks passed at 390×844 and 320×568: Done fully reachable after scrolling, busy browser Back still guarded, and S/N restored on return home. No page errors. Captures: `task-no-back-sn-390.png`, `task-no-back-sn-320.png`.
 
+## Parallel maintenance actions
+
+Implemented approved 09-maintenance-parallel.png: equal side-by-side white outlined buttons, package/sliders icons and two-line left-aligned labels. Targeted Chromium checks passed at 390×844, 320×568 and 1440×1000: equal widths and row alignment, no label/main overflow, app-only click navigation, keyboard tab order, enlarged text at 320px and maintenance-failure continuation hint. Actual screenshots reviewed: `parallel-home-390.png`, `parallel-home-320.png`, `parallel-home-1440.png`, `parallel-pending.png`. No page errors.
+
+## Press feedback · 2026-11-03
+
+Setup and both maintenance actions now scale to 96% and change color while pressed. Quick activation holds feedback for 140ms before navigation, with duplicate-trigger protection and generation checks. Targeted Chromium checks verified each pressed color/scale and resulting task navigation, touch tap, keyboard Enter, and reduced-motion color-only behavior. No page errors. Captures: `pressed-setup-button.png`, `pressed-download-app.png`, `pressed-download-parameters.png`.
+
 ## Integration boundary
 
 This remains a static simulation using session storage. No backend TCI, real installation/application receipts, wizarView agent, physical terminal or native Android Back integration was validated. In the demo, page exit interrupts jobs and re-entry restores them as retryable; a production adapter must query actual active jobs and restore the executing task page when work is still running. Binding/configuration lookup failure or unknown status must remain blocked rather than being inferred as unbound or configured. A real binding revision/completion source and agent cancellation/recovery contract still need integration.

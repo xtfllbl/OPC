@@ -2,6 +2,8 @@
 
 Mode: Operate. Re-entry references 07-maintenance-home.png / 08-prebound-setup.png also approved with “ok”. Approved: user explicitly selected `docs/design/configure-go-2026-11-02/06-a-original-single-action.png` and authorized implementation. Scope: static terminal prototype, not production provisioning.
 
+The user subsequently approved 09-maintenance-parallel.png: equal side-by-side white action buttons with package/sliders icons and two-line left-aligned labels. This supersedes the stacked maintenance buttons only.
+
 ## Direction contract
 
 THESIS: One input and one obvious action prepare a terminal; the first-use screen is the approved A layout with the app-only link removed.

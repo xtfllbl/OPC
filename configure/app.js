@@ -109,10 +109,24 @@
         if (announcement !== lastAnnouncement) { $('task-announcement').textContent = announcement; lastAnnouncement = announcement; }
     }
 
+    let pressPending = false;
+    async function activateWithFeedback(button, action) {
+        if (button.disabled || pressPending) return;
+        pressPending = true;
+        const generation = controller.generation;
+        button.classList.add('is-pressed');
+        // Keep quick taps and Enter visible before the next screen replaces the control.
+        await new Promise(resolve => setTimeout(resolve, 140));
+        button.classList.remove('is-pressed');
+        pressPending = false;
+        if (controller.generation === generation && !controller.state.closed) await action();
+    }
+
     controller = new Configuration(gateway, render);
     $('setup-form').addEventListener('submit', async event => {
         event.preventDefault();
-        await controller.start('setup', input.value);
+        const value = input.value;
+        await activateWithFeedback($('setup-button'), () => controller.start('setup', value));
         if (controller.state.error && controller.state.binding === 'unbound') input.focus();
     });
     function returnHome() {
@@ -131,8 +145,8 @@
         if (input.value !== normalized) input.value = normalized;
         if (controller.state.error) { controller.state.error = ''; controller.emit(); }
     });
-    $('download-app').addEventListener('click', () => controller.start('apps'));
-    $('download-parameters').addEventListener('click', () => controller.start('parameters'));
+    $('download-app').addEventListener('click', () => activateWithFeedback($('download-app'), () => controller.start('apps')));
+    $('download-parameters').addEventListener('click', () => activateWithFeedback($('download-parameters'), () => controller.start('parameters')));
     $('query-retry').addEventListener('click', () => controller.enter());
 
     function showDemo() {
