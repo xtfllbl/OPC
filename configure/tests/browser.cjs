@@ -3,17 +3,19 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const base = process.env.CONFIGURE_TEST_URL || 'http://127.0.0.1:8765/27.device_manager.html';
-const out = '.impeccable/review/reentry';
+const out = '.impeccable/review/configure-navigation';
 fs.mkdirSync(out, { recursive: true });
 (async () => {
     const browser = await chromium.launch({ headless: true });
     const errors = [], results = [];
-    async function page(scenario = 'unbound', width = 390, height = 844) {
+    async function page(scenario = 'unbound', width = 390, height = 844, virtualTime = false) {
         const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
         const p = await context.newPage();
+        if (virtualTime) await p.clock.install();
         p.on('pageerror', e => errors.push(e.message));
         p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
         await p.goto(base + '?scenario=' + scenario);
+        if (virtualTime) await p.clock.runFor(700);
         await p.waitForFunction(() => !document.getElementById('setup-label').textContent.includes('Checking terminal'));
         return p;
     }
@@ -35,6 +37,10 @@ fs.mkdirSync(out, { recursive: true });
             for (const scenario of ['unbound', 'bound', 'configured']) {
                 const p = await page(scenario, width, height);
                 assert.equal(await p.locator('#exit-app-button').innerText(), 'Exit');
+                assert.equal(await p.getByText('This terminal', { exact: true }).count(), 0);
+                const serial = await p.locator('#terminal-serial').boundingBox();
+                const exit = await p.locator('#exit-app-button').boundingBox();
+                assert.ok(Math.abs(serial.y + serial.height / 2 - exit.y - exit.height / 2) < 1);
                 if (scenario === 'configured') await home(p);
                 else assert.equal(await p.locator('#individual-actions').isVisible(), false);
                 if (scenario === 'bound') {
@@ -48,6 +54,7 @@ fs.mkdirSync(out, { recursive: true });
         results.push('Three viewport sizes: unbound, locked prebound and clean dual-entry home');
         const p = await page();
         await p.locator('#tcid-input').fill('123456789'); await p.locator('#setup-button').click();
+        await p.locator('#tcid-error').waitFor();
         assert.match(await p.locator('#tcid-error').innerText(), /8 digits/);
         await p.locator('#tcid-input').fill('TC00009999'); await p.locator('#setup-button').click();
         await p.waitForFunction(() => document.getElementById('tcid-error').textContent.includes('another terminal'));
@@ -55,8 +62,11 @@ fs.mkdirSync(out, { recursive: true });
         assert.equal(await p.locator('#tcid-input').inputValue(), '12345678');
         await p.locator('#setup-button').click();
         await p.locator('#results-area').waitFor();
-        assert.equal(await p.locator('#task-back').count(), 0);
+        assert.equal(await p.locator('#task-back').isVisible(), false);
+        assert.equal(await p.locator('#terminal-serial').isVisible(), false);
+        assert.equal(await p.locator('#exit-app-button').isVisible(), false);
         assert.equal(await p.locator('#terminal-footer').isVisible(), false);
+        assert.equal(await p.locator('#page-title').evaluate(el => getComputedStyle(el).outlineStyle), 'none');
         assert.equal(await p.locator('#task-done').isVisible(), false);
         await p.evaluate(() => history.back());
         await p.waitForTimeout(150);
@@ -75,6 +85,8 @@ fs.mkdirSync(out, { recursive: true });
         await p.context().close();
         const f = await page('app-failure');
         await f.locator('#setup-button').click(); await ended(f);
+        assert.equal(await f.locator('#task-done').innerText(), 'Done');
+        assert.equal(await f.locator('.task-retry:visible').count(), 1);
         assert.equal(await f.locator('#parameter-results').isVisible(), false);
         await f.locator('#task-done').click();
         assert.equal(await f.locator('#setup-label').innerText(), 'Continue setup');
@@ -103,22 +115,68 @@ fs.mkdirSync(out, { recursive: true });
         assert.equal(await m.locator('#demo-modal').isVisible(), true); await m.keyboard.press('Escape');
         results.push('Maintenance failure survives reload and other task; resume keeps dual-entry home');
         await m.context().close();
-        const e = await page('bound');
-        await e.locator('#setup-button').click(); await e.locator('#results-area').waitFor();
-        await e.locator('#exit-app-button').click(); assert.equal(await e.locator('#exit-modal').isVisible(), true);
-        await e.locator('#exit-cancel').click(); assert.equal(await e.locator('#results-area').isVisible(), true);
-        await e.locator('#exit-app-button').click(); await e.locator('#exit-confirm').click();
-        await e.locator('#reopen-app').click(); await e.locator('#setup-button').waitFor();
-        await e.waitForFunction(() => document.getElementById('setup-label').textContent === 'Continue setup');
-        assert.equal(await e.locator('#individual-actions').isVisible(), false);
-        await e.screenshot({ path: out + '/continue-setup.png' });
-        results.push('Busy Exit confirmation and interrupted setup restoration'); await e.context().close();
+        for (const [operation, action] of [['setup', 'setup-button'], ['apps', 'download-app'], ['parameters', 'download-parameters']]) {
+            const e = await page('stalled-' + operation, 390, 844, true);
+            await e.locator('#' + action).click(); await e.clock.runFor(3000);
+            assert.equal(await e.locator('#exit-app-button').isVisible(), false);
+            assert.equal(await e.locator('#task-done').isVisible(), false);
+            assert.equal(await e.locator('#task-back').isVisible(), false);
+            await e.clock.runFor(121000);
+            assert.equal(await e.locator('#task-back').isVisible(), true);
+            await e.screenshot({ path: out + '/stalled-' + operation + '.png' });
+            await e.locator('#task-back').click();
+            assert.equal(await e.locator('#exit-app-button').isVisible(), true);
+            assert.ok((await e.locator('#' + action).innerText()).includes('View progress'));
+            if (operation !== 'setup') assert.equal(await e.locator(operation === 'apps' ? '#download-parameters' : '#download-app').isDisabled(), true);
+            await e.locator('#exit-app-button').click();
+            assert.equal(await e.locator('#exit-modal').isVisible(), true);
+            await e.locator('#exit-cancel').click();
+            await e.locator('#' + action).click(); await e.clock.runFor(200);
+            assert.equal(await e.locator('#task-back').isVisible(), true);
+            assert.equal(await e.locator('#exit-app-button').isVisible(), false);
+            // Recovery removes the escape route; the 180-second pause starts per item.
+            await e.clock.runFor(60000);
+            assert.equal(await e.locator('#task-back').isVisible(), false);
+            await e.clock.runFor(15000);
+            assert.equal(await e.locator('#task-done').innerText(), 'Done');
+            assert.equal(await e.locator('#task-done').isVisible(), true);
+            assert.equal(await e.locator('#exit-app-button').isVisible(), false);
+            await e.locator('#task-done').click(); await home(e);
+            await e.context().close();
+        }
+        results.push('Three workflows: 120-second inactivity escape, home-only Exit, guarded re-entry, recovery and Done');
         const q = await page('query-failure');
         assert.equal(await q.locator('#tcid-input').isDisabled(), true);
         assert.equal(await q.locator('#individual-actions').isVisible(), false);
         await q.locator('#query-retry').click(); await q.locator('#query-retry').waitFor();
         assert.equal(await q.locator('#tcid-input').isDisabled(), true);
         results.push('Lookup failure blocks editing and task initiation'); await q.context().close();
+        // Each action must inspect current installed state, with different update policies.
+        await Promise.all([
+            ['apps-outdated', 'download-app', '2.9.1', true],
+            ['apps-outdated', 'download-parameters', '2.8.0', false],
+            ['app-uninstalled', 'download-app', '1.2.8', true],
+            ['app-uninstalled', 'download-parameters', '1.2.8', true]
+        ].map(async ([scenario, action, version, delivered]) => {
+            const v = await page(scenario);
+            await v.locator('#' + action).click(); await ended(v);
+            const row = v.locator('[data-task-id="' + (scenario === 'apps-outdated' ? 'paywizard-app' : 'payment-app') + '"]');
+            assert.ok((await row.locator('.task-version').innerText()).includes(version));
+            assert.equal(await row.locator('.task-progress').isVisible(), delivered);
+            assert.equal(await row.locator('.task-percent').isVisible(), delivered);
+            if (action === 'download-parameters') {
+                assert.equal(await v.locator('#app-results-title').innerText(), 'Application check');
+                assert.equal(await v.locator('#parameter-task-list .success').count(), 2);
+            } else assert.equal(await v.locator('#parameter-results').isVisible(), false);
+            await v.screenshot({ path: out + '/' + scenario + '-' + action + '.png' });
+            await v.context().close();
+        }));
+        const inventory = await page('inventory-failure');
+        await inventory.locator('#download-parameters').click(); await ended(inventory);
+        assert.match(await inventory.locator('#task-error').innerText(), /check installed applications/);
+        assert.equal(await inventory.locator('#parameter-results').isVisible(), false);
+        await inventory.context().close();
+        results.push('App updates versus presence-only parameter checks; missing app installation; inventory query failure');
         const large = await page('configured', 320, 568);
         await large.addStyleTag({ content: 'button{font-size:200%!important} .terminal-footer{font-size:150%!important}' });
         await noOverflow(large); await large.locator('#download-parameters').scrollIntoViewIfNeeded();

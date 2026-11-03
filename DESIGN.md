@@ -6,6 +6,7 @@ colors:
   muted: "#656b76"
   canvas: "#f5f6f8"
   line: "#e6e7e9"
+  bound-surface: "#e0e8e1"
   positive: "#187454"
   negative: "#b23d35"
   surface: "white"
@@ -149,7 +150,7 @@ components:
 
 ## Colors
 
-浅灰中性背景与近黑色控制形成主要对比；赭色只标识 Configure，绿与红只表达结果。
+浅灰中性背景与近黑色控制形成主要对比；赭色只标识 Configure，绿与红表达状态，已绑定 TCI 使用浅绿色静态表面。
 
 ### Primary
 
@@ -187,7 +188,7 @@ components:
 
 ## Layout
 
-桌面将终端画布居中，基准尺寸为（390 × 844px），受视口宽度与高度限制。界面纵向分为模拟状态栏、品牌与退出入口、可滚动主区、底部终端身份。主区常规水平内边距为（24px）；底部通过分隔线与主区区分，保留在滚动区之外。
+桌面将终端画布居中，基准尺寸为（390 × 844px），受视口宽度与高度限制。界面纵向分为模拟状态栏、品牌、可滚动主区、底部终端身份与退出入口。主区常规水平内边距为（24px）；底部通过分隔线与主区区分，保留在滚动区之外。
 
 首屏直接排布两行标题、TCI 标签与输入、一行说明、全宽主操作，不包外围卡片。输入高（62px），主操作最小高（52px）；标题上间距与主操作前间距均为（32px）。独立任务页标题缩小，结果区使用（28px）上间距；首页双入口按批准的 09 稿并排等宽：使用（32px）上间距、（14px）列间距、白底浅边框；按钮最小高（134px）、内边距（20px 18px），40px 下载包/参数滑杆图标和两行左对齐文字（18px / 650）。320px 小屏仍并排，列间距 12px、内边距 18px 14px、文字 17px；未完成提示留在对应按钮内，并让同排按钮等高增长。任务区之间为（24px），任务行上下内边距为（16px）。
 
@@ -216,17 +217,19 @@ components:
 
 ### Inputs / Fields
 
-白色 TCI 输入带固定 TC 前缀和数字区。聚焦时边框变近黑并增加（1px）外描边；错误边框与错误说明使用 negative。禁用数字区透明度为（0.55）。已绑定时以静态完整 TC 值与锁图标替换输入，不显示数字键盘；身份值可选择复制。
+白色 TCI 输入带固定 TC 前缀和数字区。聚焦时边框变近黑并增加（1px）外描边；错误边框与错误说明使用 negative。禁用数字区透明度为（0.55）。已绑定时以浅绿色（#e0e8e1）静态身份块替换输入，块内只有 TCI 标签与完整 TC 值，不显示 Bound、勾、锁或数字键盘；身份值可选择复制。身份块使用 16px 圆角、14px 16px 内边距、12px 标签与数值间距。
 
 绑定查询失败显示 Retry，不把失败当作未绑定。输入错误通过文字和 aria-invalid 表达，不能仅依赖红色。原生场景选择框只用于隐藏的原型演示对话框。
 
 ### Navigation
 
-页头是双行品牌与「退出图标 + Exit」浅边白底按钮，最小高 44px、圆角 12px、图标 19px。独立任务页不显示顶部 Back 和底部 S/N；任务结束后通过列表末尾 Done（失败时 Back to home）回首页。浏览器 Back 使用同一执行中限制，原生壳需接入该规则。品牌默认无底色与边框，保留键盘焦点；长按或 Shift+Enter 打开演示场景。
+页头只保留双行品牌。退出入口移到底部：透明无边框，最小高 44px、24px 原有退出图标、16px 文字，图文间距 8px。独立任务页不显示 Exit、底部身份和分隔线；任务成功或明确失败后通过 Done 返回，失败仍保留 Retry。连续 120 秒无实质进展才出现 Back to home，恢复进展即隐藏。浏览器 Back 使用同一守卫，原生壳需接入该规则。标题保留程序化焦点定位但不绘制轮廓，真实控件仍显示键盘焦点。品牌默认无底色与边框，保留键盘焦点；长按或 Shift+Enter 打开演示场景。
 
 ### Task rows
 
 Applications 和 Parameters 下使用开放列表，以细底边分隔。名称可换行，版本保持右侧；阶段文本与百分比在进度下方并列。轨道高（4px），填充以 scaleX 表示进度；变化过渡为（400ms cubic-bezier(.16,1,.3,1)）。完成变绿、失败变红，并保留阶段文字。
+
+参数任务页的应用区标题为 Application check。已安装检查结果仅展示名称、当前版本和 Installed；下载应用时无更新显示 Up to date，不显示下载进度条与 100%。只有实际补装/更新应用展示完整进度，版本更新显示原版本 → 目标版本。
 
 失败行显示局部 Retry，执行时禁用冲突操作。进度条具有名称、当前值和阶段说明，成功与失败通过礼貌实时区域播报。没有汇总进度或全局完成徽章。
 
@@ -236,7 +239,7 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 
 ### Terminal identity footer
 
-仅首页底部左对齐显示 This terminal 和加重 S/N，细线在上方分隔。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
+仅首页底部显示同一行的 S/N 和 Exit，二者垂直居中；左右边缘与分隔线及主区卡片对齐。删除 This terminal。S/N 默认 16px，350px 以下为 14px；Exit 保留至少 44px 高的点击区域。使用批准示例 WP6170PQ23000060；保留换行能力。它是终端身份，不是卡片或状态徽章。
 
 ## Do's and Don'ts
 
@@ -252,3 +255,7 @@ Applications 和 Parameters 下使用开放列表，以细底边分隔。名称�
 - Don't 在首次配置完成前显示 Download apps 或 Update parameters；Don't 在首页展开旧任务进度。
 - Don't 用蓝色主按钮、装饰阴影、总进度或汇总完成徽章替代当前实现。
 - Don't 把模拟任务结果或文档组件预览描述成真实终端执行凭据。
+
+## Approved refinement - 2026-11-03
+
+The user approved `docs/design/configure-go-2026-11-03/approved-bound-tci-footer.png`: bound TCI uses a pale sage static block containing only TCI and its value, with no Bound badge, check or lock icon. Unbound input remains editable and white. The subsequently approved navigation refinement puts S/N and Exit on one centered footer row, removes This terminal, and removes the entire footer from task pages. This supersedes the earlier lock and header Exit appearance only.

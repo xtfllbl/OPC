@@ -30,8 +30,9 @@ On entry, query the current binding by terminal S/N. An existing TCI is read-onl
 - Applications and parameter groups show individual phases, progress, and outcomes. No aggregate progress or completed badge.
 - Failed application installation blocks parameter tasks. Retry only failed items and automatically continue the pending parameter operation.
 - An installation receipt and an applied-parameter receipt are distinct. Download completion is not execution success.
+- Download apps compares current system package versions with the TCI manifest, installs missing apps and updates older versions. Update parameters only checks presence, installs missing apps first, and then reapplies parameters; it does not upgrade already installed apps. Recheck actual installed state on continuation instead of trusting old task receipts.
 - Parameter update fetches a fresh manifest. Expose `Update parameters` on the maintenance home after first setup has completed for the current binding; a later failed update does not erase that historical completion.
-- Confirm interruption risk on exit during execution; re-entry queries binding and actual task state. Agent cancellation and recovery contracts remain unresolved.
+- Exit is available only on home. Task pages allow return after completion (Done, including failure) or 120 seconds without meaningful progress (Back to home). Stalled return does not cancel the task; only its original entry stays available as View progress until it finishes. Home Exit warns when work remains unresolved. Real agent cancellation and recovery contracts remain unresolved.
 
 ## Brand Commitments
 
@@ -54,3 +55,9 @@ Use Paywizard GO as the visual reference. The requested experience is simple, fr
 ## Open Decisions
 
 The user approved the final A reference and authorized implementation. The existing HTML entry now implements that design with an explicit simulated adapter. Real terminal dimensions and agent interruption/recovery behavior remain to be settled through integration; local browser checks do not establish physical-device acceptance.
+
+## Approved refinement - 2026-11-03
+
+The user approved `docs/design/configure-go-2026-11-03/approved-bound-tci-footer.png`: bound TCI uses a pale sage static block containing only TCI and its value, with no Bound badge, check or lock icon. Unbound input remains editable and white. The later confirmed navigation refinement removes This terminal: Exit and S/N share the home footer row, optically centered and aligned to the content edges. Task pages have no footer or Exit. This supersedes the earlier lock and header Exit appearance only.
+
+Current navigation decisions: `docs/design/configure-navigation-2026-11-03.md`. Repeated/no-change notifications do not reset the inactivity clock. Returning preserves the original execution; unknown historical runs remain blocked until their result is confirmed.

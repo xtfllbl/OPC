@@ -14,7 +14,6 @@
     <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
         <symbol id="logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5M10 12h11m-4-4 4 4-4 4"/></symbol>
-        <symbol id="lock" viewBox="0 0 24 24"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
         <symbol id="download-package" viewBox="0 0 32 32"><path d="M3 10 7 3h18l4 7v17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Zm0 0h26M13 3l-1 7m7-7 1 7M16 15v9m-4-4 4 4 4-4"/></symbol>
         <symbol id="parameter-sliders" viewBox="0 0 32 32"><path d="M2 6h6m6 0h16M2 16h18m6 0h4M2 26h9m6 0h13"/><circle cx="11" cy="6" r="3"/><circle cx="23" cy="16" r="3"/><circle cx="14" cy="26" r="3"/></symbol>
         <symbol id="wifi" viewBox="0 0 24 24"><path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0M12 20h.01"/></symbol>
@@ -31,7 +30,6 @@
                 <button class="brand" id="app-title" type="button" aria-label="Paywizard Configure">
                     <span class="wordmark">PAYwizard</span><span class="product-name">Configure</span>
                 </button>
-                <button class="exit-button" id="exit-app-button" type="button" aria-label="Exit application"><svg aria-hidden="true"><use href="#logout"/></svg><span>Exit</span></button>
             </header>
             <main id="main-content">
                 <h1 id="page-title" tabindex="-1">Set up your<br>terminal</h1>
@@ -42,7 +40,7 @@
                         <input id="tcid-input" type="text" inputmode="numeric" pattern="[0-9]{8}" autocomplete="off" spellcheck="false" placeholder="12345678" aria-label="TCI number, 8 digits after TC" aria-describedby="setup-help tcid-error" disabled>
                     </div>
                     </div>
-                    <div id="bound-tci" hidden><span class="input-label">TCI</span><div class="tci-identity"><span id="tci-value"></span><svg aria-label="Read only" role="img"><use href="#lock"/></svg></div></div>
+                    <div id="bound-tci" class="tci-identity" role="group" aria-label="Bound terminal configuration" hidden><span class="input-label">TCI</span><span id="tci-value"></span></div>
                     <p id="setup-help" class="helper">Apps and parameters, in one step.</p>
                     <p id="tcid-error" class="error-message" role="alert" hidden></p>
                     <p id="binding-message" class="binding-message" role="status" hidden></p>
@@ -68,9 +66,17 @@
                     <button class="secondary-button maintenance-action" id="download-parameters" type="button"><svg aria-hidden="true"><use href="#parameter-sliders"/></svg><span class="action-label">Update <span>parameters</span></span><small id="parameters-pending" hidden>Not finished · Continue</small></button>
                 </div>
                 <button id="task-done" class="primary-button" type="button" hidden>Done</button>
+                <button id="task-check-status" class="secondary-button" type="button" hidden>Check status</button>
+                <div id="task-stalled" hidden>
+                    <p class="helper" role="status">No progress update for 2 minutes. You can return and check this task later.</p>
+                    <button id="task-back" class="secondary-button" type="button">Back to home</button>
+                </div>
                 <p id="task-announcement" class="sr-only" role="status" aria-live="polite"></p>
             </main>
-            <footer class="terminal-footer" id="terminal-footer"><span>This terminal</span><strong>S/N WP6170PQ23000060</strong></footer>
+            <footer class="terminal-footer" id="terminal-footer">
+                <strong id="terminal-serial">S/N WP6170PQ23000060</strong>
+                <button class="exit-button" id="exit-app-button" type="button" aria-label="Exit application"><svg aria-hidden="true"><use href="#logout"/></svg><span>Exit</span></button>
+            </footer>
         </div>
         <section class="exit-screen" id="exit-screen" aria-labelledby="exit-screen-title" hidden>
             <h1 id="exit-screen-title">Application closed</h1>
@@ -86,7 +92,9 @@
             <label for="demo-state">Startup state</label>
             <select id="demo-state">
                 <option value="unbound">Unbound terminal</option><option value="bound">Prebound · TC12345678</option><option value="configured">Setup completed</option><option value="maintenance-failure">Configured · parameter update fails</option>
+                <option value="apps-outdated">Configured · older app installed</option><option value="app-uninstalled">Configured · app uninstalled</option><option value="inventory-failure">Installed-app query fails</option>
                 <option value="query-failure">Binding query fails</option><option value="app-failure">One application fails</option>
+                <option value="stalled-setup">Setup stalls, then resumes</option><option value="stalled-apps">App download stalls, then resumes</option><option value="stalled-parameters">Parameter update stalls, then resumes</option>
                 <option value="parameter-failure">One parameter group fails</option><option value="swap">SWAP · TC00004321</option>
             </select>
             <p class="demo-help">Validation examples: 00009999 occupied · 00008888 no store · 00007777 unauthorized · 00000000 not found.</p>

@@ -30,6 +30,10 @@ _Avoid_: 重新绑定、重新执行首次配置
 离开 Paywizard Configure 应用的操作；不表示解除 TCI 绑定或注销账号。
 _Avoid_: Settings Exit、Sign out、下一步
 
+**Configure Return（返回配置主界面）**:
+从首次配置或维护任务页回到 Configure 主界面的导航操作；不表示退出应用、取消任务或任务成功。
+_Avoid_: Configure Exit、退出应用、配置成功
+
 ### OPC payment
 
 **Payment Pane（支付区）**:

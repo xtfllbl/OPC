@@ -5,7 +5,7 @@
     let storage = null;
     try { storage = window.sessionStorage; } catch (_) { /* File/private browsing fallback. */ }
     const gateway = new DemoGateway({ storage });
-    const scenarios = ['unbound', 'bound', 'configured', 'maintenance-failure', 'swap', 'query-failure', 'app-failure', 'parameter-failure'];
+    const scenarios = ['unbound', 'bound', 'configured', 'maintenance-failure', 'apps-outdated', 'app-uninstalled', 'inventory-failure', 'swap', 'query-failure', 'app-failure', 'parameter-failure', 'stalled-setup', 'stalled-apps', 'stalled-parameters'];
     const requestedScenario = new URLSearchParams(location.search).get('scenario');
     if (scenarios.includes(requestedScenario)) gateway.reset(requestedScenario);
     const input = $('tcid-input');
@@ -37,7 +37,11 @@
             }
             elements.article.className = 'task-item ' + item.status;
             elements.name.textContent = item.name;
-            elements.version.textContent = item.version;
+            elements.version.textContent = item.installedVersion && item.installedVersion !== item.version ? item.installedVersion + ' → ' + item.version : item.version;
+            const checkOnly = type === 'apps' && item.delivery === false;
+            elements.progress.hidden = checkOnly;
+            elements.percent.hidden = checkOnly;
+            elements.article.classList.toggle('check-only', checkOnly);
             elements.progress.setAttribute('aria-label', item.name + ' progress');
             elements.progress.setAttribute('aria-valuenow', item.progress);
             elements.progress.setAttribute('aria-valuetext', item.phase + ', ' + item.progress + '%');
@@ -56,6 +60,7 @@
         const taskPage = state.page === 'task';
         const home = !taskPage;
         const maintenance = controller.complete;
+        const viewingSetup = home && state.busy && state.operation === 'setup';
         const changedPage = previousPage !== state.page;
         if (changedPage && taskPage) history.pushState({ configureTask: true }, '');
         previousPage = state.page;
@@ -82,12 +87,13 @@
         $('binding-message').hidden = !state.message || state.binding === 'loading' || state.busy;
         $('query-retry').hidden = state.binding !== 'error';
         $('setup-button').hidden = state.binding === 'error' || maintenance;
-        $('setup-button').disabled = state.busy || !['bound', 'unbound'].includes(state.binding);
-        $('setup-button').setAttribute('aria-busy', String(state.busy || state.binding === 'loading'));
-        $('setup-label').textContent = state.binding === 'loading' ? 'Checking terminal…' : state.busy ? (state.message || 'Setting up…') : controller.pending('setup') ? 'Continue setup' : 'Set up terminal';
-        $('setup-button').querySelector('.button-spinner').hidden = !state.busy && state.binding !== 'loading';
+        $('setup-button').disabled = (state.busy && !viewingSetup) || !['bound', 'unbound'].includes(state.binding);
+        $('setup-button').setAttribute('aria-busy', String((state.busy && !viewingSetup) || state.binding === 'loading'));
+        $('setup-label').textContent = viewingSetup ? 'View progress' : state.binding === 'loading' ? 'Checking terminal…' : state.busy ? (state.message || 'Setting up…') : controller.pending('setup') ? 'Continue setup' : 'Set up terminal';
+        $('setup-button').querySelector('.button-spinner').hidden = viewingSetup || (!state.busy && state.binding !== 'loading');
         $('setup-button').querySelector('.button-arrow').toggleAttribute('hidden', state.busy || state.binding === 'loading');
         $('results-area').hidden = home;
+        $('app-results-title').textContent = state.operation === 'parameters' ? 'Application check' : 'Applications';
         renderTasks('apps', 'app-task-list', 'app-results', taskPage ? state.apps : [], state.busy);
         renderTasks('parameters', 'parameter-task-list', 'parameter-results', taskPage ? state.parameters : [], state.busy);
         $('task-status').textContent = state.busy ? (state.message || 'Keep this app open while the task runs.') : '';
@@ -95,12 +101,18 @@
         $('task-error').hidden = !state.error;
         $('task-retry').hidden = !taskPage || state.busy || !state.error;
         $('task-done').hidden = home || state.busy;
-        $('task-done').textContent = state.taskStatus === 'success' ? 'Done' : 'Back to home';
+        $('task-stalled').hidden = home || !state.busy || !state.stalled;
+        $('task-check-status').hidden = home || state.taskStatus !== 'unknown';
+        $('task-check-status').disabled = state.checkingTask;
+        $('task-check-status').textContent = state.checkingTask ? 'Checking…' : 'Check status';
         $('individual-actions').hidden = !home || !maintenance;
-        $('download-app').disabled = state.busy;
-        $('download-parameters').disabled = state.busy;
-        $('apps-pending').hidden = !controller.pending('apps');
-        $('parameters-pending').hidden = !controller.pending('parameters');
+        $('download-app').disabled = state.busy && state.operation !== 'apps';
+        $('download-parameters').disabled = state.busy && state.operation !== 'parameters';
+        for (const [operation, id] of [['apps', 'apps-pending'], ['parameters', 'parameters-pending']]) {
+            const active = state.busy && state.operation === operation;
+            $(id).hidden = !active && !controller.pending(operation);
+            $(id).textContent = active ? 'View progress' : 'Not finished · Continue';
+        }
         if (changedPage && !state.closed) {
             $('main-content').scrollTop = 0;
             $('page-title').focus({ preventScroll: true });
@@ -133,12 +145,13 @@
         if (controller.goHome() && history.state?.configureTask) history.back();
     }
     $('task-done').addEventListener('click', returnHome);
+    $('task-back').addEventListener('click', returnHome);
+    $('task-check-status').addEventListener('click', () => controller.checkTaskStatus());
     $('task-retry').addEventListener('click', () => controller.start(controller.state.operation));
     // Browser Back follows the same task guard. Native shells must wire their Back action here.
     window.addEventListener('popstate', () => {
         if (controller.state.page !== 'task' || controller.state.closed) return;
-        if (controller.state.busy) history.pushState({ configureTask: true }, '');
-        else controller.goHome();
+        if (!controller.goHome()) history.pushState({ configureTask: true }, '');
     });
     input.addEventListener('input', () => {
         const normalized = normalizeTci(input.value);
@@ -166,6 +179,7 @@
         controller.enter();
     });
     $('exit-app-button').addEventListener('click', () => {
+        if (controller.state.page !== 'home') return;
         if (!controller.state.busy) { controller.close(); $('reopen-app').focus(); return; }
         $('exit-message').textContent = 'A task is still running. Exiting may interrupt it. Exit application?';
         $('exit-modal').showModal();
@@ -183,5 +197,6 @@
     window.addEventListener('pageshow', event => { if (event.persisted) controller.enter(); });
     function updateTime() { $('status-time').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false }); }
     updateTime(); setInterval(updateTime, 30000);
+    setInterval(() => controller.checkStall(), 1000);
     controller.enter();
 })();

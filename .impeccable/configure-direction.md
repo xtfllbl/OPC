@@ -19,3 +19,7 @@ FORM: Approved A composition, seed a4d01fd2. Current approval supersedes the gro
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 Implementation carries semantic text, inputs and controls, not the generated image's texture or pixels. Native terminal API, installation receipts and parameter application still require integration. Existing prototype demo cases remain available via long-press/Shift+Enter on the brand.
+
+## Approved refinement - 2026-11-03
+
+The user approved `docs/design/configure-go-2026-11-03/approved-bound-tci-footer.png`: bound TCI uses a pale sage static block containing only TCI and its value, with no Bound badge, check or lock icon. Unbound input remains editable and white. Exit moves from the header to the footer, optically centered with This terminal and aligned to the right content edge; S/N occupies the next full-width row. Task pages retain the same footer Exit while hiding identity metadata, preserving the existing running-task confirmation. This supersedes the earlier lock and header Exit appearance only.
