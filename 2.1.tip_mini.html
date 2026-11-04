@@ -304,7 +304,7 @@
 
         .actions {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 112px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
         }
 
@@ -333,8 +333,12 @@
             color: #FFFFFF;
         }
 
-        .btn-skip {
-            color: #64748B;
+        .tip-choice {
+            min-width: 0;
+            border: 1.5px solid var(--line);
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), var(--shadow-sm);
+            color: var(--text-dark);
         }
 
         .overlay {
@@ -628,9 +632,6 @@
                 font-size: 18px;
             }
 
-            .actions {
-                grid-template-columns: minmax(0, 1fr) 92px;
-            }
         }
     </style>
 </head>
@@ -685,8 +686,8 @@
                 </section>
 
                 <div class="actions">
-                    <button class="btn btn-primary" id="btn-custom" type="button">Custom tip</button>
-                    <button class="btn btn-skip" id="btn-skip" type="button">Skip</button>
+                    <button class="btn tip-choice" id="btn-custom" type="button">Custom tip</button>
+                    <button class="btn tip-choice" id="btn-skip" type="button">No tip</button>
                 </div>
             </main>
         </div>

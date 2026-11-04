@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "inter",
+        "files": [
+          "2.1.tip_mini.html"
+        ],
+        "createdAt": "2026-11-04T01:49:37.514Z",
+        "reason": "Agent: DESIGN.md explicitly applies only to Configure; the Mini payment prototype retains its existing Inter typography."
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "2.1.tip_mini.html"
+        ],
+        "createdAt": "2026-11-04T01:49:45.535Z",
+        "reason": "Agent: detector treats the dark outer device backdrop as the page surface; controls actually sit on a light panel. Custom tip blue shadow removed; existing blue shadows remain only on selected or confirmation controls."
+      },
+      {
+        "rule": "icon-tile-stack",
+        "value": "*",
+        "files": [
+          "2.1.tip_mini.html"
+        ],
+        "createdAt": "2026-11-04T01:50:36.561Z",
+        "reason": "Agent: this is a Back navigation control beside the title in a three-column grid, confirmed in source and rendered screenshot, not an icon stacked above a heading."
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "2.1.tip_mini.html"
+        ],
+        "createdAt": "2026-11-04T01:50:36.577Z",
+        "reason": "Agent: existing Mini payment typography is deliberately preserved during the approved two-button refinement; font popularity is not a defect for this operational screen."
+      }
+    ]
+  }
+}
