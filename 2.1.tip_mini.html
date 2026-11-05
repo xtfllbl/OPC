@@ -16,7 +16,7 @@
             --bg-body: #F3F4F6;
             --surface: #FFFFFF;
             --text-dark: #111827;
-            --text-muted: #6B7280;
+            --text-muted: #626B78;
             --line: #E5E7EB;
             --danger: #EF4444;
             --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.16);
@@ -36,7 +36,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            gap: 32px;
+            padding: 32px;
             background: #1B1B1B;
             color: var(--text-dark);
         }
@@ -45,8 +46,49 @@
             font: inherit;
         }
 
+        [hidden] {
+            display: none !important;
+        }
+
+        .preview-controls {
+            flex: 0 0 172px;
+            color: #D1D5DB;
+        }
+
+        .preview-label {
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .preview-nav {
+            display: grid;
+            gap: 8px;
+        }
+
+        .preview-nav a {
+            padding: 12px;
+            border: 1px solid #454545;
+            border-radius: 10px;
+            color: #D1D5DB;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .preview-nav a[aria-current="page"] {
+            border-color: #D1D5DB;
+            background: #303030;
+            color: #FFFFFF;
+        }
+
+        .preview-nav a:focus-visible {
+            outline: 2px solid #D1D5DB;
+            outline-offset: 3px;
+        }
+
         .mini-frame {
             position: relative;
+            flex: none;
             width: 480px;
             height: 480px;
             overflow: hidden;
@@ -190,6 +232,11 @@
             white-space: nowrap;
         }
 
+        .tip-base-heading {
+            min-width: 0;
+            font: inherit;
+        }
+
         .order-total {
             max-width: 145px;
             text-align: right;
@@ -199,9 +246,11 @@
             display: block;
             margin-bottom: 3px;
             color: var(--text-muted);
-            font-size: 9px;
+            font-family: inherit;
+            font-size: 11px;
             font-weight: 800;
-            letter-spacing: 0.11em;
+            letter-spacing: 0.08em;
+            line-height: 14px;
             text-transform: uppercase;
         }
 
@@ -213,8 +262,14 @@
             font-weight: 800;
             letter-spacing: -0.045em;
             line-height: 1;
+            font-variant-numeric: tabular-nums;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .page-heading.has-provided-base .base-amount {
+            font-size: 26px;
+            line-height: 1.1;
         }
 
         .tip-grid {
@@ -570,6 +625,7 @@
             justify-content: space-between;
             gap: 14px;
             color: #475569;
+            text-align: left;
             font-size: 13px;
             font-weight: 600;
         }
@@ -578,6 +634,8 @@
             color: var(--text-dark);
             font-size: 15px;
             font-weight: 800;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
         }
 
         .confirm-total {
@@ -600,14 +658,38 @@
             border-radius: 15px;
         }
 
-        @media (max-width: 520px) {
+        @media (max-width: 780px) {
             body {
-                background: var(--bg-body);
+                flex-direction: column;
+                gap: 24px;
+                padding: 24px;
             }
 
             .mini-frame {
-                width: 100vw;
-                height: 100dvh;
+                width: min(480px, 100%);
+            }
+
+            .preview-controls {
+                order: -1;
+                flex: none;
+                width: min(480px, 100%);
+            }
+
+            .preview-nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 20px 0 0;
+            }
+
+            .preview-controls {
+                padding: 0 16px;
+            }
+
+            .mini-frame {
                 border-radius: 0;
                 box-shadow: none;
             }
@@ -655,9 +737,13 @@
                             <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
                         </svg>
                     </a>
-                    <h1 class="page-title">Select TIP</h1>
+                    <h1 class="page-title" id="page-title">Select TIP</h1>
+                    <h1 class="tip-base-heading" id="tip-base-heading" hidden>
+                        <span class="order-label" id="tip-base-label">ADD A TIP ON</span>
+                        <strong class="base-amount" id="tip-base-amount">$0.00</strong>
+                    </h1>
                     <div class="order-total" aria-label="Order amount">
-                        <span class="order-label">Order amount</span>
+                        <span class="order-label" id="order-label">ORDER AMOUNT</span>
                         <strong class="base-amount" id="base-amount">$0.00</strong>
                     </div>
                 </header>
@@ -731,8 +817,9 @@
             <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
                 <h2 class="confirm-title" id="confirm-title">Confirm tip</h2>
                 <div class="confirm-summary">
+                    <div class="confirm-row"><span>Order amount</span><strong id="confirm-subtotal">$0.00</strong></div>
+                    <div class="confirm-row" id="confirm-eligible-row" hidden><span>Eligible amount</span><strong id="confirm-eligible">$0.00</strong></div>
                     <div class="confirm-row"><span>Tip</span><strong id="confirm-tip">$0.00</strong></div>
-                    <div class="confirm-row"><span>Subtotal</span><strong id="confirm-subtotal">$0.00</strong></div>
                 </div>
                 <div class="confirm-total" id="confirm-total">Total $0.00</div>
                 <div class="modal-actions">
@@ -742,6 +829,14 @@
             </div>
         </div>
     </div>
+
+    <aside class="preview-controls" aria-labelledby="preview-label">
+        <p class="preview-label" id="preview-label">预览场景</p>
+        <nav class="preview-nav" aria-labelledby="preview-label">
+            <a id="preview-normal" href="2.1.tip_mini.html?amountCents=600">普通情况</a>
+            <a id="preview-base" href="2.1.tip_mini.html?amountCents=600&amp;tipBaseCents=570">传入基数金额</a>
+        </nav>
+    </aside>
 
     <script>
         const formatMoney = (cents) => (cents / 100).toLocaleString("en-US", {
@@ -781,13 +876,33 @@
             return 0;
         }
 
+        function resolveTipBaseCents(search) {
+            const text = new URLSearchParams(search).get("tipBaseCents")?.trim() ?? "";
+            const cents = Number(text);
+            return /^[0-9]+$/.test(text) && Number.isSafeInteger(cents) ? cents : null;
+        }
+
         const amountCents = resolveAmountCents();
+        const providedTipBaseCents = resolveTipBaseCents(window.location.search);
+        const hasProvidedTipBase = providedTipBaseCents !== null;
+        const tipBaseCents = providedTipBaseCents ?? amountCents;
         localStorage.setItem("amountCents", String(amountCents));
 
         document.getElementById("base-amount").textContent = formatMoney(amountCents);
+        document.getElementById("tip-base-amount").textContent = formatMoney(tipBaseCents);
+        document.getElementById("page-title").hidden = hasProvidedTipBase;
+        document.getElementById("tip-base-heading").hidden = !hasProvidedTipBase;
+        document.querySelector(".page-heading").classList.toggle("has-provided-base", hasProvidedTipBase);
+        document.getElementById("confirm-eligible-row").hidden = !hasProvidedTipBase;
+        document.getElementById("confirm-eligible").textContent = formatMoney(tipBaseCents);
+        document.getElementById(hasProvidedTipBase ? "preview-base" : "preview-normal").setAttribute("aria-current", "page");
+
+        function calculatePercentageTip(percent) {
+            return Math.round(tipBaseCents * (percent / 100));
+        }
 
         function setCalculatedTip(percent, elementId) {
-            const tipCents = Math.round(amountCents * (percent / 100));
+            const tipCents = calculatePercentageTip(percent);
             document.getElementById(elementId).textContent = "(" + formatMoney(tipCents) + ")";
         }
 
@@ -829,7 +944,7 @@
             card.addEventListener("click", () => {
                 const percent = parseInt(card.getAttribute("data-pct"), 10);
                 selectedPercent = percent;
-                selectedTipCents = Math.round(amountCents * (percent / 100));
+                selectedTipCents = calculatePercentageTip(percent);
                 clearSelection();
                 card.classList.add("selected");
                 showConfirm(selectedTipCents);

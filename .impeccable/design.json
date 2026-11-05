@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-02T08:45:46.067351+00:00",
+  "generatedAt": "2026-11-05T02:41:30.687094+00:00",
   "title": "Design System: Paywizard Configure",
   "extensions": {
     "scope": {
@@ -16,7 +16,8 @@
       "sources": [
         "configure/app.css",
         "configure/app.js",
-        "27.Paywizard_config.html"
+        "27.Paywizard_config.html",
+        "docs/design/configure-task-follow-2026-11-03.md"
       ],
       "validationBoundary": "Static-prototype documentation; no live terminal or physical-device acceptance implied."
     },
@@ -245,6 +246,21 @@
           "oklch(95% 0.00553 274.96)"
         ],
         "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
+      },
+      "bound-surface": {
+        "role": "neutral",
+        "displayName": "bound-surface",
+        "tonalRamp": [
+          "oklch(15% 0.01266 149.24)",
+          "oklch(26% 0.01266 149.24)",
+          "oklch(38% 0.01266 149.24)",
+          "oklch(49% 0.01266 149.24)",
+          "oklch(61% 0.01266 149.24)",
+          "oklch(72% 0.01266 149.24)",
+          "oklch(84% 0.01266 149.24)",
+          "oklch(95% 0.01266 149.24)"
+        ],
+        "rampPurpose": "Panel preview only; synthesized at constant source hue/chroma. Not implementation colors."
       }
     },
     "typographyMeta": {
@@ -254,7 +270,7 @@
       },
       "headline-results": {
         "displayName": "Results headline",
-        "purpose": "Smaller heading once task results appear."
+        "purpose": "Smaller heading on standalone task pages; the home heading remains 34px."
       }
     },
     "shadows": [],
@@ -279,6 +295,11 @@
         "purpose": "Pending control indicator."
       },
       {
+        "name": "terminal-action-press",
+        "value": "transform 160ms cubic-bezier(.16, 1, .3, 1), background-color 100ms, border-color 100ms, color 100ms; pressed duration: 60ms; feedback hold: 140ms",
+        "purpose": "Setup and maintenance controls scale to 96% while pressed; reduced motion keeps color feedback without scaling."
+      },
+      {
         "name": "reduced-motion",
         "value": "animation: none !important; transition: none !important; scroll-behavior: auto !important;",
         "purpose": "Applied to all elements and pseudo-elements under prefers-reduced-motion: reduce."
@@ -297,7 +318,10 @@
         "name": "narrow-width",
         "value": "(max-width: 350px)"
       }
-    ]
+    ],
+    "layout": {
+      "q3mini": "Approved: one page with an external model selector; preserve current input, workflow and open dialogs when switching. The portrait canvas retains its existing composition. Q3MINI uses a 480 × 480 prototype viewport, reduced proportionally in width and height on narrow browsers while its content reflows without CSS scaling. Display controls stay outside the terminal; dialogs and backdrops stay inside it.\n\nThe compact variant uses a 28px title, 20px wordmark, 14px product name and 12px status text. Header height is 60px beneath a 28px status bar; content has 24px side padding, reduced to 16px below 350px. TCI remains a sage identity block; maintenance entries remain equal and side by side. Dialog padding and radius are 20px. These are intentional additions for the square variant, not replacements for the portrait type or shape scale.\n\nTask content scrolls independently above the eligible Done / Check status / Back to home controls. Row-level Retry stays with its failure reason. Home-only SN / Exit and all existing return guards remain unchanged."
+    }
   },
   "components": [
     {
@@ -306,14 +330,14 @@
       "refersTo": "button-primary",
       "description": "实际 Configure 按钮；保持来源中的悬停、焦点与禁用规则。",
       "html": "<button class=\"ds-primary\" type=\"button\">Set up terminal<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 12h15M13 5l7 7-7 7\"/></svg></button>",
-      "css": ".ds-primary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: var(--ink, #202024); color: white; border: 1px solid var(--ink, #202024);  }.ds-primary:hover:not(:disabled) { background: #36363d; } .ds-primary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-primary:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-primary svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-primary { transition:none; } }"
+      "css": ".ds-primary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: var(--ink, #202024); color: white; border: 1px solid var(--ink, #202024);  }.ds-primary:hover:not(:disabled) { background: #36363d; } .ds-primary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-primary:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-primary svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-primary { transition:none; } } .ds-primary { touch-action: manipulation; transition: transform 160ms cubic-bezier(.16,1,.3,1), background-color 100ms, border-color 100ms, color 100ms; } .ds-primary:not(:disabled):active { transform: scale(.96); transition-duration: 60ms; background: #08080a; border-color: #08080a; } @media (prefers-reduced-motion:reduce) { .ds-primary { transform:none !important; transition:none !important; } }"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
       "refersTo": "button-secondary",
       "description": "实际 Configure 按钮；保持来源中的悬停、焦点与禁用规则。",
-      "html": "<button class=\"ds-secondary\" type=\"button\">Download apps</button>",
+      "html": "<button class=\"ds-secondary\" type=\"button\">Check status</button>",
       "css": ".ds-secondary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500;  }.ds-secondary:hover:not(:disabled) { background: #ecedf0; } .ds-secondary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-secondary:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-secondary svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-secondary { transition:none; } }"
     },
     {
@@ -333,12 +357,12 @@
       "css": ".ds-label { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display: block; color: var(--muted, #656b76); font-size: 13px; font-weight: 600; line-height: 18px; margin-bottom: 12px; } .ds-input-wrap { position: relative; display: flex; align-items: center; height: 62px; background: white; border: 1px solid #d7d9df; border-radius: 16px; } .ds-input-wrap:focus-within { border-color: var(--ink, #202024); outline: 1px solid var(--ink, #202024); } .ds-input-wrap.ds-invalid { border-color: var(--negative, #b23d35); outline-color: var(--negative, #b23d35); } .ds-prefix { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; color:var(--ink,#202024); padding: 0 17px; border-right: 1px solid #d7d9df; font-size: 23px; font-weight: 650; line-height: 30px; } .ds-input { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; width: 100%; min-width: 0; height: 100%; padding: 0 16px; border: 0; outline: 0; background: transparent; color: var(--ink, #202024); font-size: 23px; font-weight: 600; letter-spacing: .8px; caret-color: var(--ink, #202024); border-radius: 0 16px 16px 0; font-variant-numeric: tabular-nums; } .ds-input::placeholder { color: #737780; opacity: 1; } .ds-input:disabled { opacity: .55; } .ds-input[readonly] { cursor:default; }"
     },
     {
-      "name": "Header and Exit",
+      "name": "Brand Header",
       "kind": "nav",
       "refersTo": "button-icon",
-      "description": "实际品牌与退出入口，无标签栏或侧边栏。",
-      "html": "<header class=\"ds-header\"><button class=\"ds-brand\" type=\"button\" aria-label=\"Paywizard Configure\"><span class=\"ds-wordmark\">PAYwizard</span><span class=\"ds-product\">Configure</span></button><button class=\"ds-icon\" type=\"button\" aria-label=\"Exit application\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10 4H5v16h5M10 12h11m-4-4 4 4-4 4\"/></svg><span>Exit</span></button></header>",
-      "css": ".ds-header { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display: flex; flex: 0 0 76px; padding: 14px 16px 12px 24px; align-items: flex-start; justify-content: space-between; } .ds-brand { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; padding: 0; background: none; border: 0; text-align: left; color: var(--ink, #202024); line-height: 1.1; user-select: none; } .ds-wordmark { display: block; font-size: 21px; font-weight: 800; letter-spacing: .1px; } .ds-product { display: block; margin-top: 3px; color: #a16a22; font-size: 15px; font-weight: 650; } .ds-icon { cursor:pointer; display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 16px; background: transparent; color: var(--ink, #202024); } .ds-icon svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; width: 28px; height: 28px; } .ds-icon:hover { background: #e9eaed; } .ds-brand:focus-visible,.ds-icon:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-icon { display:flex; gap:6px; width:auto; min-height:44px; height:auto; padding:8px 12px; border:1px solid #d7d9df; border-radius:12px; background:white; font-size:14px; } .ds-icon svg { width:19px; height:19px; }"
+      "description": "页头只保留双行品牌；退出入口在首页终端身份页脚。",
+      "html": "<header class=\"ds-header\"><button class=\"ds-brand\" type=\"button\" aria-label=\"Paywizard Configure\"><span class=\"ds-wordmark\">PAYwizard</span><span class=\"ds-product\">Configure</span></button></header>",
+      "css": ".ds-header { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display: flex; flex: 0 0 76px; padding: 14px 16px 12px 24px; align-items: flex-start; justify-content: space-between; } .ds-brand { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; padding: 0; background: none; border: 0; text-align: left; color: var(--ink, #202024); line-height: 1.1; user-select: none; } .ds-wordmark { display: block; font-size: 21px; font-weight: 800; letter-spacing: .1px; } .ds-product { display: block; margin-top: 3px; color: #a16a22; font-size: 15px; font-weight: 650; } .ds-brand:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; }"
     },
     {
       "name": "Task Progress Row",
@@ -355,11 +379,32 @@
       "description": "真实退出对话框内容与样式；预览用普通容器展示，未模拟原生模态行为。",
       "html": "<section class=\"ds-dialog\" aria-labelledby=\"ds-exit-title\"><h2 id=\"ds-exit-title\">Exit application?</h2><p>Setup is still in progress. Exiting may interrupt the current task. Stay here or exit?</p><div class=\"ds-dialog-actions\"><button class=\"ds-dialog-secondary\" type=\"button\">Stay here</button><button class=\"ds-dialog-primary\" type=\"button\">Exit</button></div></section>",
       "css": ".ds-dialog { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; width: min(350px, calc(100vw - 32px)); max-height: calc(100svh - 32px); border: 1px solid var(--line, #e6e7e9); border-radius: 24px; padding: 24px; color: var(--ink, #202024); background: white; overflow-y: auto; } .ds-dialog h2 { margin: 0; font-size: 19px; letter-spacing: -.3px; line-height: 1.3; } .ds-dialog p { color: var(--muted, #656b76); font-size: 14px; line-height: 1.5; margin: 14px 0 20px; } .ds-dialog-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; } .ds-dialog-primary,.ds-dialog-secondary { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; } .ds-dialog-primary { background: var(--ink, #202024); color: white; border: 1px solid var(--ink, #202024); } .ds-dialog-secondary { background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500; } .ds-dialog-primary:hover:not(:disabled) { background: #36363d; } .ds-dialog-secondary:hover:not(:disabled) { background: #ecedf0; } .ds-dialog-primary:focus-visible,.ds-dialog-secondary:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } @media (prefers-reduced-motion:reduce) { .ds-dialog-primary,.ds-dialog-secondary { transition:none; } }"
+    },
+    {
+      "name": "Bound TCI Identity",
+      "kind": "custom",
+      "description": "已绑定时以浅绿色静态身份块替换输入，块内只有 TCI 标签与完整 TC 值；身份值可选择复制。",
+      "html": "<div class=\"ds-tci-identity\" role=\"group\" aria-label=\"Bound terminal configuration\"><span class=\"ds-identity-label\">TCI</span><span class=\"ds-identity-value\">TC12345678</span></div>",
+      "css": ".ds-tci-identity { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; display:flex;flex-direction:column;gap:12px;min-height:88px;padding:14px 16px;background:var(--bound-surface, #e0e8e1);border-radius:16px;color:var(--ink, #202024); } .ds-identity-label { color:var(--muted, #656b76);font-size:13px;font-weight:600;line-height:18px; } .ds-identity-value { font-size:23px;font-weight:650;line-height:30px;letter-spacing:.6px;font-variant-numeric:tabular-nums;user-select:text;overflow-wrap:anywhere; }"
+    },
+    {
+      "name": "Terminal Identity Footer",
+      "kind": "nav",
+      "description": "仅首页显示同一行 SN 与 Exit；任务页隐藏整个页脚。",
+      "html": "<footer class=\"ds-footer\"><strong>SN WP6170PQ23000060</strong><button class=\"ds-exit\" type=\"button\" aria-label=\"Exit application\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M10 4H5v16h5M10 12h11m-4-4 4 4-4 4\"/></svg><span>Exit</span></button></footer>",
+      "css": ".ds-footer { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;margin:0 24px;padding:8px 0 env(safe-area-inset-bottom, 0px);border-top:1px solid #d7d9df;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:16px;color:var(--muted, #656b76); } .ds-footer strong { min-width:0;font-size:16px;line-height:1.3;font-weight:650;color:var(--ink, #202024);overflow-wrap:anywhere; } .ds-exit { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:44px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--muted, #656b76);font-size:16px;font-weight:600;line-height:20px;touch-action:manipulation; } .ds-exit svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; } .ds-exit:hover { background:#e9eaed; } .ds-exit:active { background:#dedfe3; } .ds-exit:focus-visible { outline:2px solid var(--ink, #202024);outline-offset:4px; } @media (max-width:350px) { .ds-footer { margin:0 20px;column-gap:12px; } .ds-footer strong { font-size:14px; } }"
+    },
+    {
+      "name": "Maintenance Actions",
+      "kind": "custom",
+      "description": "首次配置完成后首页并排等宽的 Download apps 与 Update parameters 入口；未完成提示留在对应按钮内。",
+      "html": "<div class=\"ds-maintenance-actions\"><button class=\"ds-maintenance\" type=\"button\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"M3 10 7 3h18l4 7v17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10Zm0 0h26M13 3l-1 7m7-7 1 7M16 15v9m-4-4 4 4 4-4\"/></svg><span class=\"ds-action-label\">Download <span>apps</span></span></button><button class=\"ds-maintenance\" type=\"button\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"M2 6h6m6 0h16M2 16h18m6 0h4M2 26h9m6 0h13\"/><circle cx=\"11\" cy=\"6\" r=\"3\"/><circle cx=\"23\" cy=\"16\" r=\"3\"/><circle cx=\"14\" cy=\"26\" r=\"3\"/></svg><span class=\"ds-action-label\">Update <span>parameters</span></span></button></div>",
+      "css": ".ds-maintenance { font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; cursor:pointer; min-height: 52px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: 16px; font-weight: 600; line-height: 1.3; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background-color 160ms, color 160ms; background: white; color: var(--ink, #202024); border: 1px solid var(--ink, #202024); font-weight: 500;  }.ds-maintenance:hover:not(:disabled) { background: #ecedf0; } .ds-maintenance:focus-visible { outline: 2px solid var(--ink, #202024); outline-offset: 4px; } .ds-maintenance:disabled { background: #e6e7e9; border-color: #e6e7e9; color: #747985; } .ds-maintenance svg { width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto; }@media (prefers-reduced-motion:reduce) { .ds-maintenance { transition:none; } } .ds-maintenance-actions { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px; } .ds-maintenance-actions .ds-maintenance { min-width:0;min-height:134px;padding:20px 18px;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:16px;border-color:#d7d9df;text-align:left;font-size:18px;font-weight:650;line-height:1.2;touch-action:manipulation;transition:transform 160ms cubic-bezier(.16,1,.3,1),background-color 100ms,border-color 100ms,color 100ms; } .ds-maintenance-actions .ds-maintenance svg { width:40px;height:40px;stroke-width:1.7; } .ds-action-label { overflow-wrap:anywhere; } .ds-action-label > span { display:block; } .ds-maintenance-actions .ds-maintenance:not(:disabled):active { transform:scale(.96);transition-duration:60ms;background:var(--ink, #202024);border-color:var(--ink, #202024);color:white; } @media (max-width:350px) { .ds-maintenance-actions { gap:12px; } .ds-maintenance-actions .ds-maintenance { padding:18px 14px;font-size:17px; } } @media (prefers-reduced-motion:reduce) { .ds-maintenance-actions .ds-maintenance { transform:none !important;transition:none !important; } }"
     }
   ],
   "narrative": {
     "northStar": "GO 中性原生系统风格",
-    "overview": "**范围：本文件只适用于 `27.Paywizard_config.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**\n\n用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。\n\n这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.Paywizard_config.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。",
+    "overview": "**范围：本文件只适用于 `27.Paywizard_config.html` 与 `configure/`。即使位于仓库根目录，也不重新定义 `OPC_ATTD/`、`OPC_PAD/` 或其他根目录原型的设计系统。**\n\n用户确认的体验是「简洁、清爽、无脑」。以 GO 的系统字体、近黑色操作、浅中性背景和克制边线组成清晰的终端界面。标题、输入和操作直接落在画布上；层级来自字号、间距和状态反馈。\n\n这是对已实现静态原型的扫描记录。视觉来源为 `configure/app.css`，结构和状态来源为 `27.Paywizard_config.html`、`configure/app.js`。当前已批准参考为 `docs/design/configure-go-2026-11-02/06-a-original-single-action.png`、`07-maintenance-home.png` 、`08-prebound-setup.png` 和 `09-maintenance-parallel.png`；该首屏构图的决定记录在 `.impeccable/configure-direction.md`。静态原型完成评审不代表真实终端集成或实体机视觉验收。",
     "keyCharacteristics": [
       "系统字体与近黑主操作。",
       "平面中性画布、白色输入和稀疏辅助文案。",
@@ -376,7 +421,7 @@
     "donts": [
       "Don't 将本文件中的 Configure 构图推广成 OPC_ATTD、OPC_PAD 或整个仓库的规则。",
       "Don't 给批准首屏补上外围表单卡片，或将 S/N 移到输入框下方。",
-      "Don't 在绑定成功前显示 Download apps only 或 Download parameters。",
+      "Don't 在首次配置完成前显示 Download apps 或 Update parameters；Don't 在首页展开旧任务进度。",
       "Don't 用蓝色主按钮、装饰阴影、总进度或汇总完成徽章替代当前实现。",
       "Don't 把模拟任务结果或文档组件预览描述成真实终端执行凭据。"
     ]
