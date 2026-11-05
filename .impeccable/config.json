@@ -38,6 +38,33 @@
         ],
         "createdAt": "2026-11-04T01:50:36.577Z",
         "reason": "Agent: existing Mini payment typography is deliberately preserved during the approved two-button refinement; font popularity is not a defect for this operational screen."
+      },
+      {
+        "rule": "design-system-font",
+        "value": "inter",
+        "files": [
+          "1.1.tip.html"
+        ],
+        "createdAt": "2026-11-05T03:55:52.915Z",
+        "reason": "Agent: DESIGN.md explicitly applies only to Configure; this approved regular payment prototype retains its existing Inter typography."
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "1.1.tip.html"
+        ],
+        "createdAt": "2026-11-05T03:55:52.962Z",
+        "reason": "Agent: existing operational payment typography is intentionally preserved in the approved scoped tip-base refinement; font popularity is not a defect here."
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "1.1.tip.html"
+        ],
+        "createdAt": "2026-11-05T03:55:53.020Z",
+        "reason": "Agent: detector applies dark outer device backdrop to keyboard controls; actual orange delete-key shadow sits on the existing light F7F8FA and FFF7E6 surfaces, verified in browser screenshots."
       }
     ]
   }

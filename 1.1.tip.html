@@ -34,7 +34,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            gap: 32px;
+            padding: 32px;
+            overflow: auto;
             background: #222;
         }
 
@@ -42,8 +44,49 @@
             font: inherit;
         }
 
+        [hidden] {
+            display: none !important;
+        }
+
+        .preview-controls {
+            flex: 0 0 172px;
+            color: #D1D5DB;
+        }
+
+        .preview-label {
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .preview-nav {
+            display: grid;
+            gap: 8px;
+        }
+
+        .preview-nav a {
+            padding: 12px;
+            border: 1px solid #454545;
+            border-radius: 10px;
+            color: #D1D5DB;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .preview-nav a[aria-current="page"] {
+            border-color: #D1D5DB;
+            background: #303030;
+            color: #FFFFFF;
+        }
+
+        .preview-nav a:focus-visible {
+            outline: 2px solid #D1D5DB;
+            outline-offset: 3px;
+        }
+
         .phone-frame {
             position: relative;
+            flex: none;
             display: flex;
             flex-direction: column;
             width: 375px;
@@ -343,18 +386,33 @@
         .sheet-heading::before,
         .sheet-heading::after {
             flex: 1;
+            min-width: 0;
             height: 1px;
             background: #D8E0EB;
             content: "";
         }
 
+        .sheet-heading > div {
+            min-width: 0;
+        }
+
         .sheet-title {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
             color: var(--text-grey);
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.12em;
             line-height: 1;
             white-space: nowrap;
+        }
+
+        #tip-base-amount {
+            color: var(--color-sale-text);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         .sheet-subtitle {
@@ -727,7 +785,7 @@
 
         .confirm-breakdown-label {
             color: var(--text-grey);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.12em;
             line-height: 1.2;
@@ -762,14 +820,38 @@
             height: 48px;
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 780px) {
             body {
-                background: var(--bg-body);
+                flex-direction: column;
+                gap: 24px;
+                padding: 24px;
             }
 
             .phone-frame {
-                width: 100vw;
-                height: 100dvh;
+                width: min(375px, 100%);
+            }
+
+            .preview-controls {
+                order: -1;
+                flex: none;
+                width: min(375px, 100%);
+            }
+
+            .preview-nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 20px 0 0;
+            }
+
+            .preview-controls {
+                padding: 0 16px;
+            }
+
+            .phone-frame {
                 border-radius: 0;
                 box-shadow: none;
             }
@@ -822,7 +904,7 @@
         <main class="content-sheet">
             <div class="sheet-heading">
                 <div>
-                    <h1 class="sheet-title">ADD A TIP</h1>
+                    <h1 class="sheet-title"><span id="tip-title-label">ADD A TIP</span><strong id="tip-base-amount" hidden>$0.00</strong></h1>
                 </div>
             </div>
 
@@ -837,8 +919,7 @@
                     <span class="tip-value" id="a20">$0.00</span>
                     <span class="tip-tag">Great</span>
                 </button>
-                <button class="tip-card" type="button" data-pct="22"1231
-                 aria-pressed="false">
+                <button class="tip-card" type="button" data-pct="22" aria-pressed="false">
                     <span class="tip-percent-box">22%</span>
                     <span class="tip-value" id="a22">$0.00</span>
                     <span class="tip-tag">Excellent</span>
@@ -851,7 +932,7 @@
             </section>
 
             <div class="actions">
-                <button class="btn btn-primary" id="btn-custom" type="button">Custom Tip</button>
+                <button class="btn btn-secondary" id="btn-custom" type="button">Custom Tip</button>
                 <button class="btn btn-secondary" id="btn-skip" type="button">No Tip</button>
             </div>
 
@@ -899,6 +980,10 @@
                             <span class="confirm-breakdown-label">Transaction</span>
                             <strong id="confirm-subtotal">$0.00</strong>
                         </div>
+                        <div class="confirm-breakdown-item" id="confirm-eligible-row" hidden>
+                            <span class="confirm-breakdown-label">Eligible amount</span>
+                            <strong id="confirm-eligible">$0.00</strong>
+                        </div>
                         <div class="confirm-breakdown-item tip">
                             <span class="confirm-breakdown-label" id="confirm-tip-label">Tip</span>
                             <strong id="confirm-tip">$0.00</strong>
@@ -913,6 +998,14 @@
         </div>
         </main>
     </div>
+
+    <aside class="preview-controls" aria-labelledby="preview-label">
+        <p class="preview-label" id="preview-label">预览场景</p>
+        <nav class="preview-nav" aria-labelledby="preview-label">
+            <a id="preview-normal" href="1.1.tip.html?cashAmountCents=600&amp;amountCents=600">普通情况</a>
+            <a id="preview-base" href="1.1.tip.html?cashAmountCents=600&amp;amountCents=600&amp;tipBaseCents=570">传入基数金额</a>
+        </nav>
+    </aside>
 
     <script src="merchant-context.js"></script>
     <script>
@@ -973,7 +1066,16 @@
             return 0;
         }
 
+        function resolveTipBaseCents(search) {
+            const text = new URLSearchParams(search).get("tipBaseCents")?.trim() ?? "";
+            const cents = Number(text);
+            return /^[0-9]+$/.test(text) && Number.isSafeInteger(cents) ? cents : null;
+        }
+
         const amountCents = resolveAmountCents();
+        const providedTipBaseCents = resolveTipBaseCents(window.location.search);
+        const hasProvidedTipBase = providedTipBaseCents !== null;
+        const tipBaseCents = providedTipBaseCents ?? amountCents;
         const phoneFrame = document.getElementById("phone-frame");
         const amountLabelEl = document.getElementById("amount-label");
         const amountLineEl = document.querySelector(".amount-line");
@@ -987,6 +1089,20 @@
         let selectedTipCents = 0;
         let customRaw = "0";
 
+        document.getElementById("tip-title-label").textContent = hasProvidedTipBase ? "ADD A TIP ON:" : "ADD A TIP";
+        document.getElementById("tip-base-amount").hidden = !hasProvidedTipBase;
+        document.getElementById("tip-base-amount").textContent = formatCurrency(tipBaseCents);
+        document.getElementById("confirm-eligible-row").hidden = !hasProvidedTipBase;
+        document.getElementById("confirm-eligible").textContent = formatCurrency(tipBaseCents);
+        document.getElementById(hasProvidedTipBase ? "preview-base" : "preview-normal").setAttribute("aria-current", "page");
+
+        for (const [id, baseCents] of [["preview-normal", null], ["preview-base", 570]]) {
+            const params = new URLSearchParams({ cashAmountCents: "600", amountCents: "600" });
+            if (baseCents !== null) params.set("tipBaseCents", String(baseCents));
+            if (window.MerchantContext) window.MerchantContext.appendTo(params);
+            document.getElementById(id).href = "1.1.tip.html?" + params.toString();
+        }
+
         localStorage.setItem("cashAmountCents", String(amountCents));
         localStorage.setItem("amountCents", String(amountCents));
 
@@ -999,8 +1115,12 @@
 
         setHeroAmount(amountCents);
 
+        function calculatePercentageTip(percent) {
+            return Math.round(tipBaseCents * percent / 100);
+        }
+
         function updateCalculatedTip(percent, elementId) {
-            document.getElementById(elementId).textContent = formatCurrency(Math.round(amountCents * percent / 100));
+            document.getElementById(elementId).textContent = formatCurrency(calculatePercentageTip(percent));
         }
 
         updateCalculatedTip(15, "a15");
@@ -1058,7 +1178,7 @@
         tipCards.forEach((card) => {
             card.addEventListener("click", () => {
                 selectedPercent = Number(card.dataset.pct);
-                selectedTipCents = Math.round(amountCents * selectedPercent / 100);
+                selectedTipCents = calculatePercentageTip(selectedPercent);
                 clearSelection();
                 card.classList.add("selected");
                 card.setAttribute("aria-pressed", "true");
